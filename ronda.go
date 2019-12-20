@@ -6,8 +6,8 @@ import (
 
 // Ronda :
 type Ronda struct {
-	manoEnJuego      NumMano // Numero de mano: 1era 2da 3era
-	jugadoresEnJuego int     // Numero de jugadores que no se fueron al mazo
+	manoEnJuego          NumMano // Numero de mano: 1era 2da 3era
+	cantJugadoresEnJuego int     // Numero de jugadores que no se fueron al mazo
 
 	/* Indices */
 	elMano JugadorIdx
@@ -104,6 +104,6 @@ func (r Ronda) Print() {
 	fmt.Printf("Y la muestra es\n    - %s\n", r.muestra.toString())
 	fmt.Printf("\nEl mano actual es: %s\nEs el turno de %s\n\n",
 		r.getElMano().getPerfil().nombre, r.getElTurno().getPerfil().nombre)
-	
+
 	imprimirJugadas()
 }
