@@ -64,7 +64,7 @@ func (jugada tocarEnvido) hacer(p *Partida, j *Jugador) error {
 // donde 'j' el jugador que dijo 'quiero' al 'envido'/'real envido'
 func (jugada tocarEnvido) eval(p *Partida, j *Jugador) error {
 	p.ronda.envido.estado = DESHABILITADO
-	jIdx, max, out := p.getElEnvido()
+	jIdx, max, out := p.ronda.getElEnvido()
 	print(out)
 	jug := &p.jugadores[jIdx]
 	p.puntajes[jug.equipo] += p.ronda.envido.puntaje
@@ -180,7 +180,7 @@ func (jugada tocarFaltaEnvido) eval(p *Partida, j *Jugador) error {
 	p.ronda.envido.estado = DESHABILITADO
 
 	// computar envidos
-	jIdx, max, out := p.getElEnvido()
+	jIdx, max, out := p.ronda.getElEnvido()
 
 	print(out)
 
