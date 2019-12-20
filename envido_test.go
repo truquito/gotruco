@@ -1,10 +1,161 @@
-// +build !envidos
-
 package main
 
 import (
 	"testing"
+	// "fmt"
+	// "bufio"
+	// "os"
 )
+
+// sinopsis:
+// juan toca envido
+// pedro responde quiero
+// juan gana con 12 de envido vs 5 de pedro
+func TestEnvidoAceptado(t *testing.T) {
+	p := partidaDefault2Jugadores
+	dobleLinking(&p)
+	p.ronda.getManoActual().repartidor = p.ronda.elMano
+
+	p.ronda.Print()
+
+	// empieza primera ronda
+	// empieza primera mano
+
+	// Juan toca envido
+	jugada := tocarEnvido{}
+	jugada.hacer(&p, &p.jugadores[0])
+
+	oops = p.ronda.envido.estado != ENVIDO
+	if oops {
+		t.Error("El estado del envido deberia de ser `envido`")
+		return
+	}
+
+	oops = p.ronda.envido.puntaje != 2
+	if oops {
+		t.Error("El `puntaje` del envido deberia de ser 2")
+		return
+	}
+
+	// Pedro responde 'quiero'
+	responderQuiero{}.hacer(&p, &p.jugadores[1])
+
+	oops = p.ronda.envido.estado != DESHABILITADO
+	if oops {
+		t.Error(`El estado del envido deberia de ser 'deshabilitado', 
+		ya que fue aceptado por Pedro`)
+		return
+	}
+
+	oops = p.ronda.envido.puntaje != 2
+	if oops {
+		t.Error(`El puntaje del envido deberia de ser 2`)
+		return
+	}
+}
+
+// sinopsis:
+// juan: envido
+// pedro: envido
+// todo: ??
+func TestDobleEnvido(t *testing.T) {
+	p := partidaDefault2Jugadores
+
+	dobleLinking(&p)
+	p.ronda.getManoActual().repartidor = p.ronda.elMano
+
+	p.ronda.Print()
+
+	// empieza primera ronda
+	// empieza primera mano
+
+	// Juan toca envido
+	jugada := tocarEnvido{}
+	jugada.hacer(&p, &p.jugadores[0])
+
+	oops = p.ronda.envido.estado != ENVIDO
+	if oops {
+		t.Error("El estado del envido deberia de ser `envido`")
+		return
+	}
+
+	oops = p.ronda.envido.puntaje != 2
+	if oops {
+		t.Error("El `puntaje` del envido deberia de ser 2")
+		return
+	}
+
+	// Pedro redobla el envido
+	tocarEnvido{}.hacer(&p, &p.jugadores[1])
+
+	oops = p.ronda.envido.estado != ENVIDO
+	if oops {
+		t.Error(`El estado del envido deberia de ser 'envido', incluso luego de que
+		ambos Juan y Pedro lo hayan tocando`)
+		return
+	}
+
+	oops = p.ronda.envido.puntaje != 4
+	if oops {
+		t.Error(`El puntaje del envido deberia ahora de ser '2 + 2 = 4'`)
+		return
+	}
+
+	responderQuiero{}.hacer(&p, &p.jugadores[0])
+}
+
+// sinopsis:
+// Juan: envido
+// Pedro: envido
+// Juan: no quiero
+func TestDobleEnvidoNoAceptado(t *testing.T) {
+	p := partidaDefault2Jugadores
+
+	dobleLinking(&p)
+	p.ronda.getManoActual().repartidor = p.ronda.elMano
+
+	p.ronda.Print()
+
+	// empieza primera ronda
+	// empieza primera mano
+
+	// Juan toca envido
+	jugada := tocarEnvido{}
+	jugada.hacer(&p, &p.jugadores[0])
+
+	oops = p.ronda.envido.estado != ENVIDO
+	if oops {
+		t.Error("El estado del envido deberia de ser `envido`")
+		return
+	}
+
+	oops = p.ronda.envido.puntaje != 2
+	if oops {
+		t.Error("El `puntaje` del envido deberia de ser 2")
+		return
+	}
+
+	// Pedro redobla el envido
+	tocarEnvido{}.hacer(&p, &p.jugadores[1])
+
+	oops = p.ronda.envido.estado != ENVIDO
+	if oops {
+		t.Error(`El estado del envido deberia de ser 'envido', incluso luego de que
+		ambos Juan y Pedro lo hayan tocando`)
+		return
+	}
+
+	oops = p.ronda.envido.puntaje != 4
+	if oops {
+		t.Error(`El puntaje del envido deberia ahora de ser '2 + 2 = 4'`)
+		return
+	}
+
+	// Juan responde 'no quiero'
+	responderNoQuiero{}.hacer(&p, &p.jugadores[0])
+}
+
+// parte 2
 
 /* #CASOS = 11*2 = 22 */
 
@@ -321,6 +472,78 @@ func TestXIRechazado(t *testing.T) {
 	tocarFaltaEnvido{}.hacer(&p, patricio)
 	responderNoQuiero{}.hacer(&p, juan)
 	oops = p.puntajes[Azul] != 3+7
+	if oops {
+		t.Error("El resultado es incorrecto")
+		return
+	}
+}
+
+// parte 3
+
+/* Tests de Youtube */
+func TestYTEnvidoCalc(t *testing.T) {
+	p := partidaYT1
+	dobleLinking(&p)
+	p.ronda.getManoActual().repartidor = 5
+
+	expected := []int{26, 20, 28, 25, 33, 27}
+	for i, jugador := range p.jugadores {
+		got := jugador.manojo.calcularEnvido(p.ronda.muestra)
+		oops = expected[i] != got
+		if oops {
+			t.Errorf(
+				`El resultado del envido del jugador %s es incorrecto.
+				\nEXPECTED: %v
+				\nGOT: %v`,
+				jugador.nombre, expected[i], got)
+			return
+		}
+	}
+
+}
+
+func TestYTEnvidoI(t *testing.T) {
+	p := partidaYT1
+	dobleLinking(&p)
+	p.ronda.getManoActual().repartidor = 5
+
+	tocarEnvido{}.hacer(&p, D)
+	responderQuiero{}.hacer(&p, C)
+	oops = p.puntajes[Rojo] != 4+2
+	if oops {
+		t.Error("El resultado es incorrecto")
+		return
+	}
+}
+
+func TestYTEnvidoCalcII(t *testing.T) {
+	p := partidaYT2
+	dobleLinking(&p)
+	p.ronda.getManoActual().repartidor = 5
+
+	expected := []int{21, 23, 23, 30, 30, 31}
+	for i, jugador := range p.jugadores {
+		got := jugador.manojo.calcularEnvido(p.ronda.muestra)
+		oops = expected[i] != got
+		if oops {
+			t.Errorf(
+				`El resultado del envido del jugador %s es incorrecto.
+				\nEXPECTED: %v
+				\nGOT: %v`,
+				jugador.nombre, expected[i], got)
+			return
+		}
+	}
+}
+
+func TestYTEnvidoII(t *testing.T) {
+	p := partidaYT2
+	dobleLinking(&p)
+	p.ronda.getManoActual().repartidor = 5
+
+	tocarEnvido{}.hacer(&p, D)
+	responderQuiero{}.hacer(&p, C)
+	oops = p.puntajes[Azul] != 3+2
 	if oops {
 		t.Error("El resultado es incorrecto")
 		return
