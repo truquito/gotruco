@@ -21,40 +21,43 @@ func (jugada tocarEnvido) hacer(p *Partida, j *Jugador) error {
 	// automaticamente
 	// esPrimeraMano 		:= p.ronda.manoEnJuego == primera
 	ok := envidoHabilitado // && esPrimeraMano
-	if ok {
-		e.cantadoPor = j
-		fmt.Printf(">> %s toca envido\n", j.nombre)
-		// ahora checkeo si alguien tiene flor
-		hayFlor, jFlor, _ := p.ronda.checkFlores(p.ronda.turno)
-		if hayFlor {
-			p.ronda.envido.estado = DESHABILITADO
-			p.ronda.flor = FLOR
-			// Se cachea turno actual (del envido).
-			// Cuando se termine de jugar la flor,
-			// se reestablece a este.
-			cacheTurnoEnvido := p.ronda.turno
-			nuevoTurnoFlor, _ := obtenerIdx(jFlor, p.jugadores)
-			p.ronda.turno = nuevoTurnoFlor
-			siguienteJugada := cantarFlor{}
-			siguienteJugada.hacer(p, jFlor)
-			// una vez terminada, vuelve el turno al del envido
-			p.ronda.turno = cacheTurnoEnvido
-		} else {
-			// 2 opciones: o bien no se jugo aun
-			// o bien ya estabamos en envido
-			if e.estado == ENVIDO {
-				// se aumenta el puntaje del envido en +2
-				e.puntaje += 2
-			} else if e.estado == NOCANTADOAUN { // no se habia jugado aun
-				e.estado = ENVIDO
-				e.puntaje = 2
-			}
-			// esperando respuestas
-			cacheTurnoEnvido := p.ronda.turno
-			p.esperandoJugada() // se juega la respuesta
-			p.ronda.turno = cacheTurnoEnvido
-		}
+	if !ok {
+		return fmt.Errorf(`No es posible cantar 'Envido'`)
 	}
+
+	e.cantadoPor = j
+	fmt.Printf(">> %s toca envido\n", j.nombre)
+	// ahora checkeo si alguien tiene flor
+	hayFlor, jFlor, _ := p.ronda.checkFlores(p.ronda.turno)
+	if hayFlor {
+		p.ronda.envido.estado = DESHABILITADO
+		p.ronda.flor = FLOR
+		// Se cachea turno actual (del envido).
+		// Cuando se termine de jugar la flor,
+		// se reestablece a este.
+		cacheTurnoEnvido := p.ronda.turno
+		nuevoTurnoFlor, _ := obtenerIdx(jFlor, p.jugadores)
+		p.ronda.turno = nuevoTurnoFlor
+		siguienteJugada := cantarFlor{}
+		siguienteJugada.hacer(p, jFlor)
+		// una vez terminada, vuelve el turno al del envido
+		p.ronda.turno = cacheTurnoEnvido
+	} else {
+		// 2 opciones: o bien no se jugo aun
+		// o bien ya estabamos en envido
+		if e.estado == ENVIDO {
+			// se aumenta el puntaje del envido en +2
+			e.puntaje += 2
+		} else if e.estado == NOCANTADOAUN { // no se habia jugado aun
+			e.estado = ENVIDO
+			e.puntaje = 2
+		}
+		// esperando respuestas
+		cacheTurnoEnvido := p.ronda.turno
+		p.esperandoJugada() // se juega la respuesta
+		p.ronda.turno = cacheTurnoEnvido
+	}
+
 	return nil
 }
 

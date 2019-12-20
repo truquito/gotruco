@@ -9,6 +9,40 @@ import (
 
 // sinopsis:
 // juan toca envido
+// pedro grita truco
+// que pasa??
+func TestTrucoFueraDeLugar(t *testing.T) {
+	p := partidaDefault2Jugadores
+	dobleLinking(&p)
+	p.ronda.getManoActual().repartidor = p.ronda.elMano
+
+	p.ronda.Print()
+
+	// empieza primera ronda
+	// empieza primera mano
+
+	// Juan toca envido
+	jugada := tocarEnvido{}
+	jugada.hacer(&p, &p.jugadores[0])
+
+	oops = p.ronda.envido.estado != ENVIDO
+	if oops {
+		t.Error("El estado del envido deberia de ser `envido`")
+		return
+	}
+
+	oops = p.ronda.envido.puntaje != 2
+	if oops {
+		t.Error("El `puntaje` del envido deberia de ser 2")
+		return
+	}
+
+	// Pedro responde 'quiero'
+	gritarTruco{}.hacer(&p, &p.jugadores[1])
+}
+
+// sinopsis:
+// juan toca envido
 // pedro responde quiero
 // juan gana con 12 de envido vs 5 de pedro
 func TestEnvidoAceptado(t *testing.T) {
