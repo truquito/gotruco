@@ -16,11 +16,11 @@ var (
 		Jugador{"Paco", Azul, nil},
 	}
 
-	juan 			= &jugadores[0] // rojo
-	pedro 		= &jugadores[1] // azul
-	jacinto 	= &jugadores[2] // rojo
-	patricio 	= &jugadores[3] // azul
-	
+	juan     = &jugadores[0] // rojo
+	pedro    = &jugadores[1] // azul
+	jacinto  = &jugadores[2] // rojo
+	patricio = &jugadores[3] // azul
+
 	// jugadores YT
 	jugadoresYT = []Jugador{
 		Jugador{"A", Rojo, nil}, // Dr. Favaloro
@@ -186,23 +186,6 @@ var (
 		},
 	}
 
-	partidaDefault2Jugadores = Partida{
-		puntuacion:    a20,
-		puntaje:       0,
-		cantJugadores: 2,
-		jugadores:     jugadores[:2],
-		ronda: Ronda{
-			manoEnJuego: primera,
-			elMano:      0,
-			turno:       0,
-			envido:      Envido{puntaje: 0, estado: NOCANTADOAUN},
-			truco:       NOCANTADO,
-			manojos:     manojos[:2],
-			manos:       make([]Mano, 3),
-			muestra:     muestra,
-		},
-	}
-
 	partida4JugadoresEnvidoTesting = Partida{
 		puntuacion:    a20,
 		cantJugadores: 4,
@@ -254,3 +237,25 @@ var (
 		},
 	}
 )
+
+func getPartidaCustom1() Partida {
+	p := Partida{
+		puntuacion:    a20,
+		puntaje:       0,
+		cantJugadores: 2,
+		jugadores:     jugadores[:2],
+		ronda: Ronda{
+			manoEnJuego: primera,
+			elMano:      0,
+			turno:       0,
+			envido:      Envido{puntaje: 0, estado: NOCANTADOAUN},
+			truco:       NOCANTADO,
+			manojos:     manojos[:2],
+			manos:       make([]Mano, 3),
+			muestra:     muestra,
+		},
+	}
+	p.dobleLinking()
+	p.ronda.getManoActual().repartidor = p.ronda.elMano
+	return p
+}
