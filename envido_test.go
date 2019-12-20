@@ -7,14 +7,13 @@ import (
 	// "os"
 )
 
+// todo:
 // sinopsis:
 // juan toca envido
 // pedro grita truco
 // que pasa??
 func TestTrucoFueraDeLugar(t *testing.T) {
-	p := partidaDefault2Jugadores
-	dobleLinking(&p)
-	p.ronda.getManoActual().repartidor = p.ronda.elMano
+	p := getPartidaCustom1()
 
 	p.ronda.Print()
 
@@ -46,10 +45,7 @@ func TestTrucoFueraDeLugar(t *testing.T) {
 // pedro responde quiero
 // juan gana con 12 de envido vs 5 de pedro
 func TestEnvidoAceptado(t *testing.T) {
-	p := partidaDefault2Jugadores
-	dobleLinking(&p)
-	p.ronda.getManoActual().repartidor = p.ronda.elMano
-
+	p := getPartidaCustom1()
 	p.ronda.Print()
 
 	// empieza primera ronda
@@ -93,10 +89,7 @@ func TestEnvidoAceptado(t *testing.T) {
 // pedro: envido
 // todo: ??
 func TestDobleEnvido(t *testing.T) {
-	p := partidaDefault2Jugadores
-
-	dobleLinking(&p)
-	p.ronda.getManoActual().repartidor = p.ronda.elMano
+	p := getPartidaCustom1()
 
 	p.ronda.Print()
 
@@ -143,10 +136,7 @@ func TestDobleEnvido(t *testing.T) {
 // Pedro: envido
 // Juan: no quiero
 func TestDobleEnvidoNoAceptado(t *testing.T) {
-	p := partidaDefault2Jugadores
-
-	dobleLinking(&p)
-	p.ronda.getManoActual().repartidor = p.ronda.elMano
+	p := getPartidaCustom1()
 
 	p.ronda.Print()
 
@@ -217,7 +207,7 @@ func TestDobleEnvidoNoAceptado(t *testing.T) {
 
 func inicializar() Partida {
 	p := partida4JugadoresEnvidoTesting
-	dobleLinking(&p)
+	p.dobleLinking()
 	p.ronda.getManoActual().repartidor = p.ronda.elMano - 1
 	return p
 }
@@ -517,7 +507,7 @@ func TestXIRechazado(t *testing.T) {
 /* Tests de Youtube */
 func TestYTEnvidoCalc(t *testing.T) {
 	p := partidaYT1
-	dobleLinking(&p)
+	p.dobleLinking()
 	p.ronda.getManoActual().repartidor = 5
 
 	expected := []int{26, 20, 28, 25, 33, 27}
@@ -538,7 +528,7 @@ func TestYTEnvidoCalc(t *testing.T) {
 
 func TestYTEnvidoI(t *testing.T) {
 	p := partidaYT1
-	dobleLinking(&p)
+	p.dobleLinking()
 	p.ronda.getManoActual().repartidor = 5
 
 	tocarEnvido{}.hacer(&p, D)
@@ -552,7 +542,7 @@ func TestYTEnvidoI(t *testing.T) {
 
 func TestYTEnvidoCalcII(t *testing.T) {
 	p := partidaYT2
-	dobleLinking(&p)
+	p.dobleLinking()
 	p.ronda.getManoActual().repartidor = 5
 
 	expected := []int{21, 23, 23, 30, 30, 31}
@@ -572,7 +562,7 @@ func TestYTEnvidoCalcII(t *testing.T) {
 
 func TestYTEnvidoII(t *testing.T) {
 	p := partidaYT2
-	dobleLinking(&p)
+	p.dobleLinking()
 	p.ronda.getManoActual().repartidor = 5
 
 	tocarEnvido{}.hacer(&p, D)
