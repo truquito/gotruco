@@ -84,7 +84,7 @@ func TestJuanNoDeberiaTenerFlor(t *testing.T) {
 		},
 	}
 
-	dobleLinking(&p)
+	p.dobleLinking()
 	p.ronda.getManoActual().repartidor = p.ronda.elMano
 
 	p.ronda.Print()
