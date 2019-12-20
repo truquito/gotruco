@@ -1,4 +1,4 @@
-package main
+package truco
 
 import (
 	"math/rand"

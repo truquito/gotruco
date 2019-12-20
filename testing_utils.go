@@ -1,4 +1,4 @@
-package main
+package truco
 
 var (
 	oops = false

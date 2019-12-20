@@ -1,4 +1,4 @@
-package main
+package truco
 
 // EstadoEnvido : enum
 type EstadoEnvido int

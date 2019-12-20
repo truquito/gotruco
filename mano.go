@@ -1,4 +1,4 @@
-package main
+package truco
 
 // Resultado : Enum para el resultado de toda mano
 type Resultado int
