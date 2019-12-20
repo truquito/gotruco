@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	muestra2 = Carta{
+	CincoDeCopa = Carta{
 		Palo:  Copa,
 		Valor: 5,
 	}
@@ -33,7 +33,40 @@ var (
 	}
 )
 
-func TestFlorI(t *testing.T) {
+func TestNoDeberiaTenerFlor(t *testing.T) {
+
+	juan := jugadores[0]
+	juan.manojo = &manojos2[0]
+	muestra := Carta{Palo: Copa, Valor: 5}
+	tieneFlor, _ := juan.manojo.tieneFlor(muestra)
+	oops = tieneFlor == true
+	if oops {
+		t.Error(`Juan' NO deberia de tener 'flor'`)
+		return
+	}
+
+}
+
+func TestDeberiaTenerFlor(t *testing.T) {
+	juan := jugadores[0]
+	juan.manojo = &Manojo{
+		Cartas: [3]Carta{
+			Carta{Palo: Copa, Valor: 4},
+			Carta{Palo: Espada, Valor: 10},
+			Carta{Palo: Espada, Valor: 7},
+		},
+		jugador: nil,
+	}
+	muestra := Carta{Palo: Copa, Valor: 5}
+	tieneFlor, _ := juan.manojo.tieneFlor(muestra)
+	oops = tieneFlor == false
+	if oops {
+		t.Error(`Juan' Deberia de tener 'flor'`)
+		return
+	}
+}
+
+func TestJuanNoDeberiaTenerFlor(t *testing.T) {
 	p := Partida{
 		puntuacion:    a20,
 		puntaje:       0,
@@ -47,7 +80,7 @@ func TestFlorI(t *testing.T) {
 			truco:       NOCANTADO,
 			manojos:     manojos2,
 			manos:       make([]Mano, 3),
-			muestra:     muestra2,
+			muestra:     CincoDeCopa,
 		},
 	}
 
