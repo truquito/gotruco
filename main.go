@@ -8,8 +8,8 @@ import (
  *
  * ATENCION:
  * --------
- * NO OLVIDARSE DE SETEAR LA FLAG `debuggingMode` A 
- * FALSO CUANDO SE CORRA EL MAIN, PORQUE DE NO SER 
+ * NO OLVIDARSE DE SETEAR LA FLAG `debuggingMode` A
+ * FALSO CUANDO SE CORRA EL MAIN, PORQUE DE NO SER
  * ASI, EL PROGRAMA QUEDA ATRAPADO EN UN BUCLE
  * INFINITO USANDO EL 100% DEL CPU
  *
@@ -19,11 +19,11 @@ import (
 const debuggingMode = true
 
 func main() {
-	p := nuevaPartida()
+	p := nuevaPartida(a20, jugadores[:2])
 
 	// mientras no se haya acabado la partida; e.i.,
 	for p.getMaxPuntaje() < p.puntuacion.toInt() {
-		p.nuevaRonda()
+		p.ronda = nuevaRonda(p.cantJugadores)
 		p.ronda.Print()
 		// checkeo correspondiente unicamente a la `primera` `mano`
 		p.ronda.checkFlorDelMano()
