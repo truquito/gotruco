@@ -1,7 +1,9 @@
 package truco
 
 import (
+	"bufio"
 	"fmt"
+	"os"
 )
 
 /**
@@ -18,7 +20,7 @@ import (
 // debuggin flag
 const debuggingMode = true
 
-func main() {
+func mainVIEJO() {
 	p := nuevaPartida(a20, jugadores[:2])
 
 	// mientras no se haya acabado la partida; e.i.,
@@ -30,10 +32,27 @@ func main() {
 		// mientras no se haya acabado la ronda actual; e.i.:
 
 		for p.ronda.enJuego() {
-			p.esperandoJugada()
+			// p.readLnJugada()
 		}
 	}
 	// termina la primera mano -> ya no es posible el envido
 	p.ronda.envido.deshabilitar()
 	fmt.Println("BYE BYE")
+}
+
+func main() {
+
+	p := nuevaPartida(a20, jugadores[:2])
+
+	for p.noAcabada() {
+
+		imprimirJugadas()
+		reader := bufio.NewReader(os.Stdin)
+
+		fmt.Printf("\nIngresar comando:\n")
+		cmd, _ := reader.ReadString('\n')
+
+		p.setSigJugada(cmd)
+	}
+
 }

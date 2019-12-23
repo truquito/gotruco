@@ -28,7 +28,7 @@ func (jugada tocarEnvido) hacer(p *Partida, j *Jugador) error {
 	e.cantadoPor = j
 	fmt.Printf(">> %s toca envido\n", j.nombre)
 	// ahora checkeo si alguien tiene flor
-	hayFlor, jFlor, _ := p.ronda.checkFlores(p.ronda.turno)
+	hayFlor, jFlor := p.ronda.checkFlores(p.ronda.turno)
 	if hayFlor {
 		p.ronda.envido.estado = DESHABILITADO
 		p.ronda.flor = FLOR
@@ -36,10 +36,10 @@ func (jugada tocarEnvido) hacer(p *Partida, j *Jugador) error {
 		// Cuando se termine de jugar la flor,
 		// se reestablece a este.
 		cacheTurnoEnvido := p.ronda.turno
-		nuevoTurnoFlor, _ := obtenerIdx(jFlor, p.jugadores)
+		nuevoTurnoFlor, _ := obtenerIdx(jFlor[0], p.jugadores)
 		p.ronda.turno = nuevoTurnoFlor
 		siguienteJugada := cantarFlor{}
-		siguienteJugada.hacer(p, jFlor)
+		siguienteJugada.hacer(p, jFlor[0])
 		// una vez terminada, vuelve el turno al del envido
 		p.ronda.turno = cacheTurnoEnvido
 	} else {
@@ -54,7 +54,7 @@ func (jugada tocarEnvido) hacer(p *Partida, j *Jugador) error {
 		}
 		// esperando respuestas
 		cacheTurnoEnvido := p.ronda.turno
-		p.esperandoJugada() // se juega la respuesta
+		p.readLnJugada() // se juega la respuesta
 		p.ronda.turno = cacheTurnoEnvido
 	}
 
@@ -87,7 +87,7 @@ func (jugada tocarRealEnvido) hacer(p *Partida, j *Jugador) error {
 		e.cantadoPor = j
 		fmt.Printf(">> %s toca real envido\n", j.nombre)
 		// ahora checkeo si alguien tiene flor
-		hayFlor, jFlor, _ := p.ronda.checkFlores(p.ronda.turno)
+		hayFlor, jFlor := p.ronda.checkFlores(p.ronda.turno)
 		if hayFlor {
 			p.ronda.envido.estado = DESHABILITADO
 			p.ronda.flor = FLOR
@@ -95,10 +95,10 @@ func (jugada tocarRealEnvido) hacer(p *Partida, j *Jugador) error {
 			// Cuando se termine de jugar la flor,
 			// se reestablece a este.
 			cacheTurnoEnvido := p.ronda.turno
-			nuevoTurnoFlor, _ := obtenerIdx(jFlor, p.jugadores)
+			nuevoTurnoFlor, _ := obtenerIdx(jFlor[0], p.jugadores)
 			p.ronda.turno = nuevoTurnoFlor
 			siguienteJugada := cantarFlor{}
-			siguienteJugada.hacer(p, jFlor)
+			siguienteJugada.hacer(p, jFlor[0])
 			// una vez terminada, vuelve el turno al del envido
 			p.ronda.turno = cacheTurnoEnvido
 		} else {
@@ -114,7 +114,7 @@ func (jugada tocarRealEnvido) hacer(p *Partida, j *Jugador) error {
 			}
 			// esperando respuestas
 			cacheTurnoEnvido := p.ronda.turno
-			p.esperandoJugada() // se juega la respuesta
+			p.readLnJugada() // se juega la respuesta
 			p.ronda.turno = cacheTurnoEnvido
 		}
 	}
@@ -137,7 +137,7 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida, j *Jugador) error {
 		e.cantadoPor = j
 		fmt.Printf(">> %s toca falta envido\n", j.nombre)
 		// ahora checkeo si alguien tiene flor
-		hayFlor, jFlor, _ := p.ronda.checkFlores(p.ronda.turno)
+		hayFlor, jFlor := p.ronda.checkFlores(p.ronda.turno)
 		if hayFlor {
 			p.ronda.envido.estado = DESHABILITADO
 			p.ronda.flor = FLOR
@@ -145,16 +145,16 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida, j *Jugador) error {
 			// Cuando se termine de jugar la flor,
 			// se reestablece a este.
 			cacheTurnoEnvido := p.ronda.turno
-			nuevoTurnoFlor, _ := obtenerIdx(jFlor, p.jugadores)
+			nuevoTurnoFlor, _ := obtenerIdx(jFlor[0], p.jugadores)
 			p.ronda.turno = nuevoTurnoFlor
 			siguienteJugada := cantarFlor{}
-			siguienteJugada.hacer(p, jFlor)
+			siguienteJugada.hacer(p, jFlor[0])
 			// una vez terminada, vuelve el turno al del envido
 			p.ronda.turno = cacheTurnoEnvido
 		} else {
 			// esperando respuestas
 			cacheTurnoEnvido := p.ronda.turno
-			p.esperandoJugada() // se juega la respuesta
+			p.readLnJugada() // se juega la respuesta
 			p.ronda.turno = cacheTurnoEnvido
 		}
 	}
@@ -214,48 +214,96 @@ func (jugada tocarFaltaEnvido) eval(p *Partida, j *Jugador) error {
 type cantarFlor struct{}
 
 func (jugada cantarFlor) hacer(p *Partida, j *Jugador) error {
-	/*
-		florHabilitada := p.ronda.flor == NOCANTADA || p.ronda.flor == FLOR
-		tieneFlor, _ := j.manojo.tieneFlor(p.ronda.muestra)
-		ok := envidoHabilitado && florHabilitada && tieneFlor
-		if !ok {
-			return fmt.Errorf(`No es posible cantar flor`)
-		}
-		// e.cantadoPor = j
-		fmt.Printf(">> %s canta flor\n", j.nombre)
-		p.ronda.envido.estado = DESHABILITADO
-		p.ronda.flor = FLOR
-		// ahora checkeo si alguien tiene flor
-		if hayFlor {
-			p.ronda.envido.estado = DESHABILITADO
-			p.ronda.flor = FLOR
-			// Se cachea turno actual (del envido).
-			// Cuando se termine de jugar la flor,
-			// se reestablece a este.
-			cacheTurnoEnvido := p.ronda.turno
-			nuevoTurnoFlor, _ := obtenerIdx(jFlor, p.jugadores)
-			p.ronda.turno = nuevoTurnoFlor
-			siguienteJugada := cantarFlor{}
-			siguienteJugada.hacer(p, jFlor)
-			// una vez terminada, vuelve el turno al del envido
-			p.ronda.turno = cacheTurnoEnvido
-		} else {
-			// 2 opciones: o bien no se jugo aun
-			// o bien ya estabamos en envido
-			if e.estado == ENVIDO {
-				// se aumenta el puntaje del envido en +2
-				e.puntaje += 2
-			} else if e.estado == NOCANTADOAUN { // no se habia jugado aun
-				e.estado = ENVIDO
-				e.puntaje = 2
+	// j dice que puede cantar flor;
+	// es esto verdad?
+	florHabilitada := (p.ronda.flor == NOCANTADA || p.ronda.flor == FLOR) && p.ronda.manoEnJuego == primera
+	tieneFlor, _ := j.manojo.tieneFlor(p.ronda.muestra)
+	ok := florHabilitada && tieneFlor
+	if !ok {
+		return fmt.Errorf(`No es posible cantar flor`)
+	}
+	// todo: en ningun momento se usa la variable cantadoPor
+	// solo se setea
+	// e.cantadoPor = j
+	fmt.Printf(">> %s canta flor\n", j.nombre)
+	p.ronda.envido.estado = DESHABILITADO
+	p.ronda.flor = FLOR
+	// ahora checkeo si alguien tiene flor
+	// retorna los jugadores que tengan flor (si es que existen)
+	aPartirDe, _ := obtenerIdx(j, p.jugadores)
+	hayFlor, jugadoresConFlor := p.ronda.checkFlores(aPartirDe)
+	if hayFlor {
+		// entonces tengo que esperar respuesta SOLO de alguno de ellos;
+		// a menos de un "Me voy al mazo; esa tambien es aceptada"
+		// las otras las descarto
+		// si no recibo respuesta en menos de x tiempo la canto yo
+		// por ellos
+
+		// Se cachea turno actual (del que canto flor).
+		// Cuando se termine de jugar la flor,
+		// se reestablece a este.
+		cacheTurnoFlor := p.ronda.turno
+
+		// esto de los turnos es al pedo
+		// ahora deberia de hacerce con los checkers
+		nuevoTurnoFlor, _ := obtenerIdx(jugadoresConFlor[0], p.jugadores)
+		p.ronda.turno = nuevoTurnoFlor
+
+		todosLosJugadoresConFlorCantaron := false
+		for !todosLosJugadoresConFlorCantaron {
+
+			jugada, jugador := p.getSigJugada()
+			esAlguienDelQueEspero := contains(jugadoresConFlor, jugador)
+			_, esMeVoyAlMazo := jugada.(irseAlMazo)
+			esCantoFlor := esCantoFlor(jugada)
+
+			noEsUnaJugadaEsperadaDeAlguienQueNoEspero := !esAlguienDelQueEspero && !esMeVoyAlMazo
+			noEsUnaJugadaEsperadaDeAlguienQueEspero := esAlguienDelQueEspero && !(esCantoFlor || esMeVoyAlMazo)
+			noEsValida := noEsUnaJugadaEsperadaDeAlguienQueNoEspero || noEsUnaJugadaEsperadaDeAlguienQueEspero
+
+			if noEsValida {
+				// no deberia de salir de este loop
+				// pero solo responderle al loco (?)
+				return fmt.Errorf(`No es el momento de realizar
+					esta jugada; ahora estoy esperando por cantos de flor (de
+					aquellos que la poseen) o bien "Irse al mazo" (de cualquier jugador)`)
+
 			}
-			// esperando respuestas
-			cacheTurnoEnvido := p.ronda.turno
-			p.esperandoJugada() // se juega la respuesta
-			p.ronda.turno = cacheTurnoEnvido
+
+			// solo queda 3 casos posibles:
+			// CASO I: 	esEsperado & esFlor
+			// CASO II:	esEsperado & esMazo
+			// CASO III: 	!esEsperado & esMazo
+
+			if esAlguienDelQueEspero {
+				// lo descuento de los esperados
+				jugadoresConFlor := eliminar(jugadoresConFlor, jugador)
+				// era el ultimo que del que me faltaba escuchar?
+				// y por ende -> fin del bucle ?
+				todosLosJugadoresConFlorCantaron = len(jugadoresConFlor) == 0
+			}
+
+			// la ejecuto porque por descarte ya se que es valida
+			jugada.hacer(p, jugador)
+
 		}
-	*/
+
+		// una vez terminada, vuelve el turno al del envido
+		p.ronda.turno = cacheTurnoFlor
+
+		return nil
+
+	}
+
+	//else {
+	// Nadie mas tiene flor; entonces j se lleva todos
+	// los puntos en juego (+3)
+	p.puntajes[j.equipo] += 3
+	fmt.Printf(`>> +%v puntos para el equipo %s`+"\n",
+		3, j.equipo)
 	return nil
+	//}
+
 }
 
 type cantarContraFlor struct{}
@@ -268,6 +316,23 @@ type cantarContraFlorAlResto struct{}
 
 func (jugada cantarContraFlorAlResto) hacer(p *Partida, j *Jugador) error {
 	return nil
+}
+
+type cantarConFlorMeAchico struct{}
+
+func (jugada cantarConFlorMeAchico) hacer(p *Partida, j *Jugador) error {
+	return nil
+}
+
+func esCantoFlor(jugada IJugada) bool {
+	var esCantoFlor bool = false
+	switch jugada.(type) {
+	case cantarFlor, cantarContraFlor, cantarContraFlorAlResto, cantarConFlorMeAchico:
+		esCantoFlor = true
+	default:
+		esCantoFlor = false
+	}
+	return esCantoFlor
 }
 
 type gritarTruco struct{}
@@ -315,7 +380,9 @@ func (jugada responderQuiero) hacer(p *Partida, j *Jugador) error {
 	}
 
 	// si no, esta respondiendo al pedo
-	return fmt.Errorf("El estado del envido deberia de ser `envido`")
+	return fmt.Errorf(`No hay nada \"que querer\"; ya que: el 
+	estado del envido no es "envido" (o mayor) y el estado del 
+	truco no es "truco" (o mayor)`)
 }
 
 type responderNoQuiero struct{}
@@ -406,6 +473,7 @@ var jugadas = map[string]([]string){
 		"Flor",                 // 2pts (tanto o el-primero)
 		"Contra flor",          // 3 pts
 		"Contra flor al resto", // 4 pts
+		"Con flor me achico",   // 4 pts
 	},
 	"Respuestas": []string{
 		"Quiero",

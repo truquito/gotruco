@@ -56,15 +56,17 @@ func (r Ronda) cantarFloresSiLasHay(aPartirDe JugadorIdx) {
 	}
 }
 
+// retorna todos los jugadores que tienen flor
 func (r Ronda) checkFlores(aPartirDe JugadorIdx) (hayFlor bool,
-	jugador *Jugador, tipoFlor int) {
+	jugadoresConFlor []*Jugador) {
 	for _, manojo := range r.manojos[aPartirDe+1:] {
-		tieneFlor, tipoFlor := manojo.tieneFlor(r.muestra)
+		tieneFlor, _ := manojo.tieneFlor(r.muestra)
 		if tieneFlor {
-			return true, manojo.jugador, tipoFlor
+			jugadoresConFlor = append(jugadoresConFlor, manojo.jugador)
 		}
 	}
-	return false, nil, 0
+	hayFlor = len(jugadoresConFlor) > 0
+	return hayFlor, jugadoresConFlor
 }
 
 func (r Ronda) getElMano() *Manojo {

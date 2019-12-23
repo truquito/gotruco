@@ -2,22 +2,42 @@ package truco
 
 import (
 	"fmt"
+	"reflect"
 )
 
-func contains(s []int, e int) bool {
-	for _, a := range s {
-		if a == e {
+func contains(slice interface{}, item interface{}) bool {
+	s := reflect.ValueOf(slice)
+
+	if s.Kind() != reflect.Slice {
+		panic("Invalid data-type")
+	}
+
+	for i := 0; i < s.Len(); i++ {
+		if s.Index(i).Interface() == item {
 			return true
 		}
 	}
+
 	return false
+}
+
+func eliminar(jugadores []*Jugador, jugador *Jugador) []*Jugador {
+	var i int
+	// primero encuentro el elemento
+	for i = range jugadores {
+		if jugadores[i] == jugador {
+			break
+		}
+	}
+	jugadores[i] = jugadores[len(jugadores)-1] // Copy last element to index i.
+	return jugadores[:len(jugadores)-1]        // Truncate slice.
 }
 
 func maxOf3(cartas [3]Carta) int {
 	max := 0
 	for _, carta := range cartas {
 		if carta.Valor > max {
-			max = int(carta.Valor)			
+			max = int(carta.Valor)
 		}
 	}
 	return max
@@ -41,8 +61,8 @@ func abs(x int) int {
 }
 
 // todo: esto es ineficiente
-// decodeJugador devuelve el puntero al jugador, dado un string que los identifique
-func decodeJugador(codigoJugador string, jugadores []Jugador) (*Jugador, error) {
+// parseJugador devuelve el puntero al jugador, dado un string que los identifique
+func parseJugador(codigoJugador string, jugadores []Jugador) (*Jugador, error) {
 	for i := range jugadores {
 		if jugadores[i].nombre == codigoJugador {
 			return &jugadores[i], nil
@@ -72,7 +92,7 @@ func complemento(x int) (p, q int) {
 	case 1:
 		return 0, 2
 	default: // x == 2
-		return 0, 1	
+		return 0, 1
 	}
 }
 
@@ -85,6 +105,7 @@ func leGanaDeMano(i, j, mano JugadorIdx, cantJugadores int) bool {
 	q := cv(j, mano, cantJugadores)
 	return p < q
 }
+
 // ver documentacion cambio de variable
 func cv(x, mano JugadorIdx, cantJugadores int) (y JugadorIdx) {
 	if x >= mano {

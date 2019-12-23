@@ -7,8 +7,10 @@ var (
 
 	// jugadores clasicos
 	jugadores = []Jugador{
+		// 2 jugadores
 		Jugador{"Juan", Rojo, nil},
 		Jugador{"Pedro", Azul, nil},
+		// 4 jugadores
 		Jugador{"Jacinto", Rojo, nil},
 		Jugador{"Patricio", Azul, nil},
 		// 6 jugadores

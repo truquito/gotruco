@@ -1,10 +1,6 @@
 package truco
 
-import (
-	"bufio"
-	"fmt"
-	"os"
-)
+import "strings"
 
 // Puntuacion : Enum para el puntaje maximo de la partida
 type Puntuacion int
@@ -51,28 +47,32 @@ type Partida struct {
 	puntaje       int
 	puntajes      [2]int // Rojo o Azul
 	ronda         Ronda
+
+	sigJugada chan string
 }
 
-func (p *Partida) esperandoJugada() {
-	if debuggingMode {
-		return
-	}
-
-	imprimirJugadas()
-	reader := bufio.NewReader(os.Stdin)
-
-	fmt.Printf("\nIngresar jugador:\n")
-	jugadorStr, _ := reader.ReadString('\n')
-	jugador, _ := decodeJugador(jugadorStr, p.jugadores)
-
-	fmt.Printf("\nIngresar jugada:\n")
-	jugadaStr, _ := reader.ReadString('\n')
-
-	p.procesarJugada(jugador, jugadaStr)
+func (p *Partida) readLnJugada() error {
+	return nil
 }
 
-func (p *Partida) procesarJugada(jugador *Jugador, jugadaStr string) {
-	var jugada IJugada
+// nexo capa presentacion con capa logica
+func (p *Partida) setSigJugada(cmd string) {
+	p.sigJugada <- cmd
+}
+
+func (p *Partida) getSigJugada() (IJugada, *Jugador) {
+	cmd := <-p.sigJugada
+	params := strings.Fields(cmd)
+	jugadaStr, jugadorStr := params[1], params[0]
+	return p.parseJugada(jugadorStr, jugadaStr)
+
+}
+
+func (p *Partida) parseJugada(jugadorStr string, jugadaStr string) (IJugada, *Jugador) {
+	var (
+		jugador, _ = parseJugador(jugadorStr, p.jugadores)
+		jugada     IJugada
+	)
 
 	switch jugadaStr {
 	// toques
@@ -85,11 +85,11 @@ func (p *Partida) procesarJugada(jugador *Jugador, jugadaStr string) {
 
 	// cantos
 	case "Flor":
-		jugada = tocarEnvido{}
+		jugada = cantarFlor{}
 	case "Contra-flor":
-		jugada = tocarRealEnvido{}
+		jugada = cantarContraFlor{}
 	case "Contra-flor-al-resto":
-		jugada = tocarFaltaEnvido{}
+		jugada = cantarContraFlorAlResto{}
 
 	// gritos
 	case "Truco":
@@ -114,7 +114,7 @@ func (p *Partida) procesarJugada(jugador *Jugador, jugadaStr string) {
 		panic("lols")
 	}
 
-	jugada.hacer(p, jugador)
+	return jugada, jugador
 }
 
 func (p *Partida) dobleLinking() {
@@ -154,6 +154,11 @@ func (p *Partida) sig(j JugadorIdx) JugadorIdx {
 	return j + 1
 }
 
+// retorna true si la partida acabo
+func (p *Partida) noAcabada() bool {
+	return p.getMaxPuntaje() < p.puntuacion.toInt()
+}
+
 func nuevaPartida(puntuacion Puntuacion, jugadores []Jugador) *Partida {
 	partida := Partida{
 		puntuacion:    puntuacion,
@@ -165,6 +170,7 @@ func nuevaPartida(puntuacion Puntuacion, jugadores []Jugador) *Partida {
 			elMano:      0,
 			turno:       0,
 			envido:      Envido{puntaje: 0, estado: NOCANTADOAUN},
+			flor:        NOCANTADA,
 			truco:       NOCANTADO,
 			manojos:     manojos[:2],
 			manos:       make([]Mano, 3),
@@ -175,6 +181,8 @@ func nuevaPartida(puntuacion Puntuacion, jugadores []Jugador) *Partida {
 	partida.puntajes[Azul] = 0
 
 	partida.dobleLinking()
+
+	partida.sigJugada = make(chan string, 1)
 
 	return &partida
 }
