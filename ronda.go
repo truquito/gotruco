@@ -56,10 +56,11 @@ func (r Ronda) cantarFloresSiLasHay(aPartirDe JugadorIdx) {
 	}
 }
 
+// todo: que pasa si el apartirde es el ultimo jugador? -> se muere el programa?
 // retorna todos los jugadores que tienen flor
-func (r Ronda) checkFlores(aPartirDe JugadorIdx) (hayFlor bool,
+func (r Ronda) checkFlores() (hayFlor bool,
 	jugadoresConFlor []*Jugador) {
-	for _, manojo := range r.manojos[aPartirDe+1:] {
+	for _, manojo := range r.manojos {
 		tieneFlor, _ := manojo.tieneFlor(r.muestra)
 		if tieneFlor {
 			jugadoresConFlor = append(jugadoresConFlor, manojo.jugador)
@@ -119,6 +120,24 @@ func (r *Ronda) sig(j JugadorIdx) JugadorIdx {
 		return 0
 	}
 	return j + 1
+}
+
+// retorna el manojo con la flor mas alta en la ronda
+// y su valor
+// pre-requisito: hay flor en la ronda
+func (r *Ronda) getLaFlorMasAlta() (*Manojo, int) {
+	var (
+		maxFlor     = -1
+		maxIdx  int = -1
+	)
+	for i := range r.manojos {
+		valorFlor, _ := r.manojos[i].calcFlor(r.muestra)
+		if valorFlor > maxFlor {
+			maxFlor = valorFlor
+			maxIdx = i
+		}
+	}
+	return &r.manojos[maxIdx], maxFlor
 }
 
 /**
