@@ -34,8 +34,9 @@ type EstadoFlor int
 
 // enums de la flor
 const (
-	NOCANTADA         EstadoFlor = 0
-	FLOR              EstadoFlor = 1
-	CONTRAFLOR        EstadoFlor = 2
-	CONTRAFLORALRESTO EstadoFlor = 3
+	DESHABILITADA     EstadoFlor = 0
+	NOCANTADA         EstadoFlor = 1
+	FLOR              EstadoFlor = 2
+	CONTRAFLOR        EstadoFlor = 3
+	CONTRAFLORALRESTO EstadoFlor = 4
 )
