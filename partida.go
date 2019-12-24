@@ -159,6 +159,42 @@ func (p *Partida) noAcabada() bool {
 	return p.getMaxPuntaje() < p.puntuacion.toInt()
 }
 
+func (p *Partida) elChico() int {
+	return p.puntuacion.toInt() / 2
+}
+
+// retorna true si `e` esta en malas
+func (p *Partida) estaEnMalas(e Equipo) bool {
+	return p.puntajes[e] < p.elChico()
+}
+
+// retorna el equipo que va ganando
+func (p *Partida) elQueVaGanando() Equipo {
+	vaGanandoRojo := p.puntajes[Rojo] > p.puntajes[Azul]
+	if vaGanandoRojo {
+		return Rojo
+	}
+	return Azul
+}
+
+// retorna la cantidad de puntos que le corresponderian
+// a `ganadorDelEnvite` si hubiese ganado un "Contra flor al resto"
+// sin tener en cuenta los puntos acumulados de envites anteriores
+func (p *Partida) calcPtsContraFlorAlResto(ganadorDelEnvite Equipo) int {
+	// si el que va ganando:
+	// 		esta en Malas -> el ganador del envite (`ganadorDelEnvite`) gana el chico
+	// 		esta en Buenas -> el ganador del envite (`ganadorDelEnvite`) gana lo que le falta al maximo para ganar la ronda
+
+	if p.estaEnMalas(p.elQueVaGanando()) {
+		loQueLeFaltaAlGANADORparaGanarElChico := p.elChico() - p.puntajes[ganadorDelEnvite]
+		return loQueLeFaltaAlGANADORparaGanarElChico
+	} else {
+		loQueLeFaltaAlQUEvaGANANDOparaGanarElChico := p.puntuacion.toInt() - p.puntajes[p.elQueVaGanando()]
+		return loQueLeFaltaAlQUEvaGANANDOparaGanarElChico
+	}
+
+}
+
 func nuevaPartida(puntuacion Puntuacion, jugadores []Jugador) *Partida {
 	partida := Partida{
 		puntuacion:    puntuacion,
