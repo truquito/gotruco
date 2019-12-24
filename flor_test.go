@@ -185,11 +185,15 @@ func TestFlor(t *testing.T) {
 		}
 	}()
 
+	// fin capa logica/privada -----------------------
+
 	p.setSigJugada("Juan Flor")
 	p.setSigJugada("Pedro Mazo")
 	// p.setSigJugada("Pedro Mazo") // test 2 vecees se va al mazo
 	// p.setSigJugada("Pedro Mazo") // test despues de irse al mazo manda flor o algo asi
 	p.setSigJugada("Patricio Flor")
+	p.setSigJugada("Jacinto Contra-flor-al-resto")
+	p.setSigJugada("Paco Quiero")
 
 	var wg sync.WaitGroup
 	wg.Add(1)
