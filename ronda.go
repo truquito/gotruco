@@ -102,13 +102,12 @@ func (r Ronda) setTurno() {
 func (r Ronda) Print() {
 	for i := range r.manojos {
 		r.manojos[i].jugador.Print()
+		r.manojos[i].Print()
 	}
 
 	fmt.Printf("Y la muestra es\n    - %s\n", r.muestra.toString())
 	fmt.Printf("\nEl mano actual es: %s\nEs el turno de %s\n\n",
 		r.getElMano().getPerfil().nombre, r.getElTurno().getPerfil().nombre)
-
-	imprimirJugadas()
 }
 
 // sig devuelve el `JugadorIdx` del
@@ -209,7 +208,7 @@ func (r *Ronda) getElEnvido() (jIdx JugadorIdx,
 	// termina el bucle cuando se haya dado
 	// "una vuelta completa" de:mano+1 hasta:mano
 	// ergo, cuando se "resetea" el iterador,
-	// se setea a `p.ronda.elMano + 1`
+	// se setea a `p.Ronda.elMano + 1`
 	for i != r.elMano {
 		todaviaEsTenidoEnCuenta := !yaDijeron[i]
 		if todaviaEsTenidoEnCuenta {
@@ -270,31 +269,33 @@ func (r *Ronda) getElEnvido() (jIdx JugadorIdx,
 }
 
 // nuevaRonda : crea una nueva ronda al azar
-func nuevaRonda(cantJugadores int) Ronda {
+func nuevaRonda(jugadores []Jugador) Ronda {
+	cantJugadores := len(jugadores)
 	ronda := Ronda{
 		manoEnJuego: primera,
 		elMano:      0,
 		turno:       0,
 		envido:      Envido{puntaje: 0, estado: NOCANTADOAUN},
+		flor:        NOCANTADA,
 		truco:       NOCANTADO,
 		manojos:     make([]Manojo, cantJugadores),
 		manos:       make([]Mano, 3),
+		// muestra:     ,
 	}
 
 	// reparto 3 cartas al azar a cada jugador
 	// y ademas una muestra, tambien al azar.
 	dealCards(&ronda.manojos, &ronda.muestra)
 
-	// hago el doble-linking "jugadores <-> manojos"
+	// // hago el SINGLE-linking "jugadores <- manojos"
 	for i := 0; i < cantJugadores; i++ {
-		jugadores[i].manojo = &ronda.manojos[i]
 		ronda.manojos[i].jugador = &jugadores[i]
 	}
 
 	// seteo el repartidor de la primera mano como
 	// el mano de la ronda (segun las reglas)
 	ronda.getManoActual().repartidor = ronda.elMano
-	// p.ronda.setTurno()
+	// p.Ronda.setTurno()
 
 	return ronda
 }

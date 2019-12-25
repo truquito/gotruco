@@ -193,7 +193,7 @@ var (
 		cantJugadores: 4,
 		jugadores:     jugadores[:4],
 		puntajes:      [2]int{4, 3},
-		ronda: Ronda{
+		Ronda: Ronda{
 			manoEnJuego: primera,
 			elMano:      2,
 			turno:       2,
@@ -210,7 +210,7 @@ var (
 		cantJugadores: 6,
 		jugadores:     jugadoresYT[:6],
 		puntajes:      [2]int{4, 3},
-		ronda: Ronda{
+		Ronda: Ronda{
 			manoEnJuego: primera,
 			elMano:      0,
 			turno:       0,
@@ -227,7 +227,7 @@ var (
 		cantJugadores: 6,
 		jugadores:     jugadoresYT[:6],
 		puntajes:      [2]int{4, 3},
-		ronda: Ronda{
+		Ronda: Ronda{
 			manoEnJuego: primera,
 			elMano:      0,
 			turno:       0,
@@ -246,7 +246,7 @@ func getPartidaCustom1() Partida {
 		puntaje:       0,
 		cantJugadores: 2,
 		jugadores:     jugadores[:2],
-		ronda: Ronda{
+		Ronda: Ronda{
 			manoEnJuego: primera,
 			elMano:      0,
 			turno:       0,
@@ -258,6 +258,6 @@ func getPartidaCustom1() Partida {
 		},
 	}
 	p.dobleLinking()
-	p.ronda.getManoActual().repartidor = p.ronda.elMano
+	p.Ronda.getManoActual().repartidor = p.Ronda.elMano
 	return p
 }

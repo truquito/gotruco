@@ -1,6 +1,9 @@
 package truco
 
-import "strings"
+import (
+	"fmt"
+	"strings"
+)
 
 // Puntuacion : Enum para el puntaje maximo de la partida
 type Puntuacion int
@@ -46,7 +49,7 @@ type Partida struct {
 	puntuacion    Puntuacion
 	puntaje       int
 	puntajes      [2]int // Rojo o Azul
-	ronda         Ronda
+	Ronda         Ronda
 
 	sigJugada chan string
 }
@@ -56,8 +59,9 @@ func (p *Partida) readLnJugada() error {
 }
 
 // nexo capa presentacion con capa logica
-func (p *Partida) setSigJugada(cmd string) {
+func (p *Partida) SetSigJugada(cmd string) string {
 	p.sigJugada <- cmd
+	return "registrada"
 }
 
 func (p *Partida) getSigJugada() (IJugada, *Jugador) {
@@ -120,8 +124,8 @@ func (p *Partida) parseJugada(jugadorStr string, jugadaStr string) (IJugada, *Ju
 func (p *Partida) dobleLinking() {
 	// hago el doble-linking "jugadores <-> manojos"
 	for i := 0; i < p.cantJugadores; i++ {
-		p.jugadores[i].manojo = &p.ronda.manojos[i]
-		p.ronda.manojos[i].jugador = &p.jugadores[i]
+		p.jugadores[i].manojo = &p.Ronda.manojos[i]
+		p.Ronda.manojos[i].jugador = &p.jugadores[i]
 	}
 }
 
@@ -155,7 +159,7 @@ func (p *Partida) sig(j JugadorIdx) JugadorIdx {
 }
 
 // retorna true si la partida acabo
-func (p *Partida) noAcabada() bool {
+func (p *Partida) NoAcabada() bool {
 	return p.getMaxPuntaje() < p.puntuacion.toInt()
 }
 
@@ -195,30 +199,46 @@ func (p *Partida) calcPtsContraFlorAlResto(ganadorDelEnvite Equipo) int {
 
 }
 
-func nuevaPartida(puntuacion Puntuacion, jugadores []Jugador) *Partida {
+func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Partida, error) {
+
+	mismaCantidadDeJugadores := len(equipoRojo) == len(equipoAzul)
+	cantJugadores := len(equipoRojo) + len(equipoAzul)
+	cantidadCorrecta := contains([]int{2, 4, 6}, cantJugadores) // puede ser 2, 4 o 6
+	ok := mismaCantidadDeJugadores && cantidadCorrecta
+	if !ok {
+		return nil, fmt.Errorf(`No es posible responderle a la propuesta de tu mismo equipo`)
+	}
+	// paso a crear los jugadores; intercalados
+	var jugadores []Jugador
+	// para cada rjo que agrego; le agrego tambien su mano
+	for i := range equipoRojo {
+		nuevoJugadorRojo := Jugador{equipoRojo[i], Rojo, nil}
+		nuevoJugadorAzul := Jugador{equipoAzul[i], Azul, nil}
+		jugadores = append(jugadores, nuevoJugadorAzul, nuevoJugadorRojo)
+	}
+
 	partida := Partida{
 		puntuacion:    puntuacion,
 		puntaje:       0,
-		cantJugadores: len(jugadores), // puede ser 2, 4 o 6
+		cantJugadores: cantJugadores,
 		jugadores:     jugadores,
-		ronda: Ronda{
-			manoEnJuego: primera,
-			elMano:      0,
-			turno:       0,
-			envido:      Envido{puntaje: 0, estado: NOCANTADOAUN},
-			flor:        NOCANTADA,
-			truco:       NOCANTADO,
-			manojos:     manojos[:2],
-			manos:       make([]Mano, 3),
-			muestra:     muestra,
-		},
 	}
+
 	partida.puntajes[Rojo] = 0
 	partida.puntajes[Azul] = 0
 
-	partida.dobleLinking()
+	//partida.dobleLinking()
+
+	partida.Ronda = nuevaRonda(partida.jugadores)
 
 	partida.sigJugada = make(chan string, 1)
 
-	return &partida
+	go func() {
+		for {
+			sjugada, sjugador := partida.getSigJugada()
+			sjugada.hacer(&partida, sjugador)
+		}
+	}()
+
+	return &partida, nil
 }

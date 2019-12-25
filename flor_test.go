@@ -73,7 +73,7 @@ func TestJuanNoDeberiaTenerFlor(t *testing.T) {
 		puntaje:       0,
 		cantJugadores: 2,
 		jugadores:     jugadores[:2],
-		ronda: Ronda{
+		Ronda: Ronda{
 			manoEnJuego: primera,
 			elMano:      0,
 			turno:       0,
@@ -86,13 +86,13 @@ func TestJuanNoDeberiaTenerFlor(t *testing.T) {
 	}
 
 	p.dobleLinking()
-	p.ronda.getManoActual().repartidor = p.ronda.elMano
+	p.Ronda.getManoActual().repartidor = p.Ronda.elMano
 
-	p.ronda.Print()
+	p.Ronda.Print()
 
 	// juan
 	juan := p.jugadores[0]
-	tieneFlor, _ := juan.manojo.tieneFlor(p.ronda.muestra)
+	tieneFlor, _ := juan.manojo.tieneFlor(p.Ronda.muestra)
 	oops = tieneFlor == true
 	if oops {
 		t.Error(`Juan' NO deberia de tener 'flor'`)
@@ -108,7 +108,7 @@ func TestFlor(t *testing.T) {
 		puntaje:       0,
 		cantJugadores: 6, // puede ser 2, 4 o 6
 		jugadores:     jugadores,
-		ronda: Ronda{
+		Ronda: Ronda{
 			manoEnJuego: primera,
 			elMano:      0,
 			turno:       0,
@@ -176,7 +176,7 @@ func TestFlor(t *testing.T) {
 
 	p.sigJugada = make(chan string, 1)
 
-	imprimirJugadas()
+	ImprimirJugadas()
 
 	go func() {
 		for {
@@ -187,13 +187,13 @@ func TestFlor(t *testing.T) {
 
 	// fin capa logica/privada -----------------------
 
-	p.setSigJugada("Juan Flor")
-	p.setSigJugada("Pedro Mazo")
-	// p.setSigJugada("Pedro Mazo") // test 2 vecees se va al mazo
-	// p.setSigJugada("Pedro Mazo") // test despues de irse al mazo manda flor o algo asi
-	p.setSigJugada("Patricio Flor")
-	p.setSigJugada("Jacinto Contra-flor-al-resto")
-	p.setSigJugada("Paco Quiero")
+	p.SetSigJugada("Juan Flor")
+	p.SetSigJugada("Pedro Mazo")
+	// p.SetSigJugada("Pedro Mazo") // test 2 vecees se va al mazo
+	// p.SetSigJugada("Pedro Mazo") // test despues de irse al mazo manda flor o algo asi
+	p.SetSigJugada("Patricio Flor")
+	p.SetSigJugada("Jacinto Contra-flor-al-resto")
+	p.SetSigJugada("Paco Quiero")
 
 	var wg sync.WaitGroup
 	wg.Add(1)

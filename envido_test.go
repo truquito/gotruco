@@ -15,7 +15,7 @@ import (
 func TestTrucoFueraDeLugar(t *testing.T) {
 	p := getPartidaCustom1()
 
-	p.ronda.Print()
+	p.Ronda.Print()
 
 	// empieza primera ronda
 	// empieza primera mano
@@ -24,13 +24,13 @@ func TestTrucoFueraDeLugar(t *testing.T) {
 	jugada := tocarEnvido{}
 	jugada.hacer(&p, &p.jugadores[0])
 
-	oops = p.ronda.envido.estado != ENVIDO
+	oops = p.Ronda.envido.estado != ENVIDO
 	if oops {
 		t.Error("El estado del envido deberia de ser `envido`")
 		return
 	}
 
-	oops = p.ronda.envido.puntaje != 2
+	oops = p.Ronda.envido.puntaje != 2
 	if oops {
 		t.Error("El `puntaje` del envido deberia de ser 2")
 		return
@@ -46,7 +46,7 @@ func TestTrucoFueraDeLugar(t *testing.T) {
 // juan gana con 12 de envido vs 5 de pedro
 func TestEnvidoAceptado(t *testing.T) {
 	p := getPartidaCustom1()
-	p.ronda.Print()
+	p.Ronda.Print()
 
 	// empieza primera ronda
 	// empieza primera mano
@@ -55,13 +55,13 @@ func TestEnvidoAceptado(t *testing.T) {
 	jugada := tocarEnvido{}
 	jugada.hacer(&p, &p.jugadores[0])
 
-	oops = p.ronda.envido.estado != ENVIDO
+	oops = p.Ronda.envido.estado != ENVIDO
 	if oops {
 		t.Error("El estado del envido deberia de ser `envido`")
 		return
 	}
 
-	oops = p.ronda.envido.puntaje != 2
+	oops = p.Ronda.envido.puntaje != 2
 	if oops {
 		t.Error("El `puntaje` del envido deberia de ser 2")
 		return
@@ -70,14 +70,14 @@ func TestEnvidoAceptado(t *testing.T) {
 	// Pedro responde 'quiero'
 	responderQuiero{}.hacer(&p, &p.jugadores[1])
 
-	oops = p.ronda.envido.estado != DESHABILITADO
+	oops = p.Ronda.envido.estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado', 
 		ya que fue aceptado por Pedro`)
 		return
 	}
 
-	oops = p.ronda.envido.puntaje != 2
+	oops = p.Ronda.envido.puntaje != 2
 	if oops {
 		t.Error(`El puntaje del envido deberia de ser 2`)
 		return
@@ -91,7 +91,7 @@ func TestEnvidoAceptado(t *testing.T) {
 func TestDobleEnvido(t *testing.T) {
 	p := getPartidaCustom1()
 
-	p.ronda.Print()
+	p.Ronda.Print()
 
 	// empieza primera ronda
 	// empieza primera mano
@@ -100,13 +100,13 @@ func TestDobleEnvido(t *testing.T) {
 	jugada := tocarEnvido{}
 	jugada.hacer(&p, &p.jugadores[0])
 
-	oops = p.ronda.envido.estado != ENVIDO
+	oops = p.Ronda.envido.estado != ENVIDO
 	if oops {
 		t.Error("El estado del envido deberia de ser `envido`")
 		return
 	}
 
-	oops = p.ronda.envido.puntaje != 2
+	oops = p.Ronda.envido.puntaje != 2
 	if oops {
 		t.Error("El `puntaje` del envido deberia de ser 2")
 		return
@@ -115,14 +115,14 @@ func TestDobleEnvido(t *testing.T) {
 	// Pedro redobla el envido
 	tocarEnvido{}.hacer(&p, &p.jugadores[1])
 
-	oops = p.ronda.envido.estado != ENVIDO
+	oops = p.Ronda.envido.estado != ENVIDO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'envido', incluso luego de que
 		ambos Juan y Pedro lo hayan tocando`)
 		return
 	}
 
-	oops = p.ronda.envido.puntaje != 4
+	oops = p.Ronda.envido.puntaje != 4
 	if oops {
 		t.Error(`El puntaje del envido deberia ahora de ser '2 + 2 = 4'`)
 		return
@@ -138,7 +138,7 @@ func TestDobleEnvido(t *testing.T) {
 func TestDobleEnvidoNoAceptado(t *testing.T) {
 	p := getPartidaCustom1()
 
-	p.ronda.Print()
+	p.Ronda.Print()
 
 	// empieza primera ronda
 	// empieza primera mano
@@ -147,13 +147,13 @@ func TestDobleEnvidoNoAceptado(t *testing.T) {
 	jugada := tocarEnvido{}
 	jugada.hacer(&p, &p.jugadores[0])
 
-	oops = p.ronda.envido.estado != ENVIDO
+	oops = p.Ronda.envido.estado != ENVIDO
 	if oops {
 		t.Error("El estado del envido deberia de ser `envido`")
 		return
 	}
 
-	oops = p.ronda.envido.puntaje != 2
+	oops = p.Ronda.envido.puntaje != 2
 	if oops {
 		t.Error("El `puntaje` del envido deberia de ser 2")
 		return
@@ -162,14 +162,14 @@ func TestDobleEnvidoNoAceptado(t *testing.T) {
 	// Pedro redobla el envido
 	tocarEnvido{}.hacer(&p, &p.jugadores[1])
 
-	oops = p.ronda.envido.estado != ENVIDO
+	oops = p.Ronda.envido.estado != ENVIDO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'envido', incluso luego de que
 		ambos Juan y Pedro lo hayan tocando`)
 		return
 	}
 
-	oops = p.ronda.envido.puntaje != 4
+	oops = p.Ronda.envido.puntaje != 4
 	if oops {
 		t.Error(`El puntaje del envido deberia ahora de ser '2 + 2 = 4'`)
 		return
@@ -208,7 +208,7 @@ func TestDobleEnvidoNoAceptado(t *testing.T) {
 func inicializar() Partida {
 	p := partida4JugadoresEnvidoTesting
 	p.dobleLinking()
-	p.ronda.getManoActual().repartidor = p.ronda.elMano - 1
+	p.Ronda.getManoActual().repartidor = p.Ronda.elMano - 1
 	return p
 }
 
@@ -508,11 +508,11 @@ func TestXIRechazado(t *testing.T) {
 func TestYTEnvidoCalc(t *testing.T) {
 	p := partidaYT1
 	p.dobleLinking()
-	p.ronda.getManoActual().repartidor = 5
+	p.Ronda.getManoActual().repartidor = 5
 
 	expected := []int{26, 20, 28, 25, 33, 27}
 	for i, jugador := range p.jugadores {
-		got := jugador.manojo.calcularEnvido(p.ronda.muestra)
+		got := jugador.manojo.calcularEnvido(p.Ronda.muestra)
 		oops = expected[i] != got
 		if oops {
 			t.Errorf(
@@ -529,7 +529,7 @@ func TestYTEnvidoCalc(t *testing.T) {
 func TestYTEnvidoI(t *testing.T) {
 	p := partidaYT1
 	p.dobleLinking()
-	p.ronda.getManoActual().repartidor = 5
+	p.Ronda.getManoActual().repartidor = 5
 
 	tocarEnvido{}.hacer(&p, D)
 	responderQuiero{}.hacer(&p, C)
@@ -543,11 +543,11 @@ func TestYTEnvidoI(t *testing.T) {
 func TestYTEnvidoCalcII(t *testing.T) {
 	p := partidaYT2
 	p.dobleLinking()
-	p.ronda.getManoActual().repartidor = 5
+	p.Ronda.getManoActual().repartidor = 5
 
 	expected := []int{21, 23, 23, 30, 30, 31}
 	for i, jugador := range p.jugadores {
-		got := jugador.manojo.calcularEnvido(p.ronda.muestra)
+		got := jugador.manojo.calcularEnvido(p.Ronda.muestra)
 		oops = expected[i] != got
 		if oops {
 			t.Errorf(
@@ -563,7 +563,7 @@ func TestYTEnvidoCalcII(t *testing.T) {
 func TestYTEnvidoII(t *testing.T) {
 	p := partidaYT2
 	p.dobleLinking()
-	p.ronda.getManoActual().repartidor = 5
+	p.Ronda.getManoActual().repartidor = 5
 
 	tocarEnvido{}.hacer(&p, D)
 	responderQuiero{}.hacer(&p, C)

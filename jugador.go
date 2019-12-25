@@ -6,17 +6,18 @@ import (
 
 // JugadorIdx :
 type JugadorIdx int
+
 // Jugador :
-type Jugador struct{
-	nombre 	string
+type Jugador struct {
+	nombre string
 	// idx			JugadorIdx
-	equipo 	Equipo
-	manojo 	*Manojo
+	equipo Equipo
+	manojo *Manojo
 }
 
 // NuevoJugador : Retorna un nuevo jugador,
 // con manojo vacio
-func NuevoJugador(nombre string) *Jugador{
+func NuevoJugador(nombre string) *Jugador {
 	return &Jugador{
 		nombre: nombre,
 		manojo: nil,
@@ -26,6 +27,5 @@ func NuevoJugador(nombre string) *Jugador{
 // Print imprime la info de `jugador`
 // y su manojo
 func (jugador *Jugador) Print() {
-	fmt.Printf("Jugador %s tiene las cartas:\n", jugador.nombre)
-	jugador.manojo.Print()
+	fmt.Printf("%s:\n", jugador.nombre)
 }
