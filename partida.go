@@ -58,7 +58,7 @@ func (p *Partida) readLnJugada() error {
 	return nil
 }
 
-// nexo capa presentacion con capa logica
+// SetSigJugada nexo capa presentacion con capa logica
 func (p *Partida) SetSigJugada(cmd string) string {
 	p.sigJugada <- cmd
 	return "registrada"
@@ -158,7 +158,7 @@ func (p *Partida) sig(j JugadorIdx) JugadorIdx {
 	return j + 1
 }
 
-// retorna true si la partida acabo
+// NoAcabada retorna true si la partida acabo
 func (p *Partida) NoAcabada() bool {
 	return p.getMaxPuntaje() < p.puntuacion.toInt()
 }
@@ -192,13 +192,15 @@ func (p *Partida) calcPtsContraFlorAlResto(ganadorDelEnvite Equipo) int {
 	if p.estaEnMalas(p.elQueVaGanando()) {
 		loQueLeFaltaAlGANADORparaGanarElChico := p.elChico() - p.puntajes[ganadorDelEnvite]
 		return loQueLeFaltaAlGANADORparaGanarElChico
-	} else {
-		loQueLeFaltaAlQUEvaGANANDOparaGanarElChico := p.puntuacion.toInt() - p.puntajes[p.elQueVaGanando()]
-		return loQueLeFaltaAlQUEvaGANANDOparaGanarElChico
 	}
+	//else {
+	loQueLeFaltaAlQUEvaGANANDOparaGanarElChico := p.puntuacion.toInt() - p.puntajes[p.elQueVaGanando()]
+	return loQueLeFaltaAlQUEvaGANANDOparaGanarElChico
+	//}
 
 }
 
+// NuevaPartida retorna nueva partida; error si hubo
 func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Partida, error) {
 
 	mismaCantidadDeJugadores := len(equipoRojo) == len(equipoAzul)

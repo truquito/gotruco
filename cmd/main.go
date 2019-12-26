@@ -23,32 +23,12 @@ import (
 // debuggin flag
 // const debuggingMode = true
 
-// func mainVIEJO() {
-// 	p := nuevaPartida(a20, jugadores[:2])
-
-// 	// mientras no se haya acabado la partida; e.i.,
-// 	for p.getMaxPuntaje() < p.puntuacion.toInt() {
-// 		p.Ronda = nuevaRonda(p.jugadores)
-// 		p.Ronda.Print()
-// 		// checkeo correspondiente unicamente a la `primera` `mano`
-// 		p.Ronda.checkFlorDelMano()
-// 		// mientras no se haya acabado la ronda actual; e.i.:
-
-// 		for p.Ronda.enJuego() {
-// 			// p.readLnJugada()
-// 		}
-// 	}
-// 	// termina la primera mano -> ya no es posible el envido
-// 	p.Ronda.envido.deshabilitar()
-// 	fmt.Println("BYE BYE")
-// }
-
 func main() {
 
 	p, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andrés"}, []string{"Roro", "Renzo", "Richard"})
+	p.Ronda.Print()
 
 	for p.NoAcabada() {
-		p.Ronda.Print()
 
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Printf("\n**Ingresar comando: ")

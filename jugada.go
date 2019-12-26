@@ -615,6 +615,7 @@ var jugadas = map[string]([]string){
 	},
 }
 
+// ImprimirJugadas imprime las jugadas posibles
 func ImprimirJugadas() {
 	for tipoJugada, opciones := range jugadas {
 		fmt.Printf("%s: ", tipoJugada)

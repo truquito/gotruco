@@ -1,5 +1,20 @@
 package truco
 
+func getDefaultJugadores(cant int) []Jugador {
+	jugadores := []Jugador{
+		// 2 jugadores
+		Jugador{"Alvaro", Rojo, nil},
+		Jugador{"Roro", Azul, nil},
+		// 4 jugadores
+		Jugador{"Adolfo", Rojo, nil},
+		Jugador{"Renzo", Azul, nil},
+		// 6 jugadores
+		Jugador{"Andrés", Rojo, nil},
+		Jugador{"Richard", Azul, nil},
+	}
+	return jugadores[:cant]
+}
+
 var (
 	oops = false
 

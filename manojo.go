@@ -62,10 +62,10 @@ func (manojo Manojo) tieneFlor(muestra Carta) (res bool, CASO int) {
 
 // retorna el valor de la flor de un manojo
 // si no tiene flor retorna 0 y error
-func (m *Manojo) calcFlor(muestra Carta) (int, error) {
+func (manojo *Manojo) calcFlor(muestra Carta) (int, error) {
 	var (
 		puntajeFlor         int
-		tieneFlor, tipoFlor = m.tieneFlor(muestra)
+		tieneFlor, tipoFlor = manojo.tieneFlor(muestra)
 	)
 
 	if !tieneFlor {
@@ -75,8 +75,8 @@ func (m *Manojo) calcFlor(muestra Carta) (int, error) {
 	switch tipoFlor {
 	// CASO I: (al menos) dos piezas
 	case 1:
-		max := maxOf3(m.Cartas)
-		for _, carta := range m.Cartas {
+		max := maxOf3(manojo.Cartas)
+		for _, carta := range manojo.Cartas {
 			puntaje := carta.calcPuntaje(muestra)
 			if puntaje == max {
 				puntajeFlor += puntaje
@@ -87,7 +87,7 @@ func (m *Manojo) calcFlor(muestra Carta) (int, error) {
 	// CASO II una pieza y dos cartas del mismo palo;
 	// CASO III: tres cartas del mismo palo,
 	case 2, 3:
-		for _, carta := range m.Cartas {
+		for _, carta := range manojo.Cartas {
 			puntajeFlor += carta.calcPuntaje(muestra)
 		}
 	}
