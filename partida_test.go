@@ -92,15 +92,25 @@ func TestPartida1(t *testing.T) {
 
 	// fin capa logica/privada -----------------------
 
-	p.SetSigJugada("Alvaro Envido")
+	p.SetSigJugada("Alvaro Envido") // no estoy recibiendo output
 	p.SetSigJugada("Alvaro Flor")
-	p.SetSigJugada("Roro Mazo")
+	p.SetSigJugada("Roro Mazo") // no estoy recibiendo output
 	p.SetSigJugada("Adolfo Flor")
 	p.SetSigJugada("Renzo Contra-flor")
 	p.SetSigJugada("Alvaro Quiero")
-	// todo: si se envia un setSigJugada sin jugador
-	// se muere el proc
-	// ejemplo p.SetSigJugada("Quiero")
+
+	time.Sleep(60 * time.Minute)
+
+}
+
+func TestPartidaComandosInvalidos(t *testing.T) {
+
+	p, _ := NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andrés"}, []string{"Roro", "Renzo", "Richard"})
+
+	p.SetSigJugada("Alvaro Envido")
+	p.SetSigJugada("Quiero")
+	p.SetSigJugada("Schumacher Flor")
+	p.SetSigJugada("Adolfo Flor")
 
 	time.Sleep(60 * time.Minute)
 

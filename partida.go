@@ -2,6 +2,7 @@ package truco
 
 import (
 	"fmt"
+	"regexp"
 	"strings"
 )
 
@@ -59,66 +60,87 @@ func (p *Partida) readLnJugada() error {
 }
 
 // SetSigJugada nexo capa presentacion con capa logica
-func (p *Partida) SetSigJugada(cmd string) string {
+func (p *Partida) SetSigJugada(cmd string) error {
+	// checkeo de sintaxis
+	ok := regexp.MustCompile(`^(\w|-)+\s(\w|-)+$`).MatchString(cmd)
+	if !ok {
+		return fmt.Errorf("Comando incorrecto")
+	}
+
 	p.sigJugada <- cmd
-	return "registrada"
+	return nil
 }
 
+// devuelve solo la siguiente jugada VALIDA
+// si no es valida es como si no hubiese pasado nada
 func (p *Partida) getSigJugada() (IJugada, *Manojo) {
-	cmd := <-p.sigJugada
-	params := strings.Fields(cmd)
-	jugadaStr, jugadorStr := params[1], params[0]
-	return p.parseJugada(jugadorStr, jugadaStr)
+	var (
+		manojo *Manojo
+		jugada IJugada
+		err    error
+	)
+	for {
+		cmd := <-p.sigJugada
+		params := strings.Fields(cmd)
+		jugadaStr, jugadorStr := params[1], params[0]
 
+		manojo, err = p.Ronda.getManojo(jugadorStr)
+		if err == nil {
+			jugada, err = p.parseJugada(jugadaStr)
+			if err == nil {
+				return jugada, manojo
+			}
+		}
+		fmt.Println(err.Error())
+	}
 }
 
-func (p *Partida) parseJugada(jugadorStr string, jugadaStr string) (IJugada, *Manojo) {
-	var (
-		manojo, _ = p.Ronda.getManojo(jugadorStr)
-		jugada    IJugada
-	)
+func (p *Partida) parseJugada(jugadaStr string) (IJugada, error) {
+	var jugada IJugada
+
+	jugadaStr = strings.ToLower(jugadaStr)
 
 	switch jugadaStr {
 	// toques
-	case "Envido":
+	case "envido":
 		jugada = tocarEnvido{}
-	case "Real-envido":
+	case "real-envido":
 		jugada = tocarRealEnvido{}
-	case "Falta-envido":
+	case "falta-envido":
 		jugada = tocarFaltaEnvido{}
 
 	// cantos
-	case "Flor":
+	case "flor":
 		jugada = cantarFlor{}
-	case "Contra-flor":
+	case "contra-flor":
 		jugada = cantarContraFlor{}
-	case "Contra-flor-al-resto":
+	case "contra-flor-al-resto":
 		jugada = cantarContraFlorAlResto{}
 
 	// gritos
-	case "Truco":
+	case "truco":
 		jugada = gritarTruco{}
-	case "Re-truco":
+	case "re-truco":
 		jugada = gritarReTruco{}
-	case "Vale-4":
+	case "vale-4":
 		jugada = gritarVale4{}
 
 	// respuestas
-	case "Quiero":
+	case "quiero":
 		jugada = responderQuiero{}
-	case "No-Quiero":
+	case "no-Quiero":
 		jugada = responderNoQuiero{}
-	case "Tiene":
+	case "tiene":
 		jugada = responderNoQuiero{}
 
 	// acciones
-	case "Mazo":
+	case "mazo":
 		jugada = irseAlMazo{}
 	default:
-		panic("lols")
+		return nil, fmt.Errorf("No esxiste esa jugada")
 	}
 
-	return jugada, manojo
+	return jugada, nil
 }
 
 func (p *Partida) getMaxPuntaje() int {
