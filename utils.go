@@ -21,16 +21,16 @@ func contains(slice interface{}, item interface{}) bool {
 	return false
 }
 
-func eliminar(jugadores []*Jugador, jugador *Jugador) []*Jugador {
+func eliminar(manojos []*Manojo, manojo *Manojo) []*Manojo {
 	var i int
 	// primero encuentro el elemento
-	for i = range jugadores {
-		if jugadores[i] == jugador {
+	for i = range manojos {
+		if manojos[i] == manojo {
 			break
 		}
 	}
-	jugadores[i] = jugadores[len(jugadores)-1] // Copy last element to index i.
-	return jugadores[:len(jugadores)-1]        // Truncate slice.
+	manojos[i] = manojos[len(manojos)-1] // Copy last element to index i.
+	return manojos[:len(manojos)-1]      // Truncate slice.
 }
 
 func maxOf3(cartas [3]Carta) int {
@@ -58,17 +58,6 @@ func abs(x int) int {
 		return -x
 	}
 	return x
-}
-
-// todo: esto es ineficiente
-// parseJugador devuelve el puntero al jugador, dado un string que los identifique
-func parseJugador(codigoJugador string, jugadores []Jugador) (*Jugador, error) {
-	for i := range jugadores {
-		if jugadores[i].nombre == codigoJugador {
-			return &jugadores[i], nil
-		}
-	}
-	return nil, fmt.Errorf("Jugador `%s` no encontrado", codigoJugador)
 }
 
 // obtenerIdx devuelve el ID correspondiente al argumento *Jugador

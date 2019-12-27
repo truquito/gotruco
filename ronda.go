@@ -67,18 +67,17 @@ func (r Ronda) cantarFloresSiLasHay(aPartirDe JugadorIdx) {
 	}
 }
 
-// todo: que pasa si el apartirde es el ultimo jugador? -> se muere el programa?
-// retorna todos los jugadores que tienen flor
-func (r Ronda) checkFlores() (hayFlor bool,
-	jugadoresConFlor []*Jugador) {
-	for _, manojo := range r.manojos {
+// retorna todos los manojos que tienen flor
+func (r Ronda) getFlores() (hayFlor bool,
+	manojosConFlor []*Manojo) {
+	for i, manojo := range r.manojos {
 		tieneFlor, _ := manojo.tieneFlor(r.muestra)
 		if tieneFlor {
-			jugadoresConFlor = append(jugadoresConFlor, manojo.jugador)
+			manojosConFlor = append(manojosConFlor, &r.manojos[i])
 		}
 	}
-	hayFlor = len(jugadoresConFlor) > 0
-	return hayFlor, jugadoresConFlor
+	hayFlor = len(manojosConFlor) > 0
+	return hayFlor, manojosConFlor
 }
 
 func (r Ronda) getElMano() *Manojo {
@@ -116,7 +115,7 @@ func (r Ronda) Print() {
 		r.manojos[i].Print()
 	}
 
-	fmt.Printf("Y la muestra es\n    - %s\n", r.muestra.toString())
+	fmt.Printf("\nY la muestra es\n    - %s\n", r.muestra.toString())
 	fmt.Printf("\nEl mano actual es: %s\nEs el turno de %s\n\n",
 		r.getElMano().getPerfil().nombre, r.getElTurno().getPerfil().nombre)
 }
@@ -150,6 +149,8 @@ func (r *Ronda) getLaFlorMasAlta() (*Manojo, int) {
 	return &r.manojos[maxIdx], maxFlor
 }
 
+// todo: esto anda bien; es legacy; pero hacer que devuelva punteros
+// no indices
 /**
 * getElEnvido computa el envido de la ronda
 * @return `jIdx JugadorIdx` Es el indice del jugador con
@@ -279,6 +280,25 @@ func (r *Ronda) getElEnvido() (jIdx JugadorIdx,
 	return jIdx, max, stdOut
 }
 
+func (r *Ronda) singleLinking(jugadores []Jugador) {
+	cantJugadores := len(jugadores)
+	for i := 0; i < cantJugadores; i++ {
+		r.manojos[i].jugador = &jugadores[i]
+	}
+}
+
+// todo: esto es ineficiente
+// getManojo devuelve el puntero al manojo,
+// dado un string que identifique al jugador duenio de ese manojo
+func (r *Ronda) getManojo(idJugador string) (*Manojo, error) {
+	for i := range r.manojos {
+		if r.manojos[i].jugador.nombre == idJugador {
+			return &r.manojos[i], nil
+		}
+	}
+	return nil, fmt.Errorf("Jugador `%s` no encontrado", idJugador)
+}
+
 // nuevaRonda : crea una nueva ronda al azar
 func nuevaRonda(jugadores []Jugador) Ronda {
 	cantJugadores := len(jugadores)
@@ -299,9 +319,7 @@ func nuevaRonda(jugadores []Jugador) Ronda {
 	dealCards(&ronda.manojos, &ronda.muestra)
 
 	// // hago el SINGLE-linking "jugadores <- manojos"
-	for i := 0; i < cantJugadores; i++ {
-		ronda.manojos[i].jugador = &jugadores[i]
-	}
+	ronda.singleLinking(jugadores)
 
 	// seteo el repartidor de la primera mano como
 	// el mano de la ronda (segun las reglas)

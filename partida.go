@@ -64,7 +64,7 @@ func (p *Partida) SetSigJugada(cmd string) string {
 	return "registrada"
 }
 
-func (p *Partida) getSigJugada() (IJugada, *Jugador) {
+func (p *Partida) getSigJugada() (IJugada, *Manojo) {
 	cmd := <-p.sigJugada
 	params := strings.Fields(cmd)
 	jugadaStr, jugadorStr := params[1], params[0]
@@ -72,10 +72,10 @@ func (p *Partida) getSigJugada() (IJugada, *Jugador) {
 
 }
 
-func (p *Partida) parseJugada(jugadorStr string, jugadaStr string) (IJugada, *Jugador) {
+func (p *Partida) parseJugada(jugadorStr string, jugadaStr string) (IJugada, *Manojo) {
 	var (
-		jugador, _ = parseJugador(jugadorStr, p.jugadores)
-		jugada     IJugada
+		manojo, _ = p.Ronda.getManojo(jugadorStr)
+		jugada    IJugada
 	)
 
 	switch jugadaStr {
@@ -118,15 +118,7 @@ func (p *Partida) parseJugada(jugadorStr string, jugadaStr string) (IJugada, *Ju
 		panic("lols")
 	}
 
-	return jugada, jugador
-}
-
-func (p *Partida) dobleLinking() {
-	// hago el doble-linking "jugadores <-> manojos"
-	for i := 0; i < p.cantJugadores; i++ {
-		p.jugadores[i].manojo = &p.Ronda.manojos[i]
-		p.Ronda.manojos[i].jugador = &p.jugadores[i]
-	}
+	return jugada, manojo
 }
 
 func (p *Partida) getMaxPuntaje() int {
@@ -185,6 +177,11 @@ func (p *Partida) elQueVaGanando() Equipo {
 // a `ganadorDelEnvite` si hubiese ganado un "Contra flor al resto"
 // sin tener en cuenta los puntos acumulados de envites anteriores
 func (p *Partida) calcPtsContraFlorAlResto(ganadorDelEnvite Equipo) int {
+	return p.calcPtsFaltaEnvido(ganadorDelEnvite)
+}
+
+// retorna la cantidad de puntos que corresponden al Falta-Envido
+func (p *Partida) calcPtsFaltaEnvido(ganadorDelEnvite Equipo) int {
 	// si el que va ganando:
 	// 		esta en Malas -> el ganador del envite (`ganadorDelEnvite`) gana el chico
 	// 		esta en Buenas -> el ganador del envite (`ganadorDelEnvite`) gana lo que le falta al maximo para ganar la ronda
@@ -214,8 +211,8 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	var jugadores []Jugador
 	// para cada rjo que agrego; le agrego tambien su mano
 	for i := range equipoRojo {
-		nuevoJugadorRojo := Jugador{equipoRojo[i], Rojo, nil}
-		nuevoJugadorAzul := Jugador{equipoAzul[i], Azul, nil}
+		nuevoJugadorRojo := Jugador{equipoRojo[i], Rojo}
+		nuevoJugadorAzul := Jugador{equipoAzul[i], Azul}
 		jugadores = append(jugadores, nuevoJugadorAzul, nuevoJugadorRojo)
 	}
 
