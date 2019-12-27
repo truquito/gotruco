@@ -1,8 +1,8 @@
 package truco
 
 import (
-	"sync"
 	"testing"
+	"time"
 )
 
 func TestPartida1(t *testing.T) {
@@ -76,14 +76,12 @@ func TestPartida1(t *testing.T) {
 	p.puntajes[Rojo] = 0
 	p.puntajes[Azul] = 0
 
-	// // hago el SINGLE-linking "jugadores <- manojos"
-	for i := 0; i < cantJugadores; i++ {
-		p.Ronda.manojos[i].jugador = &p.jugadores[i]
-	}
+	p.Ronda.singleLinking(p.jugadores)
 
 	p.sigJugada = make(chan string, 1)
 
 	ImprimirJugadas()
+	p.Ronda.Print()
 
 	go func() {
 		for {
@@ -94,20 +92,16 @@ func TestPartida1(t *testing.T) {
 
 	// fin capa logica/privada -----------------------
 
+	p.SetSigJugada("Alvaro Envido")
 	p.SetSigJugada("Alvaro Flor")
 	p.SetSigJugada("Roro Mazo")
-	// p.SetSigJugada("Pedro Mazo") // test 2 vecees se va al mazo
-	// p.SetSigJugada("Pedro Mazo") // test despues de irse al mazo manda flor o algo asi
-	p.SetSigJugada("Renzo Flor")
-	p.SetSigJugada("Adolfo Contra-flor-al-resto")
-	p.SetSigJugada("Richard Quiero")
+	p.SetSigJugada("Adolfo Flor")
+	p.SetSigJugada("Renzo Contra-flor")
+	p.SetSigJugada("Alvaro Quiero")
+	// todo: si se envia un setSigJugada sin jugador
+	// se muere el proc
+	// ejemplo p.SetSigJugada("Quiero")
 
-	p.Ronda.Print()
-
-	<-(chan int)(nil)
-
-	var wg sync.WaitGroup
-	wg.Add(1)
-	wg.Wait()
+	time.Sleep(60 * time.Minute)
 
 }
