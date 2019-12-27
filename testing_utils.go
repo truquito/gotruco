@@ -3,14 +3,14 @@ package truco
 func getDefaultJugadores(cant int) []Jugador {
 	jugadores := []Jugador{
 		// 2 jugadores
-		Jugador{"Alvaro", Rojo, nil},
-		Jugador{"Roro", Azul, nil},
+		Jugador{"Alvaro", Rojo},
+		Jugador{"Roro", Azul},
 		// 4 jugadores
-		Jugador{"Adolfo", Rojo, nil},
-		Jugador{"Renzo", Azul, nil},
+		Jugador{"Adolfo", Rojo},
+		Jugador{"Renzo", Azul},
 		// 6 jugadores
-		Jugador{"Andrés", Rojo, nil},
-		Jugador{"Richard", Azul, nil},
+		Jugador{"Andres", Rojo},
+		Jugador{"Richard", Azul},
 	}
 	return jugadores[:cant]
 }
@@ -23,14 +23,14 @@ var (
 	// jugadores clasicos
 	jugadores = []Jugador{
 		// 2 jugadores
-		Jugador{"Juan", Rojo, nil},
-		Jugador{"Pedro", Azul, nil},
+		Jugador{"Juan", Rojo},
+		Jugador{"Pedro", Azul},
 		// 4 jugadores
-		Jugador{"Jacinto", Rojo, nil},
-		Jugador{"Patricio", Azul, nil},
+		Jugador{"Jacinto", Rojo},
+		Jugador{"Patricio", Azul},
 		// 6 jugadores
-		Jugador{"Jaime", Rojo, nil},
-		Jugador{"Paco", Azul, nil},
+		Jugador{"Jaime", Rojo},
+		Jugador{"Paco", Azul},
 	}
 
 	juan     = &jugadores[0] // rojo
@@ -40,12 +40,12 @@ var (
 
 	// jugadores YT
 	jugadoresYT = []Jugador{
-		Jugador{"A", Rojo, nil}, // Dr. Favaloro
-		Jugador{"B", Azul, nil}, // Fangio
-		Jugador{"C", Rojo, nil}, // inodoro
-		Jugador{"D", Azul, nil}, // San Martin
-		Jugador{"E", Rojo, nil}, // Yupanqui
-		Jugador{"F", Azul, nil}, // Gardel
+		Jugador{"A", Rojo}, // Dr. Favaloro
+		Jugador{"B", Azul}, // Fangio
+		Jugador{"C", Rojo}, // inodoro
+		Jugador{"D", Azul}, // San Martin
+		Jugador{"E", Rojo}, // Yupanqui
+		Jugador{"F", Azul}, // Gardel
 	}
 
 	// A Dr. Favaloro
@@ -272,7 +272,7 @@ func getPartidaCustom1() Partida {
 			muestra:     muestra,
 		},
 	}
-	p.dobleLinking()
+	p.Ronda.singleLinking(p.jugadores)
 	p.Ronda.getManoActual().repartidor = p.Ronda.elMano
 	return p
 }
