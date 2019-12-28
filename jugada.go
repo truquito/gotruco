@@ -6,17 +6,28 @@ import (
 
 // IJugada Interface para las jugadas
 type IJugada interface {
-	hacer(p *Partida, manojo *Manojo) error
+	hacer(p *Partida) error
+	getAutor() *Manojo
+}
+
+type Jugada struct {
+	autor *Manojo
+}
+
+func (j Jugada) getAutor() *Manojo {
+	return j.autor
 }
 
 // PRE: supongo que el jugador que toca este envido
 // no tiene flor (es checkeada cuando es su turno)
-type tocarEnvido struct{}
+type tocarEnvido struct {
+	Jugada
+}
 
-func (jugada tocarEnvido) hacer(p *Partida, manojo *Manojo) error {
+func (jugada tocarEnvido) hacer(p *Partida) error {
 	esPrimeraMano := p.Ronda.manoEnJuego == primera
-	tieneFlor, _ := manojo.tieneFlor(p.Ronda.muestra)
-	esDelEquipoContrario := p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.cantadoPor.equipo != manojo.jugador.equipo
+	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.muestra)
+	esDelEquipoContrario := p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.cantadoPor.equipo != jugada.autor.jugador.equipo
 	envidoHabilitado := (p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.estado == ENVIDO) && p.Ronda.flor == NOCANTADA
 	ok := envidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario
 
@@ -24,7 +35,7 @@ func (jugada tocarEnvido) hacer(p *Partida, manojo *Manojo) error {
 		return fmt.Errorf(`No es posible cantar 'Envido'`)
 	}
 
-	fmt.Printf(">> %s toca envido\n", manojo.jugador.nombre)
+	fmt.Printf(">> %s toca envido\n", jugada.autor.jugador.nombre)
 
 	// ahora checkeo si alguien tiene flor
 	hayFlor, manojosConFlor := p.Ronda.getFlores()
@@ -33,8 +44,8 @@ func (jugada tocarEnvido) hacer(p *Partida, manojo *Manojo) error {
 		// solo por jugadas de tipo flor-related
 		// lo mismo para el real-envido; falta-envido
 		p.Ronda.envido.estado = DESHABILITADO
-		siguienteJugada := cantarFlor{}
-		siguienteJugada.hacer(p, manojosConFlor[0])
+		siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
+		siguienteJugada.hacer(p)
 
 	} else {
 		// 2 opciones: o bien no se jugo aun
@@ -43,10 +54,10 @@ func (jugada tocarEnvido) hacer(p *Partida, manojo *Manojo) error {
 		if yaSeHabiaCantadoElEnvido {
 			// se aumenta el puntaje del envido en +2
 			p.Ronda.envido.puntaje += 2
-			p.Ronda.envido.cantadoPor = manojo.jugador
+			p.Ronda.envido.cantadoPor = jugada.autor.jugador
 
 		} else { // no se habia jugado aun
-			p.Ronda.envido.cantadoPor = manojo.jugador
+			p.Ronda.envido.cantadoPor = jugada.autor.jugador
 			p.Ronda.envido.estado = ENVIDO
 			p.Ronda.envido.puntaje = 2
 		}
@@ -56,7 +67,7 @@ func (jugada tocarEnvido) hacer(p *Partida, manojo *Manojo) error {
 }
 
 // donde 'j' el jugador que dijo 'quiero' al 'envido'/'real envido'
-func (jugada tocarEnvido) eval(p *Partida, manojo *Manojo) error {
+func (jugada tocarEnvido) eval(p *Partida) error {
 	p.Ronda.envido.estado = DESHABILITADO
 	jIdx, max, out := p.Ronda.getElEnvido()
 	print(out)
@@ -70,30 +81,32 @@ func (jugada tocarEnvido) eval(p *Partida, manojo *Manojo) error {
 	return nil
 }
 
-type tocarRealEnvido struct{}
+type tocarRealEnvido struct {
+	Jugada
+}
 
-func (jugada tocarRealEnvido) hacer(p *Partida, manojo *Manojo) error {
+func (jugada tocarRealEnvido) hacer(p *Partida) error {
 	esPrimeraMano := p.Ronda.manoEnJuego == primera
-	tieneFlor, _ := manojo.tieneFlor(p.Ronda.muestra)
+	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.muestra)
 	realEnvidoHabilitado := (p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.estado == ENVIDO) && p.Ronda.flor == NOCANTADA
-	esDelEquipoContrario := p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.cantadoPor.equipo != manojo.jugador.equipo
+	esDelEquipoContrario := p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.cantadoPor.equipo != jugada.autor.jugador.equipo
 	ok := realEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario
 
 	if !ok {
 		return fmt.Errorf(`No es posible cantar 'Real Envido'`)
 	}
 
-	fmt.Printf(">> %s toca real envido\n", manojo.jugador.nombre)
+	fmt.Printf(">> %s toca real envido\n", jugada.autor.jugador.nombre)
 	p.Ronda.envido.estado = REALENVIDO
-	p.Ronda.envido.cantadoPor = manojo.jugador
+	p.Ronda.envido.cantadoPor = jugada.autor.jugador
 
 	// ahora checkeo si alguien tiene flor
 	hayFlor, manojosConFlor := p.Ronda.getFlores()
 
 	if hayFlor {
 		p.Ronda.envido.estado = DESHABILITADO
-		siguienteJugada := cantarFlor{}
-		siguienteJugada.hacer(p, manojosConFlor[0])
+		siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
+		siguienteJugada.hacer(p)
 
 	} else {
 		// 2 opciones:
@@ -109,30 +122,32 @@ func (jugada tocarRealEnvido) hacer(p *Partida, manojo *Manojo) error {
 	return nil
 }
 
-type tocarFaltaEnvido struct{}
+type tocarFaltaEnvido struct {
+	Jugada
+}
 
-func (jugada tocarFaltaEnvido) hacer(p *Partida, manojo *Manojo) error {
+func (jugada tocarFaltaEnvido) hacer(p *Partida) error {
 
 	esPrimeraMano := p.Ronda.manoEnJuego == primera
-	tieneFlor, _ := manojo.tieneFlor(p.Ronda.muestra)
+	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.muestra)
 	faltaEnvidoHabilitado := p.Ronda.envido.estado >= NOCANTADOAUN && p.Ronda.envido.estado < FALTAENVIDO
-	esDelEquipoContrario := p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.cantadoPor.equipo != manojo.jugador.equipo
+	esDelEquipoContrario := p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.cantadoPor.equipo != jugada.autor.jugador.equipo
 	ok := faltaEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario
 
 	if !ok {
 		return fmt.Errorf(`No es posible cantar 'Falta Envido'`)
 	}
 
-	fmt.Printf(">> %s toca falta envido\n", manojo.jugador.nombre)
+	fmt.Printf(">> %s toca falta envido\n", jugada.autor.jugador.nombre)
 	p.Ronda.envido.estado = FALTAENVIDO
-	p.Ronda.envido.cantadoPor = manojo.jugador
+	p.Ronda.envido.cantadoPor = jugada.autor.jugador
 
 	// ahora checkeo si alguien tiene flor
 	hayFlor, manojosConFlor := p.Ronda.getFlores()
 	if hayFlor {
 		p.Ronda.envido.estado = DESHABILITADO
-		siguienteJugada := cantarFlor{}
-		siguienteJugada.hacer(p, manojosConFlor[0])
+		siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
+		siguienteJugada.hacer(p)
 	}
 
 	return nil
@@ -151,7 +166,7 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida, manojo *Manojo) error {
  *		si no: se juega por el resto del maximo puntaje
 */
 
-func (jugada tocarFaltaEnvido) eval(p *Partida, manojo *Manojo) error {
+func (jugada tocarFaltaEnvido) eval(p *Partida) error {
 	p.Ronda.envido.estado = DESHABILITADO
 
 	// computar envidos
@@ -172,7 +187,9 @@ func (jugada tocarFaltaEnvido) eval(p *Partida, manojo *Manojo) error {
 	return nil
 }
 
-type cantarFlor struct{}
+type cantarFlor struct {
+	Jugada
+}
 
 /*
 todo:
@@ -181,11 +198,11 @@ se pase a calcular el resultado solo de las flores acumuladas
 se necesita timer
 
 */
-func (jugada cantarFlor) hacer(p *Partida, manojo *Manojo) error {
+func (jugada cantarFlor) hacer(p *Partida) error {
 	// manojo dice que puede cantar flor;
 	// es esto verdad?
 	florHabilitada := (p.Ronda.flor == NOCANTADA || p.Ronda.flor == FLOR) && p.Ronda.manoEnJuego == primera
-	tieneFlor, _ := manojo.tieneFlor(p.Ronda.muestra)
+	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.muestra)
 	ok := florHabilitada && tieneFlor
 	if !ok {
 		return fmt.Errorf(`No es posible cantar flor`)
@@ -193,10 +210,10 @@ func (jugada cantarFlor) hacer(p *Partida, manojo *Manojo) error {
 	// se usa por si dicen "no quiero" -> se obtiene el equipo
 	// al que pertenece el que la canto en un principio para
 	// poder sumarle los puntos correspondientes
-	fmt.Printf(">> %s canta flor\n", manojo.jugador.nombre)
+	fmt.Printf(">> %s canta flor\n", jugada.autor.jugador.nombre)
 	p.Ronda.envido.estado = DESHABILITADO
 	p.Ronda.envido.puntaje = 3
-	p.Ronda.envido.cantadoPor = manojo.jugador
+	p.Ronda.envido.cantadoPor = jugada.autor.jugador
 	p.Ronda.flor = FLOR
 	// ahora checkeo si alguien tiene flor
 	// retorna TODOS los jugadores que tengan flor (si es que existen)
@@ -209,9 +226,9 @@ func (jugada cantarFlor) hacer(p *Partida, manojo *Manojo) error {
 	if !hayFlor {
 		// Nadie mas tiene flor; entonces manojo se lleva todos
 		// los puntos en juego (+3)
-		p.puntajes[manojo.jugador.equipo] += p.Ronda.envido.puntaje // +3
+		p.puntajes[jugada.autor.jugador.equipo] += p.Ronda.envido.puntaje // +3
 		fmt.Printf(`>> +%v puntos para el equipo %s`+"\n",
-			3, manojo.jugador.equipo)
+			3, jugada.autor.jugador.equipo)
 		p.Ronda.envido.estado = DESHABILITADO
 		p.Ronda.flor = DESHABILITADA
 		return nil
@@ -231,17 +248,17 @@ func (jugada cantarFlor) hacer(p *Partida, manojo *Manojo) error {
 	todosLosJugadoresConFlorCantaron := false
 	for !todosLosJugadoresConFlorCantaron {
 
-		jugada, sigManojo := p.getSigJugada()
-		esAlguienDelQueEspero := contains(jugadoresConFlor, sigManojo)
+		sigJugada := p.getSigJugada()
+		esAlguienDelQueEspero := contains(jugadoresConFlor, sigJugada.getAutor())
 
-		_, esMeVoyAlMazo := jugada.(irseAlMazo)
-		_, esCantoFlor := jugada.(cantarFlor)
-		_, esCantoContraFlor := jugada.(cantarContraFlor)
-		_, esCantoContraFlorAlResto := jugada.(cantarContraFlorAlResto)
-		_, esCantoConFlorMeAchico := jugada.(cantarConFlorMeAchico)
+		_, esMeVoyAlMazo := sigJugada.(irseAlMazo)
+		_, esCantoFlor := sigJugada.(cantarFlor)
+		_, esCantoContraFlor := sigJugada.(cantarContraFlor)
+		_, esCantoContraFlorAlResto := sigJugada.(cantarContraFlorAlResto)
+		_, esCantoConFlorMeAchico := sigJugada.(cantarConFlorMeAchico)
 		esTipoFlor := esCantoFlor || esCantoContraFlor || esCantoContraFlorAlResto || esCantoConFlorMeAchico
-		_, esQuiero := jugada.(responderQuiero)
-		_, esNoQuiero := jugada.(responderNoQuiero)
+		_, esQuiero := sigJugada.(responderQuiero)
+		_, esNoQuiero := sigJugada.(responderNoQuiero)
 		esRespuesta := esQuiero || esNoQuiero
 		seEstaJugandoLaFlor := p.Ronda.flor == FLOR
 		seEstaJugandoLaContraFlor := p.Ronda.flor == CONTRAFLOR
@@ -269,14 +286,14 @@ func (jugada cantarFlor) hacer(p *Partida, manojo *Manojo) error {
 
 		if esAlguienDelQueEspero {
 			// lo descuento de los esperados
-			jugadoresConFlor = eliminar(jugadoresConFlor, sigManojo)
+			jugadoresConFlor = eliminar(jugadoresConFlor, sigJugada.getAutor())
 			// era el ultimo que del que me faltaba escuchar?
 			// y por ende -> fin del bucle ?
 		}
 
 		// la ejecuto porque por descarte ya se que es valida
 		if esMeVoyAlMazo {
-			jugada.hacer(p, sigManojo)
+			sigJugada.hacer(p)
 
 		} else if esCantoFlor {
 			// ya se que estaba habilitado para cantar flor
@@ -285,13 +302,13 @@ func (jugada cantarFlor) hacer(p *Partida, manojo *Manojo) error {
 			florHabilitada := p.Ronda.flor == FLOR
 			if !florHabilitada {
 				// entonces lo vuelvo a agregar a la lista de esperados; se equivoco
-				jugadoresConFlor = append(jugadoresConFlor, sigManojo)
+				jugadoresConFlor = append(jugadoresConFlor, sigJugada.getAutor())
 				return fmt.Errorf(`Ya no es posible cantar flor;`)
 			}
 			// en caso contrario; esta todo bien;
 			// la canta
-			fmt.Printf(">> %s canta flor\n", sigManojo.jugador.nombre)
-			p.Ronda.envido.cantadoPor = sigManojo.jugador
+			fmt.Printf(">> %s canta flor\n", sigJugada.getAutor().jugador.nombre)
+			p.Ronda.envido.cantadoPor = sigJugada.getAutor().jugador
 			// ahora la flor pasa a jugarse por +3 puntos
 			p.Ronda.envido.puntaje += 3
 
@@ -302,14 +319,14 @@ func (jugada cantarFlor) hacer(p *Partida, manojo *Manojo) error {
 			contraFlorHabilitada := p.Ronda.flor == FLOR
 			if !contraFlorHabilitada {
 				// entonces lo vuelvo a agregar a la lista de esperados; se equivoco
-				jugadoresConFlor = append(jugadoresConFlor, sigManojo)
+				jugadoresConFlor = append(jugadoresConFlor, sigJugada.getAutor())
 				return fmt.Errorf(`Ya no es posible cantar contra flor;`)
 			}
 			// en caso contrario; esta todo bien;
 			// la canta
-			fmt.Printf(">> %s canta contra-flor\n", sigManojo.jugador.nombre)
+			fmt.Printf(">> %s canta contra-flor\n", sigJugada.getAutor().jugador.nombre)
 			p.Ronda.flor = CONTRAFLOR
-			p.Ronda.envido.cantadoPor = sigManojo.jugador
+			p.Ronda.envido.cantadoPor = sigJugada.getAutor().jugador
 			// ahora la flor pasa a jugarse por 4 puntos
 			p.Ronda.envido.puntaje = 4
 			// y ahora tengo que esperar por la respuesta de la nueva
@@ -318,7 +335,7 @@ func (jugada cantarFlor) hacer(p *Partida, manojo *Manojo) error {
 			jugadoresConFlor = make([]*Manojo, len(jugadoresConFlorCACHE))
 			copy(jugadoresConFlor, jugadoresConFlorCACHE)
 			// lo elimino de los que espero
-			jugadoresConFlor = eliminar(jugadoresConFlor, sigManojo)
+			jugadoresConFlor = eliminar(jugadoresConFlor, sigJugada.getAutor())
 
 		} else if esCantoContraFlorAlResto {
 			// ya se que estaba habilitado para cantar flor
@@ -329,14 +346,14 @@ func (jugada cantarFlor) hacer(p *Partida, manojo *Manojo) error {
 				// entonces lo vuelvo a agregar a la lista de esperados; se equivoco
 				// por ejemplo; ya otro jugador habia cantado contraFlorAlResto
 				// ya que solo espero quiero|noQuiero|alMazo del el
-				jugadoresConFlor = append(jugadoresConFlor, sigManojo)
+				jugadoresConFlor = append(jugadoresConFlor, sigJugada.getAutor())
 				return fmt.Errorf(`Ya no es posible cantar contra flor al resto;`)
 			}
 			// en caso contrario; esta todo bien;
 			// la canta
-			fmt.Printf(">> %s canta contra-flor-al-resto\n", sigManojo.jugador.nombre)
+			fmt.Printf(">> %s canta contra-flor-al-resto\n", sigJugada.getAutor().jugador.nombre)
 			p.Ronda.flor = CONTRAFLORALRESTO
-			p.Ronda.envido.cantadoPor = sigManojo.jugador
+			p.Ronda.envido.cantadoPor = sigJugada.getAutor().jugador
 			// los puntos de la flor quedan acumulados
 			// y ahora tengo que esperar por la respuesta de la nueva
 			// propuesta de todos menos de el que canto la contraflor
@@ -344,17 +361,17 @@ func (jugada cantarFlor) hacer(p *Partida, manojo *Manojo) error {
 			jugadoresConFlor = make([]*Manojo, len(jugadoresConFlorCACHE))
 			copy(jugadoresConFlor, jugadoresConFlorCACHE)
 			// lo elimino de los que espero
-			jugadoresConFlor = eliminar(jugadoresConFlor, sigManojo)
+			jugadoresConFlor = eliminar(jugadoresConFlor, sigJugada.getAutor())
 
 		} else if esQuiero && seEstaJugandoLaContraFlor {
 			// solo con que uno *DEL EQUIPO CONTRARIO*
 			// al que canto la contra-flor diga quiero
 			// es del equipo contrario?
-			esDelEquipoContrario := sigManojo.jugador.equipo != p.Ronda.envido.cantadoPor.equipo
+			esDelEquipoContrario := sigJugada.getAutor().jugador.equipo != p.Ronda.envido.cantadoPor.equipo
 			if !esDelEquipoContrario {
 				return fmt.Errorf(`No es posible responderle a la propuesta de tu mismo equipo`)
 			}
-			fmt.Printf(">> %s dice quiero \n", sigManojo.jugador.nombre)
+			fmt.Printf(">> %s dice quiero \n", sigJugada.getAutor().jugador.nombre)
 			// ok; se cierra el envite; hora de calcular el ganador
 			p.Ronda.flor = DESHABILITADA
 			manojoConLaFlorMasAlta, maxFlor := p.Ronda.getLaFlorMasAlta()
@@ -374,7 +391,7 @@ func (jugada cantarFlor) hacer(p *Partida, manojo *Manojo) error {
 			// solo con que uno *DEL EQUIPO CONTRARIO*
 			// al que canto la contra-flor-al-resto diga quiero
 			// es del equipo contrario?
-			esDelEquipoContrario := sigManojo.jugador.equipo != p.Ronda.envido.cantadoPor.equipo
+			esDelEquipoContrario := sigJugada.getAutor().jugador.equipo != p.Ronda.envido.cantadoPor.equipo
 			if !esDelEquipoContrario {
 				return fmt.Errorf(`No es posible responderle a la propuesta de tu mismo equipo`)
 			}
@@ -396,11 +413,11 @@ func (jugada cantarFlor) hacer(p *Partida, manojo *Manojo) error {
 			// solo con que uno *DEL EQUIPO CONTRARIO*
 			// al que canto la contra-flor-al-resto diga quiero
 			// es del equipo contrario?
-			esDelEquipoContrario := sigManojo.jugador.equipo != p.Ronda.envido.cantadoPor.equipo
+			esDelEquipoContrario := sigJugada.getAutor().jugador.equipo != p.Ronda.envido.cantadoPor.equipo
 			if !esDelEquipoContrario {
 				return fmt.Errorf(`No es posible responderle a la propuesta de tu mismo equipo`)
 			}
-			fmt.Printf(">> %s dice quiero \n", sigManojo.jugador.nombre)
+			fmt.Printf(">> %s dice quiero \n", sigJugada.getAutor().jugador.nombre)
 			// ok; se cierra el envite; hora de calcular el ganador
 			p.Ronda.flor = DESHABILITADA
 			manojoConLaFlorMasAlta, maxFlor := p.Ronda.getLaFlorMasAlta()
@@ -420,7 +437,7 @@ func (jugada cantarFlor) hacer(p *Partida, manojo *Manojo) error {
 			// solo con que uno *DEL EQUIPO CONTRARIO*
 			// al que canto la contra-flor-al-resto diga quiero
 			// es del equipo contrario?
-			esDelEquipoContrario := sigManojo.jugador.equipo != p.Ronda.envido.cantadoPor.equipo
+			esDelEquipoContrario := sigJugada.getAutor().jugador.equipo != p.Ronda.envido.cantadoPor.equipo
 			if !esDelEquipoContrario {
 				return fmt.Errorf(`No es posible responderle a la propuesta de tu mismo equipo`)
 			}
@@ -447,51 +464,65 @@ func (jugada cantarFlor) hacer(p *Partida, manojo *Manojo) error {
 
 }
 
-type cantarContraFlor struct{}
+type cantarContraFlor struct {
+	Jugada
+}
 
-func (jugada cantarContraFlor) hacer(p *Partida, manojo *Manojo) error {
+func (jugada cantarContraFlor) hacer(p *Partida) error {
 	// si llego aca es porque canto contra-flor ANTES que flor;
 	// lo cual no dberia pasar;
 	// ya que lo deberia de tomar el listener de la flor
 	return fmt.Errorf(`No es posible cantar contra-flor ahora`)
 }
 
-type cantarContraFlorAlResto struct{}
+type cantarContraFlorAlResto struct {
+	Jugada
+}
 
-func (jugada cantarContraFlorAlResto) hacer(p *Partida, manojo *Manojo) error {
+func (jugada cantarContraFlorAlResto) hacer(p *Partida) error {
 	// si llego aca es porque canto contra-flor ANTES que flor;
 	// lo cual no dberia pasar;
 	// ya que lo deberia de tomar el listener de la flor
 	return fmt.Errorf(`No es posible cantar contra-flor ahora`)
 }
 
-type cantarConFlorMeAchico struct{}
+type cantarConFlorMeAchico struct {
+	Jugada
+}
 
-func (jugada cantarConFlorMeAchico) hacer(p *Partida, manojo *Manojo) error {
+func (jugada cantarConFlorMeAchico) hacer(p *Partida) error {
 	return nil
 }
 
-type gritarTruco struct{}
+type gritarTruco struct {
+	Jugada
+}
 
-func (jugada gritarTruco) hacer(p *Partida, manojo *Manojo) error {
+func (jugada gritarTruco) hacer(p *Partida) error {
 	return nil
 }
 
-type gritarReTruco struct{}
+type gritarReTruco struct {
+	Jugada
+}
 
-func (jugada gritarReTruco) hacer(p *Partida, manojo *Manojo) error {
+func (jugada gritarReTruco) hacer(p *Partida) error {
 	return nil
 }
 
-type gritarVale4 struct{}
+type gritarVale4 struct {
+	Jugada
+}
 
-func (jugada gritarVale4) hacer(p *Partida, manojo *Manojo) error {
+func (jugada gritarVale4) hacer(p *Partida) error {
 	return nil
 }
 
-type responderQuiero struct{}
+type responderQuiero struct {
+	Jugada
+}
 
-func (jugada responderQuiero) hacer(p *Partida, manojo *Manojo) error {
+func (jugada responderQuiero) hacer(p *Partida) error {
 	// se acepta una respuesta 'quiero' solo cuando:
 	// - CASO I: se toco el envido (o similar)
 	// - CASO II: se grito el truco (o similar)
@@ -500,13 +531,13 @@ func (jugada responderQuiero) hacer(p *Partida, manojo *Manojo) error {
 	// CASO I: se toco el envido (o similar)
 	elEnvidoEsRespondible := p.Ronda.envido.estado >= ENVIDO
 	if elEnvidoEsRespondible {
-		fmt.Printf(">> %s responde quiero\n", manojo.jugador.nombre)
+		fmt.Printf(">> %s responde quiero\n", jugada.autor.jugador.nombre)
 		if p.Ronda.envido.estado == FALTAENVIDO {
-			return tocarFaltaEnvido{}.eval(p, manojo)
+			return tocarFaltaEnvido{Jugada{autor: jugada.autor}}.eval(p)
 		}
 		// si no, era envido/real-envido o cualquier
 		// combinacion valida de ellos
-		return tocarEnvido{}.eval(p, manojo)
+		return tocarEnvido{Jugada{autor: jugada.autor}}.eval(p)
 	}
 
 	// CASO II: se grito truco
@@ -521,9 +552,11 @@ func (jugada responderQuiero) hacer(p *Partida, manojo *Manojo) error {
 	truco no es "truco" (o mayor)`)
 }
 
-type responderNoQuiero struct{}
+type responderNoQuiero struct {
+	Jugada
+}
 
-func (jugada responderNoQuiero) hacer(p *Partida, manojo *Manojo) error {
+func (jugada responderNoQuiero) hacer(p *Partida) error {
 	// se acepta una respuesta 'no quiero' solo cuando:
 	// - CASO I: se toco el envido (o similar)
 	// - CASO II: se grito el truco (o similar)
@@ -533,7 +566,7 @@ func (jugada responderNoQuiero) hacer(p *Partida, manojo *Manojo) error {
 	e := &p.Ronda.envido
 	elEnvidoEsRespondible := e.estado >= ENVIDO
 	if elEnvidoEsRespondible {
-		fmt.Printf(">> %s responde no quiero\n", manojo.jugador.nombre)
+		fmt.Printf(">> %s responde no quiero\n", jugada.autor.jugador.nombre)
 
 		// se pasa a calcular el puntaje correspondiente:
 		// si se canto envido solo 1 vez: total = 1 pts
@@ -585,13 +618,15 @@ func (jugada responderNoQuiero) hacer(p *Partida, manojo *Manojo) error {
 
 	// si no, esta respondiendo al pedo
 	return fmt.Errorf(`%s esta respondiendo al pedo; no hay 
-	nada respondible`, manojo.jugador.nombre)
+	nada respondible`, jugada.autor.jugador.nombre)
 }
 
-type irseAlMazo struct{}
+type irseAlMazo struct {
+	Jugada
+}
 
 // todo
-func (jugada irseAlMazo) hacer(p *Partida, manojo *Manojo) error {
+func (jugada irseAlMazo) hacer(p *Partida) error {
 	return nil
 }
 

@@ -174,14 +174,12 @@ func TestFlor(t *testing.T) {
 
 	p.Ronda.singleLinking(p.jugadores)
 
-	p.sigJugada = make(chan string, 1)
-
 	ImprimirJugadas()
 
 	go func() {
 		for {
-			sjugada, sjugador := p.getSigJugada()
-			sjugada.hacer(&p, sjugador)
+			sigJugada := p.getSigJugada()
+			sigJugada.hacer(&p)
 		}
 	}()
 

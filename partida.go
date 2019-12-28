@@ -6,9 +6,11 @@ import (
 	"strings"
 )
 
-var quit chan bool = make(chan bool, 1)
-var _manojo_ chan *Manojo = make(chan *Manojo, 1)
-var _jugada_ chan IJugada = make(chan IJugada, 1)
+var (
+	quit       chan bool    = make(chan bool, 1)
+	sigJugada  chan IJugada = make(chan IJugada, 1)
+	sigComando chan string  = make(chan string, 1)
+)
 
 // Puntuacion : Enum para el puntaje maximo de la partida
 type Puntuacion int
@@ -55,8 +57,6 @@ type Partida struct {
 	puntaje       int
 	puntajes      [2]int // Rojo o Azul
 	Ronda         Ronda
-
-	sigJugada chan string
 }
 
 func (p *Partida) readLnJugada() error {
@@ -71,57 +71,62 @@ func (p *Partida) SetSigJugada(cmd string) error {
 		return fmt.Errorf("Comando incorrecto")
 	}
 
-	p.sigJugada <- cmd
+	sigComando <- cmd
 	return nil
 }
 
 // devuelve solo la siguiente jugada VALIDA
 // si no es valida es como si no hubiese pasado nada
-func (p *Partida) getSigJugada() (IJugada, *Manojo) {
-	return <-_jugada_, <-_manojo_
+func (p *Partida) getSigJugada() IJugada {
+	return <-sigJugada
 }
 
-func (p *Partida) parseJugada(jugadaStr string) (IJugada, error) {
+func (p *Partida) parseJugada(jugadaStr, jugadorStr string) (IJugada, error) {
 	var jugada IJugada
+
+	manojo, err := p.Ronda.getManojo(jugadorStr)
+	if err != nil {
+		return nil, fmt.Errorf("Usuario %s no encontrado", jugadorStr)
+	}
 
 	jugadaStr = strings.ToLower(jugadaStr)
 
 	switch jugadaStr {
 	// toques
 	case "envido":
-		jugada = tocarEnvido{}
+		jugada = tocarEnvido{Jugada{autor: manojo}}
 	case "real-envido":
-		jugada = tocarRealEnvido{}
+		jugada = tocarRealEnvido{Jugada{autor: manojo}}
 	case "falta-envido":
-		jugada = tocarFaltaEnvido{}
+		jugada = tocarFaltaEnvido{Jugada{autor: manojo}}
 
 	// cantos
 	case "flor":
-		jugada = cantarFlor{}
+		jugada = cantarFlor{Jugada{autor: manojo}}
 	case "contra-flor":
-		jugada = cantarContraFlor{}
+		jugada = cantarContraFlor{Jugada{autor: manojo}}
 	case "contra-flor-al-resto":
-		jugada = cantarContraFlorAlResto{}
+		jugada = cantarContraFlorAlResto{Jugada{autor: manojo}}
 
 	// gritos
 	case "truco":
-		jugada = gritarTruco{}
+		jugada = gritarTruco{Jugada{autor: manojo}}
 	case "re-truco":
-		jugada = gritarReTruco{}
+		jugada = gritarReTruco{Jugada{autor: manojo}}
 	case "vale-4":
-		jugada = gritarVale4{}
+		jugada = gritarVale4{Jugada{autor: manojo}}
 
 	// respuestas
 	case "quiero":
-		jugada = responderQuiero{}
+		jugada = responderQuiero{Jugada{autor: manojo}}
 	case "no-Quiero":
-		jugada = responderNoQuiero{}
+		jugada = responderNoQuiero{Jugada{autor: manojo}}
 	case "tiene":
-		jugada = responderNoQuiero{}
+		jugada = responderNoQuiero{Jugada{autor: manojo}}
 
 	// acciones
 	case "mazo":
-		jugada = irseAlMazo{}
+		jugada = irseAlMazo{Jugada{autor: manojo}}
 	default:
 		return nil, fmt.Errorf("No esxiste esa jugada")
 	}
@@ -212,6 +217,7 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	cantJugadores := len(equipoRojo) + len(equipoAzul)
 	cantidadCorrecta := contains([]int{2, 4, 6}, cantJugadores) // puede ser 2, 4 o 6
 	ok := mismaCantidadDeJugadores && cantidadCorrecta
+
 	if !ok {
 		return nil, fmt.Errorf(`No es posible responderle a la propuesta de tu mismo equipo`)
 	}
@@ -236,12 +242,10 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 
 	p.Ronda = nuevaRonda(p.jugadores)
 
-	p.sigJugada = make(chan string, 1)
-
 	go func() {
 		for {
-			sjugada, sjugador := p.getSigJugada()
-			sjugada.hacer(&p, sjugador)
+			sjugada := p.getSigJugada()
+			sjugada.hacer(&p)
 		}
 	}()
 
@@ -251,29 +255,18 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 			// este canal agarra solo los comandos en forma de string
 			// luego lo pasa al otro canal de jugadas ya aceptadas
 			// en la que espera la parte interna del codigo
-			case cmd := <-p.sigJugada:
-				var (
-					manojo *Manojo
-					jugada IJugada
-					err    error
-				)
+			case cmd := <-sigComando:
 				switch cmd {
 				case "__TERMINAR__":
 					quit <- true
 				default:
 					params := strings.Fields(cmd)
 					jugadaStr, jugadorStr := params[1], params[0]
-					manojo, err = p.Ronda.getManojo(jugadorStr)
+					jugada, err := p.parseJugada(jugadaStr, jugadorStr)
 					if err != nil {
-						fmt.Printf("Usuario %s no encontrado", jugadaStr)
+						fmt.Println(err.Error())
 					} else {
-						jugada, err = p.parseJugada(jugadaStr)
-						if err != nil {
-							fmt.Println(err.Error())
-						} else {
-							_manojo_ <- manojo
-							_jugada_ <- jugada
-						}
+						sigJugada <- jugada
 					}
 				}
 
@@ -292,6 +285,6 @@ func (p *Partida) Terminar() {
 	// si se quisiera terminar abruptamente se deberia
 	// usar otro canal tipo `p.quit<-true` y agregarle
 	// el caso que corresponda al `select{...}`
-	p.sigJugada <- "__TERMINAR__"
+	sigComando <- "__TERMINAR__"
 	<-quit
 }
