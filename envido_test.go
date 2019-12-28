@@ -2,42 +2,100 @@ package truco
 
 import (
 	"testing"
+	"time"
 	// "fmt"
 	// "bufio"
 	// "os"
 )
+
+func getPartidaCustom1() Partida {
+
+	cantJugadores := 2
+	p := Partida{
+		puntuacion:    a20,
+		puntaje:       0,
+		cantJugadores: cantJugadores, // puede ser 2, 4 o 6
+		jugadores:     getDefaultJugadores(2),
+		Ronda: Ronda{
+			manoEnJuego: primera,
+			elMano:      0,
+			turno:       0,
+			envido:      Envido{puntaje: 0, estado: NOCANTADOAUN},
+			flor:        NOCANTADA,
+			truco:       NOCANTADO,
+			muestra:     Carta{Palo: Espada, Valor: 1},
+			manojos: []Manojo{
+				Manojo{
+					Cartas: [3]Carta{ // envido: 13
+						Carta{Palo: Oro, Valor: 7},
+						Carta{Palo: Oro, Valor: 6},
+						Carta{Palo: Copa, Valor: 5},
+					},
+					jugador: nil,
+				},
+				Manojo{
+					Cartas: [3]Carta{
+						Carta{Palo: Copa, Valor: 1},
+						Carta{Palo: Oro, Valor: 2},
+						Carta{Palo: Basto, Valor: 3},
+					},
+					jugador: nil,
+				},
+			},
+			manos: make([]Mano, 3),
+		},
+	}
+	p.puntajes[Rojo] = 0
+	p.puntajes[Azul] = 0
+
+	p.Ronda.singleLinking(p.jugadores)
+
+	p.sigJugada = make(chan string, 1)
+
+	go func() {
+		for {
+			sjugada, sjugador := p.getSigJugada()
+			sjugada.hacer(&p, sjugador)
+		}
+	}()
+
+	p.Ronda.getManoActual().repartidor = p.Ronda.elMano
+	return p
+}
 
 // todo:
 // sinopsis:
 // juan toca envido
 // pedro grita truco
 // que pasa??
-func TestTrucoFueraDeLugar(t *testing.T) {
-	// p := getPartidaCustom1()
 
-	// p.Ronda.Print()
+func TestEnvido1(t *testing.T) {
 
-	// // empieza primera ronda
-	// // empieza primera mano
+	p := getPartidaCustom1()
 
-	// // Juan toca envido
-	// jugada := tocarEnvido{}
-	// jugada.hacer(&p, &p.jugadores[0])
+	// empieza primera ronda
+	// empieza primera mano
 
-	// oops = p.Ronda.envido.estado != ENVIDO
-	// if oops {
-	// 	t.Error("El estado del envido deberia de ser `envido`")
-	// 	return
-	// }
+	// Juan toca envido
+	p.SetSigJugada("Alvaro Envido")
 
-	// oops = p.Ronda.envido.puntaje != 2
-	// if oops {
-	// 	t.Error("El `puntaje` del envido deberia de ser 2")
-	// 	return
-	// }
+	oops = p.Ronda.envido.estado != ENVIDO
+	if oops {
+		t.Error("El estado del envido deberia de ser `envido`")
+		return
+	}
 
-	// // Pedro responde 'quiero'
-	// gritarTruco{}.hacer(&p, &p.jugadores[1])
+	oops = p.Ronda.envido.puntaje != 2
+	if oops {
+		t.Error("El `puntaje` del envido deberia de ser 2")
+		return
+	}
+
+	// Pedro responde 'quiero'
+	p.SetSigJugada("Pedro Quiero") // no estoy recibiendo output
+
+	time.Sleep(60 * time.Minute)
+
 }
 
 // sinopsis:
