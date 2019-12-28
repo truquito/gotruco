@@ -6,6 +6,10 @@ import (
 	"strings"
 )
 
+var quit chan bool = make(chan bool, 1)
+var _manojo_ chan *Manojo = make(chan *Manojo, 1)
+var _jugada_ chan IJugada = make(chan IJugada, 1)
+
 // Puntuacion : Enum para el puntaje maximo de la partida
 type Puntuacion int
 
@@ -74,25 +78,7 @@ func (p *Partida) SetSigJugada(cmd string) error {
 // devuelve solo la siguiente jugada VALIDA
 // si no es valida es como si no hubiese pasado nada
 func (p *Partida) getSigJugada() (IJugada, *Manojo) {
-	var (
-		manojo *Manojo
-		jugada IJugada
-		err    error
-	)
-	for {
-		cmd := <-p.sigJugada
-		params := strings.Fields(cmd)
-		jugadaStr, jugadorStr := params[1], params[0]
-
-		manojo, err = p.Ronda.getManojo(jugadorStr)
-		if err == nil {
-			jugada, err = p.parseJugada(jugadaStr)
-			if err == nil {
-				return jugada, manojo
-			}
-		}
-		fmt.Println(err.Error())
-	}
+	return <-_jugada_, <-_manojo_
 }
 
 func (p *Partida) parseJugada(jugadaStr string) (IJugada, error) {
@@ -238,28 +224,74 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 		jugadores = append(jugadores, nuevoJugadorAzul, nuevoJugadorRojo)
 	}
 
-	partida := Partida{
+	p := Partida{
 		puntuacion:    puntuacion,
 		puntaje:       0,
 		cantJugadores: cantJugadores,
 		jugadores:     jugadores,
 	}
 
-	partida.puntajes[Rojo] = 0
-	partida.puntajes[Azul] = 0
+	p.puntajes[Rojo] = 0
+	p.puntajes[Azul] = 0
 
-	//partida.dobleLinking()
+	p.Ronda = nuevaRonda(p.jugadores)
 
-	partida.Ronda = nuevaRonda(partida.jugadores)
-
-	partida.sigJugada = make(chan string, 1)
+	p.sigJugada = make(chan string, 1)
 
 	go func() {
 		for {
-			sjugada, sjugador := partida.getSigJugada()
-			sjugada.hacer(&partida, sjugador)
+			sjugada, sjugador := p.getSigJugada()
+			sjugada.hacer(&p, sjugador)
 		}
 	}()
 
-	return &partida, nil
+	go func() {
+		for {
+			select {
+			// este canal agarra solo los comandos en forma de string
+			// luego lo pasa al otro canal de jugadas ya aceptadas
+			// en la que espera la parte interna del codigo
+			case cmd := <-p.sigJugada:
+				var (
+					manojo *Manojo
+					jugada IJugada
+					err    error
+				)
+				switch cmd {
+				case "__TERMINAR__":
+					quit <- true
+				default:
+					params := strings.Fields(cmd)
+					jugadaStr, jugadorStr := params[1], params[0]
+					manojo, err = p.Ronda.getManojo(jugadorStr)
+					if err != nil {
+						fmt.Printf("Usuario %s no encontrado", jugadaStr)
+					} else {
+						jugada, err = p.parseJugada(jugadaStr)
+						if err != nil {
+							fmt.Println(err.Error())
+						} else {
+							_manojo_ <- manojo
+							_jugada_ <- jugada
+						}
+					}
+				}
+
+				// case <-p.quit:
+				// case <-time.After(1 * time.Second):
+				// default:
+			}
+		}
+	}()
+
+	return &p, nil
+}
+
+func (p *Partida) Terminar() {
+	// espera a que se consuma toda la fila de jugadas
+	// si se quisiera terminar abruptamente se deberia
+	// usar otro canal tipo `p.quit<-true` y agregarle
+	// el caso que corresponda al `select{...}`
+	p.sigJugada <- "__TERMINAR__"
+	<-quit
 }
