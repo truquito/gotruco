@@ -254,25 +254,3 @@ var (
 		},
 	}
 )
-
-func getPartidaCustom1() Partida {
-	p := Partida{
-		puntuacion:    a20,
-		puntaje:       0,
-		cantJugadores: 2,
-		jugadores:     jugadores[:2],
-		Ronda: Ronda{
-			manoEnJuego: primera,
-			elMano:      0,
-			turno:       0,
-			envido:      Envido{puntaje: 0, estado: NOCANTADOAUN},
-			truco:       NOCANTADO,
-			manojos:     manojos[:2],
-			manos:       make([]Mano, 3),
-			muestra:     muestra,
-		},
-	}
-	p.Ronda.singleLinking(p.jugadores)
-	p.Ronda.getManoActual().repartidor = p.Ronda.elMano
-	return p
-}

@@ -299,6 +299,18 @@ func (r *Ronda) getManojo(idJugador string) (*Manojo, error) {
 	return nil, fmt.Errorf("Jugador `%s` no encontrado", idJugador)
 }
 
+func (r *Ronda) setManojos(manojos []Manojo) {
+	for m, manojo := range manojos {
+		for c, carta := range manojo.Cartas {
+			r.manojos[m].Cartas[c] = carta
+		}
+	}
+}
+
+func (r *Ronda) setMuestra(muestra Carta) {
+	r.muestra = muestra
+}
+
 // nuevaRonda : crea una nueva ronda al azar
 func nuevaRonda(jugadores []Jugador) Ronda {
 	cantJugadores := len(jugadores)
