@@ -2,7 +2,6 @@ package truco
 
 import (
 	"testing"
-	"time"
 )
 
 func TestPartida1(t *testing.T) {
@@ -76,6 +75,6 @@ func TestPartidaComandosInvalidos(t *testing.T) {
 	p.SetSigJugada("Schumacher Flor")
 	p.SetSigJugada("Adolfo Flor")
 
-	time.Sleep(60 * time.Minute)
+	p.Terminar()
 
 }

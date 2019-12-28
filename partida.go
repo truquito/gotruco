@@ -66,7 +66,7 @@ func (p *Partida) readLnJugada() error {
 // SetSigJugada nexo capa presentacion con capa logica
 func (p *Partida) SetSigJugada(cmd string) error {
 	// checkeo de sintaxis
-	ok := regexp.MustCompile(`^(\w|-)+\s(\w|-)+$`).MatchString(cmd)
+	ok := regexp.MustCompile(`^(\w|-)+\s(\w|-)+\n?$`).MatchString(cmd)
 	if !ok {
 		return fmt.Errorf("Comando incorrecto")
 	}
