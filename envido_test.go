@@ -7,46 +7,6 @@ import (
 	// "os"
 )
 
-func TestEnvidoAceptado(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
-				},
-			},
-			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
-				},
-			},
-		},
-	)
-
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Roro Quiero")
-	p.Terminar()
-
-	oops = p.Ronda.envido.estado != DESHABILITADO
-	if oops {
-		t.Error(`El estado del envido deberia de ser 'deshabilitado',
-		ya que fue aceptado por Pedro`)
-		return
-	}
-
-	oops = p.Ronda.envido.puntaje != 2
-	if oops {
-		t.Error(`El puntaje del envido deberia de ser 2`)
-		return
-	}
-}
-
 func TestEnvidoEnvidoQuiero(t *testing.T) {
 	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
 	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
@@ -162,72 +122,234 @@ func TestEnvidoEnvidoNoQuiero(t *testing.T) {
 // CASO X		Envido + real envido + falta envido	 2+3+x/2+3+1
 // CASO XI		Envido + envido + real envido + falta envido	 2+2+3+x/2+2+3+1
 
-/* CONTEXTO */
-// - Segunda ronda en juego; primera mano
-// - Todos en `malas`: Rojo 4 pts, Azul 3 pts
-//
-// - Juan
-// - Pedro
-// - Jacinto (mano & turno)
-// - Patricio
+func TestEnvidoQuiero(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
+	p.Ronda.setManojos(
+		[]Manojo{
+			Manojo{
+				Cartas: [3]Carta{ // envido: 13
+					Carta{Palo: Oro, Valor: 7},
+					Carta{Palo: Oro, Valor: 6},
+					Carta{Palo: Copa, Valor: 5},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{
+					Carta{Palo: Copa, Valor: 1},
+					Carta{Palo: Oro, Valor: 2},
+					Carta{Palo: Basto, Valor: 3},
+				},
+			},
+		},
+	)
 
-func TestIAceptado(t *testing.T) {
-	// p := inicializar()
-	// tocarEnvido{}.hacer(&p, jacinto)
-	// responderQuiero{}.hacer(&p, pedro)
-	// oops = p.puntajes[Rojo] != 4+2
-	// if oops {
-	// 	t.Error("El resultado es incorrecto")
-	// 	return
-	// }
+	p.SetSigJugada("Alvaro Envido")
+	p.SetSigJugada("Roro Quiero")
+	p.Esperar()
+
+	oops = p.Ronda.envido.estado != DESHABILITADO
+	if oops {
+		t.Error(`El estado del envido deberia de ser 'deshabilitado',
+		ya que fue aceptado por Roro`)
+		return
+	}
+
+	oops = p.Ronda.envido.puntaje != 2
+	if oops {
+		t.Error(`El puntaje del envido deberia de ser 2`)
+		return
+	}
+
+	oops = !(p.puntajes[Azul] == 2 && p.puntajes[Rojo] == 0)
+	if oops {
+		t.Error(`El puntaje del equipo azul deberia de ser 2`)
+		return
+	}
 }
 
-// CASO I (Rechazado) 		Envido	2/1
-func TestIRechazado(t *testing.T) {
-	// p := inicializar()
-	// tocarEnvido{}.hacer(&p, jacinto)
-	// responderNoQuiero{}.hacer(&p, pedro)
-	// oops = p.puntajes[Rojo] != 4+1
-	// if oops {
-	// 	t.Error("El resultado es incorrecto")
-	// 	return
-	// }
+func TestEnvidoNoQuiero(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
+	p.Ronda.setManojos(
+		[]Manojo{
+			Manojo{
+				Cartas: [3]Carta{ // envido: 13
+					Carta{Palo: Oro, Valor: 7},
+					Carta{Palo: Oro, Valor: 6},
+					Carta{Palo: Copa, Valor: 5},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{
+					Carta{Palo: Copa, Valor: 1},
+					Carta{Palo: Oro, Valor: 2},
+					Carta{Palo: Basto, Valor: 3},
+				},
+			},
+		},
+	)
+
+	p.SetSigJugada("Alvaro Envido")
+	p.SetSigJugada("Roro No-Quiero")
+	p.Esperar()
+
+	oops = p.Ronda.envido.estado != DESHABILITADO
+	if oops {
+		t.Error(`El estado del envido deberia de ser 'deshabilitado',
+		ya que fue aceptado por Roro`)
+		return
+	}
+
+	oops = p.Ronda.envido.puntaje != 1
+	if oops {
+		t.Error(`El puntaje del envido deberia de ser 1`)
+		return
+	}
+
+	oops = !(p.puntajes[Azul] == 1 && p.puntajes[Rojo] == 0)
+	if oops {
+		t.Error(`El puntaje del equipo rojo deberia de ser 1`)
+		return
+	}
 }
 
-// CASO II (Aceptado)		Real envido	 3/1
-func TestIIAceptado(t *testing.T) {
-	// p := inicializar()
-	// tocarRealEnvido{}.hacer(&p, jacinto)
-	// responderQuiero{}.hacer(&p, pedro)
-	// oops = p.puntajes[Rojo] != 4+3
-	// if oops {
-	// 	t.Error("El resultado es incorrecto")
-	// 	return
-	// }
+func TestRealEnvidoQuiero(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
+	p.Ronda.setManojos(
+		[]Manojo{
+			Manojo{
+				Cartas: [3]Carta{ // envido: 13
+					Carta{Palo: Oro, Valor: 7},
+					Carta{Palo: Oro, Valor: 6},
+					Carta{Palo: Copa, Valor: 5},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{
+					Carta{Palo: Copa, Valor: 1},
+					Carta{Palo: Oro, Valor: 2},
+					Carta{Palo: Basto, Valor: 3},
+				},
+			},
+		},
+	)
+
+	p.SetSigJugada("Alvaro Real-Envido")
+	p.SetSigJugada("Roro Quiero")
+	p.Esperar()
+
+	oops = p.Ronda.envido.estado != DESHABILITADO
+	if oops {
+		t.Error(`El estado del envido deberia de ser 'deshabilitado',
+		ya que fue aceptado por Roro`)
+		return
+	}
+
+	oops = !(p.Ronda.envido.puntaje == 3)
+	if oops {
+		t.Error(`El puntaje del envido deberia de ser 3`)
+		return
+	}
+
+	oops = !(p.puntajes[Azul] == 3 && p.puntajes[Rojo] == 0)
+	if oops {
+		t.Error(`El puntaje del equipo azul deberia de ser 3`)
+		return
+	}
 }
 
-// CASO II (Rechazado)		Real envido	 3/1
-func TestIIRechazado(t *testing.T) {
-	// p := inicializar()
-	// tocarRealEnvido{}.hacer(&p, jacinto)
-	// responderNoQuiero{}.hacer(&p, pedro)
-	// oops = p.puntajes[Rojo] != 4+1
-	// if oops {
-	// 	t.Error("El resultado es incorrecto")
-	// 	return
-	// }
+func TestRealEnvidoNoQuiero(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
+	p.Ronda.setManojos(
+		[]Manojo{
+			Manojo{
+				Cartas: [3]Carta{ // envido: 13
+					Carta{Palo: Oro, Valor: 7},
+					Carta{Palo: Oro, Valor: 6},
+					Carta{Palo: Copa, Valor: 5},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{
+					Carta{Palo: Copa, Valor: 1},
+					Carta{Palo: Oro, Valor: 2},
+					Carta{Palo: Basto, Valor: 3},
+				},
+			},
+		},
+	)
+
+	p.SetSigJugada("Alvaro Real-Envido")
+	p.SetSigJugada("Roro No-Quiero")
+	p.Esperar()
+
+	oops = p.Ronda.envido.estado != DESHABILITADO
+	if oops {
+		t.Error(`El estado del envido deberia de ser 'deshabilitado',
+		ya que fue aceptado por Roro`)
+		return
+	}
+
+	oops = !(p.Ronda.envido.puntaje == 1)
+	if oops {
+		t.Error(`El puntaje del envido deberia de ser 1`)
+		return
+	}
+
+	oops = !(p.puntajes[Azul] == 1 && p.puntajes[Rojo] == 0)
+	if oops {
+		t.Error(`El puntaje del equipo azul deberia de ser 1`)
+		return
+	}
 }
 
-// CASO III (Aceptado)		Falta envido	 x/1
-func TestIIIAceptado(t *testing.T) {
-	// p := inicializar()
-	// tocarFaltaEnvido{}.hacer(&p, jacinto)
-	// responderQuiero{}.hacer(&p, pedro)
-	// oops = p.puntajes[Rojo] != 4+16
-	// if oops {
-	// 	t.Error("El resultado es incorrecto")
-	// 	return
-	// }
+func TestFaltaEnvidoQuiero(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
+	p.Ronda.setManojos(
+		[]Manojo{
+			Manojo{
+				Cartas: [3]Carta{ // envido: 13
+					Carta{Palo: Oro, Valor: 7},
+					Carta{Palo: Oro, Valor: 6},
+					Carta{Palo: Copa, Valor: 5},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{
+					Carta{Palo: Copa, Valor: 1},
+					Carta{Palo: Oro, Valor: 2},
+					Carta{Palo: Basto, Valor: 3},
+				},
+			},
+		},
+	)
+
+	p.SetSigJugada("Alvaro Falta-Envido")
+	p.SetSigJugada("Roro Quiero")
+	p.Esperar()
+
+	oops = p.Ronda.envido.estado != DESHABILITADO
+	if oops {
+		t.Error(`El estado del envido deberia de ser 'deshabilitado',
+		ya que fue aceptado por Roro`)
+		return
+	}
+
+	oops = !(p.Ronda.envido.puntaje == 10)
+	if oops {
+		t.Errorf(`El puntaje del envido deberia de ser 10 %v`, p.Ronda.envido.puntaje)
+		return
+	}
+
+	oops = !(p.puntajes[Azul] == 10 && p.puntajes[Rojo] == 0)
+	if oops {
+		t.Error(`El puntaje del equipo azul deberia de ser 10`)
+		return
+	}
 }
 
 // CASO III (Rechazado)		Falta envido	 x/1
