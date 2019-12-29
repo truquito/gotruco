@@ -7,16 +7,8 @@ import (
 	// "os"
 )
 
-// todo:
-// sinopsis:
-// juan toca envido
-// pedro grita truco
-// que pasa??
+// todo: EnvidoTrucoRejected
 
-// sinopsis:
-// juan toca envido
-// pedro responde quiero
-// juan gana con 12 de envido vs 5 de pedro
 func TestEnvidoAceptado(t *testing.T) {
 	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
 	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
@@ -57,99 +49,103 @@ func TestEnvidoAceptado(t *testing.T) {
 	}
 }
 
-// sinopsis:
-// juan: envido
-// pedro: envido
-// todo: ??
-func TestDobleEnvido(t *testing.T) {
-	// p := getPartidaCustom1()
+func TestEnvidoEnvidoQuiero(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
+	p.Ronda.setManojos(
+		[]Manojo{
+			Manojo{
+				Cartas: [3]Carta{ // envido: 13
+					Carta{Palo: Oro, Valor: 7},
+					Carta{Palo: Oro, Valor: 6},
+					Carta{Palo: Copa, Valor: 5},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{
+					Carta{Palo: Copa, Valor: 1},
+					Carta{Palo: Oro, Valor: 2},
+					Carta{Palo: Basto, Valor: 3},
+				},
+			},
+		},
+	)
 
-	// p.Ronda.Print()
+	p.SetSigJugada("Alvaro Envido")
+	p.Esperar()
 
-	// // empieza primera ronda
-	// // empieza primera mano
+	oops = p.Ronda.envido.estado != ENVIDO
+	if oops {
+		t.Error("El estado del envido deberia de ser `envido`")
+		return
+	}
 
-	// // Juan toca envido
-	// jugada := tocarEnvido{}
-	// jugada.hacer(&p, &p.jugadores[0])
+	oops = p.Ronda.envido.puntaje != 2
+	if oops {
+		t.Error("El `puntaje` del envido deberia de ser 2")
+		return
+	}
 
-	// oops = p.Ronda.envido.estado != ENVIDO
-	// if oops {
-	// 	t.Error("El estado del envido deberia de ser `envido`")
-	// 	return
-	// }
+	p.SetSigJugada("Roro Envido")
+	p.Esperar()
 
-	// oops = p.Ronda.envido.puntaje != 2
-	// if oops {
-	// 	t.Error("El `puntaje` del envido deberia de ser 2")
-	// 	return
-	// }
+	oops = p.Ronda.envido.estado != ENVIDO
+	if oops {
+		t.Error(`El estado del envido deberia de ser 'envido', incluso luego de que
+		ambos Juan y Pedro lo hayan tocando`)
+		return
+	}
 
-	// // Pedro redobla el envido
-	// tocarEnvido{}.hacer(&p, &p.jugadores[1])
+	oops = p.Ronda.envido.puntaje != 4
+	if oops {
+		t.Error(`El puntaje del envido deberia ahora de ser '2 + 2 = 4'`)
+		return
+	}
 
-	// oops = p.Ronda.envido.estado != ENVIDO
-	// if oops {
-	// 	t.Error(`El estado del envido deberia de ser 'envido', incluso luego de que
-	// 	ambos Juan y Pedro lo hayan tocando`)
-	// 	return
-	// }
-
-	// oops = p.Ronda.envido.puntaje != 4
-	// if oops {
-	// 	t.Error(`El puntaje del envido deberia ahora de ser '2 + 2 = 4'`)
-	// 	return
-	// }
-
-	// responderQuiero{}.hacer(&p, &p.jugadores[0])
+	p.SetSigJugada("Alvaro Quiero")
+	p.Esperar()
 }
 
-// sinopsis:
-// Juan: envido
-// Pedro: envido
-// Juan: no quiero
-func TestDobleEnvidoNoAceptado(t *testing.T) {
-	// p := getPartidaCustom1()
+func TestEnvidoEnvidoNoQuiero(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
+	p.Ronda.setManojos(
+		[]Manojo{
+			Manojo{
+				Cartas: [3]Carta{ // envido: 13
+					Carta{Palo: Oro, Valor: 7},
+					Carta{Palo: Oro, Valor: 6},
+					Carta{Palo: Copa, Valor: 5},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{
+					Carta{Palo: Copa, Valor: 1},
+					Carta{Palo: Oro, Valor: 2},
+					Carta{Palo: Basto, Valor: 3},
+				},
+			},
+		},
+	)
 
-	// p.Ronda.Print()
+	p.SetSigJugada("Alvaro Envido")
+	p.SetSigJugada("Roro Envido")
+	p.SetSigJugada("Alvaro No-quiero")
+	p.Esperar()
 
-	// // empieza primera ronda
-	// // empieza primera mano
+	oops = p.Ronda.envido.estado != DESHABILITADO
+	if oops {
+		t.Error(`El estado del envido deberia de ser 'deshabilitado',
+		ya que fue no-querido por Alvaro`)
+		return
+	}
 
-	// // Juan toca envido
-	// jugada := tocarEnvido{}
-	// jugada.hacer(&p, &p.jugadores[0])
+	oops = p.puntajes[Rojo] != 3
+	if oops {
+		t.Error(`El puntaje del equipo de Roro deberia ser 3 (2 pts del 1er envido + 1 pt del 2do envido no querido)`)
+		return
+	}
 
-	// oops = p.Ronda.envido.estado != ENVIDO
-	// if oops {
-	// 	t.Error("El estado del envido deberia de ser `envido`")
-	// 	return
-	// }
-
-	// oops = p.Ronda.envido.puntaje != 2
-	// if oops {
-	// 	t.Error("El `puntaje` del envido deberia de ser 2")
-	// 	return
-	// }
-
-	// // Pedro redobla el envido
-	// tocarEnvido{}.hacer(&p, &p.jugadores[1])
-
-	// oops = p.Ronda.envido.estado != ENVIDO
-	// if oops {
-	// 	t.Error(`El estado del envido deberia de ser 'envido', incluso luego de que
-	// 	ambos Juan y Pedro lo hayan tocando`)
-	// 	return
-	// }
-
-	// oops = p.Ronda.envido.puntaje != 4
-	// if oops {
-	// 	t.Error(`El puntaje del envido deberia ahora de ser '2 + 2 = 4'`)
-	// 	return
-	// }
-
-	// // Juan responde 'no quiero'
-	// responderNoQuiero{}.hacer(&p, &p.jugadores[0])
 }
 
 // parte 2

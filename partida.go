@@ -8,6 +8,7 @@ import (
 
 var (
 	quit       chan bool    = make(chan bool, 1)
+	wait       chan bool    = make(chan bool, 1)
 	sigJugada  chan IJugada = make(chan IJugada, 1)
 	sigComando chan string  = make(chan string, 1)
 )
@@ -38,8 +39,8 @@ type Equipo int
 
 // rojo o azul
 const (
-	Rojo Equipo = 0
-	Azul Equipo = 1
+	Azul Equipo = 0
+	Rojo Equipo = 1
 )
 
 func (e Equipo) String() string {
@@ -86,6 +87,8 @@ func (p *Partida) getSigJugada() IJugada {
 		iJugada, valid = <-sigJugada
 		if !valid {
 			quit <- true
+		} else if iJugada == nil {
+			wait <- true
 		} else {
 			break
 		}
@@ -131,7 +134,7 @@ func (p *Partida) parseJugada(jugadaStr, jugadorStr string) (IJugada, error) {
 	// respuestas
 	case "quiero":
 		jugada = responderQuiero{Jugada{autor: manojo}}
-	case "no-Quiero":
+	case "no-quiero":
 		jugada = responderNoQuiero{Jugada{autor: manojo}}
 	case "tiene":
 		jugada = responderNoQuiero{Jugada{autor: manojo}}
@@ -271,6 +274,8 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 				switch cmd {
 				case "__TERMINAR__":
 					close(sigJugada)
+				case "__WAIT__":
+					sigJugada <- nil
 				default:
 					params := strings.Fields(cmd)
 					jugadaStr, jugadorStr := params[1], params[0]
@@ -299,4 +304,11 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 func (p *Partida) Terminar() {
 	sigComando <- "__TERMINAR__"
 	<-quit
+}
+
+// Esperar espera a que se consuma toda la fila de jugadas
+// para continuar; pero sin cerrar ningun canal
+func (p *Partida) Esperar() {
+	sigComando <- "__WAIT__"
+	<-wait
 }
