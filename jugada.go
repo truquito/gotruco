@@ -10,6 +10,7 @@ type IJugada interface {
 	getAutor() *Manojo
 }
 
+// Jugada ...
 type Jugada struct {
 	autor *Manojo
 }

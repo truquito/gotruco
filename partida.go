@@ -78,7 +78,19 @@ func (p *Partida) SetSigJugada(cmd string) error {
 // devuelve solo la siguiente jugada VALIDA
 // si no es valida es como si no hubiese pasado nada
 func (p *Partida) getSigJugada() IJugada {
-	return <-sigJugada
+	var (
+		iJugada IJugada
+		valid   bool
+	)
+	for {
+		iJugada, valid = <-sigJugada
+		if !valid {
+			quit <- true
+		} else {
+			break
+		}
+	}
+	return iJugada
 }
 
 func (p *Partida) parseJugada(jugadaStr, jugadorStr string) (IJugada, error) {
@@ -258,7 +270,7 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 			case cmd := <-sigComando:
 				switch cmd {
 				case "__TERMINAR__":
-					quit <- true
+					close(sigJugada)
 				default:
 					params := strings.Fields(cmd)
 					jugadaStr, jugadorStr := params[1], params[0]
@@ -280,11 +292,11 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	return &p, nil
 }
 
+// Terminar espera a que se consuma toda la fila de jugadas
+// si se quisiera terminar abruptamente se deberia
+// usar otro canal tipo `p.quit<-true` y agregarle
+// el caso que corresponda al `select{...}`
 func (p *Partida) Terminar() {
-	// espera a que se consuma toda la fila de jugadas
-	// si se quisiera terminar abruptamente se deberia
-	// usar otro canal tipo `p.quit<-true` y agregarle
-	// el caso que corresponda al `select{...}`
 	sigComando <- "__TERMINAR__"
 	<-quit
 }
