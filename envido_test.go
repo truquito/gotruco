@@ -7,8 +7,6 @@ import (
 	// "os"
 )
 
-// todo: EnvidoTrucoRejected
-
 func TestEnvidoAceptado(t *testing.T) {
 	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
 	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
@@ -155,15 +153,14 @@ func TestEnvidoEnvidoNoQuiero(t *testing.T) {
 // CASO I 		Envido	2/1
 // CASO II		Real envido	 3/1
 // CASO III		Falta envido	 x/1
-// CASO IV		Envido, envido	 4/2
-// CASO V			Envido y real envido	 5/2
-// CASO VI		Envido y falta envido	 x/2
-// CASO VII		Real envido y falta envido	x / 3
-// CASO VIII 	Envido, envido y falta envido	x / 4
-// CASO IX		Envido, envido y real envido	 7/4
-// CASO X			Envido, real envido y falta envido	 x/5
-// CASO XI		Envido, envido, real envido y falta envido	 x/7
-// donde x = Lo que le falta al rival para ganar
+// CASO IV		Envido + envido	 2+2/2+1
+// CASO V		Envido + real envido	 2+3/2+1
+// CASO VI		Envido + falta envido	 2+x/2+1
+// CASO VII		Real envido + falta envido	3+x / 3+1
+// CASO VIII 	Envido + envido + falta envido	2+2+x / 2+2+1
+// CASO IX		Envido + envido + real envido	 2+2+3/2+2+1
+// CASO X		Envido + real envido + falta envido	 2+3+x/2+3+1
+// CASO XI		Envido + envido + real envido + falta envido	 2+2+3+x/2+2+3+1
 
 /* CONTEXTO */
 // - Segunda ronda en juego; primera mano
@@ -174,14 +171,6 @@ func TestEnvidoEnvidoNoQuiero(t *testing.T) {
 // - Jacinto (mano & turno)
 // - Patricio
 
-func inicializar() Partida {
-	p := partida4JugadoresEnvidoTesting
-	p.Ronda.singleLinking(p.jugadores)
-	p.Ronda.getManoActual().repartidor = p.Ronda.elMano - 1
-	return p
-}
-
-// CASO I (Aceptado) 		Envido	2/1
 func TestIAceptado(t *testing.T) {
 	// p := inicializar()
 	// tocarEnvido{}.hacer(&p, jacinto)

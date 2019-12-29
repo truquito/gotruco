@@ -1,3 +1,7 @@
+- hacer el test EnvidoTrucoRejected -> deberia de rejectear el truco porque "el envido esta primero"
+
+- test envido n-veces -> deberia tener un parate
+
 - hay que distinguir bien lo que son errores del sistema de lo que son errores de los jugadores.
     y setear bien los canales por los que se van a mostrar
     ejemplo:
