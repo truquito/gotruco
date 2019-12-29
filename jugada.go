@@ -594,11 +594,11 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 		} else {
 			switch e.estado {
 			case ENVIDO:
-				totalPts = e.puntaje - 2
+				totalPts = e.puntaje - 1
 			case REALENVIDO:
-				totalPts = e.puntaje - 3
+				totalPts = e.puntaje - 1
 			case FALTAENVIDO:
-				totalPts = e.puntaje
+				totalPts = e.puntaje + 1
 			}
 		}
 
