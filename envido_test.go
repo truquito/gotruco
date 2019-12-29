@@ -2,125 +2,20 @@ package truco
 
 import (
 	"testing"
-	// "fmt"
-	// "bufio"
-	// "os"
 )
 
-func TestEnvidoEnvidoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
-				},
-			},
-			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
-				},
-			},
-		},
-	)
-
-	p.SetSigJugada("Alvaro Envido")
-	p.Esperar()
-
-	oops = p.Ronda.envido.estado != ENVIDO
-	if oops {
-		t.Error("El estado del envido deberia de ser `envido`")
-		return
-	}
-
-	oops = p.Ronda.envido.puntaje != 2
-	if oops {
-		t.Error("El `puntaje` del envido deberia de ser 2")
-		return
-	}
-
-	p.SetSigJugada("Roro Envido")
-	p.Esperar()
-
-	oops = p.Ronda.envido.estado != ENVIDO
-	if oops {
-		t.Error(`El estado del envido deberia de ser 'envido', incluso luego de que
-		ambos Juan y Pedro lo hayan tocando`)
-		return
-	}
-
-	oops = p.Ronda.envido.puntaje != 4
-	if oops {
-		t.Error(`El puntaje del envido deberia ahora de ser '2 + 2 = 4'`)
-		return
-	}
-
-	p.SetSigJugada("Alvaro Quiero")
-	p.Esperar()
-}
-
-func TestEnvidoEnvidoNoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
-				},
-			},
-			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
-				},
-			},
-		},
-	)
-
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Roro Envido")
-	p.SetSigJugada("Alvaro No-quiero")
-	p.Esperar()
-
-	oops = p.Ronda.envido.estado != DESHABILITADO
-	if oops {
-		t.Error(`El estado del envido deberia de ser 'deshabilitado',
-		ya que fue no-querido por Alvaro`)
-		return
-	}
-
-	oops = p.puntajes[Rojo] != 3
-	if oops {
-		t.Error(`El puntaje del equipo de Roro deberia ser 3 (2 pts del 1er envido + 1 pt del 2do envido no querido)`)
-		return
-	}
-
-}
-
-// parte 2
-
-/* #CASOS = 11*2 = 22 */
-
-// CASO I 		Envido	2/1
-// CASO II		Real envido	 3/1
-// CASO III		Falta envido	 x/1
-// CASO IV		Envido + envido	 2+2/2+1
-// CASO V		Envido + real envido	 2+3/2+1
-// CASO VI		Envido + falta envido	 2+x/2+1
-// CASO VII		Real envido + falta envido	3+x / 3+1
-// CASO VIII 	Envido + envido + falta envido	2+2+x / 2+2+1
-// CASO IX		Envido + envido + real envido	 2+2+3/2+2+1
-// CASO X		Envido + real envido + falta envido	 2+3+x/2+3+1
-// CASO XI		Envido + envido + real envido + falta envido	 2+2+3+x/2+2+3+1
+// Tests:
+// Envido	2/1
+// Real envido	 3/1
+// Falta envido	 x/1
+// Envido + envido	 2+2/2+1
+// Envido + real envido	 2+3/2+1
+// Envido + falta envido	 2+x/2+1
+// Real envido + falta envido	3+x / 3+1
+// Envido + envido + falta envido	2+2+x / 2+2+1
+// Envido + envido + real envido	 2+2+3/2+2+1
+// Envido + real envido + falta envido	 2+3+x/2+3+1
+// Envido + envido + real envido + falta envido	 2+2+3+x/2+2+3+1
 
 func TestEnvidoQuiero(t *testing.T) {
 	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
@@ -341,7 +236,7 @@ func TestFaltaEnvidoQuiero(t *testing.T) {
 
 	oops = !(p.Ronda.envido.puntaje == 10)
 	if oops {
-		t.Errorf(`El puntaje del envido deberia de ser 10 %v`, p.Ronda.envido.puntaje)
+		t.Errorf(`El puntaje del envido deberia de ser 10`)
 		return
 	}
 
@@ -352,42 +247,154 @@ func TestFaltaEnvidoQuiero(t *testing.T) {
 	}
 }
 
-// CASO III (Rechazado)		Falta envido	 x/1
-func TestIIIRechazado(t *testing.T) {
-	// p := inicializar()
-	// tocarFaltaEnvido{}.hacer(&p, jacinto)
-	// responderNoQuiero{}.hacer(&p, pedro)
-	// oops = p.puntajes[Rojo] != 4+1
-	// if oops {
-	// 	t.Error("El resultado es incorrecto")
-	// 	return
-	// }
+func TestFaltaEnvidoNoQuiero(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
+	p.Ronda.setManojos(
+		[]Manojo{
+			Manojo{
+				Cartas: [3]Carta{ // envido: 13
+					Carta{Palo: Oro, Valor: 7},
+					Carta{Palo: Oro, Valor: 6},
+					Carta{Palo: Copa, Valor: 5},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{
+					Carta{Palo: Copa, Valor: 1},
+					Carta{Palo: Oro, Valor: 2},
+					Carta{Palo: Basto, Valor: 3},
+				},
+			},
+		},
+	)
+
+	p.SetSigJugada("Alvaro Falta-Envido")
+	p.SetSigJugada("Roro No-Quiero")
+	p.Esperar()
+
+	oops = p.Ronda.envido.estado != DESHABILITADO
+	if oops {
+		t.Error(`El estado del envido deberia de ser 'deshabilitado',
+		ya que fue no-querido por Roro`)
+		return
+	}
+
+	oops = !(p.Ronda.envido.puntaje == 1)
+	if oops {
+		t.Errorf(`El puntaje del envido deberia de ser 1`)
+		return
+	}
+
+	oops = !(p.puntajes[Azul] == 1 && p.puntajes[Rojo] == 0)
+	if oops {
+		t.Error(`El puntaje del equipo azul deberia de ser 1`)
+		return
+	}
 }
 
-// CASO IV (Aceptado)		Envido, envido	 4/2
-func TestIVAceptado(t *testing.T) {
-	// p := inicializar()
-	// tocarEnvido{}.hacer(&p, jacinto)
-	// tocarEnvido{}.hacer(&p, pedro)
-	// responderQuiero{}.hacer(&p, juan)
-	// oops = p.puntajes[Rojo] != 4+4
-	// if oops {
-	// 	t.Error("El resultado es incorrecto")
-	// 	return
-	// }
+func TestEnvidoEnvidoQuiero(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
+	p.Ronda.setManojos(
+		[]Manojo{
+			Manojo{
+				Cartas: [3]Carta{ // envido: 13
+					Carta{Palo: Oro, Valor: 7},
+					Carta{Palo: Oro, Valor: 6},
+					Carta{Palo: Copa, Valor: 5},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{
+					Carta{Palo: Copa, Valor: 1},
+					Carta{Palo: Oro, Valor: 2},
+					Carta{Palo: Basto, Valor: 3},
+				},
+			},
+		},
+	)
+
+	p.SetSigJugada("Alvaro Envido")
+	p.Esperar()
+
+	oops = p.Ronda.envido.estado != ENVIDO
+	if oops {
+		t.Error("El estado del envido deberia de ser `envido`")
+		return
+	}
+
+	oops = p.Ronda.envido.puntaje != 2
+	if oops {
+		t.Error("El `puntaje` del envido deberia de ser 2")
+		return
+	}
+
+	p.SetSigJugada("Roro Envido")
+	p.Esperar()
+
+	oops = p.Ronda.envido.estado != ENVIDO
+	if oops {
+		t.Error(`El estado del envido deberia de ser 'envido', incluso luego de que
+		ambos Juan y Pedro lo hayan tocando`)
+		return
+	}
+
+	oops = p.Ronda.envido.puntaje != 4
+	if oops {
+		t.Error(`El puntaje del envido deberia ahora de ser '2 + 2 = 4'`)
+		return
+	}
+
+	p.SetSigJugada("Alvaro Quiero")
+	p.Esperar()
 }
 
-// CASO IV (Rechazado)		Envido, envido	 4/2
-func TestIVRechazado(t *testing.T) {
-	// p := inicializar()
-	// tocarEnvido{}.hacer(&p, jacinto)
-	// tocarEnvido{}.hacer(&p, pedro)
-	// responderNoQuiero{}.hacer(&p, juan)
-	// oops = p.puntajes[Azul] != 3+2
-	// if oops {
-	// 	t.Error("El resultado es incorrecto")
-	// 	return
-	// }
+func TestEnvidoEnvidoNoQuiero(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
+	p.Ronda.setManojos(
+		[]Manojo{
+			Manojo{
+				Cartas: [3]Carta{ // envido: 13
+					Carta{Palo: Oro, Valor: 7},
+					Carta{Palo: Oro, Valor: 6},
+					Carta{Palo: Copa, Valor: 5},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{
+					Carta{Palo: Copa, Valor: 1},
+					Carta{Palo: Oro, Valor: 2},
+					Carta{Palo: Basto, Valor: 3},
+				},
+			},
+		},
+	)
+
+	p.SetSigJugada("Alvaro Envido")
+	p.SetSigJugada("Roro Envido")
+	p.SetSigJugada("Alvaro No-Quiero")
+	p.Esperar()
+
+	oops = p.Ronda.envido.estado != DESHABILITADO
+	if oops {
+		t.Error(`El estado del envido deberia de ser 'deshabilitado',
+		ya que fue no-querido por Roro`)
+		return
+	}
+
+	oops = !(p.Ronda.envido.puntaje == 2+1)
+	if oops {
+		t.Errorf(`El puntaje del envido deberia de ser 1`)
+		return
+	}
+
+	oops = !(p.puntajes[Azul] == 0 && p.puntajes[Rojo] == 2+1)
+	if oops {
+		t.Error(`El puntaje del equipo azul deberia de ser 0`)
+		return
+	}
 }
 
 // CASO V (Aceptado)			Envido y real envido	 5/2
