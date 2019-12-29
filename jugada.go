@@ -180,7 +180,8 @@ func (jugada tocarFaltaEnvido) eval(p *Partida) error {
 
 	pts := p.calcPtsFaltaEnvido(jug.equipo)
 
-	p.puntajes[jug.equipo] += pts
+	p.Ronda.envido.puntaje += pts
+	p.puntajes[jug.equipo] += p.Ronda.envido.puntaje
 	fmt.Printf(`>> La falta envido la gano %s con %v, +%v puntos
 	para el equipo %s`+"\n",
 		jug.nombre, max, p.Ronda.envido.puntaje, jug.equipo)
