@@ -2,64 +2,10 @@ package truco
 
 import (
 	"testing"
-	"time"
 	// "fmt"
 	// "bufio"
 	// "os"
 )
-
-func getPartidaCustom1() Partida {
-
-	cantJugadores := 2
-	p := Partida{
-		puntuacion:    a20,
-		puntaje:       0,
-		cantJugadores: cantJugadores, // puede ser 2, 4 o 6
-		jugadores:     getDefaultJugadores(2),
-		Ronda: Ronda{
-			manoEnJuego: primera,
-			elMano:      0,
-			turno:       0,
-			envido:      Envido{puntaje: 0, estado: NOCANTADOAUN},
-			flor:        NOCANTADA,
-			truco:       NOCANTADO,
-			muestra:     Carta{Palo: Espada, Valor: 1},
-			manojos: []Manojo{
-				Manojo{
-					Cartas: [3]Carta{ // envido: 13
-						Carta{Palo: Oro, Valor: 7},
-						Carta{Palo: Oro, Valor: 6},
-						Carta{Palo: Copa, Valor: 5},
-					},
-					jugador: nil,
-				},
-				Manojo{
-					Cartas: [3]Carta{
-						Carta{Palo: Copa, Valor: 1},
-						Carta{Palo: Oro, Valor: 2},
-						Carta{Palo: Basto, Valor: 3},
-					},
-					jugador: nil,
-				},
-			},
-			manos: make([]Mano, 3),
-		},
-	}
-	p.puntajes[Rojo] = 0
-	p.puntajes[Azul] = 0
-
-	p.Ronda.singleLinking(p.jugadores)
-
-	go func() {
-		for {
-			sigJugada := p.getSigJugada()
-			sigJugada.hacer(&p)
-		}
-	}()
-
-	p.Ronda.getManoActual().repartidor = p.Ronda.elMano
-	return p
-}
 
 // todo:
 // sinopsis:
@@ -67,77 +13,48 @@ func getPartidaCustom1() Partida {
 // pedro grita truco
 // que pasa??
 
-func TestEnvido1(t *testing.T) {
-
-	p := getPartidaCustom1()
-
-	// empieza primera ronda
-	// empieza primera mano
-
-	// Juan toca envido
-	p.SetSigJugada("Alvaro Envido")
-
-	oops = p.Ronda.envido.estado != ENVIDO
-	if oops {
-		t.Error("El estado del envido deberia de ser `envido`")
-		return
-	}
-
-	oops = p.Ronda.envido.puntaje != 2
-	if oops {
-		t.Error("El `puntaje` del envido deberia de ser 2")
-		return
-	}
-
-	// Pedro responde 'quiero'
-	p.SetSigJugada("Pedro Quiero") // no estoy recibiendo output
-
-	time.Sleep(60 * time.Minute)
-
-}
-
 // sinopsis:
 // juan toca envido
 // pedro responde quiero
 // juan gana con 12 de envido vs 5 de pedro
 func TestEnvidoAceptado(t *testing.T) {
-	// p := getPartidaCustom1()
-	// p.Ronda.Print()
+	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
+	p.Ronda.setManojos(
+		[]Manojo{
+			Manojo{
+				Cartas: [3]Carta{ // envido: 13
+					Carta{Palo: Oro, Valor: 7},
+					Carta{Palo: Oro, Valor: 6},
+					Carta{Palo: Copa, Valor: 5},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{
+					Carta{Palo: Copa, Valor: 1},
+					Carta{Palo: Oro, Valor: 2},
+					Carta{Palo: Basto, Valor: 3},
+				},
+			},
+		},
+	)
 
-	// // empieza primera ronda
-	// // empieza primera mano
+	p.SetSigJugada("Alvaro Envido")
+	p.SetSigJugada("Roro Quiero")
+	p.Terminar()
 
-	// // Juan toca envido
-	// jugada := tocarEnvido{}
-	// jugada.hacer(&p, &p.jugadores[0])
+	oops = p.Ronda.envido.estado != DESHABILITADO
+	if oops {
+		t.Error(`El estado del envido deberia de ser 'deshabilitado',
+		ya que fue aceptado por Pedro`)
+		return
+	}
 
-	// oops = p.Ronda.envido.estado != ENVIDO
-	// if oops {
-	// 	t.Error("El estado del envido deberia de ser `envido`")
-	// 	return
-	// }
-
-	// oops = p.Ronda.envido.puntaje != 2
-	// if oops {
-	// 	t.Error("El `puntaje` del envido deberia de ser 2")
-	// 	return
-	// }
-
-	// // Pedro responde 'quiero'
-	// responderQuiero{}.hacer(&p, &p.jugadores[1])
-
-	// oops = p.Ronda.envido.estado != DESHABILITADO
-	// if oops {
-	// 	t.Error(`El estado del envido deberia de ser 'deshabilitado',
-	// 	ya que fue aceptado por Pedro`)
-	// 	return
-	// }
-
-	// oops = p.Ronda.envido.puntaje != 2
-	// if oops {
-	// 	t.Error(`El puntaje del envido deberia de ser 2`)
-	// 	return
-	// }
+	oops = p.Ronda.envido.puntaje != 2
+	if oops {
+		t.Error(`El puntaje del envido deberia de ser 2`)
+		return
+	}
 }
 
 // sinopsis:
