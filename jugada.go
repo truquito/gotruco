@@ -564,24 +564,14 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 	// - CASO II: se grito el truco (o similar)
 	// en caso contrario, es incorrecto -> error
 
-	// CASO I: se toco el envido (o similar)
 	e := &p.Ronda.envido
 	elEnvidoEsRespondible := e.estado >= ENVIDO
+	elTrucoEsRespondible := p.Ronda.truco >= TRUCO
+
 	if elEnvidoEsRespondible {
 		fmt.Printf(">> %s responde no quiero\n", jugada.autor.jugador.nombre)
 
-		// se pasa a calcular el puntaje correspondiente:
-		// si se canto envido solo 1 vez: total = 1 pts
-		// si se canto real envido solo 1 vez: total = 1 pts
-		// si se canto falta envido solo 1 vez: total = 1 pts
-		// conclusion: si Envido.puntaje <= 3 -> total = 1 pts
-		// si no:
 		//	no se toma en cuenta el puntaje total del ultimo toque
-		// 	~ se resta de 'Envido.puntaje' el puntaje correspondiente
-		//		del ultmo toque:
-		//			-2pts si el ultimo toque fue envido
-		//			-3pts si el ultmo toque fue real envido
-		// 			-0pts si el ultimo toque fue falta envido
 
 		var totalPts int
 
@@ -600,12 +590,10 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 		fmt.Printf(`>> +%v puntos para el equipo %s`+"\n",
 			totalPts, e.cantadoPor.equipo)
 
-	}
+		return nil
 
-	// CASO II: se grito truco
-	elTrucoEsRespondible := p.Ronda.truco >= TRUCO
-	if elTrucoEsRespondible {
-
+	} else if elTrucoEsRespondible {
+		return nil
 	}
 
 	// si no, esta respondiendo al pedo
