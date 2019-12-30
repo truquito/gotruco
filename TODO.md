@@ -1,3 +1,10 @@
+-   no deberia poder auto quererse   (ni auto no-quererse)
+    p.SetSigJugada("Alvaro Envido")
+	p.SetSigJugada("Roro Envido")
+	p.SetSigJugada("Alvaro Real-Envido")
+	p.SetSigJugada("Roro Falta-Envido")
+	p.SetSigJugada("Roro Quiero")
+
 - hacer el test EnvidoTrucoRejected -> deberia de rejectear el truco porque "el envido esta primero"
 
 - test envido n-veces -> deberia tener un parate

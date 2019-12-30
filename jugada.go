@@ -585,30 +585,20 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 
 		var totalPts int
 
-		if e.puntaje <= 3 {
-			totalPts = 1
-			// fix caso especial
-			fix := e.estado == FALTAENVIDO && e.puntaje > 2
-			if fix {
-				totalPts = e.puntaje
-			}
-		} else {
-			switch e.estado {
-			case ENVIDO:
-				totalPts = e.puntaje - 1
-			case REALENVIDO:
-				totalPts = e.puntaje - 1
-			case FALTAENVIDO:
-				totalPts = e.puntaje + 1
-			}
+		switch e.estado {
+		case ENVIDO:
+			totalPts = e.puntaje - 1
+		case REALENVIDO:
+			totalPts = e.puntaje - 2
+		case FALTAENVIDO:
+			totalPts = e.puntaje + 1
 		}
 
-		cantadoPor := e.cantadoPor
 		e.estado = DESHABILITADO
 		e.puntaje = totalPts
-		p.puntajes[cantadoPor.equipo] += totalPts
+		p.puntajes[e.cantadoPor.equipo] += totalPts
 		fmt.Printf(`>> +%v puntos para el equipo %s`+"\n",
-			totalPts, cantadoPor.equipo)
+			totalPts, e.cantadoPor.equipo)
 
 	}
 

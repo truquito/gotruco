@@ -11,21 +11,24 @@ GC = go
 # opciones de compilación
 GCFLAGS = run
 # opciones de testing
-TFLAGS = test -v
+TFLAGS = test -count=1
 
 # argumentos testing
-F  = main_test.go
-T  = TestTmp
+F  = file_test.go
+T  = TestName
 
 # dependencias
-DEPENDENCIAS = main.go ronda.go cartas.go mano.go manojo.go jugador.go jugada.go utils.go partida.go envido.go truco.go
+DEPENDENCIAS = cartas.go jugada.go partida.go utils.go jugador.go envido.go ronda.go mano.go testing_utils.go manojo.go
 
 # $^ se expande en todas las dependencias
 $(EJECUTABLE): $(DEPENDENCIAS)
 	$(GC) $(GCFLAGS) $^ #-o $@
 
-testing: $(DEPENDENCIAS)
+test: $(DEPENDENCIAS)
 	$(GC) $(TFLAGS) $(F) $^ -run $(T)
+
+ftest: $(DEPENDENCIAS)
+	$(GC) $(TFLAGS) $(F) $^
 
 # e.g., 
 # $ make testing F=main_test.go T=TestEnvidoI
