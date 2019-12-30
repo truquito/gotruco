@@ -5,6 +5,11 @@
 	p.SetSigJugada("Roro Falta-Envido")
 	p.SetSigJugada("Roro Quiero")
 
+-   test 2 vecees se va al mazo
+    p.SetSigJugada("Juan Flor")
+    p.SetSigJugada("Pedro Mazo")
+	p.SetSigJugada("Pedro Mazo")
+
 - hacer el test EnvidoTrucoRejected -> deberia de rejectear el truco porque "el envido esta primero"
 
 - test envido n-veces -> deberia tener un parate
