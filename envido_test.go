@@ -4,6 +4,8 @@ import (
 	"testing"
 )
 
+var oops = false
+
 // Tests:
 // Envido	2/1
 // Real envido	 3/1
@@ -1065,72 +1067,160 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	}
 }
 
-/* Tests de Youtube */
-func TestYTEnvidoCalc(t *testing.T) {
-	// p := partidaYT1
-	// p.Ronda.singleLinking(p.jugadores)
-	// p.Ronda.getManoActual().repartidor = 5
+/* Tests de calculos */
+func TestCalcEnvido(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"A", "C", "E"}, []string{"B", "D", "F"})
+	p.puntajes[Azul] = 4
+	p.puntajes[Rojo] = 3
+	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
+	p.Ronda.setManojos(
+		[]Manojo{
+			Manojo{
+				Cartas: [3]Carta{ // envido: 26
+					Carta{Palo: Oro, Valor: 6},
+					Carta{Palo: Oro, Valor: 12},
+					Carta{Palo: Copa, Valor: 5},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{ // envido: 20
+					Carta{Palo: Copa, Valor: 12},
+					Carta{Palo: Copa, Valor: 11},
+					Carta{Palo: Basto, Valor: 3},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{ // envido: 28
+					Carta{Palo: Copa, Valor: 2},
+					Carta{Palo: Copa, Valor: 6},
+					Carta{Palo: Basto, Valor: 1},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{ // envido: 25
+					Carta{Palo: Oro, Valor: 2},
+					Carta{Palo: Oro, Valor: 3},
+					Carta{Palo: Basto, Valor: 2},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{ // envido: 33
+					Carta{Palo: Basto, Valor: 6},
+					Carta{Palo: Basto, Valor: 7},
+					Carta{Palo: Oro, Valor: 5},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{ // envido: 27
+					Carta{Palo: Copa, Valor: 3},
+					Carta{Palo: Copa, Valor: 4},
+					Carta{Palo: Oro, Valor: 4},
+				},
+			},
+		},
+	)
 
-	// expected := []int{26, 20, 28, 25, 33, 27}
-	// for i, jugador := range p.jugadores {
-	// 	got := jugador.manojo.calcularEnvido(p.Ronda.muestra)
-	// 	oops = expected[i] != got
-	// 	if oops {
-	// 		t.Errorf(
-	// 			`El resultado del envido del jugador %s es incorrecto.
-	// 			\nEXPECTED: %v
-	// 			\nGOT: %v`,
-	// 			jugador.nombre, expected[i], got)
-	// 		return
-	// 	}
-	// }
+	expected := []int{26, 20, 28, 25, 33, 27}
+	for i, manojo := range p.Ronda.manojos {
+		got := manojo.calcularEnvido(p.Ronda.muestra)
+		oops = expected[i] != got
+		if oops {
+			t.Errorf(
+				`El resultado del envido del jugador %s es incorrecto.
+				\nEXPECTED: %v
+				\nGOT: %v`,
+				manojo.jugador.nombre, expected[i], got)
+			return
+		}
+	}
 
-}
+	p.SetSigJugada("D Envido")
+	p.SetSigJugada("C Quiero")
+	p.Esperar()
 
-func TestYTEnvidoI(t *testing.T) {
-	// p := partidaYT1
-	// p.Ronda.singleLinking(p.jugadores)
-	// p.Ronda.getManoActual().repartidor = 5
+	oops = !(p.puntajes[Azul] == 4+2)
+	if oops {
+		t.Error("El resultado es incorrecto")
+		return
+	}
 
-	// tocarEnvido{}.hacer(&p, D)
-	// responderQuiero{}.hacer(&p, C)
-	// oops = p.puntajes[Rojo] != 4+2
-	// if oops {
-	// 	t.Error("El resultado es incorrecto")
-	// 	return
-	// }
 }
 
 func TestYTEnvidoCalcII(t *testing.T) {
-	// p := partidaYT2
-	// p.Ronda.singleLinking(p.jugadores)
-	// p.Ronda.getManoActual().repartidor = 5
+	p, _ := NuevaPartida(a20, []string{"A", "C", "E"}, []string{"B", "D", "F"})
+	p.puntajes[Azul] = 4
+	p.puntajes[Rojo] = 3
+	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
+	p.Ronda.setManojos(
+		[]Manojo{
+			Manojo{
+				Cartas: [3]Carta{ // envido: 21
+					Carta{Palo: Basto, Valor: 1},
+					Carta{Palo: Basto, Valor: 12},
+					Carta{Palo: Copa, Valor: 5},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{ // envido: 23
+					Carta{Palo: Oro, Valor: 12},
+					Carta{Palo: Oro, Valor: 3},
+					Carta{Palo: Basto, Valor: 4},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{ // envido: 23
+					Carta{Palo: Basto, Valor: 10},
+					Carta{Palo: Copa, Valor: 6},
+					Carta{Palo: Basto, Valor: 3},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{ // envido: 30
+					Carta{Palo: Oro, Valor: 6},
+					Carta{Palo: Oro, Valor: 4},
+					Carta{Palo: Copa, Valor: 1},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{ // envido: 30
+					Carta{Palo: Basto, Valor: 6},
+					Carta{Palo: Basto, Valor: 4},
+					Carta{Palo: Oro, Valor: 1},
+				},
+			},
+			Manojo{
+				Cartas: [3]Carta{ // envido: 31
+					Carta{Palo: Espada, Valor: 5},
+					Carta{Palo: Copa, Valor: 4},
+					Carta{Palo: Espada, Valor: 3},
+				},
+			},
+		},
+	)
 
-	// expected := []int{21, 23, 23, 30, 30, 31}
-	// for i, jugador := range p.jugadores {
-	// 	got := jugador.manojo.calcularEnvido(p.Ronda.muestra)
-	// 	oops = expected[i] != got
-	// 	if oops {
-	// 		t.Errorf(
-	// 			`El resultado del envido del jugador %s es incorrecto.
-	// 			\nEXPECTED: %v
-	// 			\nGOT: %v`,
-	// 			jugador.nombre, expected[i], got)
-	// 		return
-	// 	}
-	// }
-}
+	expected := []int{21, 23, 23, 30, 30, 31}
+	for i, manojo := range p.Ronda.manojos {
+		got := manojo.calcularEnvido(p.Ronda.muestra)
+		oops = expected[i] != got
+		if oops {
+			t.Errorf(
+				`El resultado del envido del jugador %s es incorrecto.
+				\nEXPECTED: %v
+				\nGOT: %v`,
+				manojo.jugador.nombre, expected[i], got)
+			return
+		}
+	}
 
-func TestYTEnvidoII(t *testing.T) {
-	// p := partidaYT2
-	// p.Ronda.singleLinking(p.jugadores)
-	// p.Ronda.getManoActual().repartidor = 5
+	p.SetSigJugada("D Envido")
+	p.SetSigJugada("C Quiero")
+	p.Esperar()
 
-	// tocarEnvido{}.hacer(&p, D)
-	// responderQuiero{}.hacer(&p, C)
-	// oops = p.puntajes[Azul] != 3+2
-	// if oops {
-	// 	t.Error("El resultado es incorrecto")
-	// 	return
-	// }
+	oops = !(p.puntajes[Rojo] == 3+2)
+	if oops {
+		t.Error("El resultado es incorrecto")
+		return
+	}
+
+	// error: C deberia decir: son buenas; pero no aparece
 }
