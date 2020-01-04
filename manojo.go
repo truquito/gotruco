@@ -11,8 +11,9 @@ const CantCartasManojo = 3
 
 // Manojo :
 type Manojo struct {
-	Cartas  [CantCartasManojo]Carta
-	jugador *Jugador
+	seFueAlMazo bool
+	Cartas      [CantCartasManojo]Carta
+	jugador     *Jugador
 }
 
 // tieneFlor devuelve true si el jugador tiene flor
@@ -106,11 +107,6 @@ func (manojo Manojo) Print() {
 	for i := range manojo.Cartas {
 		fmt.Printf("    - %s\n", manojo.Cartas[i].toString())
 	}
-}
-
-// Print imprime la info del manojo
-func (manojo Manojo) getPerfil() *Jugador {
-	return manojo.jugador
 }
 
 // tiene2DelMismoPalo devuelve 'true' si tiene dos cartas

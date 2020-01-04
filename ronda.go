@@ -122,7 +122,7 @@ func (r Ronda) Print() {
 
 	fmt.Printf("\nY la muestra es\n    - %s\n", r.muestra.toString())
 	fmt.Printf("\nEl mano actual es: %s\nEs el turno de %s\n\n",
-		r.getElMano().getPerfil().nombre, r.getElTurno().getPerfil().nombre)
+		r.getElMano().jugador.nombre, r.getElTurno().jugador.nombre)
 }
 
 // sig devuelve el `JugadorIdx` del
