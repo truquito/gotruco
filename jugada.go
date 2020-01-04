@@ -543,7 +543,7 @@ func (jugada responderQuiero) hacer(p *Partida) error {
 	}
 
 	// CASO II: se grito truco
-	elTrucoEsRespondible := p.Ronda.truco >= TRUCO
+	elTrucoEsRespondible := p.Ronda.truco.estado >= TRUCO
 	if elTrucoEsRespondible {
 
 	}
@@ -566,7 +566,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 
 	e := &p.Ronda.envido
 	elEnvidoEsRespondible := e.estado >= ENVIDO
-	elTrucoEsRespondible := p.Ronda.truco >= TRUCO
+	elTrucoEsRespondible := p.Ronda.truco.estado >= TRUCO
 
 	if elEnvidoEsRespondible {
 		fmt.Printf(">> %s responde no quiero\n", jugada.autor.jugador.nombre)

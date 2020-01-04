@@ -9,11 +9,16 @@ type EstadoTruco int
 
 // enums del truco
 const (
-	NOCANTADO EstadoTruco = 1
-	TRUCO     EstadoTruco = 2
-	RETRUCO   EstadoTruco = 3
-	VALE4     EstadoTruco = 4
+	NOCANTADO EstadoTruco = 0
+	TRUCO     EstadoTruco = 1
+	RETRUCO   EstadoTruco = 2
+	VALE4     EstadoTruco = 3
 )
+
+type truco struct {
+	cantadoPor *Manojo
+	estado     EstadoTruco
+}
 
 // Ronda :
 type Ronda struct {
@@ -26,9 +31,9 @@ type Ronda struct {
 	pies   [2]JugadorIdx
 
 	/* toques, gritos y cantos */
-	envido Envido      // Estado del envido, la primera o la mentira
-	flor   EstadoFlor  // Estado del envido, la primera o la mentira
-	truco  EstadoTruco // Estado del truco, la segunda o el rabón
+	envido Envido     // Estado del envido, la primera o la mentira
+	flor   EstadoFlor // Estado del envido, la primera o la mentira
+	truco  truco      // Estado del truco, la segunda o el rabón
 
 	/* cartas */
 	manojos []Manojo
@@ -320,10 +325,9 @@ func nuevaRonda(jugadores []Jugador) Ronda {
 		turno:       0,
 		envido:      Envido{puntaje: 0, estado: NOCANTADOAUN},
 		flor:        NOCANTADA,
-		truco:       NOCANTADO,
+		truco:       truco{cantadoPor: nil, estado: NOCANTADO},
 		manojos:     make([]Manojo, cantJugadores),
 		manos:       make([]Mano, 3),
-		// muestra:     ,
 	}
 
 	// reparto 3 cartas al azar a cada jugador

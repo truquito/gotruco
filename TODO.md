@@ -1,3 +1,6 @@
+- el autor del envido es un *Jugador; eso es deprected; deberia ser
+    *Manojo
+    
 -   no deberia poder auto quererse   (ni auto no-quererse)
     p.SetSigJugada("Alvaro Envido")
 	p.SetSigJugada("Roro Envido")
