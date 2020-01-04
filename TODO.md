@@ -1,3 +1,5 @@
+- cambiar estructuras, metodos y funciones que eran publicas (porque empezaban con mayuscula) eg. `struct Envido` por privadas `struct envido`
+
 - el autor del envido es un *Jugador; eso es deprected; deberia ser
     *Manojo
     
