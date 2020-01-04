@@ -316,6 +316,28 @@ func (r *Ronda) setMuestra(muestra Carta) {
 	r.muestra = muestra
 }
 
+/*
+ * Reparte 3 cartas al azar a cada manojo de c/jugador
+ * y 1 a la `muestra` (se las actualiza)
+ */
+func (r *Ronda) dealCards() {
+	cantJugadores := cap(r.manojos)
+	// genero `3*cantJugadores + 1` cartas al azar
+	randomCards := getCartasRandom(3*cantJugadores + 1)
+
+	for numJugador := 0; numJugador < cantJugadores; numJugador++ {
+		for numCarta := 0; numCarta < 3; numCarta++ {
+			cartaID := CartaID(randomCards[3*numJugador+numCarta])
+			carta := nuevaCarta(cartaID)
+			r.manojos[numJugador].Cartas[numCarta] = carta
+		}
+	}
+
+	// la ultima es la muestra
+	n := cap(randomCards)
+	r.muestra = nuevaCarta(CartaID(randomCards[n-1]))
+}
+
 // nuevaRonda : crea una nueva ronda al azar
 func nuevaRonda(jugadores []Jugador) Ronda {
 	cantJugadores := len(jugadores)
@@ -332,7 +354,7 @@ func nuevaRonda(jugadores []Jugador) Ronda {
 
 	// reparto 3 cartas al azar a cada jugador
 	// y ademas una muestra, tambien al azar.
-	dealCards(&ronda.manojos, &ronda.muestra)
+	ronda.dealCards()
 
 	// // hago el SINGLE-linking "jugadores <- manojos"
 	ronda.singleLinking(jugadores)

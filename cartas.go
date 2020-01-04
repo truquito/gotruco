@@ -176,7 +176,7 @@ func (i CartaID) getValor() int {
 }
 
 // Devuelve la `Carta` correspondiente al ID i
-func newCarta(i CartaID) Carta {
+func nuevaCarta(i CartaID) Carta {
 	return Carta{
 		Palo:  i.getPalo(),
 		Valor: i.getValor(),
@@ -196,26 +196,4 @@ func getCartasRandom(n int) []int {
 	}
 
 	return randomSample
-}
-
-/*
- * Reparte 3 cartas al azar a cada manojo de c/jugador
- * y 1 a la `muestra` (se las actualiza)
- */
-func dealCards(manojos *[]Manojo, muestra *Carta) {
-	cantJugadores := cap(*manojos)
-	// genero `3*cantJugadores + 1` cartas al azar
-	randomCards := getCartasRandom(3*cantJugadores + 1)
-
-	for numJugador := 0; numJugador < cantJugadores; numJugador++ {
-		for numCarta := 0; numCarta < 3; numCarta++ {
-			cartaID := CartaID(randomCards[3*numJugador+numCarta])
-			carta := newCarta(cartaID)
-			(*manojos)[numJugador].Cartas[numCarta] = carta
-		}
-	}
-
-	// la ultima es la muestra
-	n := cap(randomCards)
-	*muestra = newCarta(CartaID(randomCards[n-1]))
 }
