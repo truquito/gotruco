@@ -168,16 +168,6 @@ func (p *Partida) getJugador(jIdx JugadorIdx) *Jugador {
 	return &p.jugadores[jIdx]
 }
 
-// sig devuelve el `JugadorIdx` del
-// jugador siguiente a j
-func (p *Partida) sig(j JugadorIdx) JugadorIdx {
-	esElUltimo := int(j) == p.cantJugadores-1
-	if esElUltimo {
-		return 0
-	}
-	return j + 1
-}
-
 // NoAcabada retorna true si la partida acabo
 func (p *Partida) NoAcabada() bool {
 	return p.getMaxPuntaje() < p.puntuacion.toInt()
