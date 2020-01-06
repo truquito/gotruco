@@ -1,3 +1,30 @@
+- jugada@618:
+    cambiar aPartirDe
+    que intenta obtener la posicion del jugador a partir de su "Perfil"
+    PARA ELLO BORRAR LA FUNCION EN UTILS:
+    obtenerIdx(jugador *Jugador, jugadores []Jugador) (JugadorIdx, error)
+
+    e ir arreglando los problemas usando la siguiente recomendacion:
+
+    SOLUCION: QUE EN LA STRUCT DEL ENVIDO EL PUNTERO SEA A EL MANOJO NO AL PERFIL;
+    luego usar p.Ronda.getPerfil( p.Ronda.envido.cantadoPor )
+
+    
+
+- eliminar p.getJugador() y usar Ronda.getManojo()
+
+- JugadorIdx al pedo?
+
+- probar una ronda de envidos donde el mano es el ultimo jugador
+    probablemente de error out of index porque esta mal programadao
+    el get ronda.Envidos()
+
+- hay redundancia entre cantarFloresSiLasHay y cantarFlores
+
+- hacer getElEnvido() con indices
+
+- eliminar los metodos .eval() que se usan en los .quiero() y ponerlos directamente ahi
+
 - al cantar el envido -> si se estaba jugando el truco, ponerlo en no jjugado aun?
 
 - error: el que canta flor se puede ir al mazo sin que nadie haya respondido nada

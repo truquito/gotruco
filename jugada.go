@@ -527,6 +527,23 @@ type gritarReTruco struct {
 }
 
 func (jugada gritarReTruco) hacer(p *Partida) error {
+	// checkeos:
+	noSeFueAlMazo := jugada.autor.seFueAlMazo == false
+	trucoEnJuego := p.Ronda.truco.estado == TRUCO
+	esSuTurno := p.getJugador(p.Ronda.turno) == jugada.autor.jugador
+	noSeEstaJugandoElEnvido := p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.estado == DESHABILITADO
+	noSeEstaJugandoLaFlor := p.Ronda.flor == NOCANTADA || p.Ronda.flor == DESHABILITADA
+	esDelEquipoContrario := p.Ronda.truco.cantadoPor.jugador.equipo != jugada.autor.jugador.equipo
+	reTrucoHabilitado := noSeFueAlMazo && trucoEnJuego && esSuTurno && noSeEstaJugandoElEnvido && noSeEstaJugandoLaFlor && esDelEquipoContrario
+
+	if !reTrucoHabilitado {
+		return fmt.Errorf("No es posible cantar re-truco ahora")
+	}
+
+	fmt.Printf(">> %s grita re-truco\n", jugada.autor.jugador.nombre)
+	p.Ronda.truco.cantadoPor = jugada.autor
+	p.Ronda.truco.estado = RETRUCO
+
 	return nil
 }
 
@@ -535,6 +552,23 @@ type gritarVale4 struct {
 }
 
 func (jugada gritarVale4) hacer(p *Partida) error {
+	// checkeos:
+	noSeFueAlMazo := jugada.autor.seFueAlMazo == false
+	retrucoEnJuego := p.Ronda.truco.estado == RETRUCO
+	esSuTurno := p.getJugador(p.Ronda.turno) == jugada.autor.jugador
+	noSeEstaJugandoElEnvido := p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.estado == DESHABILITADO
+	noSeEstaJugandoLaFlor := p.Ronda.flor == NOCANTADA || p.Ronda.flor == DESHABILITADA
+	esDelEquipoContrario := p.Ronda.truco.cantadoPor.jugador.equipo != jugada.autor.jugador.equipo
+	vale4Habilitado := noSeFueAlMazo && retrucoEnJuego && esSuTurno && noSeEstaJugandoElEnvido && noSeEstaJugandoLaFlor && esDelEquipoContrario
+
+	if !vale4Habilitado {
+		return fmt.Errorf("No es posible cantar re-truco ahora")
+	}
+
+	fmt.Printf(">> %s grita re-truco\n", jugada.autor.jugador.nombre)
+	p.Ronda.truco.cantadoPor = jugada.autor
+	p.Ronda.truco.estado = VALE4
+
 	return nil
 }
 
@@ -544,12 +578,23 @@ type responderQuiero struct {
 
 func (jugada responderQuiero) hacer(p *Partida) error {
 	// se acepta una respuesta 'quiero' solo cuando:
-	// - CASO I: se toco el envido (o similar)
-	// - CASO II: se grito el truco (o similar)
+	// - CASO I: se toco un envite+ (con autor del equipo contario)
+	// - CASO II: se grito el truco+ (con autor del equipo contario)
 	// en caso contrario, es incorrecto -> error
 
-	// CASO I: se toco el envido (o similar)
-	elEnvidoEsRespondible := p.Ronda.envido.estado >= ENVIDO
+	elEnvidoEsRespondible := p.Ronda.envido.estado >= ENVIDO && p.Ronda.envido.cantadoPor != jugada.autor.jugador
+	// ojo: solo a la contraflor+ se le puede decir quiero; a la flor sola no
+	laContraFlorEsRespondible := p.Ronda.flor >= CONTRAFLOR && p.Ronda.envido.cantadoPor != jugada.autor.jugador
+	elTrucoEsRespondible := p.Ronda.truco.estado >= TRUCO && p.Ronda.truco.cantadoPor != jugada.autor
+
+	ok := elEnvidoEsRespondible || laContraFlorEsRespondible || elTrucoEsRespondible
+	if !ok {
+		// si no, esta respondiendo al pedo
+		return fmt.Errorf(`No hay nada \"que querer\"; ya que: el 
+		estado del envido no es "envido" (o mayor) y el estado del 
+		truco no es "truco" (o mayor)`)
+	}
+
 	if elEnvidoEsRespondible {
 		fmt.Printf(">> %s responde quiero\n", jugada.autor.jugador.nombre)
 		if p.Ronda.envido.estado == FALTAENVIDO {
@@ -560,16 +605,50 @@ func (jugada responderQuiero) hacer(p *Partida) error {
 		return tocarEnvido{Jugada{autor: jugada.autor}}.eval(p)
 	}
 
-	// CASO II: se grito truco
-	elTrucoEsRespondible := p.Ronda.truco.estado >= TRUCO
-	if elTrucoEsRespondible {
+	if laContraFlorEsRespondible {
+		// tengo que verificar si efectivamente tiene flor
+		tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.muestra)
 
+		if !tieneFlor {
+			return fmt.Errorf(`No tiene flor; la jugada es incompatible`)
+		}
+
+		// todo ok: tiene flor; se pasa a jugar:
+		// empieza cantando el autor del envite no el que "quizo"
+		aPartirDe, _ := obtenerIdx(p.Ronda.envido.cantadoPor, p.jugadores)
+		manojoConLaFlorGanadora, _, _ := p.Ronda.cantarFlores(aPartirDe)
+		if p.Ronda.flor == CONTRAFLOR {
+			// sumo +3 por cada flor (todas las flores de la ronda, que no se haya ido)
+			// al equipo del ganador
+			_, flores := p.Ronda.getFlores()
+			totalPts := 0
+			for _, m := range flores {
+				if !m.seFueAlMazo {
+					totalPts += 3
+				}
+			}
+			fmt.Printf(">> %s gano la contra flor. +%v puntos para el equipo %s\n",
+				manojoConLaFlorGanadora.jugador.nombre, totalPts, manojoConLaFlorGanadora.jugador.equipo)
+
+		} else {
+			// el equipo del ganador de la contraflor al resto
+			// gano la partida
+			equipoDelGanador := manojoConLaFlorGanadora.jugador.equipo
+			ptsFaltantes := p.puntuacion.toInt() - p.puntajes[equipoDelGanador]
+
+			fmt.Printf(">> %s gano la contra flor al resto: +%v puntos para el equipo %s\n",
+				manojoConLaFlorGanadora.jugador.nombre, ptsFaltantes, manojoConLaFlorGanadora.jugador.equipo)
+			fmt.Printf(">> el equipo %s gano la partida\n", manojoConLaFlorGanadora.jugador.equipo)
+
+		}
 	}
 
-	// si no, esta respondiendo al pedo
-	return fmt.Errorf(`No hay nada \"que querer\"; ya que: el 
-	estado del envido no es "envido" (o mayor) y el estado del 
-	truco no es "truco" (o mayor)`)
+	if elTrucoEsRespondible {
+		// todo
+	}
+
+	return nil
+
 }
 
 type responderNoQuiero struct {

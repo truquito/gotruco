@@ -285,6 +285,142 @@ func (r *Ronda) getElEnvido() (jIdx JugadorIdx,
 	return jIdx, max, stdOut
 }
 
+/**
+* cantarFlores computa la flor
+* @return `j *Manojo` Es el ptr al manojo con
+* la flor mas alta (i.e., ganador)
+* @return `max int` Es el valor numerico de la flor mas alta
+* @return `stdOut []string` Es conjunto ordenado de todos
+* los mensajes que normalmente se escucharian en una ronda
+* de flor en la vida real empezando desde jIdx
+* e.g.:
+* 	`stdOut[0] = Jacinto dice: "tengo 9"`
+*   `stdOut[1] = Patricio dice: "son buenas" (tenia 3)`
+*   `stdOut[2] = Pedro dice: "30 son mejores!"`
+*		`stdOut[3] = Juan dice: "33 son mejores!"`
+*
+* NOTA: todo: Eventualmente se cambiaria []string por algo
+* "mas serializable" para usar con el front-end
+ */
+func (r *Ronda) cantarFlores(aPartirDe JugadorIdx) (j *Manojo,
+	max int, stdOut []string) {
+
+	cantJugadores := len(r.manojos)
+
+	// decir flores en orden segun las reglas:
+	// empieza el autor del envite
+	// canta el siguiente en sentido anti-horario sii
+	// tiene MAS pts que el maximo actual y es de equipo
+	// contrario. de no ser asi: o bien "pasa" o bien dice
+	// "son buenas" dependiendo del caso
+	// asi hasta terminar una ronda completa sin decir nada
+
+	// calculo y cacheo todas las flores
+	flores := make([]int, cantJugadores)
+
+	// `yaDijeron` indica que jugador ya "dijo"
+	// si tenia mejor, o peor envido. Por lo tanto,
+	// ya no es tenido en cuenta.
+	yaDijeron := make([]bool, cantJugadores)
+
+	for i := range r.manojos {
+		flores[i], _ = r.manojos[i].calcFlor(r.muestra)
+		tieneFlor := flores[i] > 0
+		seFueAlMazo := r.manojos[i].seFueAlMazo == false
+		if tieneFlor && !seFueAlMazo {
+			yaDijeron[i] = false
+		} else {
+			yaDijeron[i] = true
+		}
+	}
+
+	// `jIdx` indica el jugador con la flor mas alta
+
+	// empieza el del parametro
+	if flores[aPartirDe] > 0 {
+		yaDijeron[aPartirDe] = true
+		out := fmt.Sprintf("   %s dice: \"tengo %v\"\n", r.manojos[aPartirDe].jugador.nombre,
+			flores[aPartirDe])
+		stdOut = append(stdOut, out)
+	}
+
+	// `todaviaNoDijeronSonMejores` se usa para
+	// no andar repitiendo "son bueanas" "son buenas"
+	// por cada jugador que haya jugado "de callado"
+	// y ahora resulte tener peor envido.
+	// agiliza el juego, de forma tal que solo se
+	// escucha decir "xx son mejores", "yy son mejores"
+	// "zz son mejores"
+	todaviaNoDijeronSonMejores := true
+	jIdx := aPartirDe
+	i := r.sig(aPartirDe)
+
+	// termina el bucle cuando se haya dado
+	// "una vuelta completa" de:aPartirDe hasta:aPartirDe
+	// ergo, cuando se "resetea" el iterador,
+	for i != aPartirDe {
+		todaviaEsTenidoEnCuenta := !yaDijeron[i]
+		if todaviaEsTenidoEnCuenta {
+
+			esDeEquipoContrario := r.manojos[i].jugador.equipo != r.manojos[jIdx].jugador.equipo
+			tieneEnvidoMasAlto := flores[i] > flores[jIdx]
+			tieneEnvidoIgual := flores[i] == flores[jIdx]
+			leGanaDeMano := leGanaDeMano(i, jIdx, r.elMano, cantJugadores)
+			sonMejores := tieneEnvidoMasAlto || (tieneEnvidoIgual && leGanaDeMano)
+
+			if sonMejores {
+				if esDeEquipoContrario {
+					out := fmt.Sprintf("   %s dice: \"%v son mejores!\"\n",
+						r.manojos[i].jugador.nombre, flores[i])
+					stdOut = append(stdOut, out)
+					jIdx = i
+					yaDijeron[i] = true
+					todaviaNoDijeronSonMejores = false
+					// se "resetea" el bucle
+					i = r.sig(aPartirDe)
+
+				} else /* es del mismo equipo */ {
+					// no dice nada si es del mismo equipo
+					// juega de callado & sigue siendo tenido
+					// en cuenta
+					i = r.sig(i)
+				}
+
+			} else /* tiene el envido mas chico */ {
+				if esDeEquipoContrario {
+					if todaviaNoDijeronSonMejores {
+						out := fmt.Sprintf("   %s dice: \"son buenas\" (tenia %v)\n",
+							r.manojos[i].jugador.nombre, flores[i])
+						stdOut = append(stdOut, out)
+						yaDijeron[i] = true
+						// pasa al siguiente
+					}
+					i = r.sig(i)
+				} else {
+					// es del mismo equipo pero tiene un envido
+					// mas bajo del que ya canto su equipo.
+					// ya no lo tengo en cuenta, pero no dice nada.
+					yaDijeron[i] = true
+					i = r.sig(i)
+				}
+			}
+
+		} else {
+			// si no es tenido en cuenta,
+			// simplemente pasar al siguiente
+			i = r.sig(i)
+		}
+	}
+
+	max = flores[jIdx]
+
+	return r.getManojo(jIdx), max, stdOut
+}
+
+func (r *Ronda) getManojo(jIdx JugadorIdx) *Manojo {
+	return &r.manojos[jIdx]
+}
+
 func (r *Ronda) singleLinking(jugadores []Jugador) {
 	cantJugadores := len(jugadores)
 	for i := 0; i < cantJugadores; i++ {
@@ -295,7 +431,7 @@ func (r *Ronda) singleLinking(jugadores []Jugador) {
 // todo: esto es ineficiente
 // getManojo devuelve el puntero al manojo,
 // dado un string que identifique al jugador duenio de ese manojo
-func (r *Ronda) getManojo(idJugador string) (*Manojo, error) {
+func (r *Ronda) getManojoByStr(idJugador string) (*Manojo, error) {
 	for i := range r.manojos {
 		if r.manojos[i].jugador.nombre == idJugador {
 			return &r.manojos[i], nil

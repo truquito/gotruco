@@ -99,7 +99,7 @@ func (p *Partida) getSigJugada() IJugada {
 func (p *Partida) parseJugada(jugadaStr, jugadorStr string) (IJugada, error) {
 	var jugada IJugada
 
-	manojo, err := p.Ronda.getManojo(jugadorStr)
+	manojo, err := p.Ronda.getManojoByStr(jugadorStr)
 	if err != nil {
 		return nil, fmt.Errorf("Usuario %s no encontrado", jugadorStr)
 	}
