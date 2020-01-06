@@ -23,7 +23,7 @@ type truco struct {
 // Ronda :
 type Ronda struct {
 	manoEnJuego          NumMano // Numero de mano: 1era 2da 3era
-	cantJugadoresEnJuego int     // Numero de jugadores que no se fueron al mazo
+	cantJugadoresEnJuego [2]int  // Numero de jugadores que no se fueron al mazo
 
 	/* Indices */
 	elMano JugadorIdx
@@ -116,7 +116,7 @@ func (r Ronda) setTurno() {
 // Print Imprime la informacion de la ronda
 func (r Ronda) Print() {
 	for i := range r.manojos {
-		r.manojos[i].jugador.Print()
+		fmt.Printf("%s:\n", r.manojos[i].jugador.nombre)
 		r.manojos[i].Print()
 	}
 
@@ -341,15 +341,17 @@ func (r *Ronda) dealCards() {
 // nuevaRonda : crea una nueva ronda al azar
 func nuevaRonda(jugadores []Jugador) Ronda {
 	cantJugadores := len(jugadores)
+	cantJugadoresPorEquipo := cantJugadores / 2
 	ronda := Ronda{
-		manoEnJuego: primera,
-		elMano:      0,
-		turno:       0,
-		envido:      Envido{puntaje: 0, estado: NOCANTADOAUN},
-		flor:        NOCANTADA,
-		truco:       truco{cantadoPor: nil, estado: NOCANTADO},
-		manojos:     make([]Manojo, cantJugadores),
-		manos:       make([]Mano, 3),
+		manoEnJuego:          primera,
+		cantJugadoresEnJuego: [2]int{cantJugadoresPorEquipo, cantJugadoresPorEquipo},
+		elMano:               0,
+		turno:                0,
+		envido:               Envido{puntaje: 0, estado: NOCANTADOAUN},
+		flor:                 NOCANTADA,
+		truco:                truco{cantadoPor: nil, estado: NOCANTADO},
+		manojos:              make([]Manojo, cantJugadores),
+		manos:                make([]Mano, 3),
 	}
 
 	// reparto 3 cartas al azar a cada jugador

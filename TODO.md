@@ -1,3 +1,9 @@
+- al cantar el envido -> si se estaba jugando el truco, ponerlo en no jjugado aun?
+
+- error: el que canta flor se puede ir al mazo sin que nadie haya respondido nada
+
+- esta duplicado el codigo de irse al mazo con el de "no quiero"
+
 - cambiar estructuras, metodos y funciones que eran publicas (porque empezaban con mayuscula) eg. `struct Envido` por privadas `struct envido`
 
 - el autor del envido es un *Jugador; eso es deprected; deberia ser

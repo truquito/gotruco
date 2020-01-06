@@ -209,6 +209,7 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 	if !ok {
 		return fmt.Errorf(`No es posible cantar flor`)
 	}
+
 	// se usa por si dicen "no quiero" -> se obtiene el equipo
 	// al que pertenece el que la canto en un principio para
 	// poder sumarle los puntos correspondientes
@@ -217,6 +218,7 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 	p.Ronda.envido.puntaje = 3
 	p.Ronda.envido.cantadoPor = jugada.autor.jugador
 	p.Ronda.flor = FLOR
+
 	// ahora checkeo si alguien tiene flor
 	// retorna TODOS los jugadores que tengan flor (si es que existen)
 	// aPartirDe, _ := obtenerIdx(j, p.jugadores)
@@ -501,6 +503,22 @@ type gritarTruco struct {
 }
 
 func (jugada gritarTruco) hacer(p *Partida) error {
+	// checkeos:
+	noSeFueAlMazo := jugada.autor.seFueAlMazo == false
+	trucoNoSeJugoAun := p.Ronda.truco.estado == NOCANTADO
+	esSuTurno := p.getJugador(p.Ronda.turno) == jugada.autor.jugador
+	noSeEstaJugandoElEnvido := p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.estado == DESHABILITADO
+	noSeEstaJugandoLaFlor := p.Ronda.flor == NOCANTADA || p.Ronda.flor == DESHABILITADA
+	trucoHabilitado := noSeFueAlMazo && trucoNoSeJugoAun && esSuTurno && noSeEstaJugandoElEnvido && noSeEstaJugandoLaFlor
+
+	if !trucoHabilitado {
+		return fmt.Errorf("No es posible cantar truco ahora")
+	}
+
+	fmt.Printf(">> %s grita truco\n", jugada.autor.jugador.nombre)
+	p.Ronda.truco.cantadoPor = jugada.autor
+	p.Ronda.truco.estado = TRUCO
+
 	return nil
 }
 
@@ -605,8 +623,105 @@ type irseAlMazo struct {
 	Jugada
 }
 
-// todo
 func (jugada irseAlMazo) hacer(p *Partida) error {
+	// checkeos:
+	yaSeFueAlMazo := jugada.autor.seFueAlMazo == false
+	seEstabaJugandoElEnvido := p.Ronda.envido.estado >= ENVIDO
+	seEstabaJugandoLaFlor := p.Ronda.flor >= FLOR
+	seEstabaJugandoElTruco := p.Ronda.truco.estado >= TRUCO
+
+	if yaSeFueAlMazo {
+		return fmt.Errorf("No es posible irse al mazo ahora")
+	}
+
+	// no se puede ir al mazo sii:
+	// 1. el fue el que canto el envido (y el envido esta en juego)
+	// 2. tampoco se puede ir al mazo si el canto la flor o similar
+	// 3. tampoco se puede ir al mazo si el grito el truco
+
+	noSePuedeIrPorElEnvite := (seEstabaJugandoElEnvido || seEstabaJugandoLaFlor) && p.Ronda.envido.cantadoPor == jugada.autor.jugador
+	// la de la flor es igual al del envido; porque es un envite
+	noSePuedeIrPorElTruco := seEstabaJugandoElTruco && p.Ronda.truco.cantadoPor == jugada.autor
+	if noSePuedeIrPorElEnvite || noSePuedeIrPorElTruco {
+		return fmt.Errorf("No es posible irse al mazo ahora")
+	}
+
+	// ok -> se va al mazo:
+	fmt.Printf(">> %s se va al mazo\n", jugada.autor.jugador.nombre)
+	jugada.autor.seFueAlMazo = true
+	equipoDelJugador := jugada.autor.jugador.equipo
+	p.Ronda.cantJugadoresEnJuego[equipoDelJugador]--
+	seFueronTodos := p.Ronda.cantJugadoresEnJuego[equipoDelJugador] == 0
+
+	if seFueronTodos {
+		// el equipo contrario gana la ronda
+		// y todo lo que estaba en juego hasta ahora
+		// envido; flor; truco;
+		// si no habia nada en juego -> suma 1 punto
+		if seEstabaJugandoElEnvido {
+			// cuenta como un "no quiero"
+
+			// codigo copiado de "no quiero"
+			//	no se toma en cuenta el puntaje total del ultimo toque
+			var totalPts int
+			e := &p.Ronda.envido
+			switch e.estado {
+			case ENVIDO:
+				totalPts = e.puntaje - 1
+			case REALENVIDO:
+				totalPts = e.puntaje - 2
+			case FALTAENVIDO:
+				totalPts = e.puntaje + 1
+			}
+			e.estado = DESHABILITADO
+			e.puntaje = totalPts
+			p.puntajes[e.cantadoPor.equipo] += totalPts
+			fmt.Printf(`>> +%v puntos del envite para el equipo %s`+"\n",
+				totalPts, e.cantadoPor.equipo)
+
+		}
+
+		if seEstabaJugandoLaFlor {
+			// cuenta como un "no quiero"
+			// segun el estado de la apuesta actual:
+			// los "me achico" no cuentan para la flor
+			// Flor		xcg(+3) / xcg(+3)
+			// Flor + Contra-Flor		xc(+3) / xCadaFlorDelQueHizoElDesafio(+3) + 1
+			// Flor + [Contra-Flor] + ContraFlorAlResto		~Falta Envido + *TODAS* las flores no achicadas / xcg(+3) + 1
+
+			// sumo todas las flores del equipo contrario
+			totalPts := 0
+
+			for _, m := range p.Ronda.manojos {
+				esDelEquipoContrario := p.Ronda.envido.cantadoPor.equipo != jugada.autor.jugador.equipo
+				tieneFlor, _ := m.tieneFlor(p.Ronda.muestra)
+				if tieneFlor && esDelEquipoContrario {
+					totalPts += 3
+				}
+			}
+
+			if p.Ronda.flor == CONTRAFLOR || p.Ronda.flor == CONTRAFLORALRESTO {
+				// si es contraflor o al resto
+				// se suma 1 por el `no quiero`
+				totalPts++
+			}
+
+			fmt.Printf(`>> +%v puntos para el equipo %s por las flores`+"\n",
+				totalPts, p.Ronda.envido.cantadoPor.equipo)
+
+		}
+
+		if seEstabaJugandoElTruco {
+			// cuenta como un "no quiero"
+			// todo
+		}
+
+		noHabiaNadaEnJuego := !(seEstabaJugandoElEnvido || seEstabaJugandoLaFlor || seEstabaJugandoElTruco)
+		if noHabiaNadaEnJuego {
+			equipoContrario := jugada.autor.jugador.getEquipoContrario()
+			p.puntajes[equipoContrario]++
+		}
+	}
 	return nil
 }
 

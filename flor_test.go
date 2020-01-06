@@ -187,6 +187,7 @@ func TestFlorFlorContraFlorQuiero(t *testing.T) {
 }
 
 // Tests:
-// Flor		xCadaFlorDelQueHizoElDesafio(+3) / xCadaFlorDelQueHizoElDesafio(+3)
-// Flor + Contra-Flor		xCadaFlorDelQueHizoElDesafio(+3) + 3 / xCadaFlorDelQueHizoElDesafio(+3) + 1
-// Flor + [Contra-Flor] + ContraFlorAlResto		x/4
+// los "me achico" no cuentan para la flor
+// Flor		xcg(+3) / xcg(+3)
+// Flor + Contra-Flor		xc(+3) / xCadaFlorDelQueHizoElDesafio(+3) + 1
+// Flor + [Contra-Flor] + ContraFlorAlResto		~Falta Envido + *TODAS* las flores no achicadas / xcg(+3) + 1
