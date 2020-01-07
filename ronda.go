@@ -9,11 +9,27 @@ type EstadoTruco int
 
 // enums del truco
 const (
-	NOCANTADO EstadoTruco = 0
-	TRUCO     EstadoTruco = 1
-	RETRUCO   EstadoTruco = 2
-	VALE4     EstadoTruco = 3
+	NOCANTADO EstadoTruco = iota
+	TRUCO
+	TRUCOQUERIDO
+	RETRUCO
+	RETRUCOQUERIDO
+	VALE4
+	VALE4QUERIDO
 )
+
+func (x EstadoTruco) toString() string {
+	var res string
+	switch x {
+	case TRUCO:
+		res = "Truco"
+	case RETRUCO:
+		res = "Re-Truco"
+	case VALE4:
+		res = "Vale-4"
+	}
+	return res
+}
 
 type truco struct {
 	cantadoPor *Manojo
