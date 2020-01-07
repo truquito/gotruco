@@ -156,6 +156,15 @@ func (p *Partida) getMaxPuntaje() int {
 	return p.puntajes[Azul]
 }
 
+// retorna el equipo que va ganando
+func (p *Partida) elQueVaGanando() Equipo {
+	vaGanandoRojo := p.puntajes[Rojo] > p.puntajes[Azul]
+	if vaGanandoRojo {
+		return Rojo
+	}
+	return Azul
+}
+
 // getPuntuacionMalas devuelve la mitad de la puntuacion
 // total jugable durante toda la partida
 func (p *Partida) getPuntuacionMalas() int {
@@ -182,15 +191,6 @@ func (p *Partida) estaEnMalas(e Equipo) bool {
 	return p.puntajes[e] < p.elChico()
 }
 
-// retorna el equipo que va ganando
-func (p *Partida) elQueVaGanando() Equipo {
-	vaGanandoRojo := p.puntajes[Rojo] > p.puntajes[Azul]
-	if vaGanandoRojo {
-		return Rojo
-	}
-	return Azul
-}
-
 // retorna la cantidad de puntos que le corresponderian
 // a `ganadorDelEnvite` si hubiese ganado un "Contra flor al resto"
 // sin tener en cuenta los puntos acumulados de envites anteriores
@@ -213,6 +213,22 @@ func (p *Partida) calcPtsFaltaEnvido(ganadorDelEnvite Equipo) int {
 	return loQueLeFaltaAlQUEvaGANANDOparaGanarElChico
 	//}
 
+}
+
+// retorna true si termino la partida
+func (p *Partida) sumarPuntos(e Equipo, totalPts int) bool {
+	p.puntajes[e] += totalPts
+	if p.NoAcabada() {
+		return false
+	}
+	fmt.Printf("Se acabo la partida! el ganador fue el equipo %s",
+		p.elQueVaGanando().String())
+	return true
+}
+
+func (p *Partida) nuevaRonda() {
+	fmt.Println("Empieza una nueva ronda")
+	p.Ronda = nuevaRonda(p.jugadores)
 }
 
 // NuevaPartida retorna nueva partida; error si hubo
@@ -245,7 +261,7 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	p.puntajes[Rojo] = 0
 	p.puntajes[Azul] = 0
 
-	p.Ronda = nuevaRonda(p.jugadores)
+	p.nuevaRonda()
 
 	go func() {
 		for {
