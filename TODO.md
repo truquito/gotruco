@@ -1,3 +1,24 @@
+- duda:
+    >A truco
+    >el evndio esta primer
+    *se juega el envido*
+    ahora el truco sigue en juego como si lo hubiese cantado A? o hay que volver a cantarlo?
+
+- checkeos de la gente que se fue al mazo no podria hacer nada:
+    eg:
+        los que se fueron al mazo pueden decir quiero/noquiero
+    idea solucion: que la struct Jugada de la que todas extienden tenga un metodo que checkeo eso:
+
+- revisar que todo lo que usa el estado del truco este bien luego del cambio de los estados que faltaban en el truco
+
+- empezar a usar:
+    // termino := p.sumarPuntos(p.Ronda.truco.cantadoPor.jugador.equipo, totalPts)
+    // if !termino {
+    // 	p.nuevaRonda()
+    // }
+
+- el no quiero falta la parte de la flor
+
 - jugada@618:
     cambiar aPartirDe
     que intenta obtener la posicion del jugador a partir de su "Perfil"
