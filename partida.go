@@ -221,12 +221,11 @@ func (p *Partida) sumarPuntos(e Equipo, totalPts int) bool {
 	if p.NoAcabada() {
 		return false
 	}
-	fmt.Printf("Se acabo la partida! el ganador fue el equipo %s",
-		p.elQueVaGanando().String())
 	return true
 }
 
 // evalua todas las cartas y decide que equipo gano
+// de ese ganador se setea el siguiente turno
 func (p *Partida) evaluarMano() {
 	// cual es la tirada-carta que gano la mano?
 	// ojo que puede salir parda
@@ -254,6 +253,7 @@ func (p *Partida) evaluarMano() {
 		mano.resultado = Empardada
 		mano.ganador = nil
 		fmt.Printf("La Mano resulta parda")
+		// no se cambia el turno
 
 	} else {
 		var tiradaGanadora tirarCarta
@@ -266,22 +266,36 @@ func (p *Partida) evaluarMano() {
 			mano.resultado = GanoAzul
 		}
 
+		// el turno pasa a ser el del mano.ganador
+		// pero se setea despues de evaluar la ronda
 		mano.ganador = tiradaGanadora.autor
 		fmt.Printf("La Mano la gano %s (equipo %s)",
 			mano.ganador.jugador.nombre, mano.ganador.jugador.equipo.String())
 	}
 
 	// se termino la ronda?
+	var empiezaNuevaRonda bool = false
 	if p.Ronda.manoEnJuego >= segunda {
-		p.evaluarRonda()
+		empiezaNuevaRonda = p.evaluarRonda()
+	}
+
+	// cuando termina la mano (y no se empieza una ronda) -> cambia de TRUNO
+	// cuando termina la ronda -> cambia de MANO
+	// para usar esto, antes se debe primero incrementar el turno
+	// incremento solo si no se empezo una nueva ronda
+	if !empiezaNuevaRonda {
+		p.Ronda.manoEnJuego++
+		p.Ronda.nextTurnoPosMano()
 	}
 }
 
 // se acabo la ronda?
-func (p *Partida) evaluarRonda() {
+// si se empieza una ronda nueva -> retorna true
+// si no se termino la ronda 	 -> retorna false
+func (p *Partida) evaluarRonda() bool {
 	imposibleQueSeHayaAcabado := p.Ronda.manoEnJuego == primera
 	if imposibleQueSeHayaAcabado {
-		return
+		return false
 	}
 
 	// de aca en mas ya se que hay al menos 2 manos jugadas
@@ -300,15 +314,14 @@ func (p *Partida) evaluarRonda() {
 	pardaPrimera := p.Ronda.manos[0].resultado == Empardada
 	pardaSegunda := p.Ronda.manos[1].resultado == Empardada
 	pardaTercera := p.Ronda.manos[2].resultado == Empardada
-	hubo2Pardas := pardaPrimera && pardaSegunda
 	seEstaJugandoLaSegunda := p.Ronda.manoEnJuego == segunda
-	noSeAcaboAun := seEstaJugandoLaSegunda && (hubo2Pardas || hayEmpate)
+	noSeAcaboAun := seEstaJugandoLaSegunda && hayEmpate
 
 	if noSeAcaboAun {
-		return
+		return false
 	}
 
-	// hay ganador:
+	// hay ganador -> ya se que al final voy a retornar un true
 	var ganador *Manojo
 
 	// primero el caso clasico: un equipo gano 2 o mas manos
@@ -382,26 +395,32 @@ func (p *Partida) evaluarRonda() {
 		totalPts = 4
 	}
 
-	// termino la ronda
 	terminoLaPartida := p.sumarPuntos(ganador.jugador.equipo, totalPts)
 
 	if !terminoLaPartida {
-		p.nuevaRonda()
+		// ahora se deberia de incrementar el mano
+		// y ser el turno de este
+		sigMano := p.Ronda.getSigMano()
+		p.nuevaRonda(sigMano)
 	} else {
 		p.byeBye()
 	}
 
+	return true // porque se empezo una nueva ronda
 }
 
 func (p *Partida) byeBye() {
 	if !p.NoAcabada() {
-		fmt.Printf("Termino la partida! BYE BYE!")
+		fmt.Printf("Se acabo la partida! el ganador fue el equipo %s\n\n",
+			p.elQueVaGanando().String())
+		fmt.Printf("BYE BYE!")
 	}
 }
 
-func (p *Partida) nuevaRonda() {
+func (p *Partida) nuevaRonda(elMano JugadorIdx) {
 	fmt.Println("Empieza una nueva ronda")
-	p.Ronda = nuevaRonda(p.jugadores)
+	p.Ronda = nuevaRonda(p.jugadores, elMano)
+	fmt.Printf("La mano y el turno es %s\n", p.Ronda.getElMano().jugador.nombre)
 }
 
 // NuevaPartida retorna nueva partida; error si hubo
@@ -435,7 +454,8 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	p.puntajes[Rojo] = 0
 	p.puntajes[Azul] = 0
 
-	p.nuevaRonda()
+	elMano := JugadorIdx(0)
+	p.nuevaRonda(elMano)
 
 	go func() {
 		for {
