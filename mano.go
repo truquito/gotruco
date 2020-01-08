@@ -39,6 +39,6 @@ type Mano struct {
 	cartasTiradas []tirarCarta
 }
 
-func (m *Mano) agregarCarta(cartaTirada tirarCarta) {
+func (m *Mano) agregarTirada(cartaTirada tirarCarta) {
 	m.cartasTiradas = append(m.cartasTiradas, cartaTirada)
 }
