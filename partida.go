@@ -226,6 +226,179 @@ func (p *Partida) sumarPuntos(e Equipo, totalPts int) bool {
 	return true
 }
 
+// evalua todas las cartas y decide que equipo gano
+func (p *Partida) evaluarMano() {
+	// cual es la tirada-carta que gano la mano?
+	// ojo que puede salir parda
+	// para ello primero busco las maximas de cada equipo
+	// y luego comparo entre estas para simplificar
+	// Obs: en caso de 2 jugadores del mismo que tiraron
+	// una carta con el mismo poder -> se queda con la primera
+	// es decir, la que "gana de mano"
+	maxPoder := [2]int{-1, -1}
+	var max [2]tirarCarta
+	tiradas := p.Ronda.getManoActual().cartasTiradas
+
+	for _, tirada := range tiradas {
+		poder := tirada.Carta.calcPoder(p.Ronda.muestra)
+		equipo := tirada.autor.jugador.equipo
+		if poder > maxPoder[equipo] {
+			maxPoder[equipo] = poder
+			max[equipo] = tirada
+		}
+	}
+
+	mano := p.Ronda.getManoActual()
+	esParda := maxPoder[Rojo] == maxPoder[Azul]
+	if esParda {
+		mano.resultado = Empardada
+		mano.ganador = nil
+		fmt.Printf("La Mano resulta parda")
+
+	} else {
+		var tiradaGanadora tirarCarta
+
+		if maxPoder[Rojo] > maxPoder[Azul] {
+			tiradaGanadora = max[Rojo]
+			mano.resultado = GanoRojo
+		} else {
+			tiradaGanadora = max[Azul]
+			mano.resultado = GanoAzul
+		}
+
+		mano.ganador = tiradaGanadora.autor
+		fmt.Printf("La Mano la gano %s (equipo %s)",
+			mano.ganador.jugador.nombre, mano.ganador.jugador.equipo.String())
+	}
+
+	// se termino la ronda?
+	if p.Ronda.manoEnJuego >= segunda {
+		p.evaluarRonda()
+	}
+}
+
+// se acabo la ronda?
+func (p *Partida) evaluarRonda() {
+	imposibleQueSeHayaAcabado := p.Ronda.manoEnJuego == primera
+	if imposibleQueSeHayaAcabado {
+		return
+	}
+
+	// de aca en mas ya se que hay al menos 2 manos jugadas
+	// asi que es seguro acceder a los indices 0 y 1 en:
+	// p.Ronda.manos[0] & p.Ronda.manos[1]
+
+	cantManosGanadas := [2]int{0, 0}
+	for i := 0; i < p.Ronda.manoEnJuego.toInt(); i++ {
+		mano := p.Ronda.manos[i]
+		if mano.resultado != Empardada {
+			cantManosGanadas[mano.ganador.jugador.equipo]++
+		}
+	}
+
+	hayEmpate := cantManosGanadas[Rojo] == cantManosGanadas[Azul]
+	pardaPrimera := p.Ronda.manos[0].resultado == Empardada
+	pardaSegunda := p.Ronda.manos[1].resultado == Empardada
+	pardaTercera := p.Ronda.manos[2].resultado == Empardada
+	hubo2Pardas := pardaPrimera && pardaSegunda
+	seEstaJugandoLaSegunda := p.Ronda.manoEnJuego == segunda
+	noSeAcaboAun := seEstaJugandoLaSegunda && (hubo2Pardas || hayEmpate)
+
+	if noSeAcaboAun {
+		return
+	}
+
+	// hay ganador:
+	var ganador *Manojo
+
+	// primero el caso clasico: un equipo gano 2 o mas manos
+	if cantManosGanadas[Rojo] >= 2 {
+		// agarro cualquier manojo de los rojos
+		// o bien es la primera o bien la segunda
+		if p.Ronda.manos[0].ganador.jugador.equipo == Rojo {
+			ganador = p.Ronda.manos[0].ganador
+		} else {
+			ganador = p.Ronda.manos[1].ganador
+		}
+	} else if cantManosGanadas[Azul] >= 2 {
+		// agarro cualquier manojo de los azules
+		// o bien es la primera o bien la segunda
+		if p.Ronda.manos[0].ganador.jugador.equipo == Azul {
+			ganador = p.Ronda.manos[0].ganador
+		} else {
+			ganador = p.Ronda.manos[1].ganador
+		}
+
+	} else {
+
+		// si llego aca es porque recae en uno de los
+		// siguientes casos: (Obs: se jugo la tercera)
+
+		// CASO 1. parda primera -> gana segunda
+		// CASO 2. parda segunda -> gana primera
+		// CASO 3. parda tercera -> gana primera
+		// CASO 4. parda primera & segunda -> gana tercera
+		// CASO 5. parda primera, segunda & tercera -> gana la mano
+
+		caso1 := pardaPrimera && !pardaSegunda && !pardaTercera
+		caso2 := !pardaPrimera && pardaSegunda && !pardaTercera
+		caso3 := !pardaPrimera && !pardaSegunda && pardaTercera
+		caso4 := pardaPrimera && pardaSegunda && !pardaTercera
+		caso5 := pardaPrimera && pardaSegunda && pardaTercera
+
+		if caso1 {
+			ganador = p.Ronda.manos[segunda].ganador
+
+		} else if caso2 {
+			ganador = p.Ronda.manos[primera].ganador
+
+		} else if caso3 {
+			ganador = p.Ronda.manos[primera].ganador
+
+		} else if caso4 {
+			ganador = p.Ronda.manos[tercera].ganador
+
+		} else if caso5 {
+			ganador = p.Ronda.getElMano()
+		}
+
+	}
+
+	fmt.Printf("La ronda ha sido ganada por el equipo %s\n",
+		ganador.jugador.equipo)
+
+	// ya sabemos el ganador ahora es el
+	// momento de sumar los puntos del truco
+	var totalPts int = 0
+
+	switch p.Ronda.truco.estado {
+	case NOCANTADO:
+		totalPts = 1
+	case TRUCOQUERIDO:
+		totalPts = 2
+	case RETRUCOQUERIDO:
+		totalPts = 3
+	default: // el vale 4
+		totalPts = 4
+	}
+
+	// termino la ronda
+	terminoLaPartida := p.sumarPuntos(ganador.jugador.equipo, totalPts)
+
+	if !terminoLaPartida {
+		p.nuevaRonda()
+	} else {
+		p.byeBye()
+	}
+
+}
+
+func (p *Partida) byeBye() {
+	if !p.NoAcabada() {
+		fmt.Printf("Termino la partida! BYE BYE!")
+	}
+}
+
 func (p *Partida) nuevaRonda() {
 	fmt.Println("Empieza una nueva ronda")
 	p.Ronda = nuevaRonda(p.jugadores)
@@ -246,8 +419,9 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	var jugadores []Jugador
 	// para cada rjo que agrego; le agrego tambien su mano
 	for i := range equipoRojo {
-		nuevoJugadorRojo := Jugador{equipoRojo[i], Rojo}
-		nuevoJugadorAzul := Jugador{equipoAzul[i], Azul}
+		// uso como id sus nombres
+		nuevoJugadorRojo := Jugador{equipoRojo[i], equipoRojo[i], Rojo}
+		nuevoJugadorAzul := Jugador{equipoAzul[i], equipoAzul[i], Azul}
 		jugadores = append(jugadores, nuevoJugadorAzul, nuevoJugadorRojo)
 	}
 
