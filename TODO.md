@@ -1,3 +1,5 @@
+- jugada@58 p.Ronda.sigTurno()
+
 - Ronda.getIdx es el nuevo ; utils.obtenerIdx es el viejo !!
     eventualmente se tendrian que ir los dos a la mierda
 
