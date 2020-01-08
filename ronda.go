@@ -125,7 +125,7 @@ func (r Ronda) setTurno() {
 		// si no, es turno del ganador de
 		// la mano anterior
 	} else {
-		r.turno = r.getManoAnterior().ganador
+		r.turno = JugadorIdx(r.getIdx(*r.getManoAnterior().ganador))
 	}
 }
 
@@ -150,6 +150,76 @@ func (r *Ronda) sig(j JugadorIdx) JugadorIdx {
 		return 0
 	}
 	return j + 1
+}
+
+// retorna el indice de un manojo
+func (r Ronda) getIdx(m Manojo) int {
+	var idx int
+	cantJugadores := len(r.manojos)
+	for idx = 0; idx < cantJugadores; idx++ {
+		esEse := r.manojos[idx].jugador.id == m.jugador.id
+		if esEse {
+			break
+		}
+	}
+	return idx
+}
+
+// usar sigHabilitado; esta es mas para uso interno
+// porque no necesariamente el manojo esta hablilitado
+// eg porque se fue al mazo
+// siguiente devuelve el puntero al manojo que le sigue
+func (r Ronda) siguiente(m Manojo) *Manojo {
+	idx := r.getIdx(m)
+	cantJugadores := len(r.manojos)
+	esElUltimo := idx == cantJugadores-1
+	if esElUltimo {
+		return &r.manojos[0]
+	}
+	return &r.manojos[idx+1]
+}
+
+// a diferencia de `siguiente`, retorna un puntero al siguiente manojo
+// con respecto a `m` que todavia esta en juego (que no se fue al mazo)
+// retorna nil si no existe
+
+// no era el ultimo si todavia queda al menos uno
+// que viene despues de el que todavia no se fue al mazo
+// y todavia no tiro carta en esta mano
+// o bien: era el ultimo sii el siguiente de el era el mano
+func (r Ronda) sigHabilitado(m Manojo) *Manojo {
+	var sig *Manojo = &m
+	var i int
+	var cantJugadores int = len(r.manojos)
+
+	// como maximo voy a dar la vuelta entera
+	for i = 0; i < len(r.manojos); i++ {
+		sig = r.siguiente(*sig)
+		// checkeos
+		noSeFueAlMazo := sig.seFueAlMazo == false
+		yaTiroCartaEnEstaMano := sig.yaTiroCarta(r.manoEnJuego)
+		noEsEl := sig.jugador.id != m.jugador.id
+		ok := noSeFueAlMazo && !yaTiroCartaEnEstaMano && noEsEl
+		if ok {
+			break
+		}
+	}
+
+	if i == cantJugadores {
+		return nil
+	}
+
+	return sig
+}
+
+// leGanaDeMano devuelve `true` sii
+// `i` "le gana de mano" a `j`
+func (r Ronda) leGanaDeMano(i, j JugadorIdx) bool {
+	cantJugadores := len(r.manojos)
+	// cambios de variables
+	p := cv(i, r.elMano, cantJugadores)
+	q := cv(j, r.elMano, cantJugadores)
+	return p < q
 }
 
 // retorna el manojo con la flor mas alta en la ronda
@@ -249,7 +319,7 @@ func (r *Ronda) getElEnvido() (jIdx JugadorIdx,
 			esDeEquipoContrario := r.manojos[i].jugador.equipo != r.manojos[jIdx].jugador.equipo
 			tieneEnvidoMasAlto := envidos[i] > envidos[jIdx]
 			tieneEnvidoIgual := envidos[i] == envidos[jIdx]
-			leGanaDeMano := leGanaDeMano(i, jIdx, r.elMano, cantJugadores)
+			leGanaDeMano := r.leGanaDeMano(i, jIdx)
 			sonMejores := tieneEnvidoMasAlto || (tieneEnvidoIgual && leGanaDeMano)
 
 			if sonMejores {
@@ -381,7 +451,7 @@ func (r *Ronda) cantarFlores(aPartirDe JugadorIdx) (j *Manojo,
 			esDeEquipoContrario := r.manojos[i].jugador.equipo != r.manojos[jIdx].jugador.equipo
 			tieneEnvidoMasAlto := flores[i] > flores[jIdx]
 			tieneEnvidoIgual := flores[i] == flores[jIdx]
-			leGanaDeMano := leGanaDeMano(i, jIdx, r.elMano, cantJugadores)
+			leGanaDeMano := r.leGanaDeMano(i, jIdx)
 			sonMejores := tieneEnvidoMasAlto || (tieneEnvidoIgual && leGanaDeMano)
 
 			if sonMejores {
@@ -477,11 +547,12 @@ func (r *Ronda) dealCards() {
 	// genero `3*cantJugadores + 1` cartas al azar
 	randomCards := getCartasRandom(3*cantJugadores + 1)
 
-	for numJugador := 0; numJugador < cantJugadores; numJugador++ {
-		for numCarta := 0; numCarta < 3; numCarta++ {
-			cartaID := CartaID(randomCards[3*numJugador+numCarta])
+	for idxJugador := 0; idxJugador < cantJugadores; idxJugador++ {
+		for idxCarta := 0; idxCarta < 3; idxCarta++ {
+			cartaID := CartaID(randomCards[3*idxJugador+idxCarta])
 			carta := nuevaCarta(cartaID)
-			r.manojos[numJugador].Cartas[numCarta] = carta
+			r.manojos[idxJugador].Cartas[idxCarta] = carta
+			r.manojos[idxJugador].cartasNoJugadas[idxCarta] = true
 		}
 	}
 
@@ -513,9 +584,6 @@ func nuevaRonda(jugadores []Jugador) Ronda {
 	// // hago el SINGLE-linking "jugadores <- manojos"
 	ronda.singleLinking(jugadores)
 
-	// seteo el repartidor de la primera mano como
-	// el mano de la ronda (segun las reglas)
-	ronda.getManoActual().repartidor = ronda.elMano
 	// p.Ronda.setTurno()
 
 	return ronda
