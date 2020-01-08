@@ -44,13 +44,14 @@ func (jugada tirarCarta) hacer(p *Partida) error {
 		jugada.autor.jugador.nombre,
 		jugada.Carta.toString())
 	jugada.autor.cartasNoJugadas[idx] = false
-	p.Ronda.getManoActual().agregarCarta(jugada)
+	p.Ronda.getManoActual().agregarTirada(jugada)
 
 	// era el ultimo en tirar de esta mano?
-	eraElUltimoEnTirar := p.Ronda.sigHabilitado(*jugada.autor) != nil
+	eraElUltimoEnTirar := p.Ronda.sigHabilitado(*jugada.autor) == nil
 	if eraElUltimoEnTirar {
 		// de ser asi tengo que checkear el resultado de la mano
 		p.evaluarMano()
+		// el turno del siguiente queda dado por el ganador de esta
 	}
 
 	// TODO:::::::::
@@ -794,7 +795,8 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 			jugada.autor.jugador.nombre)
 		termino := p.sumarPuntos(p.Ronda.truco.cantadoPor.jugador.equipo, totalPts)
 		if !termino {
-			p.nuevaRonda()
+			sigMano := p.Ronda.getSigMano()
+			p.nuevaRonda(sigMano)
 		}
 	}
 
@@ -919,7 +921,8 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 				jugada.autor.jugador.nombre)
 			termino := p.sumarPuntos(p.Ronda.truco.cantadoPor.jugador.equipo, totalPts)
 			if !termino {
-				p.nuevaRonda()
+				sigMano := p.Ronda.getSigMano()
+				p.nuevaRonda(sigMano)
 			}
 		}
 
@@ -930,7 +933,8 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 		}
 
 		// como se fueron todos:
-		p.nuevaRonda()
+		sigMano := p.Ronda.getSigMano()
+		p.nuevaRonda(sigMano)
 	}
 	return nil
 }
