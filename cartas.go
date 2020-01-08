@@ -7,22 +7,22 @@ import (
 )
 
 /*
- * Barajas; orden absoluto:
- *  ------------------------------------------------------------------------------------------
- * | ID	| Carta			|	ID | 	Carta		|	ID | 	Carta		|	ID | 	Carta		|
- * |------------------------------------------------------------------------------------------	|
- * | 00 |	(1,Basto)	|	10 | 	(1,Copa)	|	20 | 	(1,Espada)	|	30 | 	(1,Oro) 	|
- * | 01 |	(2,Basto)	|	11 |	(2,Copa)	|	21 |	(2,Espada)	|	31 |	(2,Oro) 	|
- * | 02 |	(3,Basto)	|	12 |	(3,Copa)	|	22 |	(3,Espada)	|	32 |	(3,Oro) 	|
- * | 03 |	(4,Basto)	|	13 |	(4,Copa)	|	23 |	(4,Espada)	|	33 |	(4,Oro) 	|
- * | 04 |	(5,Basto)	|	14 |	(5,Copa)	|	24 |	(5,Espada)	|	34 |	(5,Oro) 	|
- * | 05 |	(6,Basto)	|	15 |	(6,Copa)	|	25 |	(6,Espada)	|	35 |	(6,Oro) 	|
- * | 06 |	(7,Basto)	|	16 |	(7,Copa)	|	26 |	(7,Espada)	|	36 |	(7,Oro) 	|
- *  ------------------------------------------------------------------------------------------
- * | 07 |	(10,Basto)	|	17 |	(10,Copa)	|	27 |	(10,Espada)	|	37 |	(10,Oro) 	|
- * | 08 |	(11,Basto)	|	18 |	(11,Copa)	|	28 |	(11,Espada)	|	38 |	(11,Oro) 	|
- * | 09 |	(12,Basto)	|	19 |	(12,Copa)	|	29 |	(12,Espada)	|	39 |	(12,Oro)	|
- *  ------------------------------------------------------------------------------------------
+ *  Barajas; orden absoluto:
+ *  ----------------------------------------------------------
+ * | ID	| Carta	    ID | Carta	  ID | Carta	  ID | Carta |
+ * |---------------------------------------------------------|
+ * | 00 | 1,Basto   10 | 1,Copa   20 | 1,Espada   30 | 1,Oro |
+ * | 01 | 2,Basto   11 | 2,Copa   21 | 2,Espada   31 | 2,Oro |
+ * | 02 | 3,Basto   12 | 3,Copa   22 | 3,Espada   32 | 3,Oro |
+ * | 03 | 4,Basto   13 | 4,Copa   23 | 4,Espada   33 | 4,Oro |
+ * | 04 | 5,Basto   14 | 5,Copa   24 | 5,Espada   34 | 5,Oro |
+ * | 05 | 6,Basto   15 | 6,Copa   25 | 6,Espada   35 | 6,Oro |
+ * | 06 | 7,Basto   16 | 7,Copa   26 | 7,Espada   36 | 7,Oro |
+ *  ----------------------------------------------------------
+ * | 07 |10,Basto   17 |10,Copa   27 |10,Espada   37 |10,Oro |
+ * | 08 |11,Basto   18 |11,Copa   28 |11,Espada   38 |11,Oro |
+ * | 09 |12,Basto   19 |12,Copa   29 |12,Espada   39 |12,Oro |
+ *  ----------------------------------------------------------
  */
 
 // Palo enum
@@ -84,9 +84,9 @@ func (c Carta) esPieza(muestra Carta) bool {
 }
 
 // Devuelve el puntaje
-// todo: resolver esto
+// no confundir el puntaje con "Poder"
 // ojo con Puntaje(7,Espada) == Puntaje(7,Oro) PERO
-// (7,Espada) LE GANA A (7,Oro) !!
+// (7,Espada) LE GANA A (7,Oro) (tiene mas poder)!!
 // detalle, se podria reducir la logica booleana,
 // pero asi queda simple & natural a la vista
 func (c Carta) calcPuntaje(muestra Carta) int {
@@ -104,7 +104,8 @@ func (c Carta) calcPuntaje(muestra Carta) int {
 		case 11, 10:
 			puntaje = 27
 		case 12:
-			puntaje = (Carta{Palo: c.Palo, Valor: muestra.Valor}).calcPuntaje(muestra)
+			valeComo := Carta{Palo: c.Palo, Valor: muestra.Valor}
+			puntaje = valeComo.calcPuntaje(muestra)
 		}
 
 		// Matas
@@ -125,6 +126,86 @@ func (c Carta) calcPuntaje(muestra Carta) int {
 	}
 
 	return puntaje
+}
+
+// guarismo ficticio y abstracto para simplificar
+// las comparaciones
+func (c Carta) calcPoder(muestra Carta) int {
+	var poder int
+
+	if c.esPieza(muestra) {
+		switch c.Valor {
+		case 2:
+			poder = 30
+		case 4:
+			poder = 29
+		case 5:
+			poder = 28
+		case 11, 10:
+			poder = 27
+		case 12:
+			valeComo := Carta{Palo: c.Palo, Valor: muestra.Valor}
+			poder = valeComo.calcPoder(muestra)
+		}
+
+	} else if c.Palo == Espada && c.Valor == 1 {
+		poder = 26
+
+	} else if c.Palo == Basto && c.Valor == 1 {
+		poder = 25
+
+	} else if c.Palo == Espada && c.Valor == 7 {
+		poder = 24
+
+	} else if c.Palo == Oro && c.Valor == 7 {
+		poder = 23
+
+		// Chicas
+	} else if c.Valor == 3 {
+		poder = 22
+
+	} else if c.Valor == 2 {
+		poder = 21
+
+	} else if c.Valor == 1 {
+		poder = 20
+
+	} else if c.Valor == 12 {
+		poder = 19
+	} else if c.Valor == 11 {
+		poder = 18
+	} else if c.Valor == 10 {
+		poder = 17
+	} else if c.Valor == 7 {
+		poder = 16
+	} else if c.Valor == 6 {
+		poder = 15
+	} else if c.Valor == 5 {
+		poder = 14
+	} else if c.Valor == 4 {
+		poder = 13
+	}
+
+	return poder
+}
+
+type comparacion int
+
+const (
+	menor comparacion = iota
+	iguales
+	mayor
+)
+
+func (c Carta) comparar(c2, muestra Carta) comparacion {
+	p1 := c.calcPoder(muestra)
+	p2 := c2.calcPoder(muestra)
+	if p1 == p2 {
+		return iguales
+	} else if p1 < p2 {
+		return menor
+	}
+	return mayor
 }
 
 func (c Carta) toString() string {
