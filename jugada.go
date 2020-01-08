@@ -19,6 +19,47 @@ func (j Jugada) getAutor() *Manojo {
 	return j.autor
 }
 
+type tirarCarta struct {
+	Jugada
+	Carta
+}
+
+// el jugador tira una carta;
+// el parametro se encuentra en la struct como atributo
+func (jugada tirarCarta) hacer(p *Partida) error {
+	// primero que nada: tiene esa carta?
+	idx, err := jugada.autor.getCartaIdx(jugada.Carta)
+	if err != nil {
+		return err
+	}
+
+	// luego, era su turno?
+	eraSuTurno := p.Ronda.getElTurno() == jugada.autor
+	if !eraSuTurno {
+		return fmt.Errorf("No era su turno, no puede tirar la carta")
+	}
+
+	// ok la tiene y era su turno -> la juega
+	fmt.Printf("%s tira la carta %s",
+		jugada.autor.jugador.nombre,
+		jugada.Carta.toString())
+	jugada.autor.cartasNoJugadas[idx] = false
+	p.Ronda.getManoActual().agregarCarta(jugada)
+
+	// era el ultimo en tirar de esta mano?
+	eraElUltimoEnTirar := p.Ronda.sigHabilitado(*jugada.autor) != nil
+	if eraElUltimoEnTirar {
+		// de ser asi tengo que checkear el resultado de la mano
+		p.evaluarMano()
+	}
+
+	// TODO:::::::::
+	// paso de turno
+	// p.Ronda.sigTurno()
+
+	return nil
+}
+
 // PRE: supongo que el jugador que toca este envido
 // no tiene flor (es checkeada cuando es su turno)
 type tocarEnvido struct {
@@ -898,7 +939,7 @@ var jugadas = map[string]([]string){
 	"Gritos": []string{
 		"Truco",    // 1/2
 		"Re-Truco", // 2/3
-		"Vale 4",   // 4/3
+		"Vale 4",   // 3/4
 	},
 	"Toques": []string{
 		"Envido",
