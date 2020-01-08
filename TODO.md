@@ -1,3 +1,28 @@
+- Ronda.getIdx es el nuevo ; utils.obtenerIdx es el viejo !!
+    eventualmente se tendrian que ir los dos a la mierda
+
+- EN LA ABSTRACCION DE LAS JUGADAS LO PRIMERO ES FIJARSE SI TERMINO O NO
+    LA PARTIDA!!!!!!!!!!!!!!
+
+- que pasa si alguien dice truco al final, y el ultimo no contesta la apuesta
+    y juega su carta? no deberia de estar permitido
+
+- los channels estan como variables globales, hay que ponerlos como privados
+    de Partida
+
+- puede que se llame a p.evaluarMano() y que no se haya tirado ninguna carta?
+
+- duda: que pasa si no se tiran las cartas en orden? es esto posible?
+    creo que no (por la imposicion en el turno en tirarCarta) 
+    pero aun asi testearlo.
+
+- cantJugadoresEnJuego al pedo? potencial uso pero no r.sigHabilitado()
+
+- la visibilidad desde la partida hacia los jugadores esta al pepe?
+
+- agregarle un ID a jugador y que las busquedas las haga por este campo
+    esta id debe ser sercreta y random; porque si yo se la id de otro puedo jugar por el
+
 - duda:
     >A truco
     >el evndio esta primer
