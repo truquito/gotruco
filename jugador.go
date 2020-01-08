@@ -5,6 +5,7 @@ type JugadorIdx int
 
 // Jugador :
 type Jugador struct {
+	id     string
 	nombre string
 	equipo Equipo
 }
