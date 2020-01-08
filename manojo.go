@@ -5,16 +5,73 @@ import (
 	"sort"
 )
 
-// CantCartasManojo constante trivial
+// cantCartasManojo constante trivial
 // del numero de cartas de un manojo
-const CantCartasManojo = 3
+const cantCartasManojo = 3
 
 // Manojo :
 type Manojo struct {
-	seFueAlMazo bool
-	Cartas      [CantCartasManojo]Carta
-	jugador     *Jugador
+	seFueAlMazo     bool
+	Cartas          [cantCartasManojo]Carta
+	cartasNoJugadas [cantCartasManojo]bool // si true->la tiene; si false->ya la tiro
+	jugador         *Jugador
 }
+
+// retorna la cantidad de cartas que ya tiro
+func (manojo Manojo) getCantCartasTiradas() int {
+	totalTiradas := 0
+	for _, tirada := range manojo.cartasNoJugadas {
+		if tirada {
+			totalTiradas++
+		}
+	}
+	return totalTiradas
+}
+
+// retorna true si ya tiro carta en la `mano`
+func (manojo Manojo) yaTiroCarta(mano NumMano) bool {
+	// idea:
+	// si se esta jugando la 1era mano -> debe haber tirado exactamente 1 carta
+	// si se esta jugando la 2da mano -> debe haber tirado exactamente 2 cartas
+	// si se esta jugando la 3era mano -> debe haber tirado exactamente 3 carta
+	cantCartasTiradas := manojo.getCantCartasTiradas()
+	switch mano {
+	case primera:
+		return cantCartasTiradas == 1
+	case segunda:
+		return cantCartasTiradas == 2
+	default: // tercera
+		return cantCartasTiradas == 3
+	}
+}
+
+// retorna el indice de la `carta`
+// error si ni siquiera tiene esa carta
+func (manojo Manojo) getCartaIdx(carta Carta) (int, error) {
+	var idx int
+	for idx = 0; idx < cantCartasManojo; idx++ {
+		esEsa := manojo.Cartas[idx] == carta
+		if esEsa {
+			break
+		}
+	}
+	noTieneEsaCarta := idx == cantCartasManojo
+	if noTieneEsaCarta {
+		return -1, fmt.Errorf("Esa carta no se encuentra en este manojo")
+	}
+	return idx, nil
+}
+
+// DEPRECTED ?
+// retorna true si todavia no jugo esa carta
+// error si ni siquiera tiene esa carta
+// func (manojo Manojo) todaviaNoJugo(carta Carta) (bool, error) {
+// 	idx, err := manojo.getCartaIdx(carta)
+// 	if err != nil {
+// 		return false, err
+// 	}
+// 	return manojo.cartasNoJugadas[idx], nil
+// }
 
 // tieneFlor devuelve true si el jugador tiene flor
 // Y ademas, si tiene devuelve que tipo de flor: I, II o III
@@ -113,8 +170,8 @@ func (manojo Manojo) Print() {
 // del mismo palo, y ademas los indices de las mismas en
 // el array manojo.Cartas
 func (manojo Manojo) tiene2DelMismoPalo() (bool, []int) {
-	for i := 0; i < CantCartasManojo; i++ {
-		for j := i + 1; j < CantCartasManojo; j++ {
+	for i := 0; i < cantCartasManojo; i++ {
+		for j := i + 1; j < cantCartasManojo; j++ {
 			mismoPalo := manojo.Cartas[i].Palo == manojo.Cartas[j].Palo
 			if mismoPalo {
 				return true, []int{i, j}
@@ -139,7 +196,7 @@ func (manojo Manojo) calcularEnvido(muestra Carta) (puntajeEnvido int) {
 		}
 	} else {
 		// si no: simplemente sumo las 2 de mayor valor
-		copia := make([]Carta, CantCartasManojo)
+		copia := make([]Carta, cantCartasManojo)
 		copy(copia, manojo.Cartas[:])
 		// ordeno el array en forma desc de su puntaje
 		sort.Slice(copia, func(i, j int) bool {
