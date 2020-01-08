@@ -105,6 +105,11 @@ func (r Ronda) getElMano() *Manojo {
 	return &r.manojos[r.elMano]
 }
 
+// retorna el id del que deberia ser el siguiente mano
+func (r Ronda) getSigMano() JugadorIdx {
+	return JugadorIdx(r.getIdx(*r.siguiente(*r.getElMano())))
+}
+
 func (r Ronda) getElTurno() *Manojo {
 	return &r.manojos[r.turno]
 }
@@ -117,7 +122,25 @@ func (r Ronda) getManoActual() *Mano {
 	return &r.manos[r.manoEnJuego]
 }
 
-func (r Ronda) setTurno() {
+func (r *Ronda) nextTurno() {
+	manojoTurnoActual := r.manojos[r.turno]
+	manojoSigTurno := r.sigHabilitado(manojoTurnoActual)
+	r.turno = JugadorIdx(r.getIdx(*manojoSigTurno))
+}
+
+// PARA USAR ESTA FUNCION ANTES SE DEBE INCREMENTEAR
+// (o actualizar en caso de empezar una ronda nueva)
+// EL VALOR DE r.manoEnJuego
+// setea el turno siguiente *segun el resultado de
+// la mano anterior*
+
+// que pasa cuando el ganador de una mano se habia ido al mazo?
+// no se tiene que poder:
+// si en esta mano ya jugaste carta -> no te podes ir al mazo
+// o bien: solo te podes ir al mazo cuando es tu turno
+// luego este metodo es correcto
+
+func (r *Ronda) nextTurnoPosMano() {
 	// si es la primera mano que se juega
 	// entonces es el turno del mano
 	if r.manoEnJuego == primera {
@@ -125,8 +148,13 @@ func (r Ronda) setTurno() {
 		// si no, es turno del ganador de
 		// la mano anterior
 	} else {
-		r.turno = JugadorIdx(r.getIdx(*r.getManoAnterior().ganador))
+		// solo si la mano anterior no fue parda
+		// si fue parda el truno se mantiene
+		if r.getManoAnterior().resultado != Empardada {
+			r.turno = JugadorIdx(r.getIdx(*r.getManoAnterior().ganador))
+		}
 	}
+	fmt.Printf("Es el turno de %s", r.manojos[r.turno].jugador.nombre)
 }
 
 // Print Imprime la informacion de la ronda
@@ -190,10 +218,10 @@ func (r Ronda) siguiente(m Manojo) *Manojo {
 func (r Ronda) sigHabilitado(m Manojo) *Manojo {
 	var sig *Manojo = &m
 	var i int
-	var cantJugadores int = len(r.manojos)
+	cantJugadores := len(r.manojos)
 
 	// como maximo voy a dar la vuelta entera
-	for i = 0; i < len(r.manojos); i++ {
+	for i = 0; i < cantJugadores; i++ {
 		sig = r.siguiente(*sig)
 		// checkeos
 		noSeFueAlMazo := sig.seFueAlMazo == false
@@ -562,14 +590,14 @@ func (r *Ronda) dealCards() {
 }
 
 // nuevaRonda : crea una nueva ronda al azar
-func nuevaRonda(jugadores []Jugador) Ronda {
+func nuevaRonda(jugadores []Jugador, elMano JugadorIdx) Ronda {
 	cantJugadores := len(jugadores)
 	cantJugadoresPorEquipo := cantJugadores / 2
 	ronda := Ronda{
 		manoEnJuego:          primera,
 		cantJugadoresEnJuego: [2]int{cantJugadoresPorEquipo, cantJugadoresPorEquipo},
-		elMano:               0,
-		turno:                0,
+		elMano:               elMano,
+		turno:                elMano,
 		envido:               Envido{puntaje: 0, estado: NOCANTADOAUN},
 		flor:                 NOCANTADA,
 		truco:                truco{cantadoPor: nil, estado: NOCANTADO},
