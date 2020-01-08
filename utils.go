@@ -85,16 +85,6 @@ func complemento(x int) (p, q int) {
 	}
 }
 
-// leGanaDeMano devuelve `true` sii
-// `i` "le gana de mano" a `j`
-// PARA MAS INFO DETALLADA VER DOCUMENTACION
-func leGanaDeMano(i, j, mano JugadorIdx, cantJugadores int) bool {
-	// cambios de variables
-	p := cv(i, mano, cantJugadores)
-	q := cv(j, mano, cantJugadores)
-	return p < q
-}
-
 // ver documentacion cambio de variable
 func cv(x, mano JugadorIdx, cantJugadores int) (y JugadorIdx) {
 	if x >= mano {
