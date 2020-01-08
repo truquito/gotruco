@@ -1,3 +1,16 @@
+-   // que pasa cuando el ganador de una mano se habia ido al mazo?
+    // no se tiene que poder:
+    // si en esta mano ya jugaste carta -> no te podes ir al mazo
+    // o bien: solo te podes ir al mazo cuando es tu turno
+    // luego este metodo es correcto
+
+    para irse al mazo debe ser tu turno
+
+- si se va al mazo -> deberia pasar al siguiente turno
+
+- no puede tirar carta si el estado del truco es respondible por uno de
+    su propio equipo (contrario al que propuso el truco)
+
 - jugada@58 p.Ronda.sigTurno()
 
 - Ronda.getIdx es el nuevo ; utils.obtenerIdx es el viejo !!
