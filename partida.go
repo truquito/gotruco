@@ -60,10 +60,6 @@ type Partida struct {
 	Ronda         Ronda      `json:"ronda"`
 }
 
-func (p *Partida) readLnJugada() error {
-	return nil
-}
-
 // SetSigJugada nexo capa presentacion con capa logica
 func (p *Partida) SetSigJugada(cmd string) error {
 	// checkeo de sintaxis
