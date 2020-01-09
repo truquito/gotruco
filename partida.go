@@ -24,20 +24,13 @@ type Puntuacion int
 
 // hasta 15 pts, 20 pts, 30 pts o 40 pts
 const (
-	a20 Puntuacion = 0
-	a30 Puntuacion = 1
-	a40 Puntuacion = 2
+	a20 Puntuacion = 20
+	a30 Puntuacion = 30
+	a40 Puntuacion = 40
 )
 
 func (pt Puntuacion) toInt() int {
-	switch pt {
-	case a20:
-		return 20
-	case a30:
-		return 30
-	default:
-		return 40
-	}
+	return int(pt)
 }
 
 // Equipo : Enum para el puntaje maximo de la partida

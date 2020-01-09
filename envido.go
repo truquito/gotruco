@@ -1,16 +1,67 @@
 package truco
 
+import (
+	"bytes"
+	"encoding/json"
+)
+
 // EstadoEnvido : enum
 type EstadoEnvido int
 
 // enums del envido
 const (
-	DESHABILITADO EstadoEnvido = 0
-	NOCANTADOAUN  EstadoEnvido = 1
-	ENVIDO        EstadoEnvido = 2
-	REALENVIDO    EstadoEnvido = 3
-	FALTAENVIDO   EstadoEnvido = 4
+	DESHABILITADO EstadoEnvido = iota
+	NOCANTADOAUN
+	ENVIDO
+	REALENVIDO
+	FALTAENVIDO
 )
+
+var toEstadoEnvido = map[string]EstadoEnvido{
+	"deshabilitado": DESHABILITADO,
+	"noCantadoAun":  NOCANTADOAUN,
+	"envido":        ENVIDO,
+	"realEnvido":    REALENVIDO,
+	"faltaEnvido":   FALTAENVIDO,
+}
+
+// toString
+func (e EstadoEnvido) String() string {
+	estados := []string{
+		"deshabilitado",
+		"noCantadoAun",
+		"envido",
+		"realEnvido",
+		"faltaEnvido",
+	}
+
+	ok := e > 0 && int(e) < len(toEstadoEnvido)-1
+	if !ok {
+		return "Unknown"
+	}
+
+	return estados[e]
+}
+
+// MarshalJSON marshals the enum as a quoted json string
+func (e EstadoEnvido) MarshalJSON() ([]byte, error) {
+	buffer := bytes.NewBufferString(`"`)
+	buffer.WriteString(e.String())
+	buffer.WriteString(`"`)
+	return buffer.Bytes(), nil
+}
+
+// UnmarshalJSON unmashals a quoted json string to the enum value
+func (e *EstadoEnvido) UnmarshalJSON(b []byte) error {
+	var j string
+	err := json.Unmarshal(b, &j)
+	if err != nil {
+		return err
+	}
+	// Note that if the string cannot be found then it will be set to the zero value, 'Created' in this case.
+	*e = toEstadoEnvido[j]
+	return nil
+}
 
 // Envido :
 type Envido struct {

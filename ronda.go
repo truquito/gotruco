@@ -1,6 +1,8 @@
 package truco
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 )
 
@@ -18,17 +20,54 @@ const (
 	VALE4QUERIDO
 )
 
-func (x EstadoTruco) toString() string {
-	var res string
-	switch x {
-	case TRUCO:
-		res = "Truco"
-	case RETRUCO:
-		res = "Re-Truco"
-	case VALE4:
-		res = "Vale-4"
+var toEstadoTruco = map[string]EstadoTruco{
+	"noCantado":      NOCANTADO,
+	"truco":          TRUCO,
+	"trucoQuerido":   TRUCOQUERIDO,
+	"reTruco":        RETRUCO,
+	"reTrucoQuerido": RETRUCOQUERIDO,
+	"vale4":          VALE4,
+	"vale4Querido":   VALE4QUERIDO,
+}
+
+// toString
+func (e EstadoTruco) String() string {
+	estados := []string{
+		"noCantado",
+		"truco",
+		"trucoQuerido",
+		"reTruco",
+		"reTrucoQuerido",
+		"vale4",
+		"vale4Querido",
 	}
-	return res
+
+	ok := e > 0 && int(e) < len(toEstadoTruco)-1
+	if !ok {
+		return "Unknown"
+	}
+
+	return estados[e]
+}
+
+// MarshalJSON marshals the enum as a quoted json string
+func (e EstadoTruco) MarshalJSON() ([]byte, error) {
+	buffer := bytes.NewBufferString(`"`)
+	buffer.WriteString(e.String())
+	buffer.WriteString(`"`)
+	return buffer.Bytes(), nil
+}
+
+// UnmarshalJSON unmashals a quoted json string to the enum value
+func (e *EstadoTruco) UnmarshalJSON(b []byte) error {
+	var j string
+	err := json.Unmarshal(b, &j)
+	if err != nil {
+		return err
+	}
+	// Note that if the string cannot be found then it will be set to the zero value, 'Created' in this case.
+	*e = toEstadoTruco[j]
+	return nil
 }
 
 type truco struct {
