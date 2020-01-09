@@ -58,8 +58,8 @@ func (p Palo) String() string {
 
 // Carta struct
 type Carta struct {
-	Palo  Palo
-	Valor int
+	Palo  Palo `json:"palo"`
+	Valor int  `json:"valor"`
 }
 
 // devulve `true` si la carta es pieza

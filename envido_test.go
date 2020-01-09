@@ -1129,7 +1129,7 @@ func TestCalcEnvido(t *testing.T) {
 				`El resultado del envido del jugador %s es incorrecto.
 				\nEXPECTED: %v
 				\nGOT: %v`,
-				manojo.jugador.nombre, expected[i], got)
+				manojo.Jugador.Nombre, expected[i], got)
 			return
 		}
 	}
@@ -1207,7 +1207,7 @@ func TestYTEnvidoCalcII(t *testing.T) {
 				`El resultado del envido del jugador %s es incorrecto.
 				\nEXPECTED: %v
 				\nGOT: %v`,
-				manojo.jugador.nombre, expected[i], got)
+				manojo.Jugador.Nombre, expected[i], got)
 			return
 		}
 	}

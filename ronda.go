@@ -154,19 +154,19 @@ func (r *Ronda) nextTurnoPosMano() {
 			r.Turno = JugadorIdx(r.getIdx(*r.getManoAnterior().ganador))
 		}
 	}
-	fmt.Printf("Es el turno de %s", r.Manojos[r.Turno].jugador.nombre)
+	fmt.Printf("Es el turno de %s", r.Manojos[r.Turno].Jugador.Nombre)
 }
 
 // Print Imprime la informacion de la ronda
 func (r Ronda) Print() {
 	for i := range r.Manojos {
-		fmt.Printf("%s:\n", r.Manojos[i].jugador.nombre)
+		fmt.Printf("%s:\n", r.Manojos[i].Jugador.Nombre)
 		r.Manojos[i].Print()
 	}
 
 	fmt.Printf("\nY la muestra es\n    - %s\n", r.Muestra.toString())
 	fmt.Printf("\nEl mano actual es: %s\nEs el turno de %s\n\n",
-		r.getElMano().jugador.nombre, r.getElTurno().jugador.nombre)
+		r.getElMano().Jugador.Nombre, r.getElTurno().Jugador.Nombre)
 }
 
 // sig devuelve el `JugadorIdx` del
@@ -185,7 +185,7 @@ func (r Ronda) getIdx(m Manojo) int {
 	var idx int
 	cantJugadores := len(r.Manojos)
 	for idx = 0; idx < cantJugadores; idx++ {
-		esEse := r.Manojos[idx].jugador.id == m.jugador.id
+		esEse := r.Manojos[idx].Jugador.ID == m.Jugador.ID
 		if esEse {
 			break
 		}
@@ -224,9 +224,9 @@ func (r Ronda) sigHabilitado(m Manojo) *Manojo {
 	for i = 0; i < cantJugadores; i++ {
 		sig = r.siguiente(*sig)
 		// checkeos
-		noSeFueAlMazo := sig.seFueAlMazo == false
+		noSeFueAlMazo := sig.SeFueAlMazo == false
 		yaTiroCartaEnEstaMano := sig.yaTiroCarta(r.ManoEnJuego)
-		noEsEl := sig.jugador.id != m.jugador.id
+		noEsEl := sig.Jugador.ID != m.Jugador.ID
 		ok := noSeFueAlMazo && !yaTiroCartaEnEstaMano && noEsEl
 		if ok {
 			break
@@ -320,7 +320,7 @@ func (r *Ronda) getElEnvido() (jIdx JugadorIdx,
 	// empieza la mano
 	jIdx = r.ElMano
 	yaDijeron[jIdx] = true
-	out := fmt.Sprintf("   %s dice: \"tengo %v\"\n", r.Manojos[jIdx].jugador.nombre,
+	out := fmt.Sprintf("   %s dice: \"tengo %v\"\n", r.Manojos[jIdx].Jugador.Nombre,
 		envidos[jIdx])
 	stdOut = append(stdOut, out)
 
@@ -344,7 +344,7 @@ func (r *Ronda) getElEnvido() (jIdx JugadorIdx,
 		todaviaEsTenidoEnCuenta := !yaDijeron[i]
 		if todaviaEsTenidoEnCuenta {
 
-			esDeEquipoContrario := r.Manojos[i].jugador.equipo != r.Manojos[jIdx].jugador.equipo
+			esDeEquipoContrario := r.Manojos[i].Jugador.Equipo != r.Manojos[jIdx].Jugador.Equipo
 			tieneEnvidoMasAlto := envidos[i] > envidos[jIdx]
 			tieneEnvidoIgual := envidos[i] == envidos[jIdx]
 			leGanaDeMano := r.leGanaDeMano(i, jIdx)
@@ -353,7 +353,7 @@ func (r *Ronda) getElEnvido() (jIdx JugadorIdx,
 			if sonMejores {
 				if esDeEquipoContrario {
 					out := fmt.Sprintf("   %s dice: \"%v son mejores!\"\n",
-						r.Manojos[i].jugador.nombre, envidos[i])
+						r.Manojos[i].Jugador.Nombre, envidos[i])
 					stdOut = append(stdOut, out)
 					jIdx = i
 					yaDijeron[i] = true
@@ -372,7 +372,7 @@ func (r *Ronda) getElEnvido() (jIdx JugadorIdx,
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
 						out := fmt.Sprintf("   %s dice: \"son buenas\" (tenia %v)\n",
-							r.Manojos[i].jugador.nombre, envidos[i])
+							r.Manojos[i].Jugador.Nombre, envidos[i])
 						stdOut = append(stdOut, out)
 						yaDijeron[i] = true
 						// pasa al siguiente
@@ -440,7 +440,7 @@ func (r *Ronda) cantarFlores(aPartirDe JugadorIdx) (j *Manojo,
 	for i := range r.Manojos {
 		flores[i], _ = r.Manojos[i].calcFlor(r.Muestra)
 		tieneFlor := flores[i] > 0
-		seFueAlMazo := r.Manojos[i].seFueAlMazo == false
+		seFueAlMazo := r.Manojos[i].SeFueAlMazo == false
 		if tieneFlor && !seFueAlMazo {
 			yaDijeron[i] = false
 		} else {
@@ -453,7 +453,7 @@ func (r *Ronda) cantarFlores(aPartirDe JugadorIdx) (j *Manojo,
 	// empieza el del parametro
 	if flores[aPartirDe] > 0 {
 		yaDijeron[aPartirDe] = true
-		out := fmt.Sprintf("   %s dice: \"tengo %v\"\n", r.Manojos[aPartirDe].jugador.nombre,
+		out := fmt.Sprintf("   %s dice: \"tengo %v\"\n", r.Manojos[aPartirDe].Jugador.Nombre,
 			flores[aPartirDe])
 		stdOut = append(stdOut, out)
 	}
@@ -476,7 +476,7 @@ func (r *Ronda) cantarFlores(aPartirDe JugadorIdx) (j *Manojo,
 		todaviaEsTenidoEnCuenta := !yaDijeron[i]
 		if todaviaEsTenidoEnCuenta {
 
-			esDeEquipoContrario := r.Manojos[i].jugador.equipo != r.Manojos[jIdx].jugador.equipo
+			esDeEquipoContrario := r.Manojos[i].Jugador.Equipo != r.Manojos[jIdx].Jugador.Equipo
 			tieneEnvidoMasAlto := flores[i] > flores[jIdx]
 			tieneEnvidoIgual := flores[i] == flores[jIdx]
 			leGanaDeMano := r.leGanaDeMano(i, jIdx)
@@ -485,7 +485,7 @@ func (r *Ronda) cantarFlores(aPartirDe JugadorIdx) (j *Manojo,
 			if sonMejores {
 				if esDeEquipoContrario {
 					out := fmt.Sprintf("   %s dice: \"%v son mejores!\"\n",
-						r.Manojos[i].jugador.nombre, flores[i])
+						r.Manojos[i].Jugador.Nombre, flores[i])
 					stdOut = append(stdOut, out)
 					jIdx = i
 					yaDijeron[i] = true
@@ -504,7 +504,7 @@ func (r *Ronda) cantarFlores(aPartirDe JugadorIdx) (j *Manojo,
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
 						out := fmt.Sprintf("   %s dice: \"son buenas\" (tenia %v)\n",
-							r.Manojos[i].jugador.nombre, flores[i])
+							r.Manojos[i].Jugador.Nombre, flores[i])
 						stdOut = append(stdOut, out)
 						yaDijeron[i] = true
 						// pasa al siguiente
@@ -538,7 +538,7 @@ func (r *Ronda) getManojo(jIdx JugadorIdx) *Manojo {
 func (r *Ronda) singleLinking(jugadores []Jugador) {
 	cantJugadores := len(jugadores)
 	for i := 0; i < cantJugadores; i++ {
-		r.Manojos[i].jugador = &jugadores[i]
+		r.Manojos[i].Jugador = &jugadores[i]
 	}
 }
 
@@ -547,7 +547,7 @@ func (r *Ronda) singleLinking(jugadores []Jugador) {
 // dado un string que identifique al jugador duenio de ese manojo
 func (r *Ronda) getManojoByStr(idJugador string) (*Manojo, error) {
 	for i := range r.Manojos {
-		if r.Manojos[i].jugador.nombre == idJugador {
+		if r.Manojos[i].Jugador.Nombre == idJugador {
 			return &r.Manojos[i], nil
 		}
 	}
@@ -580,7 +580,7 @@ func (r *Ronda) dealCards() {
 			cartaID := CartaID(randomCards[3*idxJugador+idxCarta])
 			carta := nuevaCarta(cartaID)
 			r.Manojos[idxJugador].Cartas[idxCarta] = carta
-			r.Manojos[idxJugador].cartasNoJugadas[idxCarta] = true
+			r.Manojos[idxJugador].CartasNoJugadas[idxCarta] = true
 		}
 	}
 

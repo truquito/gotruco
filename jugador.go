@@ -5,13 +5,13 @@ type JugadorIdx int
 
 // Jugador :
 type Jugador struct {
-	id     string
-	nombre string
-	equipo Equipo
+	ID     string `json:"id"`
+	Nombre string `json:"nombre"`
+	Equipo Equipo `json:"equipo"`
 }
 
 func (j Jugador) getEquipoContrario() Equipo {
-	if j.equipo == Rojo {
+	if j.Equipo == Rojo {
 		return Azul
 	}
 	return Rojo

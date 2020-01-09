@@ -240,7 +240,7 @@ func (p *Partida) evaluarMano() {
 
 	for _, tirada := range tiradas {
 		poder := tirada.Carta.calcPoder(p.Ronda.Muestra)
-		equipo := tirada.autor.jugador.equipo
+		equipo := tirada.autor.Jugador.Equipo
 		if poder > maxPoder[equipo] {
 			maxPoder[equipo] = poder
 			max[equipo] = tirada
@@ -270,7 +270,7 @@ func (p *Partida) evaluarMano() {
 		// pero se setea despues de evaluar la ronda
 		mano.ganador = tiradaGanadora.autor
 		fmt.Printf("La Mano la gano %s (equipo %s)",
-			mano.ganador.jugador.nombre, mano.ganador.jugador.equipo.String())
+			mano.ganador.Jugador.Nombre, mano.ganador.Jugador.Equipo.String())
 	}
 
 	// se termino la ronda?
@@ -306,7 +306,7 @@ func (p *Partida) evaluarRonda() bool {
 	for i := 0; i < p.Ronda.ManoEnJuego.toInt(); i++ {
 		mano := p.Ronda.Manos[i]
 		if mano.resultado != Empardada {
-			cantManosGanadas[mano.ganador.jugador.equipo]++
+			cantManosGanadas[mano.ganador.Jugador.Equipo]++
 		}
 	}
 
@@ -328,7 +328,7 @@ func (p *Partida) evaluarRonda() bool {
 	if cantManosGanadas[Rojo] >= 2 {
 		// agarro cualquier manojo de los rojos
 		// o bien es la primera o bien la segunda
-		if p.Ronda.Manos[0].ganador.jugador.equipo == Rojo {
+		if p.Ronda.Manos[0].ganador.Jugador.Equipo == Rojo {
 			ganador = p.Ronda.Manos[0].ganador
 		} else {
 			ganador = p.Ronda.Manos[1].ganador
@@ -336,7 +336,7 @@ func (p *Partida) evaluarRonda() bool {
 	} else if cantManosGanadas[Azul] >= 2 {
 		// agarro cualquier manojo de los azules
 		// o bien es la primera o bien la segunda
-		if p.Ronda.Manos[0].ganador.jugador.equipo == Azul {
+		if p.Ronda.Manos[0].ganador.Jugador.Equipo == Azul {
 			ganador = p.Ronda.Manos[0].ganador
 		} else {
 			ganador = p.Ronda.Manos[1].ganador
@@ -378,7 +378,7 @@ func (p *Partida) evaluarRonda() bool {
 	}
 
 	fmt.Printf("La ronda ha sido ganada por el equipo %s\n",
-		ganador.jugador.equipo)
+		ganador.Jugador.Equipo)
 
 	// ya sabemos el ganador ahora es el
 	// momento de sumar los puntos del truco
@@ -395,7 +395,7 @@ func (p *Partida) evaluarRonda() bool {
 		totalPts = 4
 	}
 
-	terminoLaPartida := p.sumarPuntos(ganador.jugador.equipo, totalPts)
+	terminoLaPartida := p.sumarPuntos(ganador.Jugador.Equipo, totalPts)
 
 	if !terminoLaPartida {
 		// ahora se deberia de incrementar el mano
@@ -420,7 +420,7 @@ func (p *Partida) byeBye() {
 func (p *Partida) nuevaRonda(elMano JugadorIdx) {
 	fmt.Println("Empieza una nueva ronda")
 	p.Ronda = nuevaRonda(p.jugadores, elMano)
-	fmt.Printf("La mano y el turno es %s\n", p.Ronda.getElMano().jugador.nombre)
+	fmt.Printf("La mano y el turno es %s\n", p.Ronda.getElMano().Jugador.Nombre)
 }
 
 // NuevaPartida retorna nueva partida; error si hubo

@@ -17,7 +17,7 @@ var (
 				Carta{Palo: Copa, Valor: 10},
 				Carta{Palo: Copa, Valor: 7},
 			},
-			jugador: nil,
+			Jugador: nil,
 		},
 		Manojo{
 			Cartas: [3]Carta{
@@ -25,7 +25,7 @@ var (
 				Carta{Palo: Oro, Valor: 2},
 				Carta{Palo: Basto, Valor: 3},
 			},
-			jugador: nil,
+			Jugador: nil,
 		},
 	}
 )

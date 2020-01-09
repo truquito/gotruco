@@ -63,11 +63,11 @@ func abs(x int) int {
 // obtenerIdx devuelve el ID correspondiente al argumento *Jugador
 func obtenerIdx(jugador *Jugador, jugadores []Jugador) (JugadorIdx, error) {
 	for i, j := range jugadores {
-		if j.nombre == jugador.nombre {
+		if j.Nombre == jugador.Nombre {
 			return JugadorIdx(i), nil
 		}
 	}
-	return -1, fmt.Errorf("Jugador `%s` no encontrado", jugador.nombre)
+	return -1, fmt.Errorf("Jugador `%s` no encontrado", jugador.Nombre)
 }
 
 // complemento de 'x in A, where A=[0, 1, 2]' devuelve
