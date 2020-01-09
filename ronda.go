@@ -32,14 +32,14 @@ func (x EstadoTruco) toString() string {
 }
 
 type truco struct {
-	cantadoPor *Manojo
-	estado     EstadoTruco
+	CantadoPor *Manojo     `json:"cantadoPor"`
+	Estado     EstadoTruco `json:"estado"`
 }
 
 // Ronda :
 type Ronda struct {
-	ManoEnJuego          NumMano `json:"ManoEnJuego"`
-	CantJugadoresEnJuego [2]int  `json:"CantJugadoresEnJuego"`
+	ManoEnJuego          NumMano `json:"manoEnJuego"`
+	CantJugadoresEnJuego [2]int  `json:"cantJugadoresEnJuego"`
 
 	/* Indices */
 	ElMano JugadorIdx    `json:"elMano"`
@@ -580,7 +580,7 @@ func (r *Ronda) dealCards() {
 			cartaID := CartaID(randomCards[3*idxJugador+idxCarta])
 			carta := nuevaCarta(cartaID)
 			r.Manojos[idxJugador].Cartas[idxCarta] = carta
-			r.Manojos[idxJugador].CartasNoJugadas[idxCarta] = true
+			r.Manojos[idxJugador].CartasNoTiradas[idxCarta] = true
 		}
 	}
 
@@ -600,7 +600,7 @@ func nuevaRonda(jugadores []Jugador, elMano JugadorIdx) Ronda {
 		Turno:                elMano,
 		Envido:               Envido{Puntaje: 0, Estado: NOCANTADOAUN},
 		Flor:                 NOCANTADA,
-		Truco:                truco{cantadoPor: nil, estado: NOCANTADO},
+		Truco:                truco{CantadoPor: nil, Estado: NOCANTADO},
 		Manojos:              make([]Manojo, cantJugadores),
 		Manos:                make([]Mano, 3),
 	}

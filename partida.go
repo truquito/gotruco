@@ -1,6 +1,8 @@
 package truco
 
 import (
+	"bytes"
+	"encoding/json"
 	"fmt"
 	"regexp"
 	"strings"
@@ -47,11 +49,36 @@ const (
 	Rojo Equipo = 1
 )
 
+var toEquipo = map[string]Equipo{
+	"Azul": Azul,
+	"Rojo": Rojo,
+}
+
 func (e Equipo) String() string {
 	if e == Rojo {
 		return "Rojo"
 	}
 	return "Azul"
+}
+
+// MarshalJSON marshals the enum as a quoted json string
+func (e Equipo) MarshalJSON() ([]byte, error) {
+	buffer := bytes.NewBufferString(`"`)
+	buffer.WriteString(e.String())
+	buffer.WriteString(`"`)
+	return buffer.Bytes(), nil
+}
+
+// UnmarshalJSON unmashals a quoted json string to the enum value
+func (e *Equipo) UnmarshalJSON(b []byte) error {
+	var j string
+	err := json.Unmarshal(b, &j)
+	if err != nil {
+		return err
+	}
+	// Note that if the string cannot be found then it will be set to the zero value, 'Created' in this case.
+	*e = toEquipo[j]
+	return nil
 }
 
 // Partida :
@@ -384,7 +411,7 @@ func (p *Partida) evaluarRonda() bool {
 	// momento de sumar los puntos del truco
 	var totalPts int = 0
 
-	switch p.Ronda.Truco.estado {
+	switch p.Ronda.Truco.Estado {
 	case NOCANTADO:
 		totalPts = 1
 	case TRUCOQUERIDO:

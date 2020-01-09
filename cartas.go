@@ -1,6 +1,8 @@
 package truco
 
 import (
+	"bytes"
+	"encoding/json"
 	"math/rand"
 	"strconv"
 	"time"
@@ -25,6 +27,11 @@ import (
  *  ----------------------------------------------------------
  */
 
+const (
+	minCartaID = 0
+	maxCartaID = 40
+)
+
 // Palo enum
 type Palo int
 
@@ -36,24 +43,47 @@ const (
 	Oro    Palo = 3 // [30..39]
 )
 
-const (
-	minCartaID = 0
-	maxCartaID = 40
-)
+var toPalo = map[string]Palo{
+	"Basto":  Basto,
+	"Copa":   Copa,
+	"Espada": Espada,
+	"Oro":    Oro,
+}
 
 // toString
 func (p Palo) String() string {
-	nombres := [...]string{
+	palos := []string{
 		"Basto",
 		"Copa",
 		"Espada",
-		"Oro"}
+		"Oro",
+	}
 
 	if p < Basto || p > Oro {
 		return "Unknown"
 	}
 
-	return nombres[p]
+	return palos[p]
+}
+
+// MarshalJSON marshals the enum as a quoted json string
+func (p Palo) MarshalJSON() ([]byte, error) {
+	buffer := bytes.NewBufferString(`"`)
+	buffer.WriteString(p.String())
+	buffer.WriteString(`"`)
+	return buffer.Bytes(), nil
+}
+
+// UnmarshalJSON unmashals a quoted json string to the enum value
+func (p *Palo) UnmarshalJSON(b []byte) error {
+	var j string
+	err := json.Unmarshal(b, &j)
+	if err != nil {
+		return err
+	}
+	// Note that if the string cannot be found then it will be set to the zero value, 'Created' in this case.
+	*p = toPalo[j]
+	return nil
 }
 
 // Carta struct

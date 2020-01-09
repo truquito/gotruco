@@ -14,14 +14,14 @@ type Manojo struct {
 	SeFueAlMazo bool                    `json:"seFueAlMazo"`
 	Cartas      [cantCartasManojo]Carta `json:"cartas"`
 	// si true->la tiene; si false->ya la tiro
-	CartasNoJugadas [cantCartasManojo]bool `json:"cartasNoJugadas"`
+	CartasNoTiradas [cantCartasManojo]bool `json:"cartasNoJugadas"`
 	Jugador         *Jugador               `json:"jugador"`
 }
 
 // retorna la cantidad de cartas que ya tiro
 func (manojo Manojo) getCantCartasTiradas() int {
 	totalTiradas := 0
-	for _, tirada := range manojo.CartasNoJugadas {
+	for _, tirada := range manojo.CartasNoTiradas {
 		if tirada {
 			totalTiradas++
 		}
