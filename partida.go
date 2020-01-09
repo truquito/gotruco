@@ -52,12 +52,12 @@ func (e Equipo) String() string {
 
 // Partida :
 type Partida struct {
-	cantJugadores int
 	jugadores     []Jugador
-	puntuacion    Puntuacion
-	puntaje       int
-	puntajes      [2]int // Rojo o Azul
-	Ronda         Ronda
+	CantJugadores int        `json:"cantJugadores"`
+	Puntuacion    Puntuacion `json:"puntuacion"`
+	Puntaje       int        `json:"puntaje"`
+	Puntajes      [2]int     `json:"puntajes"`
+	Ronda         Ronda      `json:"ronda"`
 }
 
 func (p *Partida) readLnJugada() error {
@@ -150,15 +150,15 @@ func (p *Partida) parseJugada(jugadaStr, jugadorStr string) (IJugada, error) {
 }
 
 func (p *Partida) getMaxPuntaje() int {
-	if p.puntajes[Rojo] > p.puntajes[Azul] {
-		return p.puntajes[Rojo]
+	if p.Puntajes[Rojo] > p.Puntajes[Azul] {
+		return p.Puntajes[Rojo]
 	}
-	return p.puntajes[Azul]
+	return p.Puntajes[Azul]
 }
 
 // retorna el equipo que va ganando
 func (p *Partida) elQueVaGanando() Equipo {
-	vaGanandoRojo := p.puntajes[Rojo] > p.puntajes[Azul]
+	vaGanandoRojo := p.Puntajes[Rojo] > p.Puntajes[Azul]
 	if vaGanandoRojo {
 		return Rojo
 	}
@@ -168,7 +168,7 @@ func (p *Partida) elQueVaGanando() Equipo {
 // getPuntuacionMalas devuelve la mitad de la puntuacion
 // total jugable durante toda la partida
 func (p *Partida) getPuntuacionMalas() int {
-	return p.puntuacion.toInt() / 2
+	return p.Puntuacion.toInt() / 2
 }
 
 // getJugador dado un indice de jugador,
@@ -179,16 +179,16 @@ func (p *Partida) getJugador(jIdx JugadorIdx) *Jugador {
 
 // NoAcabada retorna true si la partida acabo
 func (p *Partida) NoAcabada() bool {
-	return p.getMaxPuntaje() < p.puntuacion.toInt()
+	return p.getMaxPuntaje() < p.Puntuacion.toInt()
 }
 
 func (p *Partida) elChico() int {
-	return p.puntuacion.toInt() / 2
+	return p.Puntuacion.toInt() / 2
 }
 
 // retorna true si `e` esta en malas
 func (p *Partida) estaEnMalas(e Equipo) bool {
-	return p.puntajes[e] < p.elChico()
+	return p.Puntajes[e] < p.elChico()
 }
 
 // retorna la cantidad de puntos que le corresponderian
@@ -205,11 +205,11 @@ func (p *Partida) calcPtsFaltaEnvido(ganadorDelEnvite Equipo) int {
 	// 		esta en Buenas -> el ganador del envite (`ganadorDelEnvite`) gana lo que le falta al maximo para ganar la ronda
 
 	if p.estaEnMalas(p.elQueVaGanando()) {
-		loQueLeFaltaAlGANADORparaGanarElChico := p.elChico() - p.puntajes[ganadorDelEnvite]
+		loQueLeFaltaAlGANADORparaGanarElChico := p.elChico() - p.Puntajes[ganadorDelEnvite]
 		return loQueLeFaltaAlGANADORparaGanarElChico
 	}
 	//else {
-	loQueLeFaltaAlQUEvaGANANDOparaGanarElChico := p.puntuacion.toInt() - p.puntajes[p.elQueVaGanando()]
+	loQueLeFaltaAlQUEvaGANANDOparaGanarElChico := p.Puntuacion.toInt() - p.Puntajes[p.elQueVaGanando()]
 	return loQueLeFaltaAlQUEvaGANANDOparaGanarElChico
 	//}
 
@@ -217,7 +217,7 @@ func (p *Partida) calcPtsFaltaEnvido(ganadorDelEnvite Equipo) int {
 
 // retorna true si termino la partida
 func (p *Partida) sumarPuntos(e Equipo, totalPts int) bool {
-	p.puntajes[e] += totalPts
+	p.Puntajes[e] += totalPts
 	if p.NoAcabada() {
 		return false
 	}
@@ -445,14 +445,14 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	}
 
 	p := Partida{
-		puntuacion:    puntuacion,
-		puntaje:       0,
-		cantJugadores: cantJugadores,
+		Puntuacion:    puntuacion,
+		Puntaje:       0,
+		CantJugadores: cantJugadores,
 		jugadores:     jugadores,
 	}
 
-	p.puntajes[Rojo] = 0
-	p.puntajes[Azul] = 0
+	p.Puntajes[Rojo] = 0
+	p.Puntajes[Azul] = 0
 
 	elMano := JugadorIdx(0)
 	p.nuevaRonda(elMano)

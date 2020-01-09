@@ -179,7 +179,7 @@ func TestFlorFlorContraFlorQuiero(t *testing.T) {
 
 	// duda: se suman solo las flores ganadoras
 	// si contraflor AL RESTO -> no acumulativo
-	oops = !(p.puntajes[Azul] == 4*3+10 && p.puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 4*3+10 && p.Puntajes[Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia ser 2`)
 		return

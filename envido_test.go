@@ -58,7 +58,7 @@ func TestEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 2 && p.puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 2 && p.Puntajes[Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 2`)
 		return
@@ -104,7 +104,7 @@ func TestEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 1 && p.puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 1 && p.Puntajes[Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo rojo deberia de ser 1`)
 		return
@@ -150,7 +150,7 @@ func TestRealEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 3 && p.puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 3 && p.Puntajes[Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -196,7 +196,7 @@ func TestRealEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 1 && p.puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 1 && p.Puntajes[Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 1`)
 		return
@@ -242,7 +242,7 @@ func TestFaltaEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 10 && p.puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 10 && p.Puntajes[Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 10`)
 		return
@@ -288,7 +288,7 @@ func TestFaltaEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 1 && p.puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 1 && p.Puntajes[Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 1`)
 		return
@@ -392,7 +392,7 @@ func TestEnvidoEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 0 && p.puntajes[Rojo] == 2+1)
+	oops = !(p.Puntajes[Azul] == 0 && p.Puntajes[Rojo] == 2+1)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 0`)
 		return
@@ -439,7 +439,7 @@ func TestEnvidoRealEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 2+3 && p.puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 2+3 && p.Puntajes[Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 5`)
 		return
@@ -486,7 +486,7 @@ func TestEnvidoRealEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 0 && p.puntajes[Rojo] == 2+1)
+	oops = !(p.Puntajes[Azul] == 0 && p.Puntajes[Rojo] == 2+1)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -533,7 +533,7 @@ func TestEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 2+10 && p.puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 2+10 && p.Puntajes[Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -580,7 +580,7 @@ func TestEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 0 && p.puntajes[Rojo] == 2+1)
+	oops = !(p.Puntajes[Azul] == 0 && p.Puntajes[Rojo] == 2+1)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -627,7 +627,7 @@ func TestRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 3+10 && p.puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 3+10 && p.Puntajes[Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -674,7 +674,7 @@ func TestRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 0 && p.puntajes[Rojo] == 3+1)
+	oops = !(p.Puntajes[Azul] == 0 && p.Puntajes[Rojo] == 3+1)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -722,7 +722,7 @@ func TestEnvidoEnvidoRealEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 2+2+3 && p.puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 2+2+3 && p.Puntajes[Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -770,7 +770,7 @@ func TestEnvidoEnvidoRealEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 2+2+1 && p.puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 2+2+1 && p.Puntajes[Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -818,7 +818,7 @@ func TestEnvidoEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 2+2+10 && p.puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 2+2+10 && p.Puntajes[Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -866,7 +866,7 @@ func TestEnvidoEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 2+2+1 && p.puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 2+2+1 && p.Puntajes[Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -914,7 +914,7 @@ func TestEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 2+3+10 && p.puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 2+3+10 && p.Puntajes[Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -962,7 +962,7 @@ func TestEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 2+3+1 && p.puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 2+3+1 && p.Puntajes[Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -1011,7 +1011,7 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 2+2+3+10 && p.puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 2+2+3+10 && p.Puntajes[Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -1060,7 +1060,7 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.puntajes[Azul] == 0 && p.puntajes[Rojo] == 2+2+3+1)
+	oops = !(p.Puntajes[Azul] == 0 && p.Puntajes[Rojo] == 2+2+3+1)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -1070,8 +1070,8 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 /* Tests de calculos */
 func TestCalcEnvido(t *testing.T) {
 	p, _ := NuevaPartida(a20, []string{"A", "C", "E"}, []string{"B", "D", "F"})
-	p.puntajes[Azul] = 4
-	p.puntajes[Rojo] = 3
+	p.Puntajes[Azul] = 4
+	p.Puntajes[Rojo] = 3
 	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
 	p.Ronda.setManojos(
 		[]Manojo{
@@ -1138,7 +1138,7 @@ func TestCalcEnvido(t *testing.T) {
 	p.SetSigJugada("C Quiero")
 	p.Esperar()
 
-	oops = !(p.puntajes[Azul] == 4+2)
+	oops = !(p.Puntajes[Azul] == 4+2)
 	if oops {
 		t.Error("El resultado es incorrecto")
 		return
@@ -1148,8 +1148,8 @@ func TestCalcEnvido(t *testing.T) {
 
 func TestYTEnvidoCalcII(t *testing.T) {
 	p, _ := NuevaPartida(a20, []string{"A", "C", "E"}, []string{"B", "D", "F"})
-	p.puntajes[Azul] = 4
-	p.puntajes[Rojo] = 3
+	p.Puntajes[Azul] = 4
+	p.Puntajes[Rojo] = 3
 	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
 	p.Ronda.setManojos(
 		[]Manojo{
@@ -1216,7 +1216,7 @@ func TestYTEnvidoCalcII(t *testing.T) {
 	p.SetSigJugada("C Quiero")
 	p.Esperar()
 
-	oops = !(p.puntajes[Rojo] == 3+2)
+	oops = !(p.Puntajes[Rojo] == 3+2)
 	if oops {
 		t.Error("El resultado es incorrecto")
 		return
