@@ -236,7 +236,7 @@ func (p *Partida) evaluarMano() {
 	// es decir, la que "gana de mano"
 	maxPoder := [2]int{-1, -1}
 	var max [2]tirarCarta
-	tiradas := p.Ronda.getManoActual().cartasTiradas
+	tiradas := p.Ronda.getManoActual().CartasTiradas
 
 	for _, tirada := range tiradas {
 		poder := tirada.Carta.calcPoder(p.Ronda.Muestra)
@@ -250,8 +250,8 @@ func (p *Partida) evaluarMano() {
 	mano := p.Ronda.getManoActual()
 	esParda := maxPoder[Rojo] == maxPoder[Azul]
 	if esParda {
-		mano.resultado = Empardada
-		mano.ganador = nil
+		mano.Resultado = Empardada
+		mano.Ganador = nil
 		fmt.Printf("La Mano resulta parda")
 		// no se cambia el turno
 
@@ -260,17 +260,17 @@ func (p *Partida) evaluarMano() {
 
 		if maxPoder[Rojo] > maxPoder[Azul] {
 			tiradaGanadora = max[Rojo]
-			mano.resultado = GanoRojo
+			mano.Resultado = GanoRojo
 		} else {
 			tiradaGanadora = max[Azul]
-			mano.resultado = GanoAzul
+			mano.Resultado = GanoAzul
 		}
 
 		// el turno pasa a ser el del mano.ganador
 		// pero se setea despues de evaluar la ronda
-		mano.ganador = tiradaGanadora.autor
+		mano.Ganador = tiradaGanadora.autor
 		fmt.Printf("La Mano la gano %s (equipo %s)",
-			mano.ganador.Jugador.Nombre, mano.ganador.Jugador.Equipo.String())
+			mano.Ganador.Jugador.Nombre, mano.Ganador.Jugador.Equipo.String())
 	}
 
 	// se termino la ronda?
@@ -305,15 +305,15 @@ func (p *Partida) evaluarRonda() bool {
 	cantManosGanadas := [2]int{0, 0}
 	for i := 0; i < p.Ronda.ManoEnJuego.toInt(); i++ {
 		mano := p.Ronda.Manos[i]
-		if mano.resultado != Empardada {
-			cantManosGanadas[mano.ganador.Jugador.Equipo]++
+		if mano.Resultado != Empardada {
+			cantManosGanadas[mano.Ganador.Jugador.Equipo]++
 		}
 	}
 
 	hayEmpate := cantManosGanadas[Rojo] == cantManosGanadas[Azul]
-	pardaPrimera := p.Ronda.Manos[0].resultado == Empardada
-	pardaSegunda := p.Ronda.Manos[1].resultado == Empardada
-	pardaTercera := p.Ronda.Manos[2].resultado == Empardada
+	pardaPrimera := p.Ronda.Manos[0].Resultado == Empardada
+	pardaSegunda := p.Ronda.Manos[1].Resultado == Empardada
+	pardaTercera := p.Ronda.Manos[2].Resultado == Empardada
 	seEstaJugandoLaSegunda := p.Ronda.ManoEnJuego == segunda
 	noSeAcaboAun := seEstaJugandoLaSegunda && hayEmpate
 
@@ -328,18 +328,18 @@ func (p *Partida) evaluarRonda() bool {
 	if cantManosGanadas[Rojo] >= 2 {
 		// agarro cualquier manojo de los rojos
 		// o bien es la primera o bien la segunda
-		if p.Ronda.Manos[0].ganador.Jugador.Equipo == Rojo {
-			ganador = p.Ronda.Manos[0].ganador
+		if p.Ronda.Manos[0].Ganador.Jugador.Equipo == Rojo {
+			ganador = p.Ronda.Manos[0].Ganador
 		} else {
-			ganador = p.Ronda.Manos[1].ganador
+			ganador = p.Ronda.Manos[1].Ganador
 		}
 	} else if cantManosGanadas[Azul] >= 2 {
 		// agarro cualquier manojo de los azules
 		// o bien es la primera o bien la segunda
-		if p.Ronda.Manos[0].ganador.Jugador.Equipo == Azul {
-			ganador = p.Ronda.Manos[0].ganador
+		if p.Ronda.Manos[0].Ganador.Jugador.Equipo == Azul {
+			ganador = p.Ronda.Manos[0].Ganador
 		} else {
-			ganador = p.Ronda.Manos[1].ganador
+			ganador = p.Ronda.Manos[1].Ganador
 		}
 
 	} else {
@@ -360,16 +360,16 @@ func (p *Partida) evaluarRonda() bool {
 		caso5 := pardaPrimera && pardaSegunda && pardaTercera
 
 		if caso1 {
-			ganador = p.Ronda.Manos[segunda].ganador
+			ganador = p.Ronda.Manos[segunda].Ganador
 
 		} else if caso2 {
-			ganador = p.Ronda.Manos[primera].ganador
+			ganador = p.Ronda.Manos[primera].Ganador
 
 		} else if caso3 {
-			ganador = p.Ronda.Manos[primera].ganador
+			ganador = p.Ronda.Manos[primera].Ganador
 
 		} else if caso4 {
-			ganador = p.Ronda.Manos[tercera].ganador
+			ganador = p.Ronda.Manos[tercera].Ganador
 
 		} else if caso5 {
 			ganador = p.Ronda.getElMano()

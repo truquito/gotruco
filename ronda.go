@@ -150,8 +150,8 @@ func (r *Ronda) nextTurnoPosMano() {
 	} else {
 		// solo si la mano anterior no fue parda
 		// si fue parda el truno se mantiene
-		if r.getManoAnterior().resultado != Empardada {
-			r.Turno = JugadorIdx(r.getIdx(*r.getManoAnterior().ganador))
+		if r.getManoAnterior().Resultado != Empardada {
+			r.Turno = JugadorIdx(r.getIdx(*r.getManoAnterior().Ganador))
 		}
 	}
 	fmt.Printf("Es el turno de %s", r.Manojos[r.Turno].Jugador.Nombre)

@@ -33,12 +33,12 @@ func (n NumMano) toInt() int {
 
 // Mano :
 type Mano struct {
-	resultado Resultado
-	ganador   *Manojo
+	Resultado Resultado `json:"resultado"`
+	Ganador   *Manojo   `json:"ganador"`
 	// en cada mano los jugadores van a tirar hata 1 carta
-	cartasTiradas []tirarCarta
+	CartasTiradas []tirarCarta `json:"cartasTiradas"`
 }
 
 func (m *Mano) agregarTirada(cartaTirada tirarCarta) {
-	m.cartasTiradas = append(m.cartasTiradas, cartaTirada)
+	m.CartasTiradas = append(m.CartasTiradas, cartaTirada)
 }
