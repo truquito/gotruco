@@ -42,7 +42,7 @@ func (e EstadoTruco) String() string {
 		"vale4Querido",
 	}
 
-	ok := e > 0 && int(e) < len(toEstadoTruco)-1
+	ok := e >= 0 || int(e) < len(toEstadoTruco)
 	if !ok {
 		return "Unknown"
 	}

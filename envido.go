@@ -35,7 +35,7 @@ func (e EstadoEnvido) String() string {
 		"faltaEnvido",
 	}
 
-	ok := e > 0 && int(e) < len(toEstadoEnvido)-1
+	ok := e >= 0 && int(e) < len(toEstadoEnvido)
 	if !ok {
 		return "Unknown"
 	}

@@ -59,7 +59,8 @@ func (p Palo) String() string {
 		"Oro",
 	}
 
-	if p < Basto || p > Oro {
+	ok := p >= 0 || int(p) < len(toPalo)
+	if !ok {
 		return "Unknown"
 	}
 

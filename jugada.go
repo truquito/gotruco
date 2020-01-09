@@ -791,7 +791,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 		fmt.Printf(`>> +%v puntos para el equipo %s por el %s no querido por %s`+"\n",
 			totalPts,
 			p.Ronda.Truco.CantadoPor.Jugador.Equipo,
-			p.Ronda.Truco.Estado.toString(),
+			p.Ronda.Truco.Estado.String(),
 			jugada.autor.Jugador.Nombre)
 		termino := p.sumarPuntos(p.Ronda.Truco.CantadoPor.Jugador.Equipo, totalPts)
 		if !termino {
@@ -917,7 +917,7 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 			fmt.Printf(`>> +%v puntos para el equipo %s por el %s no querido por %s`+"\n",
 				totalPts,
 				p.Ronda.Truco.CantadoPor.Jugador.Equipo,
-				p.Ronda.Truco.Estado.toString(),
+				p.Ronda.Truco.Estado.String(),
 				jugada.autor.Jugador.Nombre)
 			termino := p.sumarPuntos(p.Ronda.Truco.CantadoPor.Jugador.Equipo, totalPts)
 			if !termino {
