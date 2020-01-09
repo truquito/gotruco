@@ -36,7 +36,7 @@ func templateCarta(valor int, palo string) string {
 	// numero
 	numStr := strconv.Itoa(valor)
 	if valor <= 9 {
-		numStr = "─" + numStr
+		numStr = numStr + "─"
 	}
 	carta = replace("xx", numStr, carta)
 	carta = replace("PP", palo[:2], carta)
