@@ -41,12 +41,12 @@ func (pt Puntuacion) toInt() int {
 }
 
 // Equipo : Enum para el puntaje maximo de la partida
-type Equipo int
+type Equipo string
 
 // rojo o azul
 const (
-	Azul Equipo = 0
-	Rojo Equipo = 1
+	Azul Equipo = "Azul"
+	Rojo Equipo = "Rojo"
 )
 
 var toEquipo = map[string]Equipo{
@@ -84,11 +84,11 @@ func (e *Equipo) UnmarshalJSON(b []byte) error {
 // Partida :
 type Partida struct {
 	jugadores     []Jugador
-	CantJugadores int        `json:"cantJugadores"`
-	Puntuacion    Puntuacion `json:"puntuacion"`
-	Puntaje       int        `json:"puntaje"`
-	Puntajes      [2]int     `json:"puntajes"`
-	Ronda         Ronda      `json:"ronda"`
+	CantJugadores int            `json:"cantJugadores"`
+	Puntuacion    Puntuacion     `json:"puntuacion"`
+	Puntaje       int            `json:"puntaje"`
+	Puntajes      map[Equipo]int `json:"puntajes"`
+	Ronda         Ronda          `json:"ronda"`
 }
 
 // SetSigJugada nexo capa presentacion con capa logica
@@ -261,8 +261,8 @@ func (p *Partida) evaluarMano() {
 	// Obs: en caso de 2 jugadores del mismo que tiraron
 	// una carta con el mismo poder -> se queda con la primera
 	// es decir, la que "gana de mano"
-	maxPoder := [2]int{-1, -1}
-	var max [2]tirarCarta
+	maxPoder := map[Equipo]int{Rojo: -1, Azul: -1}
+	max := map[Equipo]*tirarCarta{Rojo: nil, Azul: nil}
 	tiradas := p.Ronda.getManoActual().CartasTiradas
 
 	for _, tirada := range tiradas {
@@ -270,7 +270,7 @@ func (p *Partida) evaluarMano() {
 		equipo := tirada.autor.Jugador.Equipo
 		if poder > maxPoder[equipo] {
 			maxPoder[equipo] = poder
-			max[equipo] = tirada
+			max[equipo] = &tirada
 		}
 	}
 
@@ -283,7 +283,7 @@ func (p *Partida) evaluarMano() {
 		// no se cambia el turno
 
 	} else {
-		var tiradaGanadora tirarCarta
+		var tiradaGanadora *tirarCarta
 
 		if maxPoder[Rojo] > maxPoder[Azul] {
 			tiradaGanadora = max[Rojo]
@@ -329,7 +329,7 @@ func (p *Partida) evaluarRonda() bool {
 	// asi que es seguro acceder a los indices 0 y 1 en:
 	// p.Ronda.manos[0] & p.Ronda.manos[1]
 
-	cantManosGanadas := [2]int{0, 0}
+	cantManosGanadas := map[Equipo]int{Rojo: 0, Azul: 0}
 	for i := 0; i < p.Ronda.ManoEnJuego.toInt(); i++ {
 		mano := p.Ronda.Manos[i]
 		if mano.Resultado != Empardada {
@@ -478,6 +478,7 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 		jugadores:     jugadores,
 	}
 
+	p.Puntajes = make(map[Equipo]int)
 	p.Puntajes[Rojo] = 0
 	p.Puntajes[Azul] = 0
 

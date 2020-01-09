@@ -38,8 +38,8 @@ type truco struct {
 
 // Ronda :
 type Ronda struct {
-	ManoEnJuego          NumMano `json:"manoEnJuego"`
-	CantJugadoresEnJuego [2]int  `json:"cantJugadoresEnJuego"`
+	ManoEnJuego          NumMano        `json:"manoEnJuego"`
+	CantJugadoresEnJuego map[Equipo]int `json:"cantJugadoresEnJuego"`
 
 	/* Indices */
 	ElMano JugadorIdx    `json:"elMano"`
@@ -594,15 +594,18 @@ func nuevaRonda(jugadores []Jugador, elMano JugadorIdx) Ronda {
 	cantJugadores := len(jugadores)
 	cantJugadoresPorEquipo := cantJugadores / 2
 	ronda := Ronda{
-		ManoEnJuego:          primera,
-		CantJugadoresEnJuego: [2]int{cantJugadoresPorEquipo, cantJugadoresPorEquipo},
-		ElMano:               elMano,
-		Turno:                elMano,
-		Envido:               Envido{Puntaje: 0, Estado: NOCANTADOAUN},
-		Flor:                 NOCANTADA,
-		Truco:                truco{CantadoPor: nil, Estado: NOCANTADO},
-		Manojos:              make([]Manojo, cantJugadores),
-		Manos:                make([]Mano, 3),
+		ManoEnJuego: primera,
+		CantJugadoresEnJuego: map[Equipo]int{
+			Rojo: cantJugadoresPorEquipo,
+			Azul: cantJugadoresPorEquipo,
+		},
+		ElMano:  elMano,
+		Turno:   elMano,
+		Envido:  Envido{Puntaje: 0, Estado: NOCANTADOAUN},
+		Flor:    NOCANTADA,
+		Truco:   truco{CantadoPor: nil, Estado: NOCANTADO},
+		Manojos: make([]Manojo, cantJugadores),
+		Manos:   make([]Mano, 3),
 	}
 
 	// reparto 3 cartas al azar a cada jugador
