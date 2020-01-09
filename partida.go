@@ -6,6 +6,10 @@ import (
 	"strings"
 )
 
+// el envido, la primera o la mentira
+// el envido, la primera o la mentira
+// el truco, la segunda o el rabón
+
 var (
 	quit       chan bool    = make(chan bool, 1)
 	wait       chan bool    = make(chan bool, 1)
@@ -235,7 +239,7 @@ func (p *Partida) evaluarMano() {
 	tiradas := p.Ronda.getManoActual().cartasTiradas
 
 	for _, tirada := range tiradas {
-		poder := tirada.Carta.calcPoder(p.Ronda.muestra)
+		poder := tirada.Carta.calcPoder(p.Ronda.Muestra)
 		equipo := tirada.autor.jugador.equipo
 		if poder > maxPoder[equipo] {
 			maxPoder[equipo] = poder
@@ -271,7 +275,7 @@ func (p *Partida) evaluarMano() {
 
 	// se termino la ronda?
 	var empiezaNuevaRonda bool = false
-	if p.Ronda.manoEnJuego >= segunda {
+	if p.Ronda.ManoEnJuego >= segunda {
 		empiezaNuevaRonda = p.evaluarRonda()
 	}
 
@@ -280,7 +284,7 @@ func (p *Partida) evaluarMano() {
 	// para usar esto, antes se debe primero incrementar el turno
 	// incremento solo si no se empezo una nueva ronda
 	if !empiezaNuevaRonda {
-		p.Ronda.manoEnJuego++
+		p.Ronda.ManoEnJuego++
 		p.Ronda.nextTurnoPosMano()
 	}
 }
@@ -289,7 +293,7 @@ func (p *Partida) evaluarMano() {
 // si se empieza una ronda nueva -> retorna true
 // si no se termino la ronda 	 -> retorna false
 func (p *Partida) evaluarRonda() bool {
-	imposibleQueSeHayaAcabado := p.Ronda.manoEnJuego == primera
+	imposibleQueSeHayaAcabado := p.Ronda.ManoEnJuego == primera
 	if imposibleQueSeHayaAcabado {
 		return false
 	}
@@ -299,18 +303,18 @@ func (p *Partida) evaluarRonda() bool {
 	// p.Ronda.manos[0] & p.Ronda.manos[1]
 
 	cantManosGanadas := [2]int{0, 0}
-	for i := 0; i < p.Ronda.manoEnJuego.toInt(); i++ {
-		mano := p.Ronda.manos[i]
+	for i := 0; i < p.Ronda.ManoEnJuego.toInt(); i++ {
+		mano := p.Ronda.Manos[i]
 		if mano.resultado != Empardada {
 			cantManosGanadas[mano.ganador.jugador.equipo]++
 		}
 	}
 
 	hayEmpate := cantManosGanadas[Rojo] == cantManosGanadas[Azul]
-	pardaPrimera := p.Ronda.manos[0].resultado == Empardada
-	pardaSegunda := p.Ronda.manos[1].resultado == Empardada
-	pardaTercera := p.Ronda.manos[2].resultado == Empardada
-	seEstaJugandoLaSegunda := p.Ronda.manoEnJuego == segunda
+	pardaPrimera := p.Ronda.Manos[0].resultado == Empardada
+	pardaSegunda := p.Ronda.Manos[1].resultado == Empardada
+	pardaTercera := p.Ronda.Manos[2].resultado == Empardada
+	seEstaJugandoLaSegunda := p.Ronda.ManoEnJuego == segunda
 	noSeAcaboAun := seEstaJugandoLaSegunda && hayEmpate
 
 	if noSeAcaboAun {
@@ -324,18 +328,18 @@ func (p *Partida) evaluarRonda() bool {
 	if cantManosGanadas[Rojo] >= 2 {
 		// agarro cualquier manojo de los rojos
 		// o bien es la primera o bien la segunda
-		if p.Ronda.manos[0].ganador.jugador.equipo == Rojo {
-			ganador = p.Ronda.manos[0].ganador
+		if p.Ronda.Manos[0].ganador.jugador.equipo == Rojo {
+			ganador = p.Ronda.Manos[0].ganador
 		} else {
-			ganador = p.Ronda.manos[1].ganador
+			ganador = p.Ronda.Manos[1].ganador
 		}
 	} else if cantManosGanadas[Azul] >= 2 {
 		// agarro cualquier manojo de los azules
 		// o bien es la primera o bien la segunda
-		if p.Ronda.manos[0].ganador.jugador.equipo == Azul {
-			ganador = p.Ronda.manos[0].ganador
+		if p.Ronda.Manos[0].ganador.jugador.equipo == Azul {
+			ganador = p.Ronda.Manos[0].ganador
 		} else {
-			ganador = p.Ronda.manos[1].ganador
+			ganador = p.Ronda.Manos[1].ganador
 		}
 
 	} else {
@@ -356,16 +360,16 @@ func (p *Partida) evaluarRonda() bool {
 		caso5 := pardaPrimera && pardaSegunda && pardaTercera
 
 		if caso1 {
-			ganador = p.Ronda.manos[segunda].ganador
+			ganador = p.Ronda.Manos[segunda].ganador
 
 		} else if caso2 {
-			ganador = p.Ronda.manos[primera].ganador
+			ganador = p.Ronda.Manos[primera].ganador
 
 		} else if caso3 {
-			ganador = p.Ronda.manos[primera].ganador
+			ganador = p.Ronda.Manos[primera].ganador
 
 		} else if caso4 {
-			ganador = p.Ronda.manos[tercera].ganador
+			ganador = p.Ronda.Manos[tercera].ganador
 
 		} else if caso5 {
 			ganador = p.Ronda.getElMano()
@@ -380,7 +384,7 @@ func (p *Partida) evaluarRonda() bool {
 	// momento de sumar los puntos del truco
 	var totalPts int = 0
 
-	switch p.Ronda.truco.estado {
+	switch p.Ronda.Truco.estado {
 	case NOCANTADO:
 		totalPts = 1
 	case TRUCOQUERIDO:

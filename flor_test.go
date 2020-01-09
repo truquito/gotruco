@@ -53,14 +53,14 @@ func TestNoDeberianTenerFlor(t *testing.T) {
 		},
 	)
 
-	tieneFlor, _ := p.Ronda.manojos[0].tieneFlor(p.Ronda.muestra)
+	tieneFlor, _ := p.Ronda.Manojos[0].tieneFlor(p.Ronda.Muestra)
 	oops = tieneFlor == true
 	if oops {
 		t.Error(`Alvaro' NO deberia de tener 'flor'`)
 		return
 	}
 
-	tieneFlor, _ = p.Ronda.manojos[1].tieneFlor(p.Ronda.muestra)
+	tieneFlor, _ = p.Ronda.Manojos[1].tieneFlor(p.Ronda.Muestra)
 	oops = tieneFlor == true
 	if oops {
 		t.Error(`Roro' NO deberia de tener 'flor'`)
@@ -92,14 +92,14 @@ func TestDeberiaTenerFlor(t *testing.T) {
 		},
 	)
 
-	tieneFlor, _ := p.Ronda.manojos[0].tieneFlor(p.Ronda.muestra)
+	tieneFlor, _ := p.Ronda.Manojos[0].tieneFlor(p.Ronda.Muestra)
 	oops = !(tieneFlor == true)
 	if oops {
 		t.Error(`Alvaro' deberia tener 'flor'`)
 		return
 	}
 
-	tieneFlor, _ = p.Ronda.manojos[1].tieneFlor(p.Ronda.muestra)
+	tieneFlor, _ = p.Ronda.Manojos[1].tieneFlor(p.Ronda.Muestra)
 	oops = !(tieneFlor == true)
 	if oops {
 		t.Error(`Roro' deberia tener 'flor'`)
@@ -165,13 +165,13 @@ func TestFlorFlorContraFlorQuiero(t *testing.T) {
 	p.SetSigJugada("Richard Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.envido.estado != DESHABILITADO
+	oops = p.Ronda.Envido.estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia ser 'deshabilitado'`)
 		return
 	}
 
-	oops = p.Ronda.flor != DESHABILITADA
+	oops = p.Ronda.Flor != DESHABILITADA
 	if oops {
 		t.Error(`El estado de la flor deberia ser 'deshabilitado'`)
 		return

@@ -38,30 +38,30 @@ type truco struct {
 
 // Ronda :
 type Ronda struct {
-	manoEnJuego          NumMano // Numero de mano: 1era 2da 3era
-	cantJugadoresEnJuego [2]int  // Numero de jugadores que no se fueron al mazo
+	ManoEnJuego          NumMano `json:"ManoEnJuego"`
+	CantJugadoresEnJuego [2]int  `json:"CantJugadoresEnJuego"`
 
 	/* Indices */
-	elMano JugadorIdx
-	turno  JugadorIdx
-	pies   [2]JugadorIdx
+	ElMano JugadorIdx    `json:"elMano"`
+	Turno  JugadorIdx    `json:"turno"`
+	Pies   [2]JugadorIdx `json:"pies"`
 
 	/* toques, gritos y cantos */
-	envido Envido     // Estado del envido, la primera o la mentira
-	flor   EstadoFlor // Estado del envido, la primera o la mentira
-	truco  truco      // Estado del truco, la segunda o el rabón
+	Envido Envido     `json:"envido"`
+	Flor   EstadoFlor `json:"flor"`
+	Truco  truco      `json:"truco"`
 
 	/* cartas */
-	manojos []Manojo
-	muestra Carta
+	Manojos []Manojo `json:"manojos"`
+	Muestra Carta    `json:"muestra"`
 
-	manos []Mano
+	Manos []Mano `json:"manos"`
 }
 
 func (r *Ronda) checkFlorDelMano() {
-	tieneFlor, tipoFlor := r.getElMano().tieneFlor(r.muestra)
+	tieneFlor, tipoFlor := r.getElMano().tieneFlor(r.Muestra)
 	if tieneFlor {
-		r.getElMano().cantarFlor(tipoFlor, r.muestra)
+		r.getElMano().cantarFlor(tipoFlor, r.Muestra)
 	}
 }
 
@@ -74,15 +74,15 @@ func (r *Ronda) enJuego() bool {
 // son necesarios de checkear porque ya han sido
 // checkeados si tenian flor
 func (r Ronda) cantarFloresSiLasHay(aPartirDe JugadorIdx) {
-	for _, jugador := range r.manojos[aPartirDe+1:] {
-		tieneFlor, tipoFlor := jugador.tieneFlor(r.muestra)
+	for _, jugador := range r.Manojos[aPartirDe+1:] {
+		tieneFlor, tipoFlor := jugador.tieneFlor(r.Muestra)
 		if tieneFlor {
 			// todo:
 			tieneFlor = false
 			tipoFlor = tipoFlor + 1
 			// var jugada IJugada = responderNoQuiero{}
 			// jugador.cantarFlor(tipoFlor, r.muestra)
-			r.envido.estado = DESHABILITADO
+			r.Envido.estado = DESHABILITADO
 			break
 		}
 	}
@@ -91,10 +91,10 @@ func (r Ronda) cantarFloresSiLasHay(aPartirDe JugadorIdx) {
 // retorna todos los manojos que tienen flor
 func (r Ronda) getFlores() (hayFlor bool,
 	manojosConFlor []*Manojo) {
-	for i, manojo := range r.manojos {
-		tieneFlor, _ := manojo.tieneFlor(r.muestra)
+	for i, manojo := range r.Manojos {
+		tieneFlor, _ := manojo.tieneFlor(r.Muestra)
 		if tieneFlor {
-			manojosConFlor = append(manojosConFlor, &r.manojos[i])
+			manojosConFlor = append(manojosConFlor, &r.Manojos[i])
 		}
 	}
 	hayFlor = len(manojosConFlor) > 0
@@ -102,7 +102,7 @@ func (r Ronda) getFlores() (hayFlor bool,
 }
 
 func (r Ronda) getElMano() *Manojo {
-	return &r.manojos[r.elMano]
+	return &r.Manojos[r.ElMano]
 }
 
 // retorna el id del que deberia ser el siguiente mano
@@ -111,21 +111,21 @@ func (r Ronda) getSigMano() JugadorIdx {
 }
 
 func (r Ronda) getElTurno() *Manojo {
-	return &r.manojos[r.turno]
+	return &r.Manojos[r.Turno]
 }
 
 func (r Ronda) getManoAnterior() *Mano {
-	return &r.manos[r.manoEnJuego-1]
+	return &r.Manos[r.ManoEnJuego-1]
 }
 
 func (r Ronda) getManoActual() *Mano {
-	return &r.manos[r.manoEnJuego]
+	return &r.Manos[r.ManoEnJuego]
 }
 
 func (r *Ronda) nextTurno() {
-	manojoTurnoActual := r.manojos[r.turno]
+	manojoTurnoActual := r.Manojos[r.Turno]
 	manojoSigTurno := r.sigHabilitado(manojoTurnoActual)
-	r.turno = JugadorIdx(r.getIdx(*manojoSigTurno))
+	r.Turno = JugadorIdx(r.getIdx(*manojoSigTurno))
 }
 
 // PARA USAR ESTA FUNCION ANTES SE DEBE INCREMENTEAR
@@ -143,28 +143,28 @@ func (r *Ronda) nextTurno() {
 func (r *Ronda) nextTurnoPosMano() {
 	// si es la primera mano que se juega
 	// entonces es el turno del mano
-	if r.manoEnJuego == primera {
-		r.turno = r.elMano
+	if r.ManoEnJuego == primera {
+		r.Turno = r.ElMano
 		// si no, es turno del ganador de
 		// la mano anterior
 	} else {
 		// solo si la mano anterior no fue parda
 		// si fue parda el truno se mantiene
 		if r.getManoAnterior().resultado != Empardada {
-			r.turno = JugadorIdx(r.getIdx(*r.getManoAnterior().ganador))
+			r.Turno = JugadorIdx(r.getIdx(*r.getManoAnterior().ganador))
 		}
 	}
-	fmt.Printf("Es el turno de %s", r.manojos[r.turno].jugador.nombre)
+	fmt.Printf("Es el turno de %s", r.Manojos[r.Turno].jugador.nombre)
 }
 
 // Print Imprime la informacion de la ronda
 func (r Ronda) Print() {
-	for i := range r.manojos {
-		fmt.Printf("%s:\n", r.manojos[i].jugador.nombre)
-		r.manojos[i].Print()
+	for i := range r.Manojos {
+		fmt.Printf("%s:\n", r.Manojos[i].jugador.nombre)
+		r.Manojos[i].Print()
 	}
 
-	fmt.Printf("\nY la muestra es\n    - %s\n", r.muestra.toString())
+	fmt.Printf("\nY la muestra es\n    - %s\n", r.Muestra.toString())
 	fmt.Printf("\nEl mano actual es: %s\nEs el turno de %s\n\n",
 		r.getElMano().jugador.nombre, r.getElTurno().jugador.nombre)
 }
@@ -172,7 +172,7 @@ func (r Ronda) Print() {
 // sig devuelve el `JugadorIdx` del
 // jugador siguiente a j
 func (r *Ronda) sig(j JugadorIdx) JugadorIdx {
-	cantJugadores := len(r.manojos)
+	cantJugadores := len(r.Manojos)
 	esElUltimo := int(j) == cantJugadores-1
 	if esElUltimo {
 		return 0
@@ -183,9 +183,9 @@ func (r *Ronda) sig(j JugadorIdx) JugadorIdx {
 // retorna el indice de un manojo
 func (r Ronda) getIdx(m Manojo) int {
 	var idx int
-	cantJugadores := len(r.manojos)
+	cantJugadores := len(r.Manojos)
 	for idx = 0; idx < cantJugadores; idx++ {
-		esEse := r.manojos[idx].jugador.id == m.jugador.id
+		esEse := r.Manojos[idx].jugador.id == m.jugador.id
 		if esEse {
 			break
 		}
@@ -199,12 +199,12 @@ func (r Ronda) getIdx(m Manojo) int {
 // siguiente devuelve el puntero al manojo que le sigue
 func (r Ronda) siguiente(m Manojo) *Manojo {
 	idx := r.getIdx(m)
-	cantJugadores := len(r.manojos)
+	cantJugadores := len(r.Manojos)
 	esElUltimo := idx == cantJugadores-1
 	if esElUltimo {
-		return &r.manojos[0]
+		return &r.Manojos[0]
 	}
-	return &r.manojos[idx+1]
+	return &r.Manojos[idx+1]
 }
 
 // a diferencia de `siguiente`, retorna un puntero al siguiente manojo
@@ -218,14 +218,14 @@ func (r Ronda) siguiente(m Manojo) *Manojo {
 func (r Ronda) sigHabilitado(m Manojo) *Manojo {
 	var sig *Manojo = &m
 	var i int
-	cantJugadores := len(r.manojos)
+	cantJugadores := len(r.Manojos)
 
 	// como maximo voy a dar la vuelta entera
 	for i = 0; i < cantJugadores; i++ {
 		sig = r.siguiente(*sig)
 		// checkeos
 		noSeFueAlMazo := sig.seFueAlMazo == false
-		yaTiroCartaEnEstaMano := sig.yaTiroCarta(r.manoEnJuego)
+		yaTiroCartaEnEstaMano := sig.yaTiroCarta(r.ManoEnJuego)
 		noEsEl := sig.jugador.id != m.jugador.id
 		ok := noSeFueAlMazo && !yaTiroCartaEnEstaMano && noEsEl
 		if ok {
@@ -243,10 +243,10 @@ func (r Ronda) sigHabilitado(m Manojo) *Manojo {
 // leGanaDeMano devuelve `true` sii
 // `i` "le gana de mano" a `j`
 func (r Ronda) leGanaDeMano(i, j JugadorIdx) bool {
-	cantJugadores := len(r.manojos)
+	cantJugadores := len(r.Manojos)
 	// cambios de variables
-	p := cv(i, r.elMano, cantJugadores)
-	q := cv(j, r.elMano, cantJugadores)
+	p := cv(i, r.ElMano, cantJugadores)
+	q := cv(j, r.ElMano, cantJugadores)
 	return p < q
 }
 
@@ -258,14 +258,14 @@ func (r *Ronda) getLaFlorMasAlta() (*Manojo, int) {
 		maxFlor     = -1
 		maxIdx  int = -1
 	)
-	for i := range r.manojos {
-		valorFlor, _ := r.manojos[i].calcFlor(r.muestra)
+	for i := range r.Manojos {
+		valorFlor, _ := r.Manojos[i].calcFlor(r.Muestra)
 		if valorFlor > maxFlor {
 			maxFlor = valorFlor
 			maxIdx = i
 		}
 	}
-	return &r.manojos[maxIdx], maxFlor
+	return &r.Manojos[maxIdx], maxFlor
 }
 
 // todo: esto anda bien; es legacy; pero hacer que devuelva punteros
@@ -294,7 +294,7 @@ func (r *Ronda) getLaFlorMasAlta() (*Manojo, int) {
 func (r *Ronda) getElEnvido() (jIdx JugadorIdx,
 	max int, stdOut []string) {
 
-	cantJugadores := len(r.manojos)
+	cantJugadores := len(r.Manojos)
 
 	// decir envidos en orden segun las reglas:
 	// empieza la mano
@@ -307,7 +307,7 @@ func (r *Ronda) getElEnvido() (jIdx JugadorIdx,
 	// calculo y cacheo todos los envidos
 	envidos := make([]int, cantJugadores)
 	for i := range envidos {
-		envidos[i] = r.manojos[i].calcularEnvido(r.muestra)
+		envidos[i] = r.Manojos[i].calcularEnvido(r.Muestra)
 	}
 
 	// `yaDijeron` indica que jugador ya "dijo"
@@ -318,9 +318,9 @@ func (r *Ronda) getElEnvido() (jIdx JugadorIdx,
 	// var jIdx JugadorIdx
 
 	// empieza la mano
-	jIdx = r.elMano
+	jIdx = r.ElMano
 	yaDijeron[jIdx] = true
-	out := fmt.Sprintf("   %s dice: \"tengo %v\"\n", r.manojos[jIdx].jugador.nombre,
+	out := fmt.Sprintf("   %s dice: \"tengo %v\"\n", r.Manojos[jIdx].jugador.nombre,
 		envidos[jIdx])
 	stdOut = append(stdOut, out)
 
@@ -334,17 +334,17 @@ func (r *Ronda) getElEnvido() (jIdx JugadorIdx,
 	todaviaNoDijeronSonMejores := true
 
 	// iterador
-	i := r.elMano + 1
+	i := r.ElMano + 1
 
 	// termina el bucle cuando se haya dado
 	// "una vuelta completa" de:mano+1 hasta:mano
 	// ergo, cuando se "resetea" el iterador,
 	// se setea a `p.Ronda.elMano + 1`
-	for i != r.elMano {
+	for i != r.ElMano {
 		todaviaEsTenidoEnCuenta := !yaDijeron[i]
 		if todaviaEsTenidoEnCuenta {
 
-			esDeEquipoContrario := r.manojos[i].jugador.equipo != r.manojos[jIdx].jugador.equipo
+			esDeEquipoContrario := r.Manojos[i].jugador.equipo != r.Manojos[jIdx].jugador.equipo
 			tieneEnvidoMasAlto := envidos[i] > envidos[jIdx]
 			tieneEnvidoIgual := envidos[i] == envidos[jIdx]
 			leGanaDeMano := r.leGanaDeMano(i, jIdx)
@@ -353,13 +353,13 @@ func (r *Ronda) getElEnvido() (jIdx JugadorIdx,
 			if sonMejores {
 				if esDeEquipoContrario {
 					out := fmt.Sprintf("   %s dice: \"%v son mejores!\"\n",
-						r.manojos[i].jugador.nombre, envidos[i])
+						r.Manojos[i].jugador.nombre, envidos[i])
 					stdOut = append(stdOut, out)
 					jIdx = i
 					yaDijeron[i] = true
 					todaviaNoDijeronSonMejores = false
 					// se "resetea" el bucle
-					i = r.sig(r.elMano)
+					i = r.sig(r.ElMano)
 
 				} else /* es del mismo equipo */ {
 					// no dice nada si es del mismo equipo
@@ -372,7 +372,7 @@ func (r *Ronda) getElEnvido() (jIdx JugadorIdx,
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
 						out := fmt.Sprintf("   %s dice: \"son buenas\" (tenia %v)\n",
-							r.manojos[i].jugador.nombre, envidos[i])
+							r.Manojos[i].jugador.nombre, envidos[i])
 						stdOut = append(stdOut, out)
 						yaDijeron[i] = true
 						// pasa al siguiente
@@ -419,7 +419,7 @@ func (r *Ronda) getElEnvido() (jIdx JugadorIdx,
 func (r *Ronda) cantarFlores(aPartirDe JugadorIdx) (j *Manojo,
 	max int, stdOut []string) {
 
-	cantJugadores := len(r.manojos)
+	cantJugadores := len(r.Manojos)
 
 	// decir flores en orden segun las reglas:
 	// empieza el autor del envite
@@ -437,10 +437,10 @@ func (r *Ronda) cantarFlores(aPartirDe JugadorIdx) (j *Manojo,
 	// ya no es tenido en cuenta.
 	yaDijeron := make([]bool, cantJugadores)
 
-	for i := range r.manojos {
-		flores[i], _ = r.manojos[i].calcFlor(r.muestra)
+	for i := range r.Manojos {
+		flores[i], _ = r.Manojos[i].calcFlor(r.Muestra)
 		tieneFlor := flores[i] > 0
-		seFueAlMazo := r.manojos[i].seFueAlMazo == false
+		seFueAlMazo := r.Manojos[i].seFueAlMazo == false
 		if tieneFlor && !seFueAlMazo {
 			yaDijeron[i] = false
 		} else {
@@ -453,7 +453,7 @@ func (r *Ronda) cantarFlores(aPartirDe JugadorIdx) (j *Manojo,
 	// empieza el del parametro
 	if flores[aPartirDe] > 0 {
 		yaDijeron[aPartirDe] = true
-		out := fmt.Sprintf("   %s dice: \"tengo %v\"\n", r.manojos[aPartirDe].jugador.nombre,
+		out := fmt.Sprintf("   %s dice: \"tengo %v\"\n", r.Manojos[aPartirDe].jugador.nombre,
 			flores[aPartirDe])
 		stdOut = append(stdOut, out)
 	}
@@ -476,7 +476,7 @@ func (r *Ronda) cantarFlores(aPartirDe JugadorIdx) (j *Manojo,
 		todaviaEsTenidoEnCuenta := !yaDijeron[i]
 		if todaviaEsTenidoEnCuenta {
 
-			esDeEquipoContrario := r.manojos[i].jugador.equipo != r.manojos[jIdx].jugador.equipo
+			esDeEquipoContrario := r.Manojos[i].jugador.equipo != r.Manojos[jIdx].jugador.equipo
 			tieneEnvidoMasAlto := flores[i] > flores[jIdx]
 			tieneEnvidoIgual := flores[i] == flores[jIdx]
 			leGanaDeMano := r.leGanaDeMano(i, jIdx)
@@ -485,7 +485,7 @@ func (r *Ronda) cantarFlores(aPartirDe JugadorIdx) (j *Manojo,
 			if sonMejores {
 				if esDeEquipoContrario {
 					out := fmt.Sprintf("   %s dice: \"%v son mejores!\"\n",
-						r.manojos[i].jugador.nombre, flores[i])
+						r.Manojos[i].jugador.nombre, flores[i])
 					stdOut = append(stdOut, out)
 					jIdx = i
 					yaDijeron[i] = true
@@ -504,7 +504,7 @@ func (r *Ronda) cantarFlores(aPartirDe JugadorIdx) (j *Manojo,
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
 						out := fmt.Sprintf("   %s dice: \"son buenas\" (tenia %v)\n",
-							r.manojos[i].jugador.nombre, flores[i])
+							r.Manojos[i].jugador.nombre, flores[i])
 						stdOut = append(stdOut, out)
 						yaDijeron[i] = true
 						// pasa al siguiente
@@ -532,13 +532,13 @@ func (r *Ronda) cantarFlores(aPartirDe JugadorIdx) (j *Manojo,
 }
 
 func (r *Ronda) getManojo(jIdx JugadorIdx) *Manojo {
-	return &r.manojos[jIdx]
+	return &r.Manojos[jIdx]
 }
 
 func (r *Ronda) singleLinking(jugadores []Jugador) {
 	cantJugadores := len(jugadores)
 	for i := 0; i < cantJugadores; i++ {
-		r.manojos[i].jugador = &jugadores[i]
+		r.Manojos[i].jugador = &jugadores[i]
 	}
 }
 
@@ -546,9 +546,9 @@ func (r *Ronda) singleLinking(jugadores []Jugador) {
 // getManojo devuelve el puntero al manojo,
 // dado un string que identifique al jugador duenio de ese manojo
 func (r *Ronda) getManojoByStr(idJugador string) (*Manojo, error) {
-	for i := range r.manojos {
-		if r.manojos[i].jugador.nombre == idJugador {
-			return &r.manojos[i], nil
+	for i := range r.Manojos {
+		if r.Manojos[i].jugador.nombre == idJugador {
+			return &r.Manojos[i], nil
 		}
 	}
 	return nil, fmt.Errorf("Jugador `%s` no encontrado", idJugador)
@@ -557,13 +557,13 @@ func (r *Ronda) getManojoByStr(idJugador string) (*Manojo, error) {
 func (r *Ronda) setManojos(manojos []Manojo) {
 	for m, manojo := range manojos {
 		for c, carta := range manojo.Cartas {
-			r.manojos[m].Cartas[c] = carta
+			r.Manojos[m].Cartas[c] = carta
 		}
 	}
 }
 
 func (r *Ronda) setMuestra(muestra Carta) {
-	r.muestra = muestra
+	r.Muestra = muestra
 }
 
 /*
@@ -571,7 +571,7 @@ func (r *Ronda) setMuestra(muestra Carta) {
  * y 1 a la `muestra` (se las actualiza)
  */
 func (r *Ronda) dealCards() {
-	cantJugadores := cap(r.manojos)
+	cantJugadores := cap(r.Manojos)
 	// genero `3*cantJugadores + 1` cartas al azar
 	randomCards := getCartasRandom(3*cantJugadores + 1)
 
@@ -579,14 +579,14 @@ func (r *Ronda) dealCards() {
 		for idxCarta := 0; idxCarta < 3; idxCarta++ {
 			cartaID := CartaID(randomCards[3*idxJugador+idxCarta])
 			carta := nuevaCarta(cartaID)
-			r.manojos[idxJugador].Cartas[idxCarta] = carta
-			r.manojos[idxJugador].cartasNoJugadas[idxCarta] = true
+			r.Manojos[idxJugador].Cartas[idxCarta] = carta
+			r.Manojos[idxJugador].cartasNoJugadas[idxCarta] = true
 		}
 	}
 
 	// la ultima es la muestra
 	n := cap(randomCards)
-	r.muestra = nuevaCarta(CartaID(randomCards[n-1]))
+	r.Muestra = nuevaCarta(CartaID(randomCards[n-1]))
 }
 
 // nuevaRonda : crea una nueva ronda al azar
@@ -594,15 +594,15 @@ func nuevaRonda(jugadores []Jugador, elMano JugadorIdx) Ronda {
 	cantJugadores := len(jugadores)
 	cantJugadoresPorEquipo := cantJugadores / 2
 	ronda := Ronda{
-		manoEnJuego:          primera,
-		cantJugadoresEnJuego: [2]int{cantJugadoresPorEquipo, cantJugadoresPorEquipo},
-		elMano:               elMano,
-		turno:                elMano,
-		envido:               Envido{puntaje: 0, estado: NOCANTADOAUN},
-		flor:                 NOCANTADA,
-		truco:                truco{cantadoPor: nil, estado: NOCANTADO},
-		manojos:              make([]Manojo, cantJugadores),
-		manos:                make([]Mano, 3),
+		ManoEnJuego:          primera,
+		CantJugadoresEnJuego: [2]int{cantJugadoresPorEquipo, cantJugadoresPorEquipo},
+		ElMano:               elMano,
+		Turno:                elMano,
+		Envido:               Envido{puntaje: 0, estado: NOCANTADOAUN},
+		Flor:                 NOCANTADA,
+		Truco:                truco{cantadoPor: nil, estado: NOCANTADO},
+		Manojos:              make([]Manojo, cantJugadores),
+		Manos:                make([]Mano, 3),
 	}
 
 	// reparto 3 cartas al azar a cada jugador

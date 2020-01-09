@@ -68,10 +68,10 @@ type tocarEnvido struct {
 }
 
 func (jugada tocarEnvido) hacer(p *Partida) error {
-	esPrimeraMano := p.Ronda.manoEnJuego == primera
-	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.muestra)
-	esDelEquipoContrario := p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.cantadoPor.equipo != jugada.autor.jugador.equipo
-	envidoHabilitado := (p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.estado == ENVIDO) && p.Ronda.flor == NOCANTADA
+	esPrimeraMano := p.Ronda.ManoEnJuego == primera
+	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
+	esDelEquipoContrario := p.Ronda.Envido.estado == NOCANTADOAUN || p.Ronda.Envido.cantadoPor.equipo != jugada.autor.jugador.equipo
+	envidoHabilitado := (p.Ronda.Envido.estado == NOCANTADOAUN || p.Ronda.Envido.estado == ENVIDO) && p.Ronda.Flor == NOCANTADA
 	ok := envidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario
 
 	if !ok {
@@ -86,23 +86,23 @@ func (jugada tocarEnvido) hacer(p *Partida) error {
 		// todo: deberia ir al estado magico en el que espera
 		// solo por jugadas de tipo flor-related
 		// lo mismo para el real-envido; falta-envido
-		p.Ronda.envido.estado = DESHABILITADO
+		p.Ronda.Envido.estado = DESHABILITADO
 		siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
 		siguienteJugada.hacer(p)
 
 	} else {
 		// 2 opciones: o bien no se jugo aun
 		// o bien ya estabamos en envido
-		yaSeHabiaCantadoElEnvido := p.Ronda.envido.estado == ENVIDO
+		yaSeHabiaCantadoElEnvido := p.Ronda.Envido.estado == ENVIDO
 		if yaSeHabiaCantadoElEnvido {
 			// se aumenta el puntaje del envido en +2
-			p.Ronda.envido.puntaje += 2
-			p.Ronda.envido.cantadoPor = jugada.autor.jugador
+			p.Ronda.Envido.puntaje += 2
+			p.Ronda.Envido.cantadoPor = jugada.autor.jugador
 
 		} else { // no se habia jugado aun
-			p.Ronda.envido.cantadoPor = jugada.autor.jugador
-			p.Ronda.envido.estado = ENVIDO
-			p.Ronda.envido.puntaje = 2
+			p.Ronda.Envido.cantadoPor = jugada.autor.jugador
+			p.Ronda.Envido.estado = ENVIDO
+			p.Ronda.Envido.puntaje = 2
 		}
 	}
 
@@ -111,15 +111,15 @@ func (jugada tocarEnvido) hacer(p *Partida) error {
 
 // donde 'j' el jugador que dijo 'quiero' al 'envido'/'real envido'
 func (jugada tocarEnvido) eval(p *Partida) error {
-	p.Ronda.envido.estado = DESHABILITADO
+	p.Ronda.Envido.estado = DESHABILITADO
 	jIdx, max, out := p.Ronda.getElEnvido()
 	print(out)
 
 	jug := &p.jugadores[jIdx]
-	p.Puntajes[jug.equipo] += p.Ronda.envido.puntaje
+	p.Puntajes[jug.equipo] += p.Ronda.Envido.puntaje
 	fmt.Printf(`>> El envido lo gano %s con %v, +%v puntos
 	para el equipo %s`+"\n",
-		jug.nombre, max, p.Ronda.envido.puntaje, jug.equipo)
+		jug.nombre, max, p.Ronda.Envido.puntaje, jug.equipo)
 
 	return nil
 }
@@ -129,10 +129,10 @@ type tocarRealEnvido struct {
 }
 
 func (jugada tocarRealEnvido) hacer(p *Partida) error {
-	esPrimeraMano := p.Ronda.manoEnJuego == primera
-	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.muestra)
-	realEnvidoHabilitado := (p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.estado == ENVIDO) && p.Ronda.flor == NOCANTADA
-	esDelEquipoContrario := p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.cantadoPor.equipo != jugada.autor.jugador.equipo
+	esPrimeraMano := p.Ronda.ManoEnJuego == primera
+	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
+	realEnvidoHabilitado := (p.Ronda.Envido.estado == NOCANTADOAUN || p.Ronda.Envido.estado == ENVIDO) && p.Ronda.Flor == NOCANTADA
+	esDelEquipoContrario := p.Ronda.Envido.estado == NOCANTADOAUN || p.Ronda.Envido.cantadoPor.equipo != jugada.autor.jugador.equipo
 	ok := realEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario
 
 	if !ok {
@@ -140,14 +140,14 @@ func (jugada tocarRealEnvido) hacer(p *Partida) error {
 	}
 
 	fmt.Printf(">> %s toca real envido\n", jugada.autor.jugador.nombre)
-	p.Ronda.envido.estado = REALENVIDO
-	p.Ronda.envido.cantadoPor = jugada.autor.jugador
+	p.Ronda.Envido.estado = REALENVIDO
+	p.Ronda.Envido.cantadoPor = jugada.autor.jugador
 
 	// ahora checkeo si alguien tiene flor
 	hayFlor, manojosConFlor := p.Ronda.getFlores()
 
 	if hayFlor {
-		p.Ronda.envido.estado = DESHABILITADO
+		p.Ronda.Envido.estado = DESHABILITADO
 		siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
 		siguienteJugada.hacer(p)
 
@@ -155,10 +155,10 @@ func (jugada tocarRealEnvido) hacer(p *Partida) error {
 		// 2 opciones:
 		// o bien el envido no se jugo aun,
 		// o bien ya estabamos en envido
-		if p.Ronda.envido.estado == NOCANTADOAUN { // no se habia jugado aun
-			p.Ronda.envido.puntaje = 3
+		if p.Ronda.Envido.estado == NOCANTADOAUN { // no se habia jugado aun
+			p.Ronda.Envido.puntaje = 3
 		} else { // ya se habia cantado ENVIDO x cantidad de veces
-			p.Ronda.envido.puntaje += 3
+			p.Ronda.Envido.puntaje += 3
 		}
 	}
 
@@ -171,10 +171,10 @@ type tocarFaltaEnvido struct {
 
 func (jugada tocarFaltaEnvido) hacer(p *Partida) error {
 
-	esPrimeraMano := p.Ronda.manoEnJuego == primera
-	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.muestra)
-	faltaEnvidoHabilitado := p.Ronda.envido.estado >= NOCANTADOAUN && p.Ronda.envido.estado < FALTAENVIDO
-	esDelEquipoContrario := p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.cantadoPor.equipo != jugada.autor.jugador.equipo
+	esPrimeraMano := p.Ronda.ManoEnJuego == primera
+	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
+	faltaEnvidoHabilitado := p.Ronda.Envido.estado >= NOCANTADOAUN && p.Ronda.Envido.estado < FALTAENVIDO
+	esDelEquipoContrario := p.Ronda.Envido.estado == NOCANTADOAUN || p.Ronda.Envido.cantadoPor.equipo != jugada.autor.jugador.equipo
 	ok := faltaEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario
 
 	if !ok {
@@ -182,13 +182,13 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) error {
 	}
 
 	fmt.Printf(">> %s toca falta envido\n", jugada.autor.jugador.nombre)
-	p.Ronda.envido.estado = FALTAENVIDO
-	p.Ronda.envido.cantadoPor = jugada.autor.jugador
+	p.Ronda.Envido.estado = FALTAENVIDO
+	p.Ronda.Envido.cantadoPor = jugada.autor.jugador
 
 	// ahora checkeo si alguien tiene flor
 	hayFlor, manojosConFlor := p.Ronda.getFlores()
 	if hayFlor {
-		p.Ronda.envido.estado = DESHABILITADO
+		p.Ronda.Envido.estado = DESHABILITADO
 		siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
 		siguienteJugada.hacer(p)
 	}
@@ -210,7 +210,7 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) error {
 */
 
 func (jugada tocarFaltaEnvido) eval(p *Partida) error {
-	p.Ronda.envido.estado = DESHABILITADO
+	p.Ronda.Envido.estado = DESHABILITADO
 
 	// computar envidos
 	jIdx, max, out := p.Ronda.getElEnvido()
@@ -222,11 +222,11 @@ func (jugada tocarFaltaEnvido) eval(p *Partida) error {
 
 	pts := p.calcPtsFaltaEnvido(jug.equipo)
 
-	p.Ronda.envido.puntaje += pts
-	p.Puntajes[jug.equipo] += p.Ronda.envido.puntaje
+	p.Ronda.Envido.puntaje += pts
+	p.Puntajes[jug.equipo] += p.Ronda.Envido.puntaje
 	fmt.Printf(`>> La falta envido la gano %s con %v, +%v puntos
 	para el equipo %s`+"\n",
-		jug.nombre, max, p.Ronda.envido.puntaje, jug.equipo)
+		jug.nombre, max, p.Ronda.Envido.puntaje, jug.equipo)
 
 	return nil
 }
@@ -245,8 +245,8 @@ se necesita timer
 func (jugada cantarFlor) hacer(p *Partida) error {
 	// manojo dice que puede cantar flor;
 	// es esto verdad?
-	florHabilitada := (p.Ronda.flor == NOCANTADA || p.Ronda.flor == FLOR) && p.Ronda.manoEnJuego == primera
-	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.muestra)
+	florHabilitada := (p.Ronda.Flor == NOCANTADA || p.Ronda.Flor == FLOR) && p.Ronda.ManoEnJuego == primera
+	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
 	ok := florHabilitada && tieneFlor
 	if !ok {
 		return fmt.Errorf(`No es posible cantar flor`)
@@ -256,10 +256,10 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 	// al que pertenece el que la canto en un principio para
 	// poder sumarle los puntos correspondientes
 	fmt.Printf(">> %s canta flor\n", jugada.autor.jugador.nombre)
-	p.Ronda.envido.estado = DESHABILITADO
-	p.Ronda.envido.puntaje = 3
-	p.Ronda.envido.cantadoPor = jugada.autor.jugador
-	p.Ronda.flor = FLOR
+	p.Ronda.Envido.estado = DESHABILITADO
+	p.Ronda.Envido.puntaje = 3
+	p.Ronda.Envido.cantadoPor = jugada.autor.jugador
+	p.Ronda.Flor = FLOR
 
 	// ahora checkeo si alguien tiene flor
 	// retorna TODOS los jugadores que tengan flor (si es que existen)
@@ -272,11 +272,11 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 	if !hayFlor {
 		// Nadie mas tiene flor; entonces manojo se lleva todos
 		// los puntos en juego (+3)
-		p.Puntajes[jugada.autor.jugador.equipo] += p.Ronda.envido.puntaje // +3
+		p.Puntajes[jugada.autor.jugador.equipo] += p.Ronda.Envido.puntaje // +3
 		fmt.Printf(`>> +%v puntos para el equipo %s`+"\n",
 			3, jugada.autor.jugador.equipo)
-		p.Ronda.envido.estado = DESHABILITADO
-		p.Ronda.flor = DESHABILITADA
+		p.Ronda.Envido.estado = DESHABILITADO
+		p.Ronda.Flor = DESHABILITADA
 		return nil
 	}
 
@@ -306,9 +306,9 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 		_, esQuiero := sigJugada.(responderQuiero)
 		_, esNoQuiero := sigJugada.(responderNoQuiero)
 		esRespuesta := esQuiero || esNoQuiero
-		seEstaJugandoLaFlor := p.Ronda.flor == FLOR
-		seEstaJugandoLaContraFlor := p.Ronda.flor == CONTRAFLOR
-		seEstaJugandoLaContraFlorAlResto := p.Ronda.flor == CONTRAFLORALRESTO
+		seEstaJugandoLaFlor := p.Ronda.Flor == FLOR
+		seEstaJugandoLaContraFlor := p.Ronda.Flor == CONTRAFLOR
+		seEstaJugandoLaContraFlorAlResto := p.Ronda.Flor == CONTRAFLORALRESTO
 
 		esDeAlguienQueNoEsperoYNoEsIrseAlMazo := !esAlguienDelQueEspero && !esMeVoyAlMazo
 		esDeAlguienQueEsperoPeroNoEsNiFlorNiIrseAlMazo := esAlguienDelQueEspero && ((seEstaJugandoLaFlor && !(esTipoFlor || esMeVoyAlMazo)) || (seEstaJugandoLaContraFlor && !(esTipoFlor || esMeVoyAlMazo || esRespuesta)) || (seEstaJugandoLaContraFlorAlResto && !esRespuesta))
@@ -345,7 +345,7 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 			// ya se que estaba habilitado para cantar flor
 			// porque estaba en `jugadoresConFlor`
 			// ahora: se canto contraflor o mayor -> inhabilitado
-			florHabilitada := p.Ronda.flor == FLOR
+			florHabilitada := p.Ronda.Flor == FLOR
 			if !florHabilitada {
 				// entonces lo vuelvo a agregar a la lista de esperados; se equivoco
 				jugadoresConFlor = append(jugadoresConFlor, sigJugada.getAutor())
@@ -354,15 +354,15 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 			// en caso contrario; esta todo bien;
 			// la canta
 			fmt.Printf(">> %s canta flor\n", sigJugada.getAutor().jugador.nombre)
-			p.Ronda.envido.cantadoPor = sigJugada.getAutor().jugador
+			p.Ronda.Envido.cantadoPor = sigJugada.getAutor().jugador
 			// ahora la flor pasa a jugarse por +3 puntos
-			p.Ronda.envido.puntaje += 3
+			p.Ronda.Envido.puntaje += 3
 
 		} else if esCantoContraFlor {
 			// ya se que estaba habilitado para cantar flor
 			// porque estaba en `jugadoresConFlor`
 			// ahora: se canto contraflor o algo asi? si si -> inhabilitado
-			contraFlorHabilitada := p.Ronda.flor == FLOR
+			contraFlorHabilitada := p.Ronda.Flor == FLOR
 			if !contraFlorHabilitada {
 				// entonces lo vuelvo a agregar a la lista de esperados; se equivoco
 				jugadoresConFlor = append(jugadoresConFlor, sigJugada.getAutor())
@@ -371,10 +371,10 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 			// en caso contrario; esta todo bien;
 			// la canta
 			fmt.Printf(">> %s canta contra-flor\n", sigJugada.getAutor().jugador.nombre)
-			p.Ronda.flor = CONTRAFLOR
-			p.Ronda.envido.cantadoPor = sigJugada.getAutor().jugador
+			p.Ronda.Flor = CONTRAFLOR
+			p.Ronda.Envido.cantadoPor = sigJugada.getAutor().jugador
 			// ahora la flor pasa a jugarse por 4 puntos
-			p.Ronda.envido.puntaje = 4
+			p.Ronda.Envido.puntaje = 4
 			// y ahora tengo que esperar por la respuesta de la nueva
 			// propuesta de todos menos de el que canto la contraflor
 			// restauro la copia
@@ -387,7 +387,7 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 			// ya se que estaba habilitado para cantar flor
 			// porque estaba en `jugadoresConFlor`
 			// ahora: puede cantarContraFlorAlResto?
-			contraFlorAlRestoHabilitada := p.Ronda.flor == FLOR || p.Ronda.flor == CONTRAFLOR
+			contraFlorAlRestoHabilitada := p.Ronda.Flor == FLOR || p.Ronda.Flor == CONTRAFLOR
 			if !contraFlorAlRestoHabilitada {
 				// entonces lo vuelvo a agregar a la lista de esperados; se equivoco
 				// por ejemplo; ya otro jugador habia cantado contraFlorAlResto
@@ -398,8 +398,8 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 			// en caso contrario; esta todo bien;
 			// la canta
 			fmt.Printf(">> %s canta contra-flor-al-resto\n", sigJugada.getAutor().jugador.nombre)
-			p.Ronda.flor = CONTRAFLORALRESTO
-			p.Ronda.envido.cantadoPor = sigJugada.getAutor().jugador
+			p.Ronda.Flor = CONTRAFLORALRESTO
+			p.Ronda.Envido.cantadoPor = sigJugada.getAutor().jugador
 			// los puntos de la flor quedan acumulados
 			// y ahora tengo que esperar por la respuesta de la nueva
 			// propuesta de todos menos de el que canto la contraflor
@@ -413,19 +413,19 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 			// solo con que uno *DEL EQUIPO CONTRARIO*
 			// al que canto la contra-flor diga quiero
 			// es del equipo contrario?
-			esDelEquipoContrario := sigJugada.getAutor().jugador.equipo != p.Ronda.envido.cantadoPor.equipo
+			esDelEquipoContrario := sigJugada.getAutor().jugador.equipo != p.Ronda.Envido.cantadoPor.equipo
 			if !esDelEquipoContrario {
 				return fmt.Errorf(`No es posible responderle a la propuesta de tu mismo equipo`)
 			}
 			fmt.Printf(">> %s dice quiero \n", sigJugada.getAutor().jugador.nombre)
 			// ok; se cierra el envite; hora de calcular el ganador
-			p.Ronda.flor = DESHABILITADA
+			p.Ronda.Flor = DESHABILITADA
 			manojoConLaFlorMasAlta, maxFlor := p.Ronda.getLaFlorMasAlta()
 			equipoGanador := manojoConLaFlorMasAlta.jugador.equipo
 			// ahora se quien es el ganador; necesito saber cuantos puntos
 			// se le va a sumar a ese equipo:
 			// los acumulados del envite hasta ahora
-			puntosASumar := p.Ronda.envido.puntaje
+			puntosASumar := p.Ronda.Envido.puntaje
 			p.Puntajes[equipoGanador] += puntosASumar
 			fmt.Printf(`>> La contra-flor-al-resto la gano %s con %v, +%v puntos
 				para el equipo %s`+"\n",
@@ -437,21 +437,21 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 			// solo con que uno *DEL EQUIPO CONTRARIO*
 			// al que canto la contra-flor-al-resto diga quiero
 			// es del equipo contrario?
-			esDelEquipoContrario := sigJugada.getAutor().jugador.equipo != p.Ronda.envido.cantadoPor.equipo
+			esDelEquipoContrario := sigJugada.getAutor().jugador.equipo != p.Ronda.Envido.cantadoPor.equipo
 			if !esDelEquipoContrario {
 				return fmt.Errorf(`No es posible responderle a la propuesta de tu mismo equipo`)
 			}
 			// ok; se cierra el envite; los puntos van para el que propuso el envite
-			p.Ronda.flor = DESHABILITADA
-			equipoGanador := p.Ronda.envido.cantadoPor.equipo
+			p.Ronda.Flor = DESHABILITADA
+			equipoGanador := p.Ronda.Envido.cantadoPor.equipo
 			// ahora se quien es el ganador; necesito saber cuantos puntos
 			// se le va a sumar a ese equipo:
 			// los acumulados del envite hasta ahora + la contrafloralresto
-			puntosASumar := p.Ronda.envido.puntaje
+			puntosASumar := p.Ronda.Envido.puntaje
 			p.Puntajes[equipoGanador] += puntosASumar
 			fmt.Printf(`>> La contra-flor la gano %s, +%v puntos
 					para el equipo %s`+"\n",
-				p.Ronda.envido.cantadoPor.nombre, puntosASumar, equipoGanador)
+				p.Ronda.Envido.cantadoPor.nombre, puntosASumar, equipoGanador)
 			// se corta el bucle de la flor:
 			break
 
@@ -459,19 +459,19 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 			// solo con que uno *DEL EQUIPO CONTRARIO*
 			// al que canto la contra-flor-al-resto diga quiero
 			// es del equipo contrario?
-			esDelEquipoContrario := sigJugada.getAutor().jugador.equipo != p.Ronda.envido.cantadoPor.equipo
+			esDelEquipoContrario := sigJugada.getAutor().jugador.equipo != p.Ronda.Envido.cantadoPor.equipo
 			if !esDelEquipoContrario {
 				return fmt.Errorf(`No es posible responderle a la propuesta de tu mismo equipo`)
 			}
 			fmt.Printf(">> %s dice quiero \n", sigJugada.getAutor().jugador.nombre)
 			// ok; se cierra el envite; hora de calcular el ganador
-			p.Ronda.flor = DESHABILITADA
+			p.Ronda.Flor = DESHABILITADA
 			manojoConLaFlorMasAlta, maxFlor := p.Ronda.getLaFlorMasAlta()
 			equipoGanador := manojoConLaFlorMasAlta.jugador.equipo
 			// ahora se quien es el ganador; necesito saber cuantos puntos
 			// se le va a sumar a ese equipo:
 			// los acumulados del envite hasta ahora + la contrafloralresto
-			puntosASumar := p.Ronda.envido.puntaje + p.calcPtsContraFlorAlResto(equipoGanador)
+			puntosASumar := p.Ronda.Envido.puntaje + p.calcPtsContraFlorAlResto(equipoGanador)
 			p.Puntajes[equipoGanador] += puntosASumar
 			fmt.Printf(`>> La contra-flor-al-resto la gano %s con %v, +%v puntos
 				para el equipo %s`+"\n",
@@ -483,21 +483,21 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 			// solo con que uno *DEL EQUIPO CONTRARIO*
 			// al que canto la contra-flor-al-resto diga quiero
 			// es del equipo contrario?
-			esDelEquipoContrario := sigJugada.getAutor().jugador.equipo != p.Ronda.envido.cantadoPor.equipo
+			esDelEquipoContrario := sigJugada.getAutor().jugador.equipo != p.Ronda.Envido.cantadoPor.equipo
 			if !esDelEquipoContrario {
 				return fmt.Errorf(`No es posible responderle a la propuesta de tu mismo equipo`)
 			}
 			// ok; se cierra el envite; los puntos van para el que propuso el envite
-			p.Ronda.flor = DESHABILITADA
-			equipoGanador := p.Ronda.envido.cantadoPor.equipo
+			p.Ronda.Flor = DESHABILITADA
+			equipoGanador := p.Ronda.Envido.cantadoPor.equipo
 			// ahora se quien es el ganador; necesito saber cuantos puntos
 			// se le va a sumar a ese equipo:
 			// los acumulados del envite hasta ahora + la contrafloralresto
-			puntosASumar := p.Ronda.envido.puntaje + p.calcPtsContraFlorAlResto(equipoGanador)
+			puntosASumar := p.Ronda.Envido.puntaje + p.calcPtsContraFlorAlResto(equipoGanador)
 			p.Puntajes[equipoGanador] += puntosASumar
 			fmt.Printf(`>> La contra-flor-al-resto la gano %s, +%v puntos
 				para el equipo %s`+"\n",
-				p.Ronda.envido.cantadoPor.nombre, puntosASumar, equipoGanador)
+				p.Ronda.Envido.cantadoPor.nombre, puntosASumar, equipoGanador)
 			// se corta el bucle de la flor:
 			break
 		}
@@ -547,10 +547,10 @@ type gritarTruco struct {
 func (jugada gritarTruco) hacer(p *Partida) error {
 	// checkeos:
 	noSeFueAlMazo := jugada.autor.seFueAlMazo == false
-	trucoNoSeJugoAun := p.Ronda.truco.estado == NOCANTADO
-	esSuTurno := p.getJugador(p.Ronda.turno) == jugada.autor.jugador
-	noSeEstaJugandoElEnvido := p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.estado == DESHABILITADO
-	noSeEstaJugandoLaFlor := p.Ronda.flor == NOCANTADA || p.Ronda.flor == DESHABILITADA
+	trucoNoSeJugoAun := p.Ronda.Truco.estado == NOCANTADO
+	esSuTurno := p.getJugador(p.Ronda.Turno) == jugada.autor.jugador
+	noSeEstaJugandoElEnvido := p.Ronda.Envido.estado == NOCANTADOAUN || p.Ronda.Envido.estado == DESHABILITADO
+	noSeEstaJugandoLaFlor := p.Ronda.Flor == NOCANTADA || p.Ronda.Flor == DESHABILITADA
 	trucoHabilitado := noSeFueAlMazo && trucoNoSeJugoAun && esSuTurno && noSeEstaJugandoElEnvido && noSeEstaJugandoLaFlor
 
 	if !trucoHabilitado {
@@ -558,8 +558,8 @@ func (jugada gritarTruco) hacer(p *Partida) error {
 	}
 
 	fmt.Printf(">> %s grita truco\n", jugada.autor.jugador.nombre)
-	p.Ronda.truco.cantadoPor = jugada.autor
-	p.Ronda.truco.estado = TRUCO
+	p.Ronda.Truco.cantadoPor = jugada.autor
+	p.Ronda.Truco.estado = TRUCO
 
 	return nil
 }
@@ -571,12 +571,12 @@ type gritarReTruco struct {
 func (jugada gritarReTruco) hacer(p *Partida) error {
 	// checkeos:
 	noSeFueAlMazo := jugada.autor.seFueAlMazo == false
-	trucoYaQuerido := p.Ronda.truco.estado == TRUCOQUERIDO
-	tieneElQuiero := p.Ronda.truco.cantadoPor == jugada.autor
-	esSuTurno := p.getJugador(p.Ronda.turno) == jugada.autor.jugador
-	noSeEstaJugandoElEnvido := p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.estado == DESHABILITADO
-	noSeEstaJugandoLaFlor := p.Ronda.flor == NOCANTADA || p.Ronda.flor == DESHABILITADA
-	esDelEquipoContrario := p.Ronda.truco.cantadoPor.jugador.equipo != jugada.autor.jugador.equipo
+	trucoYaQuerido := p.Ronda.Truco.estado == TRUCOQUERIDO
+	tieneElQuiero := p.Ronda.Truco.cantadoPor == jugada.autor
+	esSuTurno := p.getJugador(p.Ronda.Turno) == jugada.autor.jugador
+	noSeEstaJugandoElEnvido := p.Ronda.Envido.estado == NOCANTADOAUN || p.Ronda.Envido.estado == DESHABILITADO
+	noSeEstaJugandoLaFlor := p.Ronda.Flor == NOCANTADA || p.Ronda.Flor == DESHABILITADA
+	esDelEquipoContrario := p.Ronda.Truco.cantadoPor.jugador.equipo != jugada.autor.jugador.equipo
 	reTrucoHabilitado := noSeFueAlMazo && trucoYaQuerido && tieneElQuiero && esSuTurno && noSeEstaJugandoElEnvido && noSeEstaJugandoLaFlor && esDelEquipoContrario
 
 	if !reTrucoHabilitado {
@@ -584,8 +584,8 @@ func (jugada gritarReTruco) hacer(p *Partida) error {
 	}
 
 	fmt.Printf(">> %s grita re-truco\n", jugada.autor.jugador.nombre)
-	p.Ronda.truco.cantadoPor = jugada.autor
-	p.Ronda.truco.estado = RETRUCO
+	p.Ronda.Truco.cantadoPor = jugada.autor
+	p.Ronda.Truco.estado = RETRUCO
 
 	return nil
 }
@@ -597,12 +597,12 @@ type gritarVale4 struct {
 func (jugada gritarVale4) hacer(p *Partida) error {
 	// checkeos:
 	noSeFueAlMazo := jugada.autor.seFueAlMazo == false
-	retrucoYaQuerido := p.Ronda.truco.estado == RETRUCOQUERIDO
-	tieneElQuiero := p.Ronda.truco.cantadoPor == jugada.autor
-	esSuTurno := p.getJugador(p.Ronda.turno) == jugada.autor.jugador
-	noSeEstaJugandoElEnvido := p.Ronda.envido.estado == NOCANTADOAUN || p.Ronda.envido.estado == DESHABILITADO
-	noSeEstaJugandoLaFlor := p.Ronda.flor == NOCANTADA || p.Ronda.flor == DESHABILITADA
-	esDelEquipoContrario := p.Ronda.truco.cantadoPor.jugador.equipo != jugada.autor.jugador.equipo
+	retrucoYaQuerido := p.Ronda.Truco.estado == RETRUCOQUERIDO
+	tieneElQuiero := p.Ronda.Truco.cantadoPor == jugada.autor
+	esSuTurno := p.getJugador(p.Ronda.Turno) == jugada.autor.jugador
+	noSeEstaJugandoElEnvido := p.Ronda.Envido.estado == NOCANTADOAUN || p.Ronda.Envido.estado == DESHABILITADO
+	noSeEstaJugandoLaFlor := p.Ronda.Flor == NOCANTADA || p.Ronda.Flor == DESHABILITADA
+	esDelEquipoContrario := p.Ronda.Truco.cantadoPor.jugador.equipo != jugada.autor.jugador.equipo
 	vale4Habilitado := noSeFueAlMazo && retrucoYaQuerido && tieneElQuiero && esSuTurno && noSeEstaJugandoElEnvido && noSeEstaJugandoLaFlor && esDelEquipoContrario
 
 	if !vale4Habilitado {
@@ -610,8 +610,8 @@ func (jugada gritarVale4) hacer(p *Partida) error {
 	}
 
 	fmt.Printf(">> %s grita re-truco\n", jugada.autor.jugador.nombre)
-	p.Ronda.truco.cantadoPor = jugada.autor
-	p.Ronda.truco.estado = VALE4
+	p.Ronda.Truco.cantadoPor = jugada.autor
+	p.Ronda.Truco.estado = VALE4
 
 	return nil
 }
@@ -626,10 +626,10 @@ func (jugada responderQuiero) hacer(p *Partida) error {
 	// - CASO II: se grito el truco+ (con autor del equipo contario)
 	// en caso contrario, es incorrecto -> error
 
-	elEnvidoEsRespondible := p.Ronda.envido.estado >= ENVIDO && p.Ronda.envido.cantadoPor != jugada.autor.jugador
+	elEnvidoEsRespondible := p.Ronda.Envido.estado >= ENVIDO && p.Ronda.Envido.cantadoPor != jugada.autor.jugador
 	// ojo: solo a la contraflor+ se le puede decir quiero; a la flor sola no
-	laContraFlorEsRespondible := p.Ronda.flor >= CONTRAFLOR && p.Ronda.envido.cantadoPor != jugada.autor.jugador
-	elTrucoEsRespondible := contains([3]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.truco.estado) && p.Ronda.truco.cantadoPor.jugador.equipo != jugada.autor.jugador.equipo
+	laContraFlorEsRespondible := p.Ronda.Flor >= CONTRAFLOR && p.Ronda.Envido.cantadoPor != jugada.autor.jugador
+	elTrucoEsRespondible := contains([3]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.estado) && p.Ronda.Truco.cantadoPor.jugador.equipo != jugada.autor.jugador.equipo
 
 	ok := elEnvidoEsRespondible || laContraFlorEsRespondible || elTrucoEsRespondible
 	if !ok {
@@ -641,7 +641,7 @@ func (jugada responderQuiero) hacer(p *Partida) error {
 
 	if elEnvidoEsRespondible {
 		fmt.Printf(">> %s responde quiero\n", jugada.autor.jugador.nombre)
-		if p.Ronda.envido.estado == FALTAENVIDO {
+		if p.Ronda.Envido.estado == FALTAENVIDO {
 			return tocarFaltaEnvido{Jugada{autor: jugada.autor}}.eval(p)
 		}
 		// si no, era envido/real-envido o cualquier
@@ -650,7 +650,7 @@ func (jugada responderQuiero) hacer(p *Partida) error {
 
 	} else if laContraFlorEsRespondible {
 		// tengo que verificar si efectivamente tiene flor
-		tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.muestra)
+		tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
 
 		if !tieneFlor {
 			return fmt.Errorf(`No tiene flor; la jugada es incompatible`)
@@ -658,9 +658,9 @@ func (jugada responderQuiero) hacer(p *Partida) error {
 
 		// todo ok: tiene flor; se pasa a jugar:
 		// empieza cantando el autor del envite no el que "quizo"
-		aPartirDe, _ := obtenerIdx(p.Ronda.envido.cantadoPor, p.jugadores)
+		aPartirDe, _ := obtenerIdx(p.Ronda.Envido.cantadoPor, p.jugadores)
 		manojoConLaFlorGanadora, _, _ := p.Ronda.cantarFlores(aPartirDe)
-		if p.Ronda.flor == CONTRAFLOR {
+		if p.Ronda.Flor == CONTRAFLOR {
 			// sumo +3 por cada flor (todas las flores de la ronda, que no se haya ido)
 			// al equipo del ganador
 			_, flores := p.Ronda.getFlores()
@@ -686,14 +686,14 @@ func (jugada responderQuiero) hacer(p *Partida) error {
 		}
 
 	} else if elTrucoEsRespondible {
-		p.Ronda.truco.cantadoPor = jugada.autor
-		switch p.Ronda.truco.estado {
+		p.Ronda.Truco.cantadoPor = jugada.autor
+		switch p.Ronda.Truco.estado {
 		case TRUCO:
-			p.Ronda.truco.estado = TRUCOQUERIDO
+			p.Ronda.Truco.estado = TRUCOQUERIDO
 		case RETRUCO:
-			p.Ronda.truco.estado = RETRUCOQUERIDO
+			p.Ronda.Truco.estado = RETRUCOQUERIDO
 		case VALE4:
-			p.Ronda.truco.estado = VALE4QUERIDO
+			p.Ronda.Truco.estado = VALE4QUERIDO
 		}
 	}
 
@@ -711,9 +711,9 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 	// - CASO II: se grito el truco (o similar)
 	// en caso contrario, es incorrecto -> error
 
-	elEnvidoEsRespondible := p.Ronda.envido.estado >= ENVIDO && p.Ronda.envido.cantadoPor.equipo != jugada.autor.jugador.equipo
-	laFlorEsRespondible := p.Ronda.flor >= FLOR && p.Ronda.envido.cantadoPor.equipo != jugada.autor.jugador.equipo
-	elTrucoEsRespondible := contains([3]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.truco.estado) && p.Ronda.truco.cantadoPor.jugador.equipo != jugada.autor.jugador.equipo
+	elEnvidoEsRespondible := p.Ronda.Envido.estado >= ENVIDO && p.Ronda.Envido.cantadoPor.equipo != jugada.autor.jugador.equipo
+	laFlorEsRespondible := p.Ronda.Flor >= FLOR && p.Ronda.Envido.cantadoPor.equipo != jugada.autor.jugador.equipo
+	elTrucoEsRespondible := contains([3]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.estado) && p.Ronda.Truco.cantadoPor.jugador.equipo != jugada.autor.jugador.equipo
 
 	ok := elEnvidoEsRespondible || laFlorEsRespondible || elTrucoEsRespondible
 
@@ -730,20 +730,20 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 
 		var totalPts int
 
-		switch p.Ronda.envido.estado {
+		switch p.Ronda.Envido.estado {
 		case ENVIDO:
-			totalPts = p.Ronda.envido.puntaje - 1
+			totalPts = p.Ronda.Envido.puntaje - 1
 		case REALENVIDO:
-			totalPts = p.Ronda.envido.puntaje - 2
+			totalPts = p.Ronda.Envido.puntaje - 2
 		case FALTAENVIDO:
-			totalPts = p.Ronda.envido.puntaje + 1
+			totalPts = p.Ronda.Envido.puntaje + 1
 		}
 
-		p.Ronda.envido.estado = DESHABILITADO
-		p.Ronda.envido.puntaje = totalPts
-		p.Puntajes[p.Ronda.envido.cantadoPor.equipo] += totalPts
+		p.Ronda.Envido.estado = DESHABILITADO
+		p.Ronda.Envido.puntaje = totalPts
+		p.Puntajes[p.Ronda.Envido.cantadoPor.equipo] += totalPts
 		fmt.Printf(`>> +%v puntos para el equipo %s`+"\n",
-			totalPts, p.Ronda.envido.cantadoPor.equipo)
+			totalPts, p.Ronda.Envido.cantadoPor.equipo)
 
 	} else if laFlorEsRespondible {
 
@@ -757,22 +757,22 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 		// sumo todas las flores del equipo contrario
 		totalPts := 0
 
-		for _, m := range p.Ronda.manojos {
-			esDelEquipoContrario := p.Ronda.envido.cantadoPor.equipo != jugada.autor.jugador.equipo
-			tieneFlor, _ := m.tieneFlor(p.Ronda.muestra)
+		for _, m := range p.Ronda.Manojos {
+			esDelEquipoContrario := p.Ronda.Envido.cantadoPor.equipo != jugada.autor.jugador.equipo
+			tieneFlor, _ := m.tieneFlor(p.Ronda.Muestra)
 			if tieneFlor && esDelEquipoContrario {
 				totalPts += 3
 			}
 		}
 
-		if p.Ronda.flor == CONTRAFLOR || p.Ronda.flor == CONTRAFLORALRESTO {
+		if p.Ronda.Flor == CONTRAFLOR || p.Ronda.Flor == CONTRAFLORALRESTO {
 			// si es contraflor o al resto
 			// se suma 1 por el `no quiero`
 			totalPts++
 		}
 
 		fmt.Printf(`>> +%v puntos para el equipo %s por las flores`+"\n",
-			totalPts, p.Ronda.envido.cantadoPor.equipo)
+			totalPts, p.Ronda.Envido.cantadoPor.equipo)
 
 	} else if elTrucoEsRespondible {
 
@@ -780,7 +780,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 		// todos los puntos en juego van para el equipo que hizo la apuesta de truco
 		// y se termina la ronda
 		var totalPts int
-		switch p.Ronda.truco.estado {
+		switch p.Ronda.Truco.estado {
 		case TRUCO:
 			totalPts = 1
 		case RETRUCO:
@@ -790,10 +790,10 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 		}
 		fmt.Printf(`>> +%v puntos para el equipo %s por el %s no querido por %s`+"\n",
 			totalPts,
-			p.Ronda.truco.cantadoPor.jugador.equipo,
-			p.Ronda.truco.estado.toString(),
+			p.Ronda.Truco.cantadoPor.jugador.equipo,
+			p.Ronda.Truco.estado.toString(),
 			jugada.autor.jugador.nombre)
-		termino := p.sumarPuntos(p.Ronda.truco.cantadoPor.jugador.equipo, totalPts)
+		termino := p.sumarPuntos(p.Ronda.Truco.cantadoPor.jugador.equipo, totalPts)
 		if !termino {
 			sigMano := p.Ronda.getSigMano()
 			p.nuevaRonda(sigMano)
@@ -810,9 +810,9 @@ type irseAlMazo struct {
 func (jugada irseAlMazo) hacer(p *Partida) error {
 	// checkeos:
 	yaSeFueAlMazo := jugada.autor.seFueAlMazo == false
-	seEstabaJugandoElEnvido := p.Ronda.envido.estado >= ENVIDO
-	seEstabaJugandoLaFlor := p.Ronda.flor >= FLOR
-	seEstabaJugandoElTruco := p.Ronda.truco.estado >= TRUCO
+	seEstabaJugandoElEnvido := p.Ronda.Envido.estado >= ENVIDO
+	seEstabaJugandoLaFlor := p.Ronda.Flor >= FLOR
+	seEstabaJugandoElTruco := p.Ronda.Truco.estado >= TRUCO
 
 	if yaSeFueAlMazo {
 		return fmt.Errorf("No es posible irse al mazo ahora")
@@ -823,9 +823,9 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 	// 2. tampoco se puede ir al mazo si el canto la flor o similar
 	// 3. tampoco se puede ir al mazo si el grito el truco
 
-	noSePuedeIrPorElEnvite := (seEstabaJugandoElEnvido || seEstabaJugandoLaFlor) && p.Ronda.envido.cantadoPor == jugada.autor.jugador
+	noSePuedeIrPorElEnvite := (seEstabaJugandoElEnvido || seEstabaJugandoLaFlor) && p.Ronda.Envido.cantadoPor == jugada.autor.jugador
 	// la de la flor es igual al del envido; porque es un envite
-	noSePuedeIrPorElTruco := seEstabaJugandoElTruco && p.Ronda.truco.cantadoPor == jugada.autor
+	noSePuedeIrPorElTruco := seEstabaJugandoElTruco && p.Ronda.Truco.cantadoPor == jugada.autor
 	if noSePuedeIrPorElEnvite || noSePuedeIrPorElTruco {
 		return fmt.Errorf("No es posible irse al mazo ahora")
 	}
@@ -834,8 +834,8 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 	fmt.Printf(">> %s se va al mazo\n", jugada.autor.jugador.nombre)
 	jugada.autor.seFueAlMazo = true
 	equipoDelJugador := jugada.autor.jugador.equipo
-	p.Ronda.cantJugadoresEnJuego[equipoDelJugador]--
-	seFueronTodos := p.Ronda.cantJugadoresEnJuego[equipoDelJugador] == 0
+	p.Ronda.CantJugadoresEnJuego[equipoDelJugador]--
+	seFueronTodos := p.Ronda.CantJugadoresEnJuego[equipoDelJugador] == 0
 
 	if seFueronTodos {
 		// el equipo contrario gana la ronda
@@ -848,7 +848,7 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 			// codigo copiado de "no quiero"
 			//	no se toma en cuenta el puntaje total del ultimo toque
 			var totalPts int
-			e := &p.Ronda.envido
+			e := &p.Ronda.Envido
 			switch e.estado {
 			case ENVIDO:
 				totalPts = e.puntaje - 1
@@ -876,22 +876,22 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 			// sumo todas las flores del equipo contrario
 			totalPts := 0
 
-			for _, m := range p.Ronda.manojos {
-				esDelEquipoContrario := p.Ronda.envido.cantadoPor.equipo != jugada.autor.jugador.equipo
-				tieneFlor, _ := m.tieneFlor(p.Ronda.muestra)
+			for _, m := range p.Ronda.Manojos {
+				esDelEquipoContrario := p.Ronda.Envido.cantadoPor.equipo != jugada.autor.jugador.equipo
+				tieneFlor, _ := m.tieneFlor(p.Ronda.Muestra)
 				if tieneFlor && esDelEquipoContrario {
 					totalPts += 3
 				}
 			}
 
-			if p.Ronda.flor == CONTRAFLOR || p.Ronda.flor == CONTRAFLORALRESTO {
+			if p.Ronda.Flor == CONTRAFLOR || p.Ronda.Flor == CONTRAFLORALRESTO {
 				// si es contraflor o al resto
 				// se suma 1 por el `no quiero`
 				totalPts++
 			}
 
 			fmt.Printf(`>> +%v puntos para el equipo %s por las flores`+"\n",
-				totalPts, p.Ronda.envido.cantadoPor.equipo)
+				totalPts, p.Ronda.Envido.cantadoPor.equipo)
 
 		}
 
@@ -900,7 +900,7 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 			// todos los puntos en juego van para el equipo que hizo la apuesta de truco
 			// y se termina la ronda
 			var totalPts int
-			switch p.Ronda.truco.estado {
+			switch p.Ronda.Truco.estado {
 			case TRUCO:
 				totalPts = 1
 			case TRUCOQUERIDO:
@@ -916,10 +916,10 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 			}
 			fmt.Printf(`>> +%v puntos para el equipo %s por el %s no querido por %s`+"\n",
 				totalPts,
-				p.Ronda.truco.cantadoPor.jugador.equipo,
-				p.Ronda.truco.estado.toString(),
+				p.Ronda.Truco.cantadoPor.jugador.equipo,
+				p.Ronda.Truco.estado.toString(),
 				jugada.autor.jugador.nombre)
-			termino := p.sumarPuntos(p.Ronda.truco.cantadoPor.jugador.equipo, totalPts)
+			termino := p.sumarPuntos(p.Ronda.Truco.cantadoPor.jugador.equipo, totalPts)
 			if !termino {
 				sigMano := p.Ronda.getSigMano()
 				p.nuevaRonda(sigMano)
