@@ -165,7 +165,7 @@ func TestFlorFlorContraFlorQuiero(t *testing.T) {
 	p.SetSigJugada("Richard Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.estado != DESHABILITADO
+	oops = p.Ronda.Envido.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia ser 'deshabilitado'`)
 		return

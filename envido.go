@@ -14,19 +14,19 @@ const (
 
 // Envido :
 type Envido struct {
-	puntaje    int
-	cantadoPor *Jugador
-	estado     EstadoEnvido
+	Puntaje    int          `json:"puntaje"`
+	CantadoPor *Jugador     `json:"cantadoPor"`
+	Estado     EstadoEnvido `json:"estado"`
 }
 
 // estaHabilitado Devuelve `true` si el envido es `tocable`
 func (e Envido) estaHabilitado() bool {
-	return e.estado == NOCANTADOAUN || e.estado == ENVIDO
+	return e.Estado == NOCANTADOAUN || e.Estado == ENVIDO
 }
 
 // deshabilitar el envido
 func (e *Envido) deshabilitar() {
-	e.estado = DESHABILITADO
+	e.Estado = DESHABILITADO
 }
 
 // EstadoFlor : enum

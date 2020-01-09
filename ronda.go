@@ -82,7 +82,7 @@ func (r Ronda) cantarFloresSiLasHay(aPartirDe JugadorIdx) {
 			tipoFlor = tipoFlor + 1
 			// var jugada IJugada = responderNoQuiero{}
 			// jugador.cantarFlor(tipoFlor, r.muestra)
-			r.Envido.estado = DESHABILITADO
+			r.Envido.Estado = DESHABILITADO
 			break
 		}
 	}
@@ -598,7 +598,7 @@ func nuevaRonda(jugadores []Jugador, elMano JugadorIdx) Ronda {
 		CantJugadoresEnJuego: [2]int{cantJugadoresPorEquipo, cantJugadoresPorEquipo},
 		ElMano:               elMano,
 		Turno:                elMano,
-		Envido:               Envido{puntaje: 0, estado: NOCANTADOAUN},
+		Envido:               Envido{Puntaje: 0, Estado: NOCANTADOAUN},
 		Flor:                 NOCANTADA,
 		Truco:                truco{cantadoPor: nil, estado: NOCANTADO},
 		Manojos:              make([]Manojo, cantJugadores),
