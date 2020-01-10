@@ -196,18 +196,6 @@ func (r *Ronda) nextTurnoPosMano() {
 	fmt.Printf("Es el turno de %s", r.Manojos[r.Turno].Jugador.Nombre)
 }
 
-// Print Imprime la informacion de la ronda
-func (r Ronda) Print() {
-	for i := range r.Manojos {
-		fmt.Printf("%s:\n", r.Manojos[i].Jugador.Nombre)
-		r.Manojos[i].Print()
-	}
-
-	fmt.Printf("\nY la muestra es\n    - %s\n", r.Muestra.toString())
-	fmt.Printf("\nEl mano actual es: %s\nEs el turno de %s\n\n",
-		r.getElMano().Jugador.Nombre, r.getElTurno().Jugador.Nombre)
-}
-
 // sig devuelve el `JugadorIdx` del
 // jugador siguiente a j
 func (r *Ronda) sig(j JugadorIdx) JugadorIdx {

@@ -1,3 +1,5 @@
+- agregar el control de que los nombres de los jguadores tienen que ser > 0
+
 -   // que pasa cuando el ganador de una mano se habia ido al mazo?
     // no se tiene que poder:
     // si en esta mano ya jugaste carta -> no te podes ir al mazo

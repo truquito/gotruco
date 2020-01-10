@@ -2,19 +2,12 @@ package ilustrador
 
 import (
 	"strconv"
-	"strings"
+
+	"github.com/jpfilevich/canvas"
 )
 
-func raw(obj string) string {
-	return strings.Trim(obj, "\n ")
-}
-
-func replace(this, that, here string) string {
-	return strings.Replace(here, this, that, 1)
-}
-
 func templateMarco() string {
-	marco := raw(`
+	marco := canvas.Raw(`
 ╔══════════════════════════════╗
 ║                              ║
 ║                              ║
@@ -38,14 +31,14 @@ func templateCarta(valor int, palo string) string {
 	if valor <= 9 {
 		numStr = numStr + "─"
 	}
-	carta = replace("xx", numStr, carta)
-	carta = replace("PP", palo[:2], carta)
+	carta = canvas.Replace("xx", numStr, carta)
+	carta = canvas.Replace("PP", palo[:2], carta)
 
 	return carta
 }
 
 func templateCartaDoble(valor int, palo string) string {
-	cartaDoble := raw(`
+	cartaDoble := canvas.Raw(`
 ┌xx┐┐
 │PP││
 └──┘┘
@@ -56,14 +49,14 @@ func templateCartaDoble(valor int, palo string) string {
 	if valor <= 9 {
 		numStr = numStr + "─"
 	}
-	cartaDoble = replace("xx", numStr, cartaDoble)
-	cartaDoble = replace("PP", palo[:2], cartaDoble)
+	cartaDoble = canvas.Replace("xx", numStr, cartaDoble)
+	cartaDoble = canvas.Replace("PP", palo[:2], cartaDoble)
 
 	return cartaDoble
 }
 
 func templateCartaTriple(valor int, palo string) string {
-	cartaTriple := raw(`
+	cartaTriple := canvas.Raw(`
 ┌xx┐┐┐
 │PP│││
 └──┘┘┘
@@ -74,8 +67,8 @@ func templateCartaTriple(valor int, palo string) string {
 	if valor <= 9 {
 		numStr = numStr + "─"
 	}
-	cartaTriple = replace("xx", numStr, cartaTriple)
-	cartaTriple = replace("PP", palo[:2], cartaTriple)
+	cartaTriple = canvas.Replace("xx", numStr, cartaTriple)
+	cartaTriple = canvas.Replace("PP", palo[:2], cartaTriple)
 
 	return cartaTriple
 }

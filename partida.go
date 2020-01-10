@@ -452,7 +452,7 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	ok := mismaCantidadDeJugadores && cantidadCorrecta
 
 	if !ok {
-		return nil, fmt.Errorf(`No es posible responderle a la propuesta de tu mismo equipo`)
+		return nil, fmt.Errorf(`La cantidad de jugadores no es correcta`)
 	}
 	// paso a crear los jugadores; intercalados
 	var jugadores []Jugador

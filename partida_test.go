@@ -57,7 +57,6 @@ func TestPartida1(t *testing.T) {
 	)
 
 	ImprimirJugadas()
-	p.Ronda.Print()
 
 	p.SetSigJugada("Alvaro Envido") // no estoy recibiendo output
 	p.SetSigJugada("Alvaro Flor")
