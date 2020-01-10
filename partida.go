@@ -443,6 +443,15 @@ func (p *Partida) nuevaRonda(elMano JugadorIdx) {
 	fmt.Printf("La mano y el turno es %s\n", p.Ronda.getElMano().Jugador.Nombre)
 }
 
+// Print imprime la partida
+func (p *Partida) Print() {
+	// como tiene el parametro en Print
+	// basta con tener una sola instancia de impresora
+	// para imprimir varias instancias de partida diferente
+	printer := nuevaImpresora()
+	printer.Print(p)
+}
+
 // NuevaPartida retorna nueva partida; error si hubo
 func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Partida, error) {
 
