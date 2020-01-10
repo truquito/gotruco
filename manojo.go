@@ -21,8 +21,8 @@ type Manojo struct {
 // retorna la cantidad de cartas que ya tiro
 func (manojo Manojo) getCantCartasTiradas() int {
 	totalTiradas := 0
-	for _, tirada := range manojo.CartasNoTiradas {
-		if tirada {
+	for _, noTirada := range manojo.CartasNoTiradas {
+		if noTirada == false {
 			totalTiradas++
 		}
 	}

@@ -125,36 +125,26 @@ func (pr impresora) dibujarNombres(manojos []Manojo) {
 
 func (pr impresora) dibujarTiradas(manojos []Manojo) {
 	var area canvas.Rectangle
-	var ultimaTirada string
-	// las de a
-	ultimaTirada = pr.templates.cartaTriple(3, "Co")
-	area = pr.areasJugadores["tiradas"][posicion(a)]
-	pr.canvas.DrawAt(area.From, area.Center(ultimaTirada))
 
-	// las de b
-	ultimaTirada = pr.templates.carta(5, "Or")
-	area = pr.areasJugadores["tiradas"][posicion(b)]
-	pr.canvas.DrawAt(area.From, area.Center(ultimaTirada))
-
-	// las de ca
-	ultimaTirada = pr.templates.carta(7, "Ba")
-	area = pr.areasJugadores["tiradas"][posicion(c)]
-	pr.canvas.DrawAt(area.From, area.Center(ultimaTirada))
-
-	// las de d
-	ultimaTirada = pr.templates.carta(10, "Es")
-	area = pr.areasJugadores["tiradas"][posicion(d)]
-	pr.canvas.DrawAt(area.From, area.Center(ultimaTirada))
-
-	// las de e
-	ultimaTirada = pr.templates.carta(12, "Co")
-	area = pr.areasJugadores["tiradas"][posicion(e)]
-	pr.canvas.DrawAt(area.From, area.Center(ultimaTirada))
-
-	// las de f
-	ultimaTirada = pr.templates.carta(1, "Es")
-	area = pr.areasJugadores["tiradas"][posicion(f)]
-	pr.canvas.DrawAt(area.From, area.Center(ultimaTirada))
+	for i := 0; i < 6; i++ {
+		area = pr.areasJugadores["tiradas"][posicion(i)]
+		// necesito saber cuantas tiro
+		manojo := manojos[i]
+		cantTiradas := manojo.getCantCartasTiradas()
+		fmt.Println(manojo.Jugador.Nombre, cantTiradas)
+		var tiradas string
+		switch cantTiradas {
+		case 1:
+			tiradas = pr.templates.cartaTriple(3, "Co")
+		case 2:
+			tiradas = pr.templates.cartaTriple(3, "Co")
+		case 3:
+			tiradas = pr.templates.cartaTriple(3, "Co")
+		default:
+			tiradas = pr.templates.cartaTriple(4, "Co")
+		}
+		pr.canvas.DrawAt(area.From, area.Center(tiradas))
+	}
 }
 
 func (pr impresora) Print(p *Partida) {
