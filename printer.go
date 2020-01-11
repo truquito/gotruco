@@ -20,6 +20,14 @@ const (
 
 type templates struct{}
 
+func (t templates) renderValorCarta(valor int) string {
+	numStr := strconv.Itoa(valor)
+	if valor <= 9 {
+		numStr = numStr + "─"
+	}
+	return numStr
+}
+
 func (t templates) marco() string {
 	marco := canvas.Raw(`
 ╔══════════════════════════════╗
@@ -31,60 +39,100 @@ func (t templates) marco() string {
 ║                              ║
 ║                              ║
 ╚══════════════════════════════╝
-	`)
+`)
 	return marco
 }
 
-func (t templates) carta(valor int, palo string) string {
-	carta := "┌xx┐" + "\n"
-	carta += "│PP│" + "\n"
-	carta += "└──┘"
-
-	// numero
-	numStr := strconv.Itoa(valor)
-	if valor <= 9 {
-		numStr = numStr + "─"
-	}
-	carta = canvas.Replace("xx", numStr, carta)
-	carta = canvas.Replace("PP", palo[:2], carta)
-
-	return carta
+func (t templates) vacio() string {
+	return ""
 }
 
-func (t templates) cartaDoble(valor int, palo string) string {
-	cartaDoble := canvas.Raw(`
+func (t templates) carta(carta Carta) string {
+	valor, palo := carta.Valor, carta.Palo.String()
+	template := "┌xx┐" + "\n"
+	template += "│PP│" + "\n"
+	template += "└──┘"
+
+	numStr := t.renderValorCarta(valor)
+	template = canvas.Replace("xx", numStr, template)
+	template = canvas.Replace("PP", palo[:2], template)
+
+	return template
+}
+
+func (t templates) cartaDobleSolapada(carta Carta) string {
+	valor, palo := carta.Valor, carta.Palo.String()
+	cartaDobleSolapada := canvas.Raw(`
 ┌xx┐┐
 │PP││
 └──┘┘
 `)
 
-	// numero
-	numStr := strconv.Itoa(valor)
-	if valor <= 9 {
-		numStr = numStr + "─"
-	}
-	cartaDoble = canvas.Replace("xx", numStr, cartaDoble)
-	cartaDoble = canvas.Replace("PP", palo[:2], cartaDoble)
+	numStr := t.renderValorCarta(valor)
+	cartaDobleSolapada = canvas.Replace("xx", numStr, cartaDobleSolapada)
+	cartaDobleSolapada = canvas.Replace("PP", palo[:2], cartaDobleSolapada)
 
-	return cartaDoble
+	return cartaDobleSolapada
 }
 
-func (t templates) cartaTriple(valor int, palo string) string {
-	cartaTriple := canvas.Raw(`
+func (t templates) cartaTripleSolapada(carta Carta) string {
+	valor, palo := carta.Valor, carta.Palo.String()
+	cartaTripleSolapada := canvas.Raw(`
 ┌xx┐┐┐
 │PP│││
 └──┘┘┘
 `)
 
-	// numero
-	numStr := strconv.Itoa(valor)
-	if valor <= 9 {
-		numStr = numStr + "─"
-	}
-	cartaTriple = canvas.Replace("xx", numStr, cartaTriple)
-	cartaTriple = canvas.Replace("PP", palo[:2], cartaTriple)
+	numStr := t.renderValorCarta(valor)
+	cartaTripleSolapada = canvas.Replace("xx", numStr, cartaTripleSolapada)
+	cartaTripleSolapada = canvas.Replace("PP", palo[:2], cartaTripleSolapada)
 
-	return cartaTriple
+	return cartaTripleSolapada
+}
+
+func (t templates) cartaDobleVisible(cartas []Carta) string {
+	cartaDobleSolapada := canvas.Raw(`
+┌xx┐yy┐
+│PP│QQ│
+└──┘──┘
+`)
+
+	valor, palo := cartas[0].Valor, cartas[0].Palo.String()
+	numStr := t.renderValorCarta(valor)
+	cartaDobleSolapada = canvas.Replace("xx", numStr, cartaDobleSolapada)
+	cartaDobleSolapada = canvas.Replace("PP", palo[:2], cartaDobleSolapada)
+
+	valor, palo = cartas[1].Valor, cartas[1].Palo.String()
+	numStr = t.renderValorCarta(valor)
+	cartaDobleSolapada = canvas.Replace("yy", numStr, cartaDobleSolapada)
+	cartaDobleSolapada = canvas.Replace("QQ", palo[:2], cartaDobleSolapada)
+
+	return cartaDobleSolapada
+}
+
+func (t templates) cartaTripleVisible(cartas []Carta) string {
+	cartaDobleSolapada := canvas.Raw(`
+┌xx┐yy┐zz┐
+│PP│QQ│RR│
+└──┘──┘──┘
+`)
+
+	valor, palo := cartas[0].Valor, cartas[0].Palo.String()
+	numStr := t.renderValorCarta(valor)
+	cartaDobleSolapada = canvas.Replace("xx", numStr, cartaDobleSolapada)
+	cartaDobleSolapada = canvas.Replace("PP", palo[:2], cartaDobleSolapada)
+
+	valor, palo = cartas[1].Valor, cartas[1].Palo.String()
+	numStr = t.renderValorCarta(valor)
+	cartaDobleSolapada = canvas.Replace("yy", numStr, cartaDobleSolapada)
+	cartaDobleSolapada = canvas.Replace("QQ", palo[:2], cartaDobleSolapada)
+
+	valor, palo = cartas[2].Valor, cartas[2].Palo.String()
+	numStr = t.renderValorCarta(valor)
+	cartaDobleSolapada = canvas.Replace("zz", numStr, cartaDobleSolapada)
+	cartaDobleSolapada = canvas.Replace("RR", palo[:2], cartaDobleSolapada)
+
+	return cartaDobleSolapada
 }
 
 type impresora struct {
@@ -96,12 +144,12 @@ type impresora struct {
 
 func (pr impresora) dibujarMarco() {
 	marco := pr.templates.marco()
-	pr.canvas.Draw(11, 2, marco)
+	pr.canvas.DrawAt(pr.otrasAreas["exteriorMesa"].From, marco)
 }
 
 func (pr impresora) dibujarMuestra(muestra Carta) {
-	carta := pr.templates.carta(muestra.Valor, muestra.Palo.String())
-	pr.canvas.Draw(25, 5, carta)
+	carta := pr.templates.carta(muestra)
+	pr.canvas.DrawAt(pr.otrasAreas["muestra"].From, carta)
 }
 
 func (pr impresora) dibujarNombres(manojos []Manojo) {
@@ -113,9 +161,9 @@ func (pr impresora) dibujarNombres(manojos []Manojo) {
 		area := pr.areasJugadores["nombres"][posicion(i)]
 		var nombreCentrado string
 		if posicion(i) == f {
-			nombreCentrado = area.Right(nombre)
+			nombreCentrado = area.Center(nombre)
 		} else if posicion(i) == c {
-			nombreCentrado = area.Left(nombre)
+			nombreCentrado = area.Center(nombre)
 		} else {
 			nombreCentrado = area.Center(nombre)
 		}
@@ -131,20 +179,67 @@ func (pr impresora) dibujarTiradas(manojos []Manojo) {
 		// necesito saber cuantas tiro
 		manojo := manojos[i]
 		cantTiradas := manojo.getCantCartasTiradas()
-		fmt.Println(manojo.Jugador.Nombre, cantTiradas)
+		carta := manojo.Cartas[manojo.UltimaTirada]
 		var tiradas string
 		switch cantTiradas {
 		case 1:
-			tiradas = pr.templates.cartaTriple(3, "Co")
+			tiradas = pr.templates.carta(carta)
 		case 2:
-			tiradas = pr.templates.cartaTriple(3, "Co")
+			tiradas = pr.templates.cartaDobleSolapada(carta)
 		case 3:
-			tiradas = pr.templates.cartaTriple(3, "Co")
+			tiradas = pr.templates.cartaTripleSolapada(carta)
 		default:
-			tiradas = pr.templates.cartaTriple(4, "Co")
+			tiradas = pr.templates.vacio()
 		}
 		pr.canvas.DrawAt(area.From, area.Center(tiradas))
 	}
+}
+
+func (pr impresora) dibujarPosesiones(manojos []Manojo) {
+	var area canvas.Rectangle
+
+	for i := 0; i < 6; i++ {
+		area = pr.areasJugadores["posesiones"][posicion(i)]
+		manojo := manojos[i]
+
+		var cartasEnPosesion []Carta
+		for j, c := range manojo.Cartas {
+			if manojo.CartasNoTiradas[j] {
+				cartasEnPosesion = append(cartasEnPosesion, c)
+			}
+		}
+
+		cantTiradas := manojo.getCantCartasTiradas()
+		cantPosesion := 3 - cantTiradas
+
+		var template string
+		switch cantPosesion {
+		case 1:
+			template = pr.templates.carta(cartasEnPosesion[0])
+		case 2:
+			template = pr.templates.cartaDobleVisible(cartasEnPosesion)
+		case 3:
+			template = pr.templates.cartaTripleVisible(cartasEnPosesion)
+		default:
+			template = pr.templates.vacio()
+		}
+		pr.canvas.DrawAt(area.From, area.Center(template))
+	}
+}
+
+func (pr impresora) dibujarTurno(turno JugadorIdx) {
+	posicion := posicion(turno)
+	area := pr.areasJugadores["tooltips"][posicion]
+
+	// necesito saber cuantas tiro
+	var template string
+	switch posicion {
+	case a, b:
+		template = "⭡"
+	default:
+		template = "⭣"
+	}
+	pr.canvas.DrawAt(area.From, area.Center(template))
 }
 
 func (pr impresora) Print(p *Partida) {
@@ -152,7 +247,8 @@ func (pr impresora) Print(p *Partida) {
 	pr.dibujarMuestra(p.Ronda.Muestra)
 	pr.dibujarNombres(p.Ronda.Manojos)
 	pr.dibujarTiradas(p.Ronda.Manojos)
-
+	pr.dibujarPosesiones(p.Ronda.Manojos)
+	pr.dibujarTurno(p.Ronda.Turno)
 	render := pr.canvas.Render()
 	fmt.Printf(render)
 }
@@ -163,91 +259,121 @@ func nuevaImpresora() impresora {
 		areasJugadores: map[string](map[posicion]canvas.Rectangle){
 			"nombres": map[posicion]canvas.Rectangle{
 				a: canvas.Rectangle{
-					From: canvas.Point{X: 15, Y: 11},
-					To:   canvas.Point{X: 25, Y: 11},
+					From: canvas.Point{X: 15, Y: 14},
+					To:   canvas.Point{X: 24, Y: 14},
 				},
 				b: canvas.Rectangle{
-					From: canvas.Point{X: 29, Y: 11},
-					To:   canvas.Point{X: 39, Y: 11},
+					From: canvas.Point{X: 29, Y: 14},
+					To:   canvas.Point{X: 38, Y: 14},
 				},
 				c: canvas.Rectangle{
-					From: canvas.Point{X: 44, Y: 6},
-					To:   canvas.Point{X: 53, Y: 6},
+					From: canvas.Point{X: 44, Y: 9},
+					To:   canvas.Point{X: 53, Y: 9},
 				},
 				d: canvas.Rectangle{
-					From: canvas.Point{X: 29, Y: 1},
-					To:   canvas.Point{X: 39, Y: 1},
+					From: canvas.Point{X: 29, Y: 4},
+					To:   canvas.Point{X: 38, Y: 4},
 				},
 				e: canvas.Rectangle{
-					From: canvas.Point{X: 15, Y: 1},
-					To:   canvas.Point{X: 25, Y: 1},
+					From: canvas.Point{X: 15, Y: 4},
+					To:   canvas.Point{X: 24, Y: 4},
 				},
 				f: canvas.Rectangle{
-					From: canvas.Point{X: 0, Y: 6},
-					To:   canvas.Point{X: 9, Y: 6},
+					From: canvas.Point{X: 0, Y: 9},
+					To:   canvas.Point{X: 9, Y: 9},
 				},
 			},
 			"tiradas": map[posicion]canvas.Rectangle{
 				a: canvas.Rectangle{
-					From: canvas.Point{X: 19, Y: 7},
-					To:   canvas.Point{X: 24, Y: 9},
+					From: canvas.Point{X: 19, Y: 10},
+					To:   canvas.Point{X: 24, Y: 12},
 				},
 				b: canvas.Rectangle{
-					From: canvas.Point{X: 29, Y: 7},
-					To:   canvas.Point{X: 34, Y: 9},
+					From: canvas.Point{X: 29, Y: 10},
+					To:   canvas.Point{X: 34, Y: 12},
 				},
 				c: canvas.Rectangle{
-					From: canvas.Point{X: 35, Y: 5},
-					To:   canvas.Point{X: 40, Y: 7},
+					From: canvas.Point{X: 35, Y: 8},
+					To:   canvas.Point{X: 40, Y: 13},
 				},
 				d: canvas.Rectangle{
-					From: canvas.Point{X: 29, Y: 3},
-					To:   canvas.Point{X: 34, Y: 5},
+					From: canvas.Point{X: 29, Y: 6},
+					To:   canvas.Point{X: 34, Y: 8},
 				},
 				e: canvas.Rectangle{
-					From: canvas.Point{X: 19, Y: 3},
-					To:   canvas.Point{X: 24, Y: 5},
+					From: canvas.Point{X: 19, Y: 6},
+					To:   canvas.Point{X: 24, Y: 8},
 				},
 				f: canvas.Rectangle{
-					From: canvas.Point{X: 13, Y: 5},
-					To:   canvas.Point{X: 18, Y: 7},
+					From: canvas.Point{X: 13, Y: 8},
+					To:   canvas.Point{X: 18, Y: 10},
+				},
+			},
+			"posesiones": map[posicion]canvas.Rectangle{
+				a: canvas.Rectangle{
+					From: canvas.Point{X: 15, Y: 16},
+					To:   canvas.Point{X: 24, Y: 18},
+				},
+				b: canvas.Rectangle{
+					From: canvas.Point{X: 29, Y: 16},
+					To:   canvas.Point{X: 38, Y: 18},
+				},
+				c: canvas.Rectangle{
+					From: canvas.Point{X: 44, Y: 10},
+					To:   canvas.Point{X: 53, Y: 12},
+				},
+				d: canvas.Rectangle{
+					From: canvas.Point{X: 29, Y: 0},
+					To:   canvas.Point{X: 38, Y: 2},
+				},
+				e: canvas.Rectangle{
+					From: canvas.Point{X: 15, Y: 0},
+					To:   canvas.Point{X: 24, Y: 2},
+				},
+				f: canvas.Rectangle{
+					From: canvas.Point{X: 0, Y: 10},
+					To:   canvas.Point{X: 9, Y: 12},
 				},
 			},
 			"tooltips": map[posicion]canvas.Rectangle{
 				a: canvas.Rectangle{
-					From: canvas.Point{X: 15, Y: 12},
-					To:   canvas.Point{X: 24, Y: 12},
+					From: canvas.Point{X: 15, Y: 15},
+					To:   canvas.Point{X: 24, Y: 15},
 				},
 				b: canvas.Rectangle{
-					From: canvas.Point{X: 29, Y: 12},
-					To:   canvas.Point{X: 38, Y: 12},
+					From: canvas.Point{X: 29, Y: 15},
+					To:   canvas.Point{X: 38, Y: 15},
 				},
 				c: canvas.Rectangle{
-					From: canvas.Point{X: 44, Y: 5},
-					To:   canvas.Point{X: 53, Y: 5},
+					From: canvas.Point{X: 44, Y: 8},
+					To:   canvas.Point{X: 53, Y: 8},
 				},
 				d: canvas.Rectangle{
-					From: canvas.Point{X: 29, Y: 0},
-					To:   canvas.Point{X: 38, Y: 0},
+					From: canvas.Point{X: 29, Y: 3},
+					To:   canvas.Point{X: 38, Y: 3},
 				},
 				e: canvas.Rectangle{
-					From: canvas.Point{X: 15, Y: 0},
-					To:   canvas.Point{X: 24, Y: 0},
+					From: canvas.Point{X: 15, Y: 3},
+					To:   canvas.Point{X: 24, Y: 3},
 				},
 				f: canvas.Rectangle{
-					From: canvas.Point{X: 0, Y: 5},
-					To:   canvas.Point{X: 5, Y: 9},
+					From: canvas.Point{X: 0, Y: 8},
+					To:   canvas.Point{X: 5, Y: 12},
 				},
 			},
 		},
 		otrasAreas: map[string]canvas.Rectangle{
+			"muestra": canvas.Rectangle{
+				From: canvas.Point{X: 25, Y: 8},
+				To:   canvas.Point{X: 28, Y: 10},
+			},
 			"exteriorMesa": canvas.Rectangle{
-				From: canvas.Point{X: 11, Y: 2},
-				To:   canvas.Point{X: 42, Y: 10},
+				From: canvas.Point{X: 11, Y: 5},
+				To:   canvas.Point{X: 42, Y: 13},
 			},
 			"interiorMesa": canvas.Rectangle{
-				From: canvas.Point{X: 12, Y: 3},
-				To:   canvas.Point{X: 41, Y: 9},
+				From: canvas.Point{X: 12, Y: 6},
+				To:   canvas.Point{X: 41, Y: 12},
 			},
 		},
 	}
