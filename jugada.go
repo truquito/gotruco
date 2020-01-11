@@ -44,6 +44,7 @@ func (jugada tirarCarta) hacer(p *Partida) error {
 		jugada.autor.Jugador.Nombre,
 		jugada.Carta.toString())
 	jugada.autor.CartasNoTiradas[idx] = false
+	jugada.autor.UltimaTirada = idx
 	p.Ronda.getManoActual().agregarTirada(jugada)
 
 	// era el ultimo en tirar de esta mano?

@@ -15,6 +15,7 @@ type Manojo struct {
 	Cartas      [cantCartasManojo]Carta `json:"cartas"`
 	// si true->la tiene; si false->ya la tiro
 	CartasNoTiradas [cantCartasManojo]bool `json:"cartasNoJugadas"`
+	UltimaTirada    int                    `json:"ultimaTirada"`
 	Jugador         *Jugador               `json:"jugador"`
 }
 
