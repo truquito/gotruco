@@ -54,8 +54,6 @@ func TestTirada1(t *testing.T) {
 		},
 	)
 
-	ImprimirJugadas()
-
 	p.SetSigJugada("Alvaro Envido") // no estoy recibiendo output
 	p.SetSigJugada("Alvaro Flor")
 	p.SetSigJugada("Roro Mazo") // no estoy recibiendo output
@@ -63,4 +61,6 @@ func TestTirada1(t *testing.T) {
 	p.SetSigJugada("Renzo Contra-flor")
 	p.SetSigJugada("Alvaro Quiero")
 	p.Terminar()
+
+	p.Print()
 }

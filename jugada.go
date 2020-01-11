@@ -428,8 +428,7 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 			// los acumulados del envite hasta ahora
 			puntosASumar := p.Ronda.Envido.Puntaje
 			p.Puntajes[equipoGanador] += puntosASumar
-			fmt.Printf(`>> La contra-flor-al-resto la gano %s con %v, +%v puntos
-				para el equipo %s`+"\n",
+			fmt.Printf(`>> La contra-flor-al-resto la gano %s con %v, +%v puntos para el equipo %s`+"\n",
 				manojoConLaFlorMasAlta.Jugador.Nombre, maxFlor, puntosASumar, equipoGanador)
 			// se corta el bucle de la flor:
 			break
@@ -474,8 +473,7 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 			// los acumulados del envite hasta ahora + la contrafloralresto
 			puntosASumar := p.Ronda.Envido.Puntaje + p.calcPtsContraFlorAlResto(equipoGanador)
 			p.Puntajes[equipoGanador] += puntosASumar
-			fmt.Printf(`>> La contra-flor-al-resto la gano %s con %v, +%v puntos
-				para el equipo %s`+"\n",
+			fmt.Printf(`>> La contra-flor-al-resto la gano %s con %v, +%v puntos para el equipo %s`+"\n",
 				manojoConLaFlorMasAlta.Jugador.Nombre, maxFlor, puntosASumar, equipoGanador)
 			// se corta el bucle de la flor:
 			break
@@ -496,8 +494,7 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 			// los acumulados del envite hasta ahora + la contrafloralresto
 			puntosASumar := p.Ronda.Envido.Puntaje + p.calcPtsContraFlorAlResto(equipoGanador)
 			p.Puntajes[equipoGanador] += puntosASumar
-			fmt.Printf(`>> La contra-flor-al-resto la gano %s, +%v puntos
-				para el equipo %s`+"\n",
+			fmt.Printf(`>> La contra-flor-al-resto la gano %s, +%v puntos para el equipo %s`+"\n",
 				p.Ronda.Envido.CantadoPor.Nombre, puntosASumar, equipoGanador)
 			// se corta el bucle de la flor:
 			break

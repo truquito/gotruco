@@ -1,5 +1,3 @@
-- partida.puntuacion creo que esta al pedo. pa q se usa? -> eliminarlo si no
-
 - agregar el control de que los nombres de los jguadores tienen que ser > 0
 
 -   // que pasa cuando el ganador de una mano se habia ido al mazo?
