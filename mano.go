@@ -78,6 +78,22 @@ func (n NumMano) toInt() int {
 	}
 }
 
+// toString
+func (n NumMano) String() string {
+	manos := []string{
+		"Primera",
+		"Segunda",
+		"Tercera",
+	}
+
+	ok := n >= 0 || int(n) < len(manos)
+	if !ok {
+		return "Unknown"
+	}
+
+	return manos[n]
+}
+
 // Mano :
 type Mano struct {
 	Resultado Resultado `json:"resultado"`
