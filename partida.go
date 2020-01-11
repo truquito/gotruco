@@ -479,7 +479,6 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 
 	p := Partida{
 		Puntuacion:    puntuacion,
-		Puntaje:       0,
 		CantJugadores: cantJugadores,
 		jugadores:     jugadores,
 	}
