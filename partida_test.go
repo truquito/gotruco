@@ -1,7 +1,6 @@
 package truco
 
 import (
-	"encoding/json"
 	"fmt"
 	"testing"
 )
@@ -82,8 +81,6 @@ func TestPartidaComandosInvalidos(t *testing.T) {
 
 func TestPartidaJSON(t *testing.T) {
 	p, _ := NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andrés"}, []string{"Roro", "Renzo", "Richard"})
-
-	pJSON, _ := json.MarshalIndent(p, "", " ")
-	fmt.Printf(string(pJSON))
+	fmt.Printf(p.toJSON())
 
 }

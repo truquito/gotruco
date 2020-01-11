@@ -447,9 +447,14 @@ func (p *Partida) nuevaRonda(elMano JugadorIdx) {
 func (p *Partida) Print() {
 	// como tiene el parametro en Print
 	// basta con tener una sola instancia de impresora
-	// para imprimir varias instancias de partida diferente
+	// para imprimir varias instancias de partidas diferentes
 	printer := nuevaImpresora()
 	printer.Print(p)
+}
+
+func (p *Partida) toJSON() string {
+	pJSON, _ := json.MarshalIndent(p, "", " ")
+	return string(pJSON)
 }
 
 // NuevaPartida retorna nueva partida; error si hubo
