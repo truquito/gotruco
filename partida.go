@@ -79,7 +79,6 @@ type Partida struct {
 	jugadores     []Jugador
 	CantJugadores int            `json:"cantJugadores"`
 	Puntuacion    Puntuacion     `json:"puntuacion"`
-	Puntaje       int            `json:"puntaje"`
 	Puntajes      map[Equipo]int `json:"puntajes"`
 	Ronda         Ronda          `json:"ronda"`
 }
