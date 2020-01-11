@@ -307,7 +307,7 @@ func (pr impresora) Print(p *Partida) {
 
 func nuevaImpresora() impresora {
 	return impresora{
-		canvas: canvas.NewCanvas(),
+		canvas: canvas.NewCanvas(75, 19),
 		areasJugadores: map[string](map[posicion]canvas.Rectangle){
 			"nombres": map[posicion]canvas.Rectangle{
 				a: canvas.Rectangle{
