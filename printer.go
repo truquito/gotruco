@@ -43,6 +43,26 @@ func (t templates) marco() string {
 	return marco
 }
 
+func (t templates) estadisticas() string {
+	marco := canvas.Raw(`
+╔════════════════╗
+│ #Mano:         │
+╠────────────────╣
+│ Mano:          │
+╠────────────────╣
+│ Turno:         │
+╠────────────────╣
+│ Puntuacion:    │
+╚════════════════╝
+ ╔──────┬──────╗
+ │ ROJO │ AZUL │
+ ├──────┼──────┤
+ │      │      │
+ ╚──────┴──────╝
+`)
+	return marco
+}
+
 func (t templates) vacio() string {
 	return ""
 }
@@ -147,6 +167,37 @@ func (pr impresora) dibujarMarco() {
 	pr.canvas.DrawAt(pr.otrasAreas["exteriorMesa"].From, marco)
 }
 
+func (pr impresora) dibujarEstadisticas(p *Partida) {
+	template := pr.templates.estadisticas()
+	pr.canvas.DrawAt(pr.otrasAreas["estadisticas"].From, template)
+
+	// NUMERO DE Mano en juego
+	numMano := p.Ronda.ManoEnJuego.String()
+	pr.canvas.DrawAt(pr.otrasAreas["#Mano"].From, numMano)
+
+	// Mano
+	mano := p.Ronda.getElMano().Jugador.Nombre
+	mano = chop(mano, 8)
+	pr.canvas.DrawAt(pr.otrasAreas["Mano"].From, mano)
+
+	// Turno
+	turno := p.Ronda.getElTurno().Jugador.Nombre
+	turno = chop(turno, 8)
+	pr.canvas.DrawAt(pr.otrasAreas["Turno"].From, turno)
+
+	// puntuacion
+	puntuacion := strconv.Itoa((int(p.Puntuacion)))
+	pr.canvas.DrawAt(pr.otrasAreas["Puntuacion"].From, puntuacion)
+
+	// ROJO
+	ptjRojo := strconv.Itoa((int(p.Puntajes[Rojo])))
+	pr.canvas.DrawAt(pr.otrasAreas["puntajeRojo"].From, ptjRojo)
+
+	// AZUL
+	ptjAzul := strconv.Itoa((int(p.Puntajes[Azul])))
+	pr.canvas.DrawAt(pr.otrasAreas["puntajeAzul"].From, ptjAzul)
+}
+
 func (pr impresora) dibujarMuestra(muestra Carta) {
 	carta := pr.templates.carta(muestra)
 	pr.canvas.DrawAt(pr.otrasAreas["muestra"].From, carta)
@@ -244,6 +295,7 @@ func (pr impresora) dibujarTurno(turno JugadorIdx) {
 
 func (pr impresora) Print(p *Partida) {
 	pr.dibujarMarco()
+	pr.dibujarEstadisticas(p)
 	pr.dibujarMuestra(p.Ronda.Muestra)
 	pr.dibujarNombres(p.Ronda.Manojos)
 	pr.dibujarTiradas(p.Ronda.Manojos)
@@ -374,6 +426,34 @@ func nuevaImpresora() impresora {
 			"interiorMesa": canvas.Rectangle{
 				From: canvas.Point{X: 12, Y: 6},
 				To:   canvas.Point{X: 41, Y: 12},
+			},
+			"estadisticas": canvas.Rectangle{
+				From: canvas.Point{X: 57, Y: 2},
+				To:   canvas.Point{X: 74, Y: 15},
+			},
+			"#Mano": canvas.Rectangle{
+				From: canvas.Point{X: 66, Y: 3},
+				To:   canvas.Point{X: 72, Y: 3},
+			},
+			"Mano": canvas.Rectangle{
+				From: canvas.Point{X: 65, Y: 5},
+				To:   canvas.Point{X: 72, Y: 5},
+			},
+			"Turno": canvas.Rectangle{
+				From: canvas.Point{X: 66, Y: 7},
+				To:   canvas.Point{X: 72, Y: 7},
+			},
+			"Puntuacion": canvas.Rectangle{
+				From: canvas.Point{X: 71, Y: 9},
+				To:   canvas.Point{X: 72, Y: 9},
+			},
+			"puntajeRojo": canvas.Rectangle{
+				From: canvas.Point{X: 61, Y: 14},
+				To:   canvas.Point{X: 62, Y: 14},
+			},
+			"puntajeAzul": canvas.Rectangle{
+				From: canvas.Point{X: 68, Y: 14},
+				To:   canvas.Point{X: 69, Y: 14},
 			},
 		},
 	}

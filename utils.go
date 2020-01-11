@@ -5,6 +5,13 @@ import (
 	"reflect"
 )
 
+func chop(str string, l int) string {
+	if len(str) <= l {
+		return str
+	}
+	return str[:l]
+}
+
 func contains(slice interface{}, item interface{}) bool {
 	s := reflect.ValueOf(slice)
 
