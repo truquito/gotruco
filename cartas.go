@@ -3,8 +3,10 @@ package truco
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -293,6 +295,38 @@ func nuevaCarta(i CartaID) Carta {
 		Palo:  i.getPalo(),
 		Valor: i.getValor(),
 	}
+}
+
+// hace todos los checkeos necesarios
+func parseCarta(valorStr, paloStr string) (*Carta, error) {
+	var (
+		valor int
+		palo  Palo
+	)
+	valor, err := strconv.Atoi(valorStr)
+	if err != nil {
+		return nil, fmt.Errorf("No se pudo reconocer el valor de la carta")
+	}
+	ok := contains([]int{1, 2, 3, 4, 5, 6, 7, 10, 11, 12}, valor)
+	if !ok {
+		return nil, fmt.Errorf("El valor de esa carta es incorrecto")
+	}
+	paloLower := strings.ToLower(paloStr)
+
+	switch paloLower {
+	case "basto":
+		palo = Basto
+	case "copa":
+		palo = Copa
+	case "oro":
+		palo = Oro
+	case "espada":
+		palo = Espada
+	default:
+		return nil, fmt.Errorf("El palo de esa carta es incorrecto")
+	}
+
+	return &Carta{palo, valor}, nil
 }
 
 /*

@@ -19,6 +19,14 @@ var (
 	sigComando chan string  = make(chan string, 1)
 )
 
+// regexps
+var (
+	regexps = map[string]*regexp.Regexp{
+		"jugadaSimple": regexp.MustCompile(`(?i)^([a-zA-Z0-9_-]+) ([a-zA-Z0-9_-]+)$`),
+		"jugadaTirada": regexp.MustCompile(`(?i)^([a-zA-Z0-9_-]+) (1|2|3|4|5|6|7|10|11|12) (oro|copa|basto|espada)$`),
+	}
+)
+
 // Puntuacion : Enum para el puntaje maximo de la partida
 type Puntuacion int
 
@@ -115,54 +123,89 @@ func (p *Partida) getSigJugada() IJugada {
 	return iJugada
 }
 
-func (p *Partida) parseJugada(jugadaStr, jugadorStr string) (IJugada, error) {
+func (p *Partida) parseJugada(cmd string) (IJugada, error) {
+
 	var jugada IJugada
 
-	manojo, err := p.Ronda.getManojoByStr(jugadorStr)
-	if err != nil {
-		return nil, fmt.Errorf("Usuario %s no encontrado", jugadorStr)
-	}
+	// comando simple son
+	// jugadas sin parametro del tipo `$autor $jugada`
+	match := regexps["jugadaSimple"].FindAllStringSubmatch(cmd, 1)
 
-	jugadaStr = strings.ToLower(jugadaStr)
+	if match != nil {
+		jugadorStr, jugadaStr := match[0][1], match[0][2]
 
-	switch jugadaStr {
-	// toques
-	case "envido":
-		jugada = tocarEnvido{Jugada{autor: manojo}}
-	case "real-envido":
-		jugada = tocarRealEnvido{Jugada{autor: manojo}}
-	case "falta-envido":
-		jugada = tocarFaltaEnvido{Jugada{autor: manojo}}
+		manojo, err := p.Ronda.getManojoByStr(jugadorStr)
+		if err != nil {
+			return nil, fmt.Errorf("Usuario %s no encontrado", jugadorStr)
+		}
 
-	// cantos
-	case "flor":
-		jugada = cantarFlor{Jugada{autor: manojo}}
-	case "contra-flor":
-		jugada = cantarContraFlor{Jugada{autor: manojo}}
-	case "contra-flor-al-resto":
-		jugada = cantarContraFlorAlResto{Jugada{autor: manojo}}
+		jugadaStr = strings.ToLower(jugadaStr)
 
-	// gritos
-	case "truco":
-		jugada = gritarTruco{Jugada{autor: manojo}}
-	case "re-truco":
-		jugada = gritarReTruco{Jugada{autor: manojo}}
-	case "vale-4":
-		jugada = gritarVale4{Jugada{autor: manojo}}
+		strings.Fields(cmd)
 
-	// respuestas
-	case "quiero":
-		jugada = responderQuiero{Jugada{autor: manojo}}
-	case "no-quiero":
-		jugada = responderNoQuiero{Jugada{autor: manojo}}
-	case "tiene":
-		jugada = responderNoQuiero{Jugada{autor: manojo}}
+		switch jugadaStr {
+		// toques
+		case "envido":
+			jugada = tocarEnvido{Jugada{autor: manojo}}
+		case "real-envido":
+			jugada = tocarRealEnvido{Jugada{autor: manojo}}
+		case "falta-envido":
+			jugada = tocarFaltaEnvido{Jugada{autor: manojo}}
 
-	// acciones
-	case "mazo":
-		jugada = irseAlMazo{Jugada{autor: manojo}}
-	default:
-		return nil, fmt.Errorf("No esxiste esa jugada")
+		// cantos
+		case "flor":
+			jugada = cantarFlor{Jugada{autor: manojo}}
+		case "contra-flor":
+			jugada = cantarContraFlor{Jugada{autor: manojo}}
+		case "contra-flor-al-resto":
+			jugada = cantarContraFlorAlResto{Jugada{autor: manojo}}
+
+		// gritos
+		case "truco":
+			jugada = gritarTruco{Jugada{autor: manojo}}
+		case "re-truco":
+			jugada = gritarReTruco{Jugada{autor: manojo}}
+		case "vale-4":
+			jugada = gritarVale4{Jugada{autor: manojo}}
+
+		// respuestas
+		case "quiero":
+			jugada = responderQuiero{Jugada{autor: manojo}}
+		case "no-quiero":
+			jugada = responderNoQuiero{Jugada{autor: manojo}}
+		// case "tiene":
+		// 	jugada = responderNoQuiero{Jugada{autor: manojo}}
+
+		// acciones
+		case "mazo":
+			jugada = irseAlMazo{Jugada{autor: manojo}}
+		case "tirar":
+			jugada = irseAlMazo{Jugada{autor: manojo}}
+		default:
+			return nil, fmt.Errorf("No esxiste esa jugada")
+		}
+	} else {
+		match = regexps["jugadaTirada"].FindAllStringSubmatch(cmd, 1)
+		if match == nil {
+			return nil, fmt.Errorf("No esxiste esa jugada")
+		}
+		jugadorStr := match[0][1]
+		valorStr, paloStr := match[0][2], match[0][3]
+
+		manojo, err := p.Ronda.getManojoByStr(jugadorStr)
+		if err != nil {
+			return nil, fmt.Errorf("Usuario %s no encontrado", jugadorStr)
+		}
+
+		carta, err := parseCarta(valorStr, paloStr)
+		if err != nil {
+			return nil, err
+		}
+
+		jugada = tirarCarta{
+			Jugada{autor: manojo},
+			*carta,
+		}
 	}
 
 	return jugada, nil
@@ -510,9 +553,7 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 				case "__WAIT__":
 					sigJugada <- nil
 				default:
-					params := strings.Fields(cmd)
-					jugadaStr, jugadorStr := params[1], params[0]
-					jugada, err := p.parseJugada(jugadaStr, jugadorStr)
+					jugada, err := p.parseJugada(cmd)
 					if err != nil {
 						fmt.Println(err.Error())
 					} else {

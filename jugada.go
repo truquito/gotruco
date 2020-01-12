@@ -940,7 +940,7 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 var jugadas = map[string]([]string){
 	"Gritos": []string{
 		"Truco",    // 1/2
-		"Re-Truco", // 2/3
+		"Re-truco", // 2/3
 		"Vale 4",   // 3/4
 	},
 	"Toques": []string{
@@ -958,10 +958,11 @@ var jugadas = map[string]([]string){
 	},
 	"Respuestas": []string{
 		"Quiero",
-		"No-Quiero",
+		"No quiero",
 	},
 	"Acciones": []string{
 		"Irse al mazo",
+		"Tirar carta",
 	},
 }
 
