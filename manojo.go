@@ -158,7 +158,7 @@ func (manojo *Manojo) calcFlor(muestra Carta) (int, error) {
 // es una mezcla de capa de presentacion con logica; puaj
 func (manojo Manojo) cantarFlor(tipoFlor int, muestra Carta) {
 	x, _ := manojo.calcFlor(muestra)
-	fmt.Printf("%s CANTA FLOR: \"Tengo flor!\" (tiene %v)\n", "NOMBRE-JUGADOR", x)
+	fmt.Printf("<< %s CANTA FLOR: \"Tengo flor!\" (tiene %v)\n", "NOMBRE-JUGADOR", x)
 }
 
 // Print imprime la info del manojo

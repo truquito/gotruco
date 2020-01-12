@@ -193,7 +193,7 @@ func (r *Ronda) nextTurnoPosMano() {
 			r.Turno = JugadorIdx(r.getIdx(*r.getManoAnterior().Ganador))
 		}
 	}
-	fmt.Printf("Es el turno de %s", r.Manojos[r.Turno].Jugador.Nombre)
+	fmt.Printf("<< Es el turno de %s", r.Manojos[r.Turno].Jugador.Nombre)
 }
 
 // sig devuelve el `JugadorIdx` del

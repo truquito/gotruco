@@ -314,7 +314,7 @@ func (p *Partida) evaluarMano() {
 	if esParda {
 		mano.Resultado = Empardada
 		mano.Ganador = nil
-		fmt.Printf("La Mano resulta parda")
+		fmt.Printf("<< La Mano resulta parda")
 		// no se cambia el turno
 
 	} else {
@@ -331,7 +331,7 @@ func (p *Partida) evaluarMano() {
 		// el turno pasa a ser el del mano.ganador
 		// pero se setea despues de evaluar la ronda
 		mano.Ganador = tiradaGanadora.autor
-		fmt.Printf("La Mano la gano %s (equipo %s)",
+		fmt.Printf("<< La Mano la gano %s (equipo %s)",
 			mano.Ganador.Jugador.Nombre, mano.Ganador.Jugador.Equipo.String())
 	}
 
@@ -439,7 +439,7 @@ func (p *Partida) evaluarRonda() bool {
 
 	}
 
-	fmt.Printf("La ronda ha sido ganada por el equipo %s\n",
+	fmt.Printf("<< La ronda ha sido ganada por el equipo %s\n",
 		ganador.Jugador.Equipo)
 
 	// ya sabemos el ganador ahora es el
@@ -473,16 +473,16 @@ func (p *Partida) evaluarRonda() bool {
 
 func (p *Partida) byeBye() {
 	if !p.NoAcabada() {
-		fmt.Printf("Se acabo la partida! el ganador fue el equipo %s\n\n",
+		fmt.Printf("<< Se acabo la partida! el ganador fue el equipo %s\n\n",
 			p.elQueVaGanando().String())
-		fmt.Printf("BYE BYE!")
+		fmt.Printf("<< BYE BYE!")
 	}
 }
 
 func (p *Partida) nuevaRonda(elMano JugadorIdx) {
-	fmt.Println("Empieza una nueva ronda")
+	fmt.Println("<< Empieza una nueva ronda")
 	p.Ronda = nuevaRonda(p.jugadores, elMano)
-	fmt.Printf("La mano y el turno es %s\n", p.Ronda.getElMano().Jugador.Nombre)
+	// fmt.Printf("<< La mano y el turno es %s\n", p.Ronda.getElMano().Jugador.Nombre)
 }
 
 // Print imprime la partida
@@ -555,7 +555,7 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 				default:
 					jugada, err := p.parseJugada(cmd)
 					if err != nil {
-						fmt.Println(err.Error())
+						fmt.Println("<< " + err.Error())
 					} else {
 						sigJugada <- jugada
 					}

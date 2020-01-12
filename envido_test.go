@@ -1146,7 +1146,7 @@ func TestCalcEnvido(t *testing.T) {
 
 }
 
-func TestYTEnvidoCalcII(t *testing.T) {
+func TestCalcEnvido2(t *testing.T) {
 	p, _ := NuevaPartida(a20, []string{"A", "C", "E"}, []string{"B", "D", "F"})
 	p.Puntajes[Azul] = 4
 	p.Puntajes[Rojo] = 3

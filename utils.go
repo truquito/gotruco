@@ -102,9 +102,3 @@ func cv(x, mano JugadorIdx, cantJugadores int) (y JugadorIdx) {
 	}
 	return y
 }
-
-func print(a []string) {
-	for _, s := range a {
-		fmt.Print(s)
-	}
-}
