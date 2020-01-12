@@ -27,7 +27,7 @@ func TestParseJugada(t *testing.T) {
 	)
 
 	shouldBeOK := []string{
-		"Alvaro envido",
+		"alvaro envido",
 		"Alvaro real-envido",
 		"Alvaro falta-envido",
 		"Alvaro flor",
@@ -75,7 +75,8 @@ func TestParseJugada(t *testing.T) {
 
 	for _, cmd := range shouldBeOK {
 		_, err := p.parseJugada(cmd)
-		if err != nil {
+		ok := err == nil
+		if !ok {
 			t.Error(err.Error())
 		}
 	}

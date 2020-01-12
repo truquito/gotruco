@@ -4,23 +4,29 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
 
 	"github.com/jpfilevich/truco"
 )
 
-func main() {
+var reader = bufio.NewReader(os.Stdin)
 
+func main() {
 	p, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andrés"}, []string{"Roro", "Renzo", "Richard"})
+	p.Print()
 
 	for p.NoAcabada() {
-
-		p.Print()
-		reader := bufio.NewReader(os.Stdin)
 		fmt.Printf("\n>> ")
-		cmd, _ := reader.ReadString('\n')
+		cmd := readLn()
 		res := p.SetSigJugada(cmd)
-
-		fmt.Println(res)
+		p.Print()
+		if res != nil {
+			fmt.Println(res)
+		}
 	}
+}
 
+func readLn() string {
+	cmd, _ := reader.ReadString('\n')
+	return strings.TrimSuffix(cmd, "\n")
 }

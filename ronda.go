@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"strings"
 )
 
 // EstadoTruco : enum
@@ -569,12 +570,18 @@ func (r *Ronda) singleLinking(jugadores []Jugador) {
 	}
 }
 
+// OJO QUE AHORA LAS COMPARACIONES SON CASE INSENSITIVE
+// ENTONCES SI EL IDENTIFICADOR Juan == jUaN
+// ojo con los kakeos
 // todo: esto es ineficiente
 // getManojo devuelve el puntero al manojo,
 // dado un string que identifique al jugador duenio de ese manojo
 func (r *Ronda) getManojoByStr(idJugador string) (*Manojo, error) {
+	idJugador = strings.ToLower(idJugador)
 	for i := range r.Manojos {
-		if r.Manojos[i].Jugador.Nombre == idJugador {
+		idActual := strings.ToLower(r.Manojos[i].Jugador.ID)
+		esEse := idActual == idJugador
+		if esEse {
 			return &r.Manojos[i], nil
 		}
 	}

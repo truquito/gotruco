@@ -141,8 +141,6 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 
 		jugadaStr = strings.ToLower(jugadaStr)
 
-		strings.Fields(cmd)
-
 		switch jugadaStr {
 		// toques
 		case "envido":
