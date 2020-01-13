@@ -168,11 +168,12 @@ func (r *Ronda) nextTurno() {
 	r.Turno = JugadorIdx(r.getIdx(*manojoSigTurno))
 }
 
+// nextTurnoPosMano: setea el turno siguiente *segun el resultado de
+// la mano anterior*
+
 // PARA USAR ESTA FUNCION ANTES SE DEBE INCREMENTEAR
 // (o actualizar en caso de empezar una ronda nueva)
 // EL VALOR DE r.manoEnJuego
-// setea el turno siguiente *segun el resultado de
-// la mano anterior*
 
 // que pasa cuando el ganador de una mano se habia ido al mazo?
 // no se tiene que poder:
@@ -194,7 +195,7 @@ func (r *Ronda) nextTurnoPosMano() {
 			r.Turno = JugadorIdx(r.getIdx(*r.getManoAnterior().Ganador))
 		}
 	}
-	fmt.Printf("<< Es el turno de %s", r.Manojos[r.Turno].Jugador.Nombre)
+	fmt.Printf("<< Es el turno de %s\n", r.Manojos[r.Turno].Jugador.Nombre)
 }
 
 // sig devuelve el `JugadorIdx` del

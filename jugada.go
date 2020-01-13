@@ -40,7 +40,7 @@ func (jugada tirarCarta) hacer(p *Partida) error {
 	}
 
 	// ok la tiene y era su turno -> la juega
-	fmt.Printf("<< %s tira la carta %s",
+	fmt.Printf("<< %s tira la carta %s\n",
 		jugada.autor.Jugador.Nombre,
 		jugada.Carta.toString())
 	jugada.autor.CartasNoTiradas[idx] = false
@@ -53,11 +53,9 @@ func (jugada tirarCarta) hacer(p *Partida) error {
 		// de ser asi tengo que checkear el resultado de la mano
 		p.evaluarMano()
 		// el turno del siguiente queda dado por el ganador de esta
+	} else {
+		p.Ronda.nextTurno()
 	}
-
-	// TODO:::::::::
-	// paso de turno
-	// p.Ronda.sigTurno()
 
 	return nil
 }

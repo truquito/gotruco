@@ -94,7 +94,8 @@ type Partida struct {
 // SetSigJugada nexo capa presentacion con capa logica
 func (p *Partida) SetSigJugada(cmd string) error {
 	// checkeo de sintaxis
-	ok := regexp.MustCompile(`^(\w|-)+\s(\w|-)+\n?$`).MatchString(cmd)
+	// ok := regexp.MustCompile(`^(\w|-)+\s(\w|-)+\n?$`).MatchString(cmd)
+	ok := true
 	if !ok {
 		return fmt.Errorf("Comando incorrecto")
 	}
@@ -329,7 +330,8 @@ func (p *Partida) evaluarMano() {
 		// el turno pasa a ser el del mano.ganador
 		// pero se setea despues de evaluar la ronda
 		mano.Ganador = tiradaGanadora.autor
-		fmt.Printf("<< La Mano la gano %s (equipo %s)",
+		fmt.Printf("<< La %s mano la gano %s (equipo %s)\n",
+			strings.ToLower(p.Ronda.ManoEnJuego.String()),
 			mano.Ganador.Jugador.Nombre, mano.Ganador.Jugador.Equipo.String())
 	}
 
