@@ -90,7 +90,7 @@ func TestParseJugada(t *testing.T) {
 }
 
 func TestPartida1(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo", "Andrés"}, []string{"Roro", "Renzo", "Richard"})
+	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
 	p.Ronda.setMuestra(Carta{Palo: Oro, Valor: 3})
 	p.Ronda.setManojos(
 		[]Manojo{
@@ -122,7 +122,7 @@ func TestPartida1(t *testing.T) {
 					Carta{Palo: Espada, Valor: 1},
 				},
 			},
-			Manojo{ // Andrés no tiene  flor
+			Manojo{ // Andres no tiene  flor
 				Cartas: [3]Carta{
 					Carta{Palo: Copa, Valor: 10},
 					Carta{Palo: Oro, Valor: 7},
@@ -150,7 +150,7 @@ func TestPartida1(t *testing.T) {
 
 func TestPartidaComandosInvalidos(t *testing.T) {
 
-	p, _ := NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andrés"}, []string{"Roro", "Renzo", "Richard"})
+	p, _ := NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
 
 	p.SetSigJugada("Alvaro Envido")
 	p.SetSigJugada("Quiero")
@@ -162,7 +162,7 @@ func TestPartidaComandosInvalidos(t *testing.T) {
 }
 
 func TestPartidaJSON(t *testing.T) {
-	p, _ := NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andrés"}, []string{"Roro", "Renzo", "Richard"})
+	p, _ := NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
 	fmt.Printf(p.toJSON())
 
 }

@@ -5,7 +5,7 @@ import (
 )
 
 func TestTirada1(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo", "Andrés"}, []string{"Roro", "Renzo", "Richard"})
+	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
 	p.Ronda.setMuestra(Carta{Palo: Oro, Valor: 3})
 	p.Ronda.setManojos(
 		[]Manojo{
@@ -37,7 +37,7 @@ func TestTirada1(t *testing.T) {
 					Carta{Palo: Espada, Valor: 1},
 				},
 			},
-			Manojo{ // Andrés no tiene  flor
+			Manojo{ // Andres no tiene  flor
 				Cartas: [3]Carta{
 					Carta{Palo: Copa, Valor: 10},
 					Carta{Palo: Oro, Valor: 7},
@@ -54,13 +54,13 @@ func TestTirada1(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido") // no estoy recibiendo output
-	p.SetSigJugada("Alvaro Flor")
-	p.SetSigJugada("Roro Mazo") // no estoy recibiendo output
-	p.SetSigJugada("Adolfo Flor")
-	p.SetSigJugada("Renzo Contra-flor")
-	p.SetSigJugada("Alvaro Quiero")
-	p.Terminar()
+	p.SetSigJugada("Alvaro 2 Oro")
+	p.SetSigJugada("Roro 5 Oro")
+	p.SetSigJugada("Adolfo 1 Copa")
+	p.SetSigJugada("Renzo 4 Oro")
+	p.SetSigJugada("Andres 10 Copa")
+	p.SetSigJugada("Richard 10 Oro")
 
+	p.Terminar()
 	p.Print()
 }

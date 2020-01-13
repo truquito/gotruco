@@ -299,12 +299,12 @@ func (p *Partida) evaluarMano() {
 	max := map[Equipo]*tirarCarta{Rojo: nil, Azul: nil}
 	tiradas := p.Ronda.getManoActual().CartasTiradas
 
-	for _, tirada := range tiradas {
+	for i, tirada := range tiradas {
 		poder := tirada.Carta.calcPoder(p.Ronda.Muestra)
 		equipo := tirada.autor.Jugador.Equipo
 		if poder > maxPoder[equipo] {
 			maxPoder[equipo] = poder
-			max[equipo] = &tirada
+			max[equipo] = &tiradas[i]
 		}
 	}
 
