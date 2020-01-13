@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	"io/ioutil"
+	"log"
 	"os"
 	"strconv"
 	"strings"
@@ -25,23 +25,30 @@ func check(e error) {
 	}
 }
 
-func logPartida(p *truco.Partida) {
-	json := p.ToJSON() + "\n"
-	content := []byte(json)
-	timestamp := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
-	fileName := "/tmp/p" + timestamp + ".txt"
-	err := ioutil.WriteFile(fileName, content, 0644) // sobreescribe
-	check(err)
+func _log(str, logFile string) {
+	f, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Println(err)
+	}
+	defer f.Close()
+
+	logger := log.New(f, "", log.LstdFlags)
+	logger.Println(str)
 }
 
 func main() {
-	p, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
-	logPartida(p)
-	p.Print()
+	timestamp := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
+	logPath := "/tmp/"
+	logFile := logPath + timestamp + ".log"
 
+	p, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	_log(p.ToJSON(), logFile)
+
+	p.Print()
 	for p.NoAcabada() {
 		fmt.Printf("\n>> ")
 		cmd := readLn()
+		_log(cmd, logFile)
 		res := p.SetSigJugada(cmd)
 		p.Esperar()
 		p.Print()
