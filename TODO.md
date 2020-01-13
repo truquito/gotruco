@@ -1,3 +1,5 @@
+- no suma los puntos de la flor cuando se termina la ronda
+
 - agregar el control de que los nombres de los jguadores tienen que ser > 0
 
 -   // que pasa cuando el ganador de una mano se habia ido al mazo?
