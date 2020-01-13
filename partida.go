@@ -494,7 +494,8 @@ func (p *Partida) Print() {
 	printer.Print(p)
 }
 
-func (p *Partida) toJSON() string {
+// ToJSON retorna la partida en formato json
+func (p *Partida) ToJSON() string {
 	pJSON, _ := json.MarshalIndent(p, "", " ")
 	return string(pJSON)
 }
