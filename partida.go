@@ -537,7 +537,10 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	go func() {
 		for {
 			sjugada := p.getSigJugada()
-			sjugada.hacer(&p)
+			err := sjugada.hacer(&p)
+			if err != nil {
+				fmt.Println(err.Error())
+			}
 		}
 	}()
 
