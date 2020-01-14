@@ -129,10 +129,11 @@ type tocarRealEnvido struct {
 
 func (jugada tocarRealEnvido) hacer(p *Partida) error {
 	esPrimeraMano := p.Ronda.ManoEnJuego == primera
+	esSuTurno := p.getJugador(p.Ronda.Turno) == jugada.autor.Jugador
 	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
 	realEnvidoHabilitado := (p.Ronda.Envido.Estado == NOCANTADOAUN || p.Ronda.Envido.Estado == ENVIDO) && p.Ronda.Flor == NOCANTADA
 	esDelEquipoContrario := p.Ronda.Envido.Estado == NOCANTADOAUN || p.Ronda.Envido.CantadoPor.Equipo != jugada.autor.Jugador.Equipo
-	ok := realEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario
+	ok := realEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario && esSuTurno
 
 	if !ok {
 		return fmt.Errorf(`No es posible cantar 'Real Envido'`)
@@ -169,12 +170,12 @@ type tocarFaltaEnvido struct {
 }
 
 func (jugada tocarFaltaEnvido) hacer(p *Partida) error {
-
+	esSuTurno := p.getJugador(p.Ronda.Turno) == jugada.autor.Jugador
 	esPrimeraMano := p.Ronda.ManoEnJuego == primera
 	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
 	faltaEnvidoHabilitado := p.Ronda.Envido.Estado >= NOCANTADOAUN && p.Ronda.Envido.Estado < FALTAENVIDO
 	esDelEquipoContrario := p.Ronda.Envido.Estado == NOCANTADOAUN || p.Ronda.Envido.CantadoPor.Equipo != jugada.autor.Jugador.Equipo
-	ok := faltaEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario
+	ok := faltaEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario && esSuTurno
 
 	if !ok {
 		return fmt.Errorf(`No es posible cantar 'Falta Envido'`)
