@@ -1,3 +1,5 @@
+- duda: actualmente si hay 3 flores: 2 del equipo rojo, 1 del equipo azul; todos cantan "flor" sin mas, y la flor del equipo azul es la mas alta ->
+se lleva el puntaje el equipo azul de las 3 flores (3+3+3) ; eso esta bien?
 - si 2 tienen flor y esos 2 las cantan -> tampoco termina el bucle de la flor log: `fix 2 flores y bucle.log`
 
 - duda: es necesario que sea tu turno para cantar la flor?

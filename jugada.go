@@ -263,12 +263,10 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 	// ahora checkeo si alguien tiene flor
 	// retorna TODOS los jugadores que tengan flor (si es que existen)
 	// aPartirDe, _ := obtenerIdx(j, p.jugadores)
-	_, jugadoresConFlor := p.Ronda.getFlores()
-	// creo una copia
-	jugadoresConFlorCACHE := make([]*Manojo, len(jugadoresConFlor))
-	copy(jugadoresConFlorCACHE, jugadoresConFlor)
+	_, jugadoresConFlorCACHE := p.Ronda.getFlores()
+	jugadoresConFlor := eliminar(jugadoresConFlorCACHE, jugada.getAutor())
 
-	hayFlor := len(eliminar(jugadoresConFlor, jugada.getAutor())) > 0
+	hayFlor := len(jugadoresConFlor) > 0
 
 	if !hayFlor {
 		// Nadie mas tiene flor; entonces manojo se lleva todos
@@ -356,6 +354,23 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 			p.Ronda.Envido.CantadoPor = sigJugada.getAutor().Jugador
 			// ahora la flor pasa a jugarse por +3 puntos
 			p.Ronda.Envido.Puntaje += 3
+
+			// fue el ultimo en cantar flor?
+			todosLosJugadoresConFlorCantaron = len(jugadoresConFlor) == 0
+			if todosLosJugadoresConFlorCantaron {
+				// cual es la flor ganadora?
+				p.Ronda.Envido.Estado = DESHABILITADO
+				p.Ronda.Flor = DESHABILITADA
+				manojoConLaFlorMasAlta, maxFlor := p.Ronda.getLaFlorMasAlta()
+				equipoGanador := manojoConLaFlorMasAlta.Jugador.Equipo
+				// ahora se quien es el ganador; necesito saber cuantos puntos
+				// se le va a sumar a ese equipo:
+				// los acumulados del envite hasta ahora
+				puntosASumar := p.Ronda.Envido.Puntaje
+				p.Puntajes[equipoGanador] += puntosASumar
+				fmt.Printf(`<< La flor mas alta es la de %s con %v, +%v puntos para el equipo %s`+"\n",
+					manojoConLaFlorMasAlta.Jugador.Nombre, maxFlor, puntosASumar, equipoGanador)
+			}
 
 		} else if esCantoContraFlor {
 			// ya se que estaba habilitado para cantar flor
