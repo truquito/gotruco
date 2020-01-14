@@ -3,6 +3,7 @@ package truco
 import (
 	"fmt"
 	"strconv"
+	"strings"
 
 	"github.com/jpfilevich/canvas"
 )
@@ -206,10 +207,10 @@ func (pr impresora) dibujarMuestra(muestra Carta) {
 func (pr impresora) dibujarNombres(manojos []Manojo, muestra Carta) {
 	for i, manojo := range manojos {
 		nombre := manojo.Jugador.Nombre
-		tieneFlor, _ := manojo.tieneFlor(muestra)
-		if tieneFlor {
-			nombre = "❀ " + nombre
-		}
+		// tieneFlor, _ := manojo.tieneFlor(muestra)
+		// if tieneFlor {
+		// 	nombre = "❀ " + nombre
+		// }
 		if len(nombre) > 10 {
 			nombre = nombre[:10]
 		}
@@ -282,19 +283,32 @@ func (pr impresora) dibujarPosesiones(manojos []Manojo) {
 	}
 }
 
-func (pr impresora) dibujarTurno(turno JugadorIdx) {
-	posicion := posicion(turno)
-	area := pr.areasJugadores["tooltips"][posicion]
+// dibuja: turno y flor
+func (pr impresora) dibujarTooltips(r Ronda) {
+	turno := int(r.Turno)
 
-	// necesito saber cuantas tiro
-	var template string
-	switch posicion {
-	case a, b:
-		template = "⭡"
-	default:
-		template = "⭣"
+	for i, manojo := range r.Manojos {
+		tooltip := ""
+		tieneFlor, _ := manojo.tieneFlor(r.Muestra)
+		if tieneFlor {
+			tooltip += "❀"
+		}
+		esSuTurno := turno == i
+		if esSuTurno {
+			posicion := posicion(turno)
+			switch posicion {
+			case a, b:
+				tooltip += " ⭡"
+			default:
+				tooltip += " ⭣"
+			}
+
+		}
+		tooltip = strings.Trim(tooltip, " ")
+		area := pr.areasJugadores["tooltips"][posicion(i)]
+		pr.canvas.DrawAt(area.From, area.Center(tooltip))
 	}
-	pr.canvas.DrawAt(area.From, area.Center(template))
+
 }
 
 func (pr impresora) Print(p *Partida) {
@@ -304,8 +318,8 @@ func (pr impresora) Print(p *Partida) {
 	pr.dibujarNombres(p.Ronda.Manojos, p.Ronda.Muestra)
 	pr.dibujarTiradas(p.Ronda.Manojos)
 	pr.dibujarPosesiones(p.Ronda.Manojos)
-	pr.dibujarTurno(p.Ronda.Turno)
-	render := pr.canvas.Render()
+	pr.dibujarTooltips(p.Ronda)
+	render := "\n" + pr.canvas.Render()
 	fmt.Printf(render)
 }
 
