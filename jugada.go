@@ -801,7 +801,7 @@ type irseAlMazo struct {
 
 func (jugada irseAlMazo) hacer(p *Partida) error {
 	// checkeos:
-	yaSeFueAlMazo := jugada.autor.SeFueAlMazo == false
+	yaSeFueAlMazo := jugada.autor.SeFueAlMazo == true
 	seEstabaJugandoElEnvido := p.Ronda.Envido.Estado >= ENVIDO
 	seEstabaJugandoLaFlor := p.Ronda.Flor >= FLOR
 	seEstabaJugandoElTruco := p.Ronda.Truco.Estado >= TRUCO
