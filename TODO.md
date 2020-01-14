@@ -1,4 +1,4 @@
-- no suma los puntos de la flor cuando se termina la ronda
+- duda: es necesario que sea tu turno para cantar la flor?
 
 - agregar el control de que los nombres de los jguadores tienen que ser > 0
 

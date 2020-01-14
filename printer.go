@@ -203,9 +203,13 @@ func (pr impresora) dibujarMuestra(muestra Carta) {
 	pr.canvas.DrawAt(pr.otrasAreas["muestra"].From, carta)
 }
 
-func (pr impresora) dibujarNombres(manojos []Manojo) {
+func (pr impresora) dibujarNombres(manojos []Manojo, muestra Carta) {
 	for i, manojo := range manojos {
 		nombre := manojo.Jugador.Nombre
+		tieneFlor, _ := manojo.tieneFlor(muestra)
+		if tieneFlor {
+			nombre = "❀ " + nombre
+		}
 		if len(nombre) > 10 {
 			nombre = nombre[:10]
 		}
@@ -297,7 +301,7 @@ func (pr impresora) Print(p *Partida) {
 	pr.dibujarMarco()
 	pr.dibujarEstadisticas(p)
 	pr.dibujarMuestra(p.Ronda.Muestra)
-	pr.dibujarNombres(p.Ronda.Manojos)
+	pr.dibujarNombres(p.Ronda.Manojos, p.Ronda.Muestra)
 	pr.dibujarTiradas(p.Ronda.Manojos)
 	pr.dibujarPosesiones(p.Ronda.Manojos)
 	pr.dibujarTurno(p.Ronda.Turno)
