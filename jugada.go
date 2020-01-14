@@ -829,6 +829,8 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 	p.Ronda.CantJugadoresEnJuego[equipoDelJugador]--
 	seFueronTodos := p.Ronda.CantJugadoresEnJuego[equipoDelJugador] == 0
 
+	p.Ronda.nextTurno()
+
 	if seFueronTodos {
 		// el equipo contrario gana la ronda
 		// y todo lo que estaba en juego hasta ahora

@@ -1,3 +1,5 @@
+- si 2 tienen flor y esos 2 las cantan -> tampoco termina el bucle de la flor log: `fix 2 flores y bucle.log`
+
 - duda: es necesario que sea tu turno para cantar la flor?
 
 - agregar el control de que los nombres de los jguadores tienen que ser > 0
