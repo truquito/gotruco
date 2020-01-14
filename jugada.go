@@ -68,10 +68,11 @@ type tocarEnvido struct {
 
 func (jugada tocarEnvido) hacer(p *Partida) error {
 	esPrimeraMano := p.Ronda.ManoEnJuego == primera
+	esSuTurno := p.getJugador(p.Ronda.Turno) == jugada.autor.Jugador
 	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
 	esDelEquipoContrario := p.Ronda.Envido.Estado == NOCANTADOAUN || p.Ronda.Envido.CantadoPor.Equipo != jugada.autor.Jugador.Equipo
 	envidoHabilitado := (p.Ronda.Envido.Estado == NOCANTADOAUN || p.Ronda.Envido.Estado == ENVIDO) && p.Ronda.Flor == NOCANTADA
-	ok := envidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario
+	ok := envidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario && esSuTurno
 
 	if !ok {
 		return fmt.Errorf(`No es posible cantar 'Envido'`)
