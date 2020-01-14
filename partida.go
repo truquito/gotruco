@@ -496,7 +496,7 @@ func (p *Partida) Print() {
 
 // ToJSON retorna la partida en formato json
 func (p *Partida) ToJSON() string {
-	pJSON, _ := json.MarshalIndent(p, "", " ")
+	pJSON, _ := json.Marshal(p)
 	return string(pJSON)
 }
 

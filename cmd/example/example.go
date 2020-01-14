@@ -38,7 +38,7 @@ func _log(str, logFile string) {
 
 func main() {
 	timestamp := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
-	logPath := "/tmp/"
+	logPath := "/home/juan/Workspace/_tmp/truco_logs/"
 	logFile := logPath + timestamp + ".log"
 
 	p, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})

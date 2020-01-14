@@ -261,10 +261,12 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 	// ahora checkeo si alguien tiene flor
 	// retorna TODOS los jugadores que tengan flor (si es que existen)
 	// aPartirDe, _ := obtenerIdx(j, p.jugadores)
-	hayFlor, jugadoresConFlor := p.Ronda.getFlores()
+	_, jugadoresConFlor := p.Ronda.getFlores()
 	// creo una copia
 	jugadoresConFlorCACHE := make([]*Manojo, len(jugadoresConFlor))
 	copy(jugadoresConFlorCACHE, jugadoresConFlor)
+
+	hayFlor := len(eliminar(jugadoresConFlor, jugada.getAutor())) > 0
 
 	if !hayFlor {
 		// Nadie mas tiene flor; entonces manojo se lleva todos

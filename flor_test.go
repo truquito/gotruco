@@ -1,6 +1,7 @@
 package truco
 
 import (
+	"encoding/json"
 	"testing"
 )
 
@@ -191,3 +192,44 @@ func TestFlorFlorContraFlorQuiero(t *testing.T) {
 // Flor		xcg(+3) / xcg(+3)
 // Flor + Contra-Flor		xc(+3) / xCadaFlorDelQueHizoElDesafio(+3) + 1
 // Flor + [Contra-Flor] + ContraFlorAlResto		~Falta Envido + *TODAS* las flores no achicadas / xcg(+3) + 1
+
+func TestFixFlor(t *testing.T) {
+	partidaJSON := `{"cantJugadores":6,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":3,"Rojo":3},"elMano":0,"turno":0,"pies":[0,0],"envido":{"puntaje":0,"cantadoPor":null,"estado":"noCantadoAun"},"flor":1,"truco":{"cantadoPor":null,"estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":6},{"palo":"Basto","valor":12},{"palo":"Oro","valor":2}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":5},{"palo":"Basto","valor":10},{"palo":"Oro","valor":4}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":10},{"palo":"Copa","valor":10},{"palo":"Basto","valor":2}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":6},{"palo":"Espada","valor":10},{"palo":"Basto","valor":3}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Copa","valor":3},{"palo":"Espada","valor":1}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Andres","nombre":"Andres","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":3},{"palo":"Espada","valor":11},{"palo":"Espada","valor":4}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}],"muestra":{"palo":"Oro","valor":1},"manos":[{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null}]}}`
+	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	json.Unmarshal([]byte(partidaJSON), &p)
+	p.Print()
+
+	p.SetSigJugada("alvaro envido")
+	// pero Richard tiene flor
+	// y no le esta sumando esos puntos
+	p.Esperar()
+
+	if !(p.Ronda.Flor == DESHABILITADA) {
+		t.Error(`El estado de la flor deberia ser 'deshabilitado'`)
+	} else if !(p.Puntajes[Rojo] == 3) {
+		t.Error(`El puntaje del equipo rojo deberia ser 3 por la flor de richard`)
+	}
+
+	p.SetSigJugada("alvaro 6 espada")
+	p.SetSigJugada("alvaro 6 espada")
+	p.SetSigJugada("roro 5 espada")
+	p.SetSigJugada("adolfo 10 oro")
+	p.SetSigJugada("renzo 6 basto")
+	p.SetSigJugada("andres 6 copa")
+	p.SetSigJugada("richard 3 espada")
+	p.SetSigJugada("adolfo 10 copa")
+	p.SetSigJugada("renzo 10 espada")
+	p.SetSigJugada("andres 3 copa")
+	p.SetSigJugada("richard 11 espada")
+	p.SetSigJugada("alvaro 12 basto")
+	p.SetSigJugada("roro 10 basto")
+	p.Esperar()
+
+	if !(p.Puntajes[Rojo] == 3) {
+		t.Error(`El puntaje del equipo rojo deberia ser 3 por la flor de richard`)
+	} else if !(p.Puntajes[Azul] == 1) {
+		t.Error(`El puntaje del equipo azul deberia ser 1 por la ronda ganada`)
+	}
+
+	p.Terminar()
+}
