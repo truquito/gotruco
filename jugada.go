@@ -319,9 +319,7 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 		if noEsValida {
 			// no deberia de salir de este loop
 			// pero solo responderle al loco (?)
-			return fmt.Errorf(`No es el momento de realizar
-					esta jugada; ahora estoy esperando por cantos de flor (de
-					aquellos que la poseen) o bien "Irse al mazo" (de cualquier jugador)`)
+			return fmt.Errorf(`No es el momento de realizar esta jugada; ahora estoy esperando por cantos de flor (de aquellos que la poseen) o bien "Irse al mazo" (de cualquier jugador)`)
 		}
 
 		// solo queda 3 casos posibles:
@@ -629,9 +627,7 @@ func (jugada responderQuiero) hacer(p *Partida) error {
 	ok := elEnvidoEsRespondible || laContraFlorEsRespondible || elTrucoEsRespondible
 	if !ok {
 		// si no, esta respondiendo al pedo
-		return fmt.Errorf(`No hay nada \"que querer\"; ya que: el 
-		estado del envido no es "envido" (o mayor) y el estado del 
-		truco no es "truco" (o mayor)`)
+		return fmt.Errorf(`No hay nada \"que querer\"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor)`)
 	}
 
 	if elEnvidoEsRespondible {
@@ -714,8 +710,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 
 	if !ok {
 		// si no, esta respondiendo al pedo
-		return fmt.Errorf(`%s esta respondiendo al pedo; no hay 
-		nada respondible`, jugada.autor.Jugador.Nombre)
+		return fmt.Errorf(`%s esta respondiendo al pedo; no hay nada respondible`, jugada.autor.Jugador.Nombre)
 	}
 
 	if elEnvidoEsRespondible {
