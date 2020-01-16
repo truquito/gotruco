@@ -2,6 +2,7 @@ package truco
 
 import (
 	// "fmt"
+	"fmt"
 	"testing"
 )
 
@@ -46,4 +47,43 @@ func BenchmarkMaxOld(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		maxOf3(cartas)
 	}
+}
+
+func TestEliminarAlguienQueNoEsta(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+
+	manojos := make([]*Manojo, 5)
+	for i := range p.Ronda.Manojos {
+		if i == 5 {
+			break
+		}
+		manojos[i] = &p.Ronda.Manojos[i]
+	}
+
+	for _, m := range manojos {
+		fmt.Println(m.Jugador.Nombre)
+	}
+
+	manojoAEliminar := &p.Ronda.Manojos[5]
+	manojos = eliminar(manojos, manojoAEliminar)
+
+	if !(len(manojos) == 5) {
+		t.Error("no debio de haber eliminado a nadie")
+	}
+
+	for _, m := range manojos {
+		fmt.Println(m.Jugador.Nombre)
+	}
+
+	manojoAEliminar = &p.Ronda.Manojos[2]
+	manojos = eliminar(manojos, manojoAEliminar)
+
+	if !(len(manojos) == 4) {
+		t.Error("debio de haber eliminado a uno")
+	}
+
+	for _, m := range manojos {
+		fmt.Println(m.Jugador.Nombre)
+	}
+
 }

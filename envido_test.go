@@ -45,14 +45,14 @@ func TestEnvidoQuiero(t *testing.T) {
 	p.SetSigJugada("Roro Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue aceptado por Roro`)
 		return
 	}
 
-	oops = p.Ronda.Envido.Puntaje != 2
+	oops = p.Ronda.Envite.Puntaje != 2
 	if oops {
 		t.Error(`El puntaje del envido deberia de ser 2`)
 		return
@@ -91,14 +91,14 @@ func TestEnvidoNoQuiero(t *testing.T) {
 	p.SetSigJugada("Roro No-Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue aceptado por Roro`)
 		return
 	}
 
-	oops = p.Ronda.Envido.Puntaje != 1
+	oops = p.Ronda.Envite.Puntaje != 1
 	if oops {
 		t.Error(`El puntaje del envido deberia de ser 1`)
 		return
@@ -137,14 +137,14 @@ func TestRealEnvidoQuiero(t *testing.T) {
 	p.SetSigJugada("Roro Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue aceptado por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 3)
+	oops = !(p.Ronda.Envite.Puntaje == 3)
 	if oops {
 		t.Error(`El puntaje del envido deberia de ser 3`)
 		return
@@ -183,14 +183,14 @@ func TestRealEnvidoNoQuiero(t *testing.T) {
 	p.SetSigJugada("Roro No-Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue aceptado por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 1)
+	oops = !(p.Ronda.Envite.Puntaje == 1)
 	if oops {
 		t.Error(`El puntaje del envido deberia de ser 1`)
 		return
@@ -229,14 +229,14 @@ func TestFaltaEnvidoQuiero(t *testing.T) {
 	p.SetSigJugada("Roro Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue aceptado por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 10)
+	oops = !(p.Ronda.Envite.Puntaje == 10)
 	if oops {
 		t.Errorf(`El puntaje del envido deberia de ser 10`)
 		return
@@ -275,14 +275,14 @@ func TestFaltaEnvidoNoQuiero(t *testing.T) {
 	p.SetSigJugada("Roro No-Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 1)
+	oops = !(p.Ronda.Envite.Puntaje == 1)
 	if oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
@@ -320,13 +320,13 @@ func TestEnvidoEnvidoQuiero(t *testing.T) {
 	p.SetSigJugada("Alvaro Envido")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != ENVIDO
+	oops = p.Ronda.Envite.Estado != ENVIDO
 	if oops {
 		t.Error("El estado del envido deberia de ser `envido`")
 		return
 	}
 
-	oops = p.Ronda.Envido.Puntaje != 2
+	oops = p.Ronda.Envite.Puntaje != 2
 	if oops {
 		t.Error("El `puntaje` del envido deberia de ser 2")
 		return
@@ -335,14 +335,14 @@ func TestEnvidoEnvidoQuiero(t *testing.T) {
 	p.SetSigJugada("Roro Envido")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != ENVIDO
+	oops = p.Ronda.Envite.Estado != ENVIDO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'envido', incluso luego de que
-		ambos Juan y Pedro lo hayan tocando`)
+		ambos Alvaro y Roro lo hayan tocando`)
 		return
 	}
 
-	oops = p.Ronda.Envido.Puntaje != 4
+	oops = p.Ronda.Envite.Puntaje != 4
 	if oops {
 		t.Error(`El puntaje del envido deberia ahora de ser '2 + 2 = 4'`)
 		return
@@ -379,14 +379,14 @@ func TestEnvidoEnvidoNoQuiero(t *testing.T) {
 	p.SetSigJugada("Alvaro No-Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 2+1)
+	oops = !(p.Ronda.Envite.Puntaje == 2+1)
 	if oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
@@ -426,14 +426,14 @@ func TestEnvidoRealEnvidoQuiero(t *testing.T) {
 	p.SetSigJugada("Alvaro Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 2+3)
+	oops = !(p.Ronda.Envite.Puntaje == 2+3)
 	if oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
@@ -473,14 +473,14 @@ func TestEnvidoRealEnvidoNoQuiero(t *testing.T) {
 	p.SetSigJugada("Alvaro No-Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 2+1)
+	oops = !(p.Ronda.Envite.Puntaje == 2+1)
 	if oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
@@ -520,14 +520,14 @@ func TestEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.SetSigJugada("Alvaro Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 2+10)
+	oops = !(p.Ronda.Envite.Puntaje == 2+10)
 	if oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
@@ -567,14 +567,14 @@ func TestEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.SetSigJugada("Alvaro No-Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 2+1)
+	oops = !(p.Ronda.Envite.Puntaje == 2+1)
 	if oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
@@ -614,14 +614,14 @@ func TestRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.SetSigJugada("Alvaro Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 3+10)
+	oops = !(p.Ronda.Envite.Puntaje == 3+10)
 	if oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
@@ -661,14 +661,14 @@ func TestRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.SetSigJugada("Alvaro No-Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 3+1)
+	oops = !(p.Ronda.Envite.Puntaje == 3+1)
 	if oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
@@ -709,14 +709,14 @@ func TestEnvidoEnvidoRealEnvidoQuiero(t *testing.T) {
 	p.SetSigJugada("Roro Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 2+2+3)
+	oops = !(p.Ronda.Envite.Puntaje == 2+2+3)
 	if oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
@@ -757,14 +757,14 @@ func TestEnvidoEnvidoRealEnvidoNoQuiero(t *testing.T) {
 	p.SetSigJugada("Roro No-Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 2+2+1)
+	oops = !(p.Ronda.Envite.Puntaje == 2+2+1)
 	if oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
@@ -805,14 +805,14 @@ func TestEnvidoEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.SetSigJugada("Roro Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 2+2+10)
+	oops = !(p.Ronda.Envite.Puntaje == 2+2+10)
 	if oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
@@ -853,14 +853,14 @@ func TestEnvidoEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.SetSigJugada("Roro No-Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 2+2+1)
+	oops = !(p.Ronda.Envite.Puntaje == 2+2+1)
 	if oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
@@ -901,14 +901,14 @@ func TestEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.SetSigJugada("Roro Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 2+3+10)
+	oops = !(p.Ronda.Envite.Puntaje == 2+3+10)
 	if oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
@@ -949,14 +949,14 @@ func TestEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.SetSigJugada("Roro No-Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 2+3+1)
+	oops = !(p.Ronda.Envite.Puntaje == 2+3+1)
 	if oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
@@ -998,14 +998,14 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.SetSigJugada("Alvaro Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 2+2+3+10)
+	oops = !(p.Ronda.Envite.Puntaje == 2+2+3+10)
 	if oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
@@ -1047,14 +1047,14 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.SetSigJugada("Alvaro No-Quiero")
 	p.Esperar()
 
-	oops = p.Ronda.Envido.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envido.Puntaje == 2+2+3+1)
+	oops = !(p.Ronda.Envite.Puntaje == 2+2+3+1)
 	if oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
@@ -1133,7 +1133,7 @@ func TestCalcEnvido(t *testing.T) {
 			return
 		}
 	}
-
+	p.Ronda.Turno = 3
 	p.SetSigJugada("D Envido")
 	p.SetSigJugada("C Quiero")
 	p.Esperar()
@@ -1212,6 +1212,7 @@ func TestCalcEnvido2(t *testing.T) {
 		}
 	}
 
+	p.Ronda.Turno = 3
 	p.SetSigJugada("D Envido")
 	p.SetSigJugada("C Quiero")
 	p.Esperar()

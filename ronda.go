@@ -87,9 +87,8 @@ type Ronda struct {
 	Pies   [2]JugadorIdx `json:"pies"`
 
 	/* toques, gritos y cantos */
-	Envido Envido     `json:"envido"`
-	Flor   EstadoFlor `json:"flor"`
-	Truco  truco      `json:"truco"`
+	Envite Envite `json:"envite"`
+	Truco  truco  `json:"truco"`
 
 	/* cartas */
 	Manojos []Manojo `json:"manojos"`
@@ -122,7 +121,7 @@ func (r Ronda) cantarFloresSiLasHay(aPartirDe JugadorIdx) {
 			tipoFlor = tipoFlor + 1
 			// var jugada IJugada = responderNoQuiero{}
 			// jugador.cantarFlor(tipoFlor, r.muestra)
-			r.Envido.Estado = DESHABILITADO
+			r.Envite.Estado = DESHABILITADO
 			break
 		}
 	}
@@ -595,6 +594,8 @@ func (r *Ronda) setManojos(manojos []Manojo) {
 			r.Manojos[m].Cartas[c] = carta
 		}
 	}
+	// flores
+	r.cachearFlores()
 }
 
 func (r *Ronda) setMuestra(muestra Carta) {
@@ -624,6 +625,15 @@ func (r *Ronda) dealCards() {
 	r.Muestra = nuevaCarta(CartaID(randomCards[n-1]))
 }
 
+func (r *Ronda) cachearFlores() {
+	// flores
+	_, jugadoresConFlor := r.getFlores()
+	jugadoresConFlorCopy := make([]*Manojo, len(jugadoresConFlor))
+	copy(jugadoresConFlorCopy, jugadoresConFlor)
+	r.Envite.JugadoresConFlor = jugadoresConFlor
+	r.Envite.JugadoresConFlorQueNoCantaron = jugadoresConFlorCopy
+}
+
 // nuevaRonda : crea una nueva ronda al azar
 func nuevaRonda(jugadores []Jugador, elMano JugadorIdx) Ronda {
 	cantJugadores := len(jugadores)
@@ -636,8 +646,7 @@ func nuevaRonda(jugadores []Jugador, elMano JugadorIdx) Ronda {
 		},
 		ElMano:  elMano,
 		Turno:   elMano,
-		Envido:  Envido{Puntaje: 0, Estado: NOCANTADOAUN},
-		Flor:    NOCANTADA,
+		Envite:  Envite{Estado: NOCANTADOAUN, Puntaje: 0},
 		Truco:   truco{CantadoPor: nil, Estado: NOCANTADO},
 		Manojos: make([]Manojo, cantJugadores),
 		Manos:   make([]Mano, 3),
@@ -649,6 +658,9 @@ func nuevaRonda(jugadores []Jugador, elMano JugadorIdx) Ronda {
 
 	// // hago el SINGLE-linking "jugadores <- manojos"
 	ronda.singleLinking(jugadores)
+
+	// flores
+	ronda.cachearFlores()
 
 	// p.Ronda.setTurno()
 

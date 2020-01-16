@@ -31,7 +31,11 @@ func contains(slice interface{}, item interface{}) bool {
 func eliminar(manojos []*Manojo, manojo *Manojo) []*Manojo {
 	var i int
 	// primero encuentro el elemento
-	for i = range manojos {
+	for i = 0; i <= len(manojos); i++ {
+		noLoContiene := i == len(manojos)
+		if noLoContiene {
+			return manojos
+		}
 		if manojos[i] == manojo {
 			break
 		}

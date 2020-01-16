@@ -500,6 +500,16 @@ func (p *Partida) ToJSON() string {
 	return string(pJSON)
 }
 
+// FromJSON carga una partida en formato json
+func (p *Partida) FromJSON(partidaJSON string) error {
+	err := json.Unmarshal([]byte(partidaJSON), &p)
+	if err != nil {
+		return err
+	}
+	p.Ronda.cachearFlores()
+	return nil
+}
+
 // NuevaPartida retorna nueva partida; error si hubo
 func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Partida, error) {
 
