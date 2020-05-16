@@ -166,3 +166,42 @@ func TestPartidaJSON(t *testing.T) {
 	fmt.Printf(p.ToJSON())
 
 }
+
+// - 11 le gana a 10 (de la muestra) no de sparda
+// - si es parda pero el turno deberia de ser de el mano (alvaro)
+// - adolfo deberia de poder cantar retruco
+func TestFixNacho(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	partidaJSON := `{"cantJugadores":6,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":3,"Rojo":3},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null,"jugadoresConFlor":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":6},{"palo":"Espada","valor":5},{"palo":"Espada","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}],"jugadoresConFlorQueNoCantaron":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":6},{"palo":"Espada","valor":5},{"palo":"Espada","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}]},"truco":{"cantadoPor":null,"estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":2},{"palo":"Copa","valor":7},{"palo":"Basto","valor":6}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":2},{"palo":"Copa","valor":6},{"palo":"Oro","valor":6}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":11},{"palo":"Espada","valor":1},{"palo":"Basto","valor":4}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":3},{"palo":"Basto","valor":7},{"palo":"Oro","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":5},{"palo":"Basto","valor":12},{"palo":"Espada","valor":10}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Andres","nombre":"Andres","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":6},{"palo":"Espada","valor":5},{"palo":"Espada","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}],"muestra":{"palo":"Espada","valor":3},"manos":[{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null}]}}`
+	p.FromJSON(partidaJSON)
+	p.Print()
+
+	p.SetSigJugada("alvaro 6 basto")
+	p.SetSigJugada("roro 2 basto")
+	p.SetSigJugada("Adolfo 4 basto")
+	p.SetSigJugada("renzo 7 basto")
+	p.SetSigJugada("andres 10 espada")
+	p.SetSigJugada("richard flor")
+	p.SetSigJugada("richard 11 espada")
+	p.SetSigJugada("richard truco")
+	p.SetSigJugada("roro quiero")
+	p.SetSigJugada("adolfo quiero")
+	p.SetSigJugada("richard 5 espada")
+	p.SetSigJugada("alvaro mazo")
+	p.SetSigJugada("roro quiero")
+	p.SetSigJugada("roro retruco")
+	p.SetSigJugada("roro re-truco")
+	p.SetSigJugada("alvaro re-truco")
+	p.SetSigJugada("Adolfo re-truco")
+	p.SetSigJugada("roro 6 copa")
+	p.SetSigJugada("adolfo re-truco")
+	p.SetSigJugada("adolfo 1 espada")
+	p.SetSigJugada("renzo retruco")
+	p.SetSigJugada("renzo re-truco")
+	p.SetSigJugada("renzo mazo")
+	p.SetSigJugada("andres mazo")
+
+	p.Esperar()
+
+	p.Terminar()
+}
