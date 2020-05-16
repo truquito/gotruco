@@ -183,17 +183,19 @@ func TestFixNacho(t *testing.T) {
 	p.SetSigJugada("andres 10 espada")
 	p.SetSigJugada("richard flor")
 	p.SetSigJugada("richard 11 espada")
-	p.SetSigJugada("richard truco")
-	p.SetSigJugada("roro quiero")
+
+	p.SetSigJugada("richard truco") // el envido deberia pasar a inhabilitado
+
+	p.SetSigJugada("roro quiero") // no deberia poder ya que es de su mismo equipo
 	p.SetSigJugada("adolfo quiero")
 	p.SetSigJugada("richard 5 espada")
 	p.SetSigJugada("alvaro mazo")
-	p.SetSigJugada("roro quiero")
-	p.SetSigJugada("roro retruco")
-	p.SetSigJugada("roro re-truco")
-	p.SetSigJugada("alvaro re-truco")
-	p.SetSigJugada("Adolfo re-truco")
-	p.SetSigJugada("roro 6 copa")
+	p.SetSigJugada("roro quiero")     // no hay nada que querer
+	p.SetSigJugada("roro retruco")    // syntaxis invalida
+	p.SetSigJugada("roro re-truco")   // no debe permitir
+	p.SetSigJugada("alvaro re-truco") // no deberia dejarlo porque se fue al mazo
+	p.SetSigJugada("Adolfo re-truco") // ojo que nadie le acepto el re-truco
+	p.SetSigJugada("roro 6 copa")     // no deberia dejarlo porque ya paso su turno
 	p.SetSigJugada("adolfo re-truco")
 	p.SetSigJugada("adolfo 1 espada")
 	p.SetSigJugada("renzo retruco")
@@ -202,6 +204,8 @@ func TestFixNacho(t *testing.T) {
 	p.SetSigJugada("andres mazo")
 
 	p.Esperar()
+
+	p.Print()
 
 	p.Terminar()
 }

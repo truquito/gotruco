@@ -313,7 +313,7 @@ func (p *Partida) evaluarMano() {
 	if esParda {
 		mano.Resultado = Empardada
 		mano.Ganador = nil
-		fmt.Printf("<< La Mano resulta parda")
+		fmt.Printf("<< La Mano resulta parda\n")
 		// no se cambia el turno
 
 	} else {
@@ -336,7 +336,7 @@ func (p *Partida) evaluarMano() {
 	}
 
 	// se termino la ronda?
-	var empiezaNuevaRonda bool = false
+	empiezaNuevaRonda := false
 	if p.Ronda.ManoEnJuego >= segunda {
 		empiezaNuevaRonda = p.evaluarRonda()
 	}

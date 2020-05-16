@@ -161,6 +161,7 @@ func (r Ronda) getManoActual() *Mano {
 	return &r.Manos[r.ManoEnJuego]
 }
 
+// este metodo es inseguro ya que manojoSigTurno puede ser nil
 func (r *Ronda) nextTurno() {
 	manojoTurnoActual := r.Manojos[r.Turno]
 	manojoSigTurno := r.sigHabilitado(manojoTurnoActual)

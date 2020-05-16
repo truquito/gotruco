@@ -1,3 +1,13 @@
+- en el caso TestFixNacho:
+    luego de que `adolfo re-truco` no se deberia poder tirar nada, solo itse al mazo
+    ya que la ronda termina y nadie dije quiero o no quiero
+
+- duda en el test TestFixNacho la primera mano queda empardad:
+    a quien le toca el sig turno? a richard o a andres?
+
+- duda: es necesario que sea su turno para cantar retruco o el turno de uno de 
+    los de mi equipo?
+
 - duda en el test TestFlorFlorContraFlorQuiero (flor_test@158)
     deberia sumar tambien los puntos de las flores?
     implementacion de los puntos sumados en jugada@551
