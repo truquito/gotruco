@@ -63,6 +63,7 @@ func TestEnvidoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 2`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestEnvidoNoQuiero(t *testing.T) {
@@ -109,6 +110,7 @@ func TestEnvidoNoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo rojo deberia de ser 1`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestRealEnvidoQuiero(t *testing.T) {
@@ -155,6 +157,7 @@ func TestRealEnvidoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestRealEnvidoNoQuiero(t *testing.T) {
@@ -201,6 +204,7 @@ func TestRealEnvidoNoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 1`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestFaltaEnvidoQuiero(t *testing.T) {
@@ -247,6 +251,7 @@ func TestFaltaEnvidoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 10`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestFaltaEnvidoNoQuiero(t *testing.T) {
@@ -293,6 +298,7 @@ func TestFaltaEnvidoNoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 1`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestEnvidoEnvidoQuiero(t *testing.T) {
@@ -350,6 +356,7 @@ func TestEnvidoEnvidoQuiero(t *testing.T) {
 
 	p.SetSigJugada("Alvaro Quiero")
 	p.Esperar()
+	p.Terminar()
 }
 
 func TestEnvidoEnvidoNoQuiero(t *testing.T) {
@@ -397,6 +404,7 @@ func TestEnvidoEnvidoNoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 0`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestEnvidoRealEnvidoQuiero(t *testing.T) {
@@ -444,6 +452,7 @@ func TestEnvidoRealEnvidoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 5`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestEnvidoRealEnvidoNoQuiero(t *testing.T) {
@@ -491,6 +500,7 @@ func TestEnvidoRealEnvidoNoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestEnvidoFaltaEnvidoQuiero(t *testing.T) {
@@ -538,6 +548,7 @@ func TestEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
@@ -585,6 +596,7 @@ func TestEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
@@ -632,6 +644,7 @@ func TestRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
@@ -679,6 +692,7 @@ func TestRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestEnvidoEnvidoRealEnvidoQuiero(t *testing.T) {
@@ -727,6 +741,7 @@ func TestEnvidoEnvidoRealEnvidoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestEnvidoEnvidoRealEnvidoNoQuiero(t *testing.T) {
@@ -775,6 +790,7 @@ func TestEnvidoEnvidoRealEnvidoNoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestEnvidoEnvidoFaltaEnvidoQuiero(t *testing.T) {
@@ -823,6 +839,7 @@ func TestEnvidoEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestEnvidoEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
@@ -871,6 +888,7 @@ func TestEnvidoEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
@@ -919,6 +937,7 @@ func TestEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
@@ -967,6 +986,7 @@ func TestEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestEnvidoEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
@@ -1016,6 +1036,7 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
+	p.Terminar()
 }
 
 func TestEnvidoEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
@@ -1144,6 +1165,7 @@ func TestCalcEnvido(t *testing.T) {
 		return
 	}
 
+	p.Terminar()
 }
 
 func TestCalcEnvido2(t *testing.T) {
