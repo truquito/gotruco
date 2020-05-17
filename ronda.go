@@ -97,18 +97,6 @@ type Ronda struct {
 	Manos []Mano `json:"manos"`
 }
 
-func (r *Ronda) checkFlorDelMano() {
-	tieneFlor, tipoFlor := r.getElMano().tieneFlor(r.Muestra)
-	if tieneFlor {
-		r.getElMano().cantarFlor(tipoFlor, r.Muestra)
-	}
-}
-
-// devuelve `false` si la ronda se acabo
-func (r *Ronda) enJuego() bool {
-	return true
-}
-
 // los anteriores a `aPartirDe` (incluido este) no
 // son necesarios de checkear porque ya han sido
 // checkeados si tenian flor

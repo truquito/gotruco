@@ -154,13 +154,6 @@ func (manojo *Manojo) calcFlor(muestra Carta) (int, error) {
 	return puntajeFlor, nil
 }
 
-// todo: esto se tiene que ir a la re mierda;
-// es una mezcla de capa de presentacion con logica; puaj
-func (manojo Manojo) cantarFlor(tipoFlor int, muestra Carta) {
-	x, _ := manojo.calcFlor(muestra)
-	fmt.Printf("<< %s CANTA FLOR: \"Tengo flor!\" (tiene %v)\n", "NOMBRE-JUGADOR", x)
-}
-
 // Print imprime la info del manojo
 func (manojo Manojo) Print() {
 	for i := range manojo.Cartas {
