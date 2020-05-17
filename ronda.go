@@ -104,7 +104,7 @@ func (r Ronda) getElMano() *Manojo {
 }
 
 // retorna el id del que deberia ser el siguiente mano
-func (r Ronda) getSigMano() JugadorIdx {
+func (r Ronda) getSigElMano() JugadorIdx {
 	return JugadorIdx(r.getIdx(*r.getSiguiente(*r.getElMano())))
 }
 

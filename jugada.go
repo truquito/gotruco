@@ -706,7 +706,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 			jugada.autor.Jugador.Nombre)
 		termino := p.sumarPuntos(p.Ronda.Truco.CantadoPor.Jugador.Equipo, totalPts)
 		if !termino {
-			sigMano := p.Ronda.getSigMano()
+			sigMano := p.Ronda.getSigElMano()
 			p.nuevaRonda(sigMano)
 		}
 	}

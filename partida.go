@@ -462,7 +462,7 @@ func (p *Partida) evaluarRonda() bool {
 	if !terminoLaPartida {
 		// ahora se deberia de incrementar el mano
 		// y ser el turno de este
-		sigMano := p.Ronda.getSigMano()
+		sigMano := p.Ronda.getSigElMano()
 		p.nuevaRonda(sigMano)
 	} else {
 		p.byeBye()
