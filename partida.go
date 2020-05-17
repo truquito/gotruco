@@ -108,7 +108,7 @@ func (p *Partida) SetSigJugada(cmd string) error {
 
 // devuelve solo la siguiente jugada VALIDA
 // si no es valida es como si no hubiese pasado nada
-func (p *Partida) getSigJugada() IJugada {
+func (p *Partida) getSigJugada() (IJugada, bool) {
 	var (
 		iJugada IJugada
 		valid   bool
@@ -116,14 +116,16 @@ func (p *Partida) getSigJugada() IJugada {
 	for {
 		iJugada, valid = <-p.sigJugada
 		if !valid {
-			p.quit <- true
+			// se cerro el p.sigJugada
+			return iJugada, valid
+			// p.quit <- true
 		} else if iJugada == nil {
 			p.wait <- true
 		} else {
 			break
 		}
 	}
-	return iJugada
+	return iJugada, valid
 }
 
 func (p *Partida) parseJugada(cmd string) (IJugada, error) {
@@ -551,9 +553,15 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	p.sigJugada = make(chan IJugada, 1)
 	p.sigComando = make(chan string, 1)
 
+	// canal de jugadas parseadas
 	go func() {
 		for {
-			sjugada := p.getSigJugada()
+			sjugada, valid := p.getSigJugada()
+
+			if !valid { // el canal cerro
+				return
+			}
+
 			err := sjugada.hacer(&p)
 			if err != nil {
 				fmt.Println(err.Error())
@@ -561,6 +569,7 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 		}
 	}()
 
+	// canal input
 	go func() {
 		for {
 			select {
@@ -568,10 +577,9 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 			// luego lo pasa al otro canal de jugadas ya aceptadas
 			// en la que espera la parte interna del codigo
 			case cmd := <-p.sigComando:
-				fmt.Printf("POPING: '%s'\n", cmd)
 				switch cmd {
-				case "__TERMINAR__":
-					close(p.sigJugada)
+				// case "__TERMINAR__":
+				// 	close(p.sigJugada)
 				case "__WAIT__":
 					p.sigJugada <- nil
 				default:
@@ -583,7 +591,15 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 					}
 				}
 
-				// case <-p.quit:
+			case <-p.quit:
+				// cierro todo
+
+				close(p.sigJugada)  // va a hacer que la func de parsea termine
+				close(p.sigComando) // va a hacer que salga de esta func
+				close(p.wait)
+				// p.quit <- true // para avisarle que ya cerre todo
+				return // hace que esta misma termine
+
 				// case <-time.After(1 * time.Second):
 				// default:
 			}
@@ -598,8 +614,13 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 // usar otro canal tipo `p.quit<-true` y agregarle
 // el caso que corresponda al `select{...}`
 func (p *Partida) Terminar() {
-	p.sigComando <- "__TERMINAR__"
-	<-p.quit
+	p.Esperar() // igual si no lo pongo, este terminar no es abrupto
+	// ya que queda en segundo plano consumiendo el stack de jugadas
+	// parseadas; lo correcto seria al sigJugada checkear si hay alguna
+	// especie de flag que diga "no consumas mas jugadas"
+	// <-p.quit
+	p.quit <- true
+	close(p.quit)
 }
 
 // Esperar espera a que se consuma toda la fila de jugadas
