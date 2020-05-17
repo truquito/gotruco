@@ -12,13 +12,6 @@ import (
 // el envido, la primera o la mentira
 // el truco, la segunda o el rabón
 
-var (
-	quit       chan bool    = make(chan bool, 1)
-	wait       chan bool    = make(chan bool, 1)
-	sigJugada  chan IJugada = make(chan IJugada, 1)
-	sigComando chan string  = make(chan string, 1)
-)
-
 // regexps
 var (
 	regexps = map[string]*regexp.Regexp{
@@ -89,6 +82,15 @@ type Partida struct {
 	Puntuacion    Puntuacion     `json:"puntuacion"`
 	Puntajes      map[Equipo]int `json:"puntajes"`
 	Ronda         Ronda          `json:"ronda"`
+
+	// quit       chan bool    = make(chan bool, 1)
+	// wait       chan bool    = make(chan bool, 1)
+	// sigJugada  chan IJugada = make(chan IJugada, 1)
+	// sigComando chan string  = make(chan string, 1)
+	quit       chan bool
+	wait       chan bool
+	sigJugada  chan IJugada
+	sigComando chan string
 }
 
 // SetSigJugada nexo capa presentacion con capa logica
@@ -100,7 +102,7 @@ func (p *Partida) SetSigJugada(cmd string) error {
 		return fmt.Errorf("Comando incorrecto")
 	}
 
-	sigComando <- cmd
+	p.sigComando <- cmd
 	return nil
 }
 
@@ -112,11 +114,11 @@ func (p *Partida) getSigJugada() IJugada {
 		valid   bool
 	)
 	for {
-		iJugada, valid = <-sigJugada
+		iJugada, valid = <-p.sigJugada
 		if !valid {
-			quit <- true
+			p.quit <- true
 		} else if iJugada == nil {
-			wait <- true
+			p.wait <- true
 		} else {
 			break
 		}
@@ -544,6 +546,11 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	elMano := JugadorIdx(0)
 	p.nuevaRonda(elMano)
 
+	p.quit = make(chan bool, 1)
+	p.wait = make(chan bool, 1)
+	p.sigJugada = make(chan IJugada, 1)
+	p.sigComando = make(chan string, 1)
+
 	go func() {
 		for {
 			sjugada := p.getSigJugada()
@@ -560,18 +567,19 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 			// este canal agarra solo los comandos en forma de string
 			// luego lo pasa al otro canal de jugadas ya aceptadas
 			// en la que espera la parte interna del codigo
-			case cmd := <-sigComando:
+			case cmd := <-p.sigComando:
+				fmt.Printf("POPING: '%s'\n", cmd)
 				switch cmd {
 				case "__TERMINAR__":
-					close(sigJugada)
+					close(p.sigJugada)
 				case "__WAIT__":
-					sigJugada <- nil
+					p.sigJugada <- nil
 				default:
 					jugada, err := p.parseJugada(cmd)
 					if err != nil {
 						fmt.Println("<< " + err.Error())
 					} else {
-						sigJugada <- jugada
+						p.sigJugada <- jugada
 					}
 				}
 
@@ -590,13 +598,13 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 // usar otro canal tipo `p.quit<-true` y agregarle
 // el caso que corresponda al `select{...}`
 func (p *Partida) Terminar() {
-	sigComando <- "__TERMINAR__"
-	<-quit
+	p.sigComando <- "__TERMINAR__"
+	<-p.quit
 }
 
 // Esperar espera a que se consuma toda la fila de jugadas
 // para continuar; pero sin cerrar ningun canal
 func (p *Partida) Esperar() {
-	sigComando <- "__WAIT__"
-	<-wait
+	p.sigComando <- "__WAIT__"
+	<-p.wait
 }

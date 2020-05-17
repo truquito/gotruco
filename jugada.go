@@ -78,7 +78,7 @@ func (jugada tocarEnvido) hacer(p *Partida) error {
 		return fmt.Errorf("No es posible tocar el envido ahora porque la flor esta en juego")
 	}
 	esPrimeraMano := p.Ronda.ManoEnJuego == primera
-	esSuTurno := p.getJugador(p.Ronda.Turno) == jugada.autor.Jugador
+	esSuTurno := p.Ronda.getElTurno() == jugada.autor
 	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
 	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.autor.Jugador.Equipo
 	envidoHabilitado := (p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.Estado == ENVIDO)
