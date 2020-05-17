@@ -76,7 +76,7 @@ func (e *EstadoEnvite) UnmarshalJSON(b []byte) error {
 type Envite struct {
 	Estado                        EstadoEnvite `json:"estado"`
 	Puntaje                       int          `json:"puntaje"`
-	CantadoPor                    *Jugador     `json:"cantadoPor"`
+	CantadoPor                    *Manojo      `json:"cantadoPor"`
 	JugadoresConFlor              []*Manojo    `json:"jugadoresConFlor"`
 	JugadoresConFlorQueNoCantaron []*Manojo    `json:"jugadoresConFlorQueNoCantaron"`
 }

@@ -22,13 +22,17 @@ manojoConLaFlorGanadora, _, _ := p.Ronda.cantarFlores(aPartirDe)
 
 - alguien que se fue al mazo con flor puede llegar a decir quiero a una contraflor
     DE HECHO, DEBERIA SER UN CHECKING PARA TODAS LAS JUGADAS
-- cambair el envite.cantadoPor para que sea del tipo Manojo
+
 - duda: es necesario que sea tu turno para cantar envido?
+
 - se esta jugando de a 2 (o mas) uno tiene flor, pero el otro se va al mazo
   deberia de sumar los puntos de la flor a pesar de que no fue cantada
+
 - que pasa si hay 3 con flor A,B y C; A canta flor, B dice contra flor, A dice quiero -> pero B nunca canto su flor
+
 - duda: actualmente si hay 3 flores: 2 del equipo rojo, 1 del equipo azul; todos cantan "flor" sin mas, y la flor del equipo azul es la mas alta ->
 se lleva el puntaje el equipo azul de las 3 flores (3+3+3) ; eso esta bien?
+
 - si 2 tienen flor y esos 2 las cantan -> tampoco termina el bucle de la flor log: `fix 2 flores y bucle.log`
 
 - duda: es necesario que sea tu turno para cantar la flor?
