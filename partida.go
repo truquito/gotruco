@@ -347,7 +347,7 @@ func (p *Partida) evaluarMano() {
 	// incremento solo si no se empezo una nueva ronda
 	if !empiezaNuevaRonda {
 		p.Ronda.ManoEnJuego++
-		p.Ronda.nextTurnoPosMano()
+		p.Ronda.setNextTurnoPosMano()
 	}
 }
 

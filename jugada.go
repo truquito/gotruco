@@ -53,13 +53,13 @@ func (jugada tirarCarta) hacer(p *Partida) error {
 	p.Ronda.getManoActual().agregarTirada(jugada)
 
 	// era el ultimo en tirar de esta mano?
-	eraElUltimoEnTirar := p.Ronda.sigHabilitado(*jugada.autor) == nil
+	eraElUltimoEnTirar := p.Ronda.getSigHabilitado(*jugada.autor) == nil
 	if eraElUltimoEnTirar {
 		// de ser asi tengo que checkear el resultado de la mano
 		p.evaluarMano()
 		// el turno del siguiente queda dado por el ganador de esta
 	} else {
-		p.Ronda.nextTurno()
+		p.Ronda.setNextTurno()
 	}
 
 	return nil
@@ -122,7 +122,7 @@ func (jugada tocarEnvido) hacer(p *Partida) error {
 // donde 'j' el jugador que dijo 'quiero' al 'envido'/'real envido'
 func (jugada tocarEnvido) eval(p *Partida) error {
 	p.Ronda.Envite.Estado = DESHABILITADO
-	jIdx, max, out := p.Ronda.getElEnvido()
+	jIdx, max, out := p.Ronda.execElEnvido()
 	print(out)
 
 	jug := &p.jugadores[jIdx]
@@ -232,7 +232,7 @@ func (jugada tocarFaltaEnvido) eval(p *Partida) error {
 	p.Ronda.Envite.Estado = DESHABILITADO
 
 	// computar envidos
-	jIdx, max, out := p.Ronda.getElEnvido()
+	jIdx, max, out := p.Ronda.execElEnvido()
 
 	print(out)
 
@@ -763,13 +763,13 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 
 	// p.Ronda.nextTurno()
 	// era el ultimo en tirar de esta mano?
-	eraElUltimoEnTirar := p.Ronda.sigHabilitado(*jugada.autor) == nil
+	eraElUltimoEnTirar := p.Ronda.getSigHabilitado(*jugada.autor) == nil
 	if eraElUltimoEnTirar {
 		// de ser asi tengo que checkear el resultado de la mano
 		p.evaluarMano()
 		// el turno del siguiente queda dado por el ganador de esta
 	} else {
-		p.Ronda.nextTurno()
+		p.Ronda.setNextTurno()
 	}
 
 	seFueronTodos = !!seFueronTodos
