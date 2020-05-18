@@ -231,16 +231,28 @@ func TestFixNoFlor(t *testing.T) {
 	p.SetSigJugada("roro truco")
 
 	p.SetSigJugada("adolfo 12 oro")
+	// No era su turno, no puede tirar la carta
+
 	p.SetSigJugada("roro 7 copa")
 	p.SetSigJugada("andres quiero")
 	p.SetSigJugada("adolfo 12 oro")
 	p.SetSigJugada("renzo 5 oro")
+
 	p.SetSigJugada("andres flor")
+	// No es posible cantar flor
+
 	p.SetSigJugada("andres 6 basto")
+
 	p.SetSigJugada("richard flor")
+	// No es posible cantar flor
+
 	p.SetSigJugada("richard 11 copa")
+	// termina la primera mano, la gana adolfo
+	// entonces es el turno de adolfo
+
 	p.SetSigJugada("adolfo re-truco")
 	p.SetSigJugada("richard quiero")
+
 	p.SetSigJugada("richard vale-4")
 
 	p.Esperar()
@@ -248,6 +260,15 @@ func TestFixNoFlor(t *testing.T) {
 	oops = !(p.Ronda.Truco.Estado == VALE4)
 	if oops {
 		t.Error(`Richard deberia poder gritar vale4`)
+	}
+
+	p.SetSigJugada("adolfo quiero")
+
+	p.Esperar()
+
+	oops = !(p.Ronda.Truco.Estado == VALE4QUERIDO)
+	if oops {
+		t.Error(`El estado del truco deberia ser VALE4QUERIDO`)
 	}
 
 	p.SetSigJugada("adolfo 1 basto")

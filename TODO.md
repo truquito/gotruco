@@ -1,3 +1,10 @@
+- calc bien los puntos cuando se va al mazo (mergear con lo que esta comentado)
+
+- depues de cantar vale4 (y similares) nadie puede tirar carta, el equipo contrario debe responder si o no
+
+- no necesariamente tiene que ser RETRUCOQUERIDO el estado del truco para
+    recien ahi gritar vale4, podes ir de 1???
+
 - en el caso TestFixNacho:
     luego de que `adolfo re-truco` no se deberia poder tirar nada, solo itse al mazo
     ya que la ronda termina y nadie dije quiero o no quiero

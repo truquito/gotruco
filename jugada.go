@@ -504,11 +504,23 @@ func (jugada gritarVale4) hacer(p *Partida) error {
 	noSeCantoFlor := p.Ronda.Envite.Estado != DESHABILITADO
 	laFlorEstaPrimero := hayFlor && noSeCantoFlor
 
+	/*
+		Hay 2 casos para cantar rectruco:
+		    - CASO I: Uno del equipo contrario grito el re-truco
+			- CASO II: Uno de su equipo posee el quiero
+	*/
+
+	// CASO I:
+	reTrucoGritado := p.Ronda.Truco.Estado == RETRUCO
+	unoDelEquipoContrarioGritoReTruco := p.Ronda.Truco.CantadoPor.Jugador.Equipo != jugada.autor.Jugador.Equipo
+	casoI := reTrucoGritado && unoDelEquipoContrarioGritoReTruco
+
+	// CASO I:
 	retrucoYaQuerido := p.Ronda.Truco.Estado == RETRUCOQUERIDO
-	tieneElQuiero := p.Ronda.Truco.CantadoPor == jugada.autor
-	esSuTurno := p.getJugador(p.Ronda.Turno) == jugada.autor.Jugador
-	esDelEquipoContrario := p.Ronda.Truco.CantadoPor.Jugador.Equipo != jugada.autor.Jugador.Equipo
-	vale4Habilitado := noSeFueAlMazo && retrucoYaQuerido && tieneElQuiero && esSuTurno && noSeEstaJugandoElEnvite && esDelEquipoContrario && !laFlorEstaPrimero
+	suEquipotieneElQuiero := p.Ronda.Truco.CantadoPor.Jugador.Equipo == jugada.autor.Jugador.Equipo
+	casoII := retrucoYaQuerido && suEquipotieneElQuiero
+
+	vale4Habilitado := noSeFueAlMazo && (casoI || casoII) && noSeEstaJugandoElEnvite && !laFlorEstaPrimero
 
 	if !vale4Habilitado {
 
@@ -517,10 +529,10 @@ func (jugada gritarVale4) hacer(p *Partida) error {
 			siguienteJugada.hacer(p)
 		}
 
-		return fmt.Errorf("No es posible cantar re-truco ahora")
+		return fmt.Errorf("No es posible cantar vale-4 ahora")
 	}
 
-	fmt.Printf("<< %s grita re-truco\n", jugada.autor.Jugador.Nombre)
+	fmt.Printf("<< %s grita vale 4\n", jugada.autor.Jugador.Nombre)
 	p.Ronda.Truco.CantadoPor = jugada.autor
 	p.Ronda.Truco.Estado = VALE4
 
