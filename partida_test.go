@@ -281,7 +281,7 @@ func TestFixNoFlor(t *testing.T) {
 
 	p.Esperar()
 
-	oops = !(p.getMaxPuntaje() == 3+4)
+	oops = !(p.getMaxPuntaje() == 6+4) // 6 de las 2 flores
 	if oops {
 		t.Error(`suma mal los puntos cuando roro se fue al mazo`)
 	}
