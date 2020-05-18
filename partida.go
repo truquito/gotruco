@@ -597,8 +597,8 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 				close(p.sigJugada)  // va a hacer que la func de parsea termine
 				close(p.sigComando) // va a hacer que salga de esta func
 				close(p.wait)
-				// p.quit <- true // para avisarle que ya cerre todo
-				return // hace que esta misma termine
+				p.quit <- true // para avisarle que ya cerre todo
+				return         // hace que esta misma termine
 
 				// case <-time.After(1 * time.Second):
 				// default:
@@ -620,6 +620,7 @@ func (p *Partida) Terminar() {
 	// especie de flag que diga "no consumas mas jugadas"
 	// <-p.quit
 	p.quit <- true
+	<-p.quit
 	close(p.quit)
 }
 
