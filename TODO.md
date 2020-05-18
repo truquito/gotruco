@@ -79,11 +79,17 @@ se lleva el puntaje el equipo azul de las 3 flores (3+3+3) ; eso esta bien?
 - agregarle un ID a jugador y que las busquedas las haga por este campo
     esta id debe ser sercreta y random; porque si yo se la id de otro puedo jugar por el
 
+- el no quiero de la flor @TestFixNoFlor no tiene output
+
+- el ordden del output si hay flor cuando se grita truco esta mal:
+<< Andres canta flor
+No es posible cantar truco ahora
+
 - duda:
     >A truco
     >el evndio esta primer
     *se juega el envido*
-    ahora el truco sigue en juego como si lo hubiese cantado A? o hay que volver a cantarlo?
+    ----> ahora el truco sigue en juego como si lo hubiese cantado A? o hay que volver a cantarlo?
 
 - checkeos de la gente que se fue al mazo no podria hacer nada:
     eg:

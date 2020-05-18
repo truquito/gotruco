@@ -416,12 +416,21 @@ type gritarTruco struct {
 func (jugada gritarTruco) hacer(p *Partida) error {
 	// checkeos:
 	noSeFueAlMazo := jugada.autor.SeFueAlMazo == false
+	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
+	hayFlor, manojosConFlor := p.Ronda.getFlores()
+	noSeCantoFlor := p.Ronda.Envite.Estado != DESHABILITADO
+	laFlorEstaPrimero := hayFlor && noSeCantoFlor
 	trucoNoSeJugoAun := p.Ronda.Truco.Estado == NOCANTADO
 	esSuTurno := p.getJugador(p.Ronda.Turno) == jugada.autor.Jugador
-	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
-	trucoHabilitado := noSeFueAlMazo && trucoNoSeJugoAun && esSuTurno && noSeEstaJugandoElEnvite
+	trucoHabilitado := noSeFueAlMazo && trucoNoSeJugoAun && esSuTurno && noSeEstaJugandoElEnvite && !laFlorEstaPrimero
 
 	if !trucoHabilitado {
+
+		if laFlorEstaPrimero {
+			siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
+			siguienteJugada.hacer(p)
+		}
+
 		return fmt.Errorf("No es posible cantar truco ahora")
 	}
 
@@ -442,6 +451,9 @@ func (jugada gritarReTruco) hacer(p *Partida) error {
 	// checkeos generales:
 	noSeFueAlMazo := jugada.autor.SeFueAlMazo == false
 	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
+	hayFlor, manojosConFlor := p.Ronda.getFlores()
+	noSeCantoFlor := p.Ronda.Envite.Estado != DESHABILITADO
+	laFlorEstaPrimero := hayFlor && noSeCantoFlor
 
 	/*
 		Hay 2 casos para cantar rectruco:
@@ -460,9 +472,15 @@ func (jugada gritarReTruco) hacer(p *Partida) error {
 	esTurnoDeMiEquipo := p.getJugador(p.Ronda.Turno).Equipo == jugada.autor.Jugador.Equipo
 	casoII := trucoYaQuerido && unoDeMiEquipoQuizo && esTurnoDeMiEquipo
 
-	reTrucoHabilitado := noSeFueAlMazo && noSeEstaJugandoElEnvite && (casoI || casoII)
+	reTrucoHabilitado := noSeFueAlMazo && noSeEstaJugandoElEnvite && (casoI || casoII) && !laFlorEstaPrimero
 
 	if !reTrucoHabilitado {
+
+		if laFlorEstaPrimero {
+			siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
+			siguienteJugada.hacer(p)
+		}
+
 		return fmt.Errorf("No es posible cantar re-truco ahora")
 	}
 
@@ -480,14 +498,25 @@ type gritarVale4 struct {
 func (jugada gritarVale4) hacer(p *Partida) error {
 	// checkeos:
 	noSeFueAlMazo := jugada.autor.SeFueAlMazo == false
+
+	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
+	hayFlor, manojosConFlor := p.Ronda.getFlores()
+	noSeCantoFlor := p.Ronda.Envite.Estado != DESHABILITADO
+	laFlorEstaPrimero := hayFlor && noSeCantoFlor
+
 	retrucoYaQuerido := p.Ronda.Truco.Estado == RETRUCOQUERIDO
 	tieneElQuiero := p.Ronda.Truco.CantadoPor == jugada.autor
 	esSuTurno := p.getJugador(p.Ronda.Turno) == jugada.autor.Jugador
-	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
 	esDelEquipoContrario := p.Ronda.Truco.CantadoPor.Jugador.Equipo != jugada.autor.Jugador.Equipo
-	vale4Habilitado := noSeFueAlMazo && retrucoYaQuerido && tieneElQuiero && esSuTurno && noSeEstaJugandoElEnvite && esDelEquipoContrario
+	vale4Habilitado := noSeFueAlMazo && retrucoYaQuerido && tieneElQuiero && esSuTurno && noSeEstaJugandoElEnvite && esDelEquipoContrario && !laFlorEstaPrimero
 
 	if !vale4Habilitado {
+
+		if laFlorEstaPrimero {
+			siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
+			siguienteJugada.hacer(p)
+		}
+
 		return fmt.Errorf("No es posible cantar re-truco ahora")
 	}
 

@@ -209,3 +209,62 @@ func TestFixNacho(t *testing.T) {
 
 	p.Terminar()
 }
+
+func TestFixNoFlor(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	partidaJSON := `{"cantJugadores":6,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":3,"Rojo":3},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null,"jugadoresConFlor":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":4},{"palo":"Basto","valor":6},{"palo":"Espada","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Andres","nombre":"Andres","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":11},{"palo":"Copa","valor":2},{"palo":"Espada","valor":10}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}],"jugadoresConFlorQueNoCantaron":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":4},{"palo":"Basto","valor":6},{"palo":"Espada","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Andres","nombre":"Andres","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":11},{"palo":"Copa","valor":2},{"palo":"Espada","valor":10}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}]},"truco":{"cantadoPor":null,"estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":6},{"palo":"Basto","valor":4},{"palo":"Espada","valor":5}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":7},{"palo":"Basto","valor":11},{"palo":"Basto","valor":7}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":12},{"palo":"Basto","valor":1},{"palo":"Copa","valor":3}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":5},{"palo":"Espada","valor":7},{"palo":"Oro","valor":1}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":4},{"palo":"Basto","valor":6},{"palo":"Espada","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Andres","nombre":"Andres","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":11},{"palo":"Copa","valor":2},{"palo":"Espada","valor":10}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}],"muestra":{"palo":"Espada","valor":3},"manos":[{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null}]}}`
+	p.FromJSON(partidaJSON)
+	p.Print()
+
+	p.SetSigJugada("alvaro 4 basto")
+	p.SetSigJugada("roro truco")
+
+	p.Esperar()
+
+	oops = !(p.Ronda.Envite.Estado == FLOR)
+	if oops {
+		t.Error(`El envido esta primero!`)
+	}
+
+	p.SetSigJugada("richard no-quiero")
+
+	p.SetSigJugada("roro truco")
+
+	p.SetSigJugada("adolfo 12 oro")
+	p.SetSigJugada("roro 7 copa")
+	p.SetSigJugada("andres quiero")
+	p.SetSigJugada("adolfo 12 oro")
+	p.SetSigJugada("renzo 5 oro")
+	p.SetSigJugada("andres flor")
+	p.SetSigJugada("andres 6 basto")
+	p.SetSigJugada("richard flor")
+	p.SetSigJugada("richard 11 copa")
+	p.SetSigJugada("adolfo re-truco")
+	p.SetSigJugada("richard quiero")
+	p.SetSigJugada("richard vale-4")
+
+	p.Esperar()
+
+	oops = !(p.Ronda.Truco.Estado == VALE4)
+	if oops {
+		t.Error(`Richard deberia poder gritar vale4`)
+	}
+
+	p.SetSigJugada("adolfo 1 basto")
+	p.SetSigJugada("renzo 7 espada")
+	p.SetSigJugada("andres 4 espada")
+	p.SetSigJugada("richard 10 espada")
+	p.SetSigJugada("alvaro 6 espada")
+	p.SetSigJugada("roro re-truco")
+	p.SetSigJugada("roro mazo")
+
+	p.Esperar()
+
+	oops = !(p.getMaxPuntaje() == 3+4)
+	if oops {
+		t.Error(`suma mal los puntos cuando roro se fue al mazo`)
+	}
+
+	p.Print()
+	p.Terminar()
+}
