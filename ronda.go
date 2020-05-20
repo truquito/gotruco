@@ -291,7 +291,11 @@ func (r *Ronda) setNextTurnoPosMano() {
 			r.Turno = JugadorIdx(r.getIdx(*r.getManoAnterior().Ganador))
 		}
 	}
-	fmt.Printf("<< Es el turno de %s\n", r.Manojos[r.Turno].Jugador.Nombre)
+	push(Msg{
+		Dest: []string{"ALL"},
+		Tipo: "error",
+		Cont: fmt.Sprintf("Es el turno de %s", r.Manojos[r.Turno].Jugador.Nombre),
+	})
 }
 
 func (r *Ronda) setManojos(manojos []Manojo) {
@@ -361,7 +365,7 @@ func (r *Ronda) execElEnvido() (jIdx JugadorIdx, max int, stdOut []string) {
 	// empieza la mano
 	jIdx = r.ElMano
 	yaDijeron[jIdx] = true
-	out := fmt.Sprintf("   %s dice: \"tengo %v\"\n", r.Manojos[jIdx].Jugador.Nombre,
+	out := fmt.Sprintf(`   %s dice: "tengo %v"`, r.Manojos[jIdx].Jugador.Nombre,
 		envidos[jIdx])
 	stdOut = append(stdOut, out)
 
@@ -393,7 +397,7 @@ func (r *Ronda) execElEnvido() (jIdx JugadorIdx, max int, stdOut []string) {
 
 			if sonMejores {
 				if esDeEquipoContrario {
-					out := fmt.Sprintf("   %s dice: \"%v son mejores!\"\n",
+					out := fmt.Sprintf(`   %s dice: "%v son mejores!"`,
 						r.Manojos[i].Jugador.Nombre, envidos[i])
 					stdOut = append(stdOut, out)
 					jIdx = i
@@ -412,7 +416,7 @@ func (r *Ronda) execElEnvido() (jIdx JugadorIdx, max int, stdOut []string) {
 			} else /* tiene el envido mas chico */ {
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
-						out := fmt.Sprintf("   %s dice: \"son buenas\" (tenia %v)\n",
+						out := fmt.Sprintf(`   %s dice: "son buenas" (tenia %v)`,
 							r.Manojos[i].Jugador.Nombre, envidos[i])
 						stdOut = append(stdOut, out)
 						yaDijeron[i] = true
@@ -493,7 +497,7 @@ func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, stdO
 	// empieza el del parametro
 	if flores[aPartirDe] > 0 {
 		yaDijeron[aPartirDe] = true
-		out := fmt.Sprintf("   %s dice: \"tengo %v\"\n", r.Manojos[aPartirDe].Jugador.Nombre,
+		out := fmt.Sprintf(`   %s dice: "tengo %v"`, r.Manojos[aPartirDe].Jugador.Nombre,
 			flores[aPartirDe])
 		stdOut = append(stdOut, out)
 	}
@@ -524,7 +528,7 @@ func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, stdO
 
 			if sonMejores {
 				if esDeEquipoContrario {
-					out := fmt.Sprintf("   %s dice: \"%v son mejores!\"\n",
+					out := fmt.Sprintf(`   %s dice: "%v son mejores!"`,
 						r.Manojos[i].Jugador.Nombre, flores[i])
 					stdOut = append(stdOut, out)
 					jIdx = i
@@ -543,7 +547,7 @@ func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, stdO
 			} else /* tiene el envido mas chico */ {
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
-						out := fmt.Sprintf("   %s dice: \"son buenas\" (tenia %v)\n",
+						out := fmt.Sprintf(`   %s dice: "son buenas" (tenia %v)`,
 							r.Manojos[i].Jugador.Nombre, flores[i])
 						stdOut = append(stdOut, out)
 						yaDijeron[i] = true

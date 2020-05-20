@@ -36,6 +36,15 @@ func _log(str, logFile string) {
 	logger.Println(str)
 }
 
+func print(output []truco.Msg) {
+	if output == nil {
+		return
+	}
+	for _, elem := range output {
+		fmt.Println("<< ", elem.Cont)
+	}
+}
+
 func main() {
 	timestamp := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
 	logPath := "/home/juan/Workspace/_tmp/truco_logs/"
@@ -45,15 +54,21 @@ func main() {
 	_log(p.ToJSON(), logFile)
 
 	p.Print()
+	output := p.Dispatch()
+	print(output)
 	for p.NoAcabada() {
 		fmt.Printf("\n>> ")
 		cmd := readLn()
 		_log(cmd, logFile)
-		res := p.SetSigJugada(cmd)
-		p.Esperar()
-		p.Print()
-		if res != nil {
-			fmt.Println(res)
+		// tuvo error?
+		err := p.SetSigJugada(cmd)
+		if err != nil {
+			fmt.Println("<< " + err.Error())
 		}
+		p.Esperar()
+		// obtengo un array de mensajes como output
+		output := p.Dispatch()
+		print(output)
+		p.Print()
 	}
 }

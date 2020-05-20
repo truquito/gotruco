@@ -83,49 +83,10 @@ type Partida struct {
 	Puntajes      map[Equipo]int `json:"puntajes"`
 	Ronda         Ronda          `json:"ronda"`
 
-	// quit       chan bool    = make(chan bool, 1)
-	// wait       chan bool    = make(chan bool, 1)
-	// sigJugada  chan IJugada = make(chan IJugada, 1)
-	// sigComando chan string  = make(chan string, 1)
 	quit       chan bool
 	wait       chan bool
 	sigJugada  chan IJugada
 	sigComando chan string
-}
-
-// SetSigJugada nexo capa presentacion con capa logica
-func (p *Partida) SetSigJugada(cmd string) error {
-	// checkeo de sintaxis
-	// ok := regexp.MustCompile(`^(\w|-)+\s(\w|-)+\n?$`).MatchString(cmd)
-	ok := true
-	if !ok {
-		return fmt.Errorf("Comando incorrecto")
-	}
-
-	p.sigComando <- cmd
-	return nil
-}
-
-// devuelve solo la siguiente jugada VALIDA
-// si no es valida es como si no hubiese pasado nada
-func (p *Partida) getSigJugada() (IJugada, bool) {
-	var (
-		iJugada IJugada
-		valid   bool
-	)
-	for {
-		iJugada, valid = <-p.sigJugada
-		if !valid {
-			// se cerro el p.sigJugada
-			return iJugada, valid
-			// p.quit <- true
-		} else if iJugada == nil {
-			p.wait <- true
-		} else {
-			break
-		}
-	}
-	return iJugada, valid
 }
 
 func (p *Partida) parseJugada(cmd string) (IJugada, error) {
@@ -340,14 +301,19 @@ func (p *Partida) evaluarMano() {
 			mano.Ganador = &p.Ronda.Manojos[1]
 		}
 
-		// fmt.Printf("<< La %s mano la gano el equipo %s\n",
+		// fmt.Printf("La %s mano la gano el equipo %s\n",
 		// 	strings.ToLower(p.Ronda.ManoEnJuego.String()),
 		// 	equipoGanador.String())
 
 	} else if esParda {
 		mano.Resultado = Empardada
 		mano.Ganador = nil
-		fmt.Printf("<< La Mano resulta parda\n")
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "ok",
+			Cont: fmt.Sprintf("La Mano resulta parda"),
+		})
 		// no se cambia el turno
 
 	} else {
@@ -364,10 +330,16 @@ func (p *Partida) evaluarMano() {
 		// el turno pasa a ser el del mano.ganador
 		// pero se setea despues de evaluar la ronda
 		mano.Ganador = tiradaGanadora.autor
-		fmt.Printf("<< La %s mano la gano el equipo %s gracia a %s\n",
-			strings.ToLower(p.Ronda.ManoEnJuego.String()),
-			mano.Ganador.Jugador.Equipo.String(),
-			mano.Ganador.Jugador.Nombre)
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "ok",
+			Cont: fmt.Sprintf("La %s mano la gano el equipo %s gracia a %s",
+				strings.ToLower(p.Ronda.ManoEnJuego.String()),
+				mano.Ganador.Jugador.Equipo.String(),
+				mano.Ganador.Jugador.Nombre),
+		})
+
 	}
 
 	// se termino la ronda?
@@ -484,8 +456,12 @@ func (p *Partida) evaluarRonda() bool {
 
 	/************************************************/
 
-	fmt.Printf("<< La ronda ha sido ganada por el equipo %s\n",
-		ganador.Jugador.Equipo)
+	push(Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf("La ronda ha sido ganada por el equipo %s",
+			ganador.Jugador.Equipo),
+	})
 
 	// ya sabemos el ganador ahora es el
 	// momento de sumar los puntos del truco
@@ -506,19 +482,23 @@ func (p *Partida) evaluarRonda() bool {
 	elTrucoNoTuvoRespuesta := contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
 
 	if elTrucoNoTuvoRespuesta {
-		msg = fmt.Sprintf(`<< +%v puntos para el equipo %s por el %s no querido`+"\n",
+		msg = fmt.Sprintf(`+%v puntos para el equipo %s por el %s no querido`,
 			totalPts,
 			ganador.Jugador.Equipo,
 			p.Ronda.Truco.Estado.String())
 
 	} else {
-		msg = fmt.Sprintf(`<< +%v puntos para el equipo %s por el %s ganado`+"\n",
+		msg = fmt.Sprintf(`+%v puntos para el equipo %s por el %s ganado`,
 			totalPts,
 			ganador.Jugador.Equipo,
 			p.Ronda.Truco.Estado.String())
 	}
 
-	fmt.Printf(msg)
+	push(Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: msg,
+	})
 
 	terminoLaPartida := p.sumarPuntos(ganador.Jugador.Equipo, totalPts)
 
@@ -536,16 +516,31 @@ func (p *Partida) evaluarRonda() bool {
 
 func (p *Partida) byeBye() {
 	if !p.NoAcabada() {
-		fmt.Printf("<< Se acabo la partida! el ganador fue el equipo %s\n\n",
-			p.elQueVaGanando().String())
-		fmt.Printf("<< BYE BYE!")
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "ok",
+			Cont: fmt.Sprintf("Se acabo la partida! el ganador fue el equipo %s",
+				p.elQueVaGanando().String()),
+		})
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "ok",
+			Cont: fmt.Sprintf("BYE BYE!"),
+		})
+
 	}
 }
 
 func (p *Partida) nuevaRonda(elMano JugadorIdx) {
-	fmt.Println("<< Empieza una nueva ronda")
+	push(Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf("Empieza una nueva ronda"),
+	})
 	p.Ronda = nuevaRonda(p.jugadores, elMano)
-	// fmt.Printf("<< La mano y el turno es %s\n", p.Ronda.getElMano().Jugador.Nombre)
+	// fmt.Printf("La mano y el turno es %s\n", p.Ronda.getElMano().Jugador.Nombre)
 }
 
 // Print imprime la partida
@@ -573,6 +568,49 @@ func (p *Partida) FromJSON(partidaJSON string) error {
 	return nil
 }
 
+// SetSigJugada nexo capa presentacion con capa logica
+func (p *Partida) SetSigJugada(cmd string) error {
+
+	// checkeo sintactico
+	// ok := regexp.MustCompile(`^(\w|-)+\s(\w|-)+\n?$`).MatchString(cmd)
+	ok := true
+	if !ok {
+		return fmt.Errorf("Sintaxis invalida: comando incorrecto")
+	}
+
+	// checkeo semantico
+	jugada, err := p.parseJugada(cmd)
+	if err != nil {
+		return err
+	}
+
+	p.sigJugada <- jugada
+
+	return nil
+}
+
+// devuelve solo la siguiente jugada VALIDA
+// si no es valida es como si no hubiese pasado nada
+func (p *Partida) getSigJugada() (IJugada, bool) {
+	var (
+		iJugada IJugada
+		valid   bool
+	)
+	for {
+		iJugada, valid = <-p.sigJugada
+		if !valid {
+			// se cerro el p.sigJugada
+			return iJugada, valid
+			// p.quit <- true
+		} else if iJugada == nil {
+			p.wait <- true
+		} else {
+			break
+		}
+	}
+	return iJugada, valid
+}
+
 // Terminar espera a que se consuma toda la fila de jugadas
 // si se quisiera terminar abruptamente se deberia
 // usar otro canal tipo `p.quit<-true` y agregarle
@@ -591,30 +629,41 @@ func (p *Partida) Terminar() {
 // Esperar espera a que se consuma toda la fila de jugadas
 // para continuar; pero sin cerrar ningun canal
 func (p *Partida) Esperar() {
-	p.sigComando <- "__WAIT__"
+	p.sigJugada <- nil
 	<-p.wait
 }
+
+/**************************/
+
+// Msg mensajes a la capa de presentacion
+type Msg struct {
+	Dest []string
+	Tipo string
+	Cont string
+}
+
+var queue []Msg
+
+func push(msg Msg) {
+	queue = append(queue, msg)
+}
+
+func dispatch() []Msg {
+	x := queue
+	queue = make([]Msg, 0)
+	return x
+}
+
+// Dispatch retorna todo el contendio acumulado de la queue
+func (p *Partida) Dispatch() []Msg {
+	return dispatch()
+}
+
+/**************************/
 
 func (p *Partida) escuchar() {
 	for {
 		select {
-		// este canal agarra solo los comandos en forma de string
-		// luego lo pasa al otro canal de jugadas ya aceptadas
-		// en la que espera la parte interna del codigo
-		case cmd := <-p.sigComando:
-			switch cmd {
-			// case "__TERMINAR__":
-			// 	close(p.sigJugada)
-			case "__WAIT__":
-				p.sigJugada <- nil
-			default:
-				jugada, err := p.parseJugada(cmd)
-				if err != nil {
-					fmt.Println("<< " + err.Error())
-				} else {
-					p.sigJugada <- jugada
-				}
-			}
 
 		case <-p.quit:
 			// cierro todo
@@ -639,10 +688,7 @@ func (p *Partida) ejecutar() {
 			return
 		}
 
-		err := sjugada.hacer(p)
-		if err != nil {
-			fmt.Println(err.Error())
-		}
+		sjugada.hacer(p)
 	}
 }
 

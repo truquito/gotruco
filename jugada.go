@@ -6,7 +6,7 @@ import (
 
 // IJugada Interface para las jugadas
 type IJugada interface {
-	hacer(p *Partida) error
+	hacer(p *Partida)
 	getAutor() *Manojo
 }
 
@@ -26,28 +26,52 @@ type tirarCarta struct {
 
 // el jugador tira una carta;
 // el parametro se encuentra en la struct como atributo
-func (jugada tirarCarta) hacer(p *Partida) error {
+func (jugada tirarCarta) hacer(p *Partida) {
 	// checkeo flor en juego
 	enviteEnJuego := p.Ronda.Envite.Estado >= ENVIDO
 	if enviteEnJuego {
-		return fmt.Errorf("No es posible tirar una carta ahora porque el envite esta en juego")
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf("No es posible tirar una carta ahora porque el envite esta en juego"),
+		})
+		return
+
 	}
 	// primero que nada: tiene esa carta?
 	idx, err := jugada.autor.getCartaIdx(jugada.Carta)
 	if err != nil {
-		return err
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: err.Error(),
+		})
+		return
 	}
 
 	// luego, era su turno?
 	eraSuTurno := p.Ronda.getElTurno() == jugada.autor
 	if !eraSuTurno {
-		return fmt.Errorf("No era su turno, no puede tirar la carta")
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf("No era su turno, no puede tirar la carta"),
+		})
+		return
+
 	}
 
 	// ok la tiene y era su turno -> la juega
-	fmt.Printf("<< %s tira la carta %s\n",
-		jugada.autor.Jugador.Nombre,
-		jugada.Carta.toString())
+	push(Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf("%s tira la carta %s",
+			jugada.autor.Jugador.Nombre, jugada.Carta.toString()),
+	})
+
 	jugada.autor.CartasNoTiradas[idx] = false
 	jugada.autor.UltimaTirada = idx
 	p.Ronda.getManoActual().agregarTirada(jugada)
@@ -62,7 +86,7 @@ func (jugada tirarCarta) hacer(p *Partida) error {
 		p.Ronda.setNextTurno()
 	}
 
-	return nil
+	return
 }
 
 // PRE: supongo que el jugador que toca este envido
@@ -71,11 +95,18 @@ type tocarEnvido struct {
 	Jugada
 }
 
-func (jugada tocarEnvido) hacer(p *Partida) error {
+func (jugada tocarEnvido) hacer(p *Partida) {
 	// checkeo flor en juego
 	florEnJuego := p.Ronda.Envite.Estado >= FLOR
 	if florEnJuego {
-		return fmt.Errorf("No es posible tocar el envido ahora porque la flor esta en juego")
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf("No es posible tocar el envido ahora porque la flor esta en juego"),
+		})
+		return
+
 	}
 	esPrimeraMano := p.Ronda.ManoEnJuego == primera
 	esSuTurno := p.Ronda.getElTurno() == jugada.autor
@@ -86,10 +117,21 @@ func (jugada tocarEnvido) hacer(p *Partida) error {
 	ok := (envidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario) && (esSuTurno || yaEstabamosEnEnvido)
 
 	if !ok {
-		return fmt.Errorf(`No es posible cantar 'Envido'`)
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf(`No es posible cantar 'Envido'`),
+		})
+		return
+
 	}
 
-	fmt.Printf("<< %s toca envido\n", jugada.autor.Jugador.Nombre)
+	push(Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf("%s toca envido", jugada.autor.Jugador.Nombre),
+	})
 
 	// ahora checkeo si alguien tiene flor
 	hayFlor, manojosConFlor := p.Ronda.getFlores()
@@ -116,34 +158,44 @@ func (jugada tocarEnvido) hacer(p *Partida) error {
 		}
 	}
 
-	return nil
+	return
 }
 
 // donde 'j' el jugador que dijo 'quiero' al 'envido'/'real envido'
-func (jugada tocarEnvido) eval(p *Partida) error {
+func (jugada tocarEnvido) eval(p *Partida) {
 	p.Ronda.Envite.Estado = DESHABILITADO
 	jIdx, max, out := p.Ronda.execElEnvido()
 	print(out)
 
 	jug := &p.jugadores[jIdx]
 
-	fmt.Printf(`<< El envido lo gano %s con %v, +%v puntos para el equipo %s`+"\n",
-		jug.Nombre, max, p.Ronda.Envite.Puntaje, jug.Equipo)
+	push(Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf(`El envido lo gano %s con %v, +%v puntos para el equipo %s`,
+			jug.Nombre, max, p.Ronda.Envite.Puntaje, jug.Equipo),
+	})
 
 	p.sumarPuntos(jug.Equipo, p.Ronda.Envite.Puntaje)
 
-	return nil
 }
 
 type tocarRealEnvido struct {
 	Jugada
 }
 
-func (jugada tocarRealEnvido) hacer(p *Partida) error {
+func (jugada tocarRealEnvido) hacer(p *Partida) {
 	// checkeo flor en juego
 	florEnJuego := p.Ronda.Envite.Estado >= FLOR
 	if florEnJuego {
-		return fmt.Errorf("No es posible tocar real envido ahora porque la flor esta en juego")
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf("No es posible tocar real envido ahora porque la flor esta en juego"),
+		})
+		return
+
 	}
 	esPrimeraMano := p.Ronda.ManoEnJuego == primera
 	esSuTurno := p.getJugador(p.Ronda.Turno) == jugada.autor.Jugador
@@ -154,10 +206,22 @@ func (jugada tocarRealEnvido) hacer(p *Partida) error {
 	ok := realEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario && (esSuTurno || yaEstabamosEnEnvido)
 
 	if !ok {
-		return fmt.Errorf(`No es posible cantar 'Real Envido'`)
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf(`No es posible cantar 'Real Envido'`),
+		})
+		return
+
 	}
 
-	fmt.Printf("<< %s toca real envido\n", jugada.autor.Jugador.Nombre)
+	push(Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf("%s toca real envido", jugada.autor.Jugador.Nombre),
+	})
+
 	p.Ronda.Envite.Estado = REALENVIDO
 	p.Ronda.Envite.CantadoPor = jugada.autor
 
@@ -179,18 +243,25 @@ func (jugada tocarRealEnvido) hacer(p *Partida) error {
 		}
 	}
 
-	return nil
+	return
 }
 
 type tocarFaltaEnvido struct {
 	Jugada
 }
 
-func (jugada tocarFaltaEnvido) hacer(p *Partida) error {
+func (jugada tocarFaltaEnvido) hacer(p *Partida) {
 	// checkeo flor en juego
 	florEnJuego := p.Ronda.Envite.Estado >= FLOR
 	if florEnJuego {
-		return fmt.Errorf("No es posible tocar falta envido ahora porque la flor esta en juego")
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf("No es posible tocar falta envido ahora porque la flor esta en juego"),
+		})
+		return
+
 	}
 	esSuTurno := p.getJugador(p.Ronda.Turno) == jugada.autor.Jugador
 	esPrimeraMano := p.Ronda.ManoEnJuego == primera
@@ -201,10 +272,22 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) error {
 	ok := faltaEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario && (esSuTurno || yaEstabamosEnEnvido)
 
 	if !ok {
-		return fmt.Errorf(`No es posible cantar 'Falta Envido'`)
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf(`No es posible cantar 'Falta Envido'`),
+		})
+		return
+
 	}
 
-	fmt.Printf("<< %s toca falta envido\n", jugada.autor.Jugador.Nombre)
+	push(Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf("%s toca falta envido", jugada.autor.Jugador.Nombre),
+	})
+
 	p.Ronda.Envite.Estado = FALTAENVIDO
 	p.Ronda.Envite.CantadoPor = jugada.autor
 
@@ -216,7 +299,7 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) error {
 		siguienteJugada.hacer(p)
 	}
 
-	return nil
+	return
 }
 
 /**
@@ -230,7 +313,7 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) error {
  *		si no: se juega por el resto del maximo puntaje
 */
 
-func (jugada tocarFaltaEnvido) eval(p *Partida) error {
+func (jugada tocarFaltaEnvido) eval(p *Partida) {
 	p.Ronda.Envite.Estado = DESHABILITADO
 
 	// computar envidos
@@ -245,12 +328,15 @@ func (jugada tocarFaltaEnvido) eval(p *Partida) error {
 
 	p.Ronda.Envite.Puntaje += pts
 
-	fmt.Printf(`<< La falta envido la gano %s con %v, +%v puntos para el equipo %s`+"\n",
-		jug.Nombre, max, p.Ronda.Envite.Puntaje, jug.Equipo)
+	push(Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf(`La falta envido la gano %s con %v, +%v puntos para el equipo %s`,
+			jug.Nombre, max, p.Ronda.Envite.Puntaje, jug.Equipo),
+	})
 
 	p.sumarPuntos(jug.Equipo, p.Ronda.Envite.Puntaje)
 
-	return nil
 }
 
 type cantarFlor struct {
@@ -272,7 +358,7 @@ se pase a calcular el resultado solo de las flores acumuladas
 se necesita timer
 
 */
-func (jugada cantarFlor) hacer(p *Partida) error {
+func (jugada cantarFlor) hacer(p *Partida) {
 	// manojo dice que puede cantar flor;
 	// es esto verdad?
 	florHabilitada := (p.Ronda.Envite.Estado >= NOCANTADOAUN && p.Ronda.Envite.Estado <= FLOR) && p.Ronda.ManoEnJuego == primera
@@ -280,10 +366,22 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 	noCantoFlorAun := contains(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.autor)
 	ok := florHabilitada && tieneFlor && noCantoFlorAun
 	if !ok {
-		return fmt.Errorf(`No es posible cantar flor`)
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf(`No es posible cantar flor`),
+		})
+		return
+
 	}
 
-	fmt.Printf("<< %s canta flor\n", jugada.autor.Jugador.Nombre)
+	push(Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf("%s canta flor", jugada.autor.Jugador.Nombre),
+	})
+
 	p.Ronda.Envite.JugadoresConFlorQueNoCantaron = eliminar(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.autor)
 
 	yaEstabamosEnFlor := p.Ronda.Envite.Estado == FLOR
@@ -307,7 +405,7 @@ func (jugada cantarFlor) hacer(p *Partida) error {
 		evalFlor(p)
 	}
 
-	return nil
+	return
 }
 
 func evalFlor(p *Partida) {
@@ -332,11 +430,23 @@ func evalFlor(p *Partida) {
 		p.sumarPuntos(equipoGanador, puntosASumar)
 		habiaSolo1JugadorConFlor := len(p.Ronda.Envite.JugadoresConFlor) == 1
 		if habiaSolo1JugadorConFlor {
-			fmt.Printf(`<< +%v puntos para el equipo %s (por ser la unica flor de esta ronda)`+"\n",
-				puntosASumar, equipoGanador)
+
+			push(Msg{
+				Dest: []string{"ALL"},
+				Tipo: "ok",
+				Cont: fmt.Sprintf(`+%v puntos para el equipo %s (por ser la unica flor de esta ronda)`,
+					puntosASumar, equipoGanador),
+			})
+
 		} else {
-			fmt.Printf(`<< La flor mas alta es la de %s con %v, +%v puntos para el equipo %s`+"\n",
-				manojoConLaFlorMasAlta.Jugador.Nombre, maxFlor, puntosASumar, equipoGanador)
+
+			push(Msg{
+				Dest: []string{"ALL"},
+				Tipo: "ok",
+				Cont: fmt.Sprintf(`La flor mas alta es la de %s con %v, +%v puntos para el equipo %s`,
+					manojoConLaFlorMasAlta.Jugador.Nombre, maxFlor, puntosASumar, equipoGanador),
+			})
+
 		}
 	case CONTRAFLOR:
 	case CONTRAFLORALRESTO:
@@ -349,7 +459,7 @@ type cantarContraFlor struct {
 	Jugada
 }
 
-func (jugada cantarContraFlor) hacer(p *Partida) error {
+func (jugada cantarContraFlor) hacer(p *Partida) {
 	// manojo dice que puede cantar flor;
 	// es esto verdad?
 	contraFlorHabilitada := p.Ronda.Envite.Estado == FLOR && p.Ronda.ManoEnJuego == primera
@@ -358,11 +468,23 @@ func (jugada cantarContraFlor) hacer(p *Partida) error {
 	noCantoFlorAun := contains(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.autor)
 	ok := contraFlorHabilitada && tieneFlor && esDelEquipoContrario && noCantoFlorAun
 	if !ok {
-		return fmt.Errorf(`No es posible cantar contra flor`)
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf(`No es posible cantar contra flor`),
+		})
+		return
+
 	}
 
 	// la canta
-	fmt.Printf("<< %s canta contra-flor\n", jugada.getAutor().Jugador.Nombre)
+	push(Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf("%s canta contra-flor", jugada.getAutor().Jugador.Nombre),
+	})
+
 	p.Ronda.Envite.Estado = CONTRAFLOR
 	p.Ronda.Envite.CantadoPor = jugada.autor
 	// ahora la flor pasa a jugarse por 4 puntos
@@ -372,14 +494,14 @@ func (jugada cantarContraFlor) hacer(p *Partida) error {
 	// restauro la copia
 	p.Ronda.Envite.JugadoresConFlorQueNoCantaron = eliminar(p.Ronda.Envite.JugadoresConFlor, jugada.autor)
 
-	return nil
+	return
 }
 
 type cantarContraFlorAlResto struct {
 	Jugada
 }
 
-func (jugada cantarContraFlorAlResto) hacer(p *Partida) error {
+func (jugada cantarContraFlorAlResto) hacer(p *Partida) {
 	// manojo dice que puede cantar flor;
 	// es esto verdad?
 	contraFlorHabilitada := (p.Ronda.Envite.Estado == FLOR || p.Ronda.Envite.Estado == CONTRAFLOR) && p.Ronda.ManoEnJuego == primera
@@ -388,11 +510,23 @@ func (jugada cantarContraFlorAlResto) hacer(p *Partida) error {
 	noCantoFlorAun := contains(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.autor)
 	ok := contraFlorHabilitada && tieneFlor && esDelEquipoContrario && noCantoFlorAun
 	if !ok {
-		return fmt.Errorf(`No es posible cantar contra flor al resto`)
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf(`No es posible cantar contra flor al resto`),
+		})
+		return
+
 	}
 
 	// la canta
-	fmt.Printf("<< %s canta contra-flor-al-resto\n", jugada.getAutor().Jugador.Nombre)
+	push(Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf("%s canta contra-flor-al-resto", jugada.getAutor().Jugador.Nombre),
+	})
+
 	p.Ronda.Envite.Estado = CONTRAFLORALRESTO
 	p.Ronda.Envite.CantadoPor = jugada.autor
 	// ahora la flor pasa a jugarse por 4 puntos
@@ -402,22 +536,22 @@ func (jugada cantarContraFlorAlResto) hacer(p *Partida) error {
 	// restauro la copia
 	p.Ronda.Envite.JugadoresConFlorQueNoCantaron = eliminar(p.Ronda.Envite.JugadoresConFlor, jugada.autor)
 
-	return nil
+	return
 }
 
 type cantarConFlorMeAchico struct {
 	Jugada
 }
 
-func (jugada cantarConFlorMeAchico) hacer(p *Partida) error {
-	return nil
+func (jugada cantarConFlorMeAchico) hacer(p *Partida) {
+	return
 }
 
 type gritarTruco struct {
 	Jugada
 }
 
-func (jugada gritarTruco) hacer(p *Partida) error {
+func (jugada gritarTruco) hacer(p *Partida) {
 	// checkeos:
 	noSeFueAlMazo := jugada.autor.SeFueAlMazo == false
 	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
@@ -435,22 +569,33 @@ func (jugada gritarTruco) hacer(p *Partida) error {
 			siguienteJugada.hacer(p)
 		}
 
-		return fmt.Errorf("No es posible cantar truco ahora")
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf("No es posible cantar truco ahora"),
+		})
+		return
+
 	}
 
-	fmt.Printf("<< %s grita truco\n", jugada.autor.Jugador.Nombre)
+	push(Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf("%s grita truco", jugada.autor.Jugador.Nombre),
+	})
+
 	p.Ronda.Truco.CantadoPor = jugada.autor
 	p.Ronda.Truco.Estado = TRUCO
 	p.Ronda.Envite.Estado = DESHABILITADO
 
-	return nil
+	return
 }
 
 type gritarReTruco struct {
 	Jugada
 }
 
-func (jugada gritarReTruco) hacer(p *Partida) error {
+func (jugada gritarReTruco) hacer(p *Partida) {
 
 	// checkeos generales:
 	noSeFueAlMazo := jugada.autor.SeFueAlMazo == false
@@ -485,21 +630,32 @@ func (jugada gritarReTruco) hacer(p *Partida) error {
 			siguienteJugada.hacer(p)
 		}
 
-		return fmt.Errorf("No es posible cantar re-truco ahora")
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf("No es posible cantar re-truco ahora"),
+		})
+		return
+
 	}
 
-	fmt.Printf("<< %s grita re-truco\n", jugada.autor.Jugador.Nombre)
+	push(Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf("%s grita re-truco", jugada.autor.Jugador.Nombre),
+	})
+
 	p.Ronda.Truco.CantadoPor = jugada.autor
 	p.Ronda.Truco.Estado = RETRUCO
 
-	return nil
+	return
 }
 
 type gritarVale4 struct {
 	Jugada
 }
 
-func (jugada gritarVale4) hacer(p *Partida) error {
+func (jugada gritarVale4) hacer(p *Partida) {
 	// checkeos:
 	noSeFueAlMazo := jugada.autor.SeFueAlMazo == false
 
@@ -533,23 +689,41 @@ func (jugada gritarVale4) hacer(p *Partida) error {
 			siguienteJugada.hacer(p)
 		}
 
-		return fmt.Errorf("No es posible cantar vale-4 ahora")
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf("No es posible cantar vale-4 ahora"),
+		})
+		return
+
 	}
 
-	fmt.Printf("<< %s grita vale 4\n", jugada.autor.Jugador.Nombre)
+	push(Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf("%s grita vale 4", jugada.autor.Jugador.Nombre),
+	})
+
 	p.Ronda.Truco.CantadoPor = jugada.autor
 	p.Ronda.Truco.Estado = VALE4
 
-	return nil
+	return
 }
 
 type responderQuiero struct {
 	Jugada
 }
 
-func (jugada responderQuiero) hacer(p *Partida) error {
+func (jugada responderQuiero) hacer(p *Partida) {
 	if jugada.autor.SeFueAlMazo {
-		return fmt.Errorf("Te fuiste al mazo; no podes hacer esta jugada")
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf("Te fuiste al mazo; no podes hacer esta jugada"),
+		})
+		return
+
 	}
 
 	// checkeo flor en juego
@@ -557,7 +731,14 @@ func (jugada responderQuiero) hacer(p *Partida) error {
 	// pero si a la contra flor o contra flor al resto
 	florEnJuego := p.Ronda.Envite.Estado == FLOR
 	if florEnJuego {
-		return fmt.Errorf("No es posible responder quiero ahora")
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf("No es posible responder quiero ahora"),
+		})
+		return
+
 	}
 	// se acepta una respuesta 'quiero' solo cuando:
 	// - CASO I: se toco un envite+ (con autor del equipo contario)
@@ -572,17 +753,32 @@ func (jugada responderQuiero) hacer(p *Partida) error {
 	ok := elEnvidoEsRespondible || laContraFlorEsRespondible || elTrucoEsRespondible
 	if !ok {
 		// si no, esta respondiendo al pedo
-		return fmt.Errorf(`(Para %s) No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo`, jugada.autor.Jugador.Nombre)
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf(`(Para %s) No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo`, jugada.autor.Jugador.Nombre),
+		})
+		return
+
 	}
 
 	if elEnvidoEsRespondible {
-		fmt.Printf("<< %s responde quiero\n", jugada.autor.Jugador.Nombre)
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "ok",
+			Cont: fmt.Sprintf("%s responde quiero", jugada.autor.Jugador.Nombre),
+		})
+
 		if p.Ronda.Envite.Estado == FALTAENVIDO {
-			return tocarFaltaEnvido{Jugada{autor: jugada.autor}}.eval(p)
+			tocarFaltaEnvido{Jugada{autor: jugada.autor}}.eval(p)
+			return
 		}
 		// si no, era envido/real-envido o cualquier
 		// combinacion valida de ellos
-		return tocarEnvido{Jugada{autor: jugada.autor}}.eval(p)
+		tocarEnvido{Jugada{autor: jugada.autor}}.eval(p)
+		return
 
 	} else if laContraFlorEsRespondible {
 		// tengo que verificar si efectivamente tiene flor
@@ -591,7 +787,14 @@ func (jugada responderQuiero) hacer(p *Partida) error {
 		ok := tieneFlor && esDelEquipoContrario
 
 		if !ok {
-			return fmt.Errorf(`La jugada no es valida`)
+
+			push(Msg{
+				Dest: []string{"ALL"},
+				Tipo: "error",
+				Cont: fmt.Sprintf(`La jugada no es valida`),
+			})
+			return
+
 		}
 
 		// empieza cantando el autor del envite no el que "quizo"
@@ -601,8 +804,13 @@ func (jugada responderQuiero) hacer(p *Partida) error {
 		if p.Ronda.Envite.Estado == CONTRAFLOR {
 			puntosASumar := p.Ronda.Envite.Puntaje
 			p.sumarPuntos(equipoGanador, puntosASumar)
-			fmt.Printf(`<< La contra-flor-al-resto la gano %s con %v, +%v puntos para el equipo %s`+"\n",
-				manojoConLaFlorMasAlta.Jugador.Nombre, maxFlor, puntosASumar, equipoGanador)
+
+			push(Msg{
+				Dest: []string{"ALL"},
+				Tipo: "ok",
+				Cont: fmt.Sprintf(`La contra-flor-al-resto la gano %s con %v, +%v puntos para el equipo %s`,
+					manojoConLaFlorMasAlta.Jugador.Nombre, maxFlor, puntosASumar, equipoGanador),
+			})
 
 		} else {
 			// el equipo del ganador de la contraflor al resto
@@ -612,14 +820,25 @@ func (jugada responderQuiero) hacer(p *Partida) error {
 			puntosASumar := p.calcPtsContraFlorAlResto(equipoGanador)
 			p.sumarPuntos(equipoGanador, puntosASumar)
 
-			fmt.Printf(`<< La contra-flor-al-resto la gano %s con %v, +%v puntos para el equipo %s`+"\n",
-				manojoConLaFlorMasAlta.Jugador.Nombre, maxFlor, puntosASumar, equipoGanador)
+			push(Msg{
+				Dest: []string{"ALL"},
+				Tipo: "ok",
+				Cont: fmt.Sprintf(`La contra-flor-al-resto la gano %s con %v, +%v puntos para el equipo %s`,
+					manojoConLaFlorMasAlta.Jugador.Nombre, maxFlor, puntosASumar, equipoGanador),
+			})
+
 		}
 
 		p.Ronda.Envite.Estado = DESHABILITADO
 
 	} else if elTrucoEsRespondible {
-		fmt.Printf("<< %s responde quiero\n", jugada.autor.Jugador.Nombre)
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "ok",
+			Cont: fmt.Sprintf("%s responde quiero", jugada.autor.Jugador.Nombre),
+		})
+
 		p.Ronda.Truco.CantadoPor = jugada.autor
 		switch p.Ronda.Truco.Estado {
 		case TRUCO:
@@ -631,7 +850,7 @@ func (jugada responderQuiero) hacer(p *Partida) error {
 		}
 	}
 
-	return nil
+	return
 
 }
 
@@ -639,7 +858,7 @@ type responderNoQuiero struct {
 	Jugada
 }
 
-func (jugada responderNoQuiero) hacer(p *Partida) error {
+func (jugada responderNoQuiero) hacer(p *Partida) {
 	// checkeo flor en juego
 	// caso particular del checkeo: no se le puede decir quiero a la flor
 	// pero si a la contra flor o contra flor al resto
@@ -665,11 +884,23 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 
 	if !ok {
 		// si no, esta respondiendo al pedo
-		return fmt.Errorf(`%s esta respondiendo al pedo; no hay nada respondible`, jugada.autor.Jugador.Nombre)
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf(`%s esta respondiendo al pedo; no hay nada respondible`, jugada.autor.Jugador.Nombre),
+		})
+		return
+
 	}
 
 	if elEnvidoEsRespondible {
-		fmt.Printf("<< %s responde no quiero\n", jugada.autor.Jugador.Nombre)
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "ok",
+			Cont: fmt.Sprintf("%s responde no quiero", jugada.autor.Jugador.Nombre),
+		})
 
 		//	no se toma en cuenta el puntaje total del ultimo toque
 
@@ -686,8 +917,13 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 
 		p.Ronda.Envite.Estado = DESHABILITADO
 		p.Ronda.Envite.Puntaje = totalPts
-		fmt.Printf(`<< +%v puntos para el equipo %s`+"\n",
-			totalPts, p.Ronda.Envite.CantadoPor.Jugador.Equipo)
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "ok",
+			Cont: fmt.Sprintf(`+%v puntos para el equipo %s`,
+				totalPts, p.Ronda.Envite.CantadoPor.Jugador.Equipo),
+		})
 
 		p.sumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
 
@@ -697,7 +933,14 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 		tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
 
 		if !tieneFlor {
-			return fmt.Errorf(`No tiene flor; la jugada es incompatible`)
+
+			push(Msg{
+				Dest: []string{"ALL"},
+				Tipo: "error",
+				Cont: fmt.Sprintf(`No tiene flor; la jugada es incompatible`),
+			})
+			return
+
 		}
 
 		// todo ok: tiene flor; se pasa a jugar:
@@ -728,8 +971,12 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 
 		p.Ronda.Envite.Estado = DESHABILITADO
 
-		fmt.Printf(`<< +%v puntos para el equipo %s por las flores`+"\n",
-			totalPts, p.Ronda.Envite.CantadoPor.Jugador.Equipo)
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "ok",
+			Cont: fmt.Sprintf(`+%v puntos para el equipo %s por las flores`,
+				totalPts, p.Ronda.Envite.CantadoPor.Jugador.Equipo),
+		})
 
 		p.sumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
 
@@ -747,11 +994,17 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 		case VALE4:
 			totalPts = 3
 		}
-		fmt.Printf(`<< +%v puntos para el equipo %s por el %s no querido por %s`+"\n",
-			totalPts,
-			p.Ronda.Truco.CantadoPor.Jugador.Equipo,
-			p.Ronda.Truco.Estado.String(),
-			jugada.autor.Jugador.Nombre)
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "ok",
+			Cont: fmt.Sprintf(`+%v puntos para el equipo %s por el %s no querido por %s`,
+				totalPts,
+				p.Ronda.Truco.CantadoPor.Jugador.Equipo,
+				p.Ronda.Truco.Estado.String(),
+				jugada.autor.Jugador.Nombre),
+		})
+
 		termino := p.sumarPuntos(p.Ronda.Truco.CantadoPor.Jugador.Equipo, totalPts)
 		if !termino {
 			sigMano := p.Ronda.getSigElMano()
@@ -759,14 +1012,14 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 		}
 	}
 
-	return nil
+	return
 }
 
 type irseAlMazo struct {
 	Jugada
 }
 
-func (jugada irseAlMazo) hacer(p *Partida) error {
+func (jugada irseAlMazo) hacer(p *Partida) {
 	// checkeos:
 	yaSeFueAlMazo := jugada.autor.SeFueAlMazo == true
 	seEstabaJugandoElEnvido := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO)
@@ -774,7 +1027,14 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 	seEstabaJugandoElTruco := p.Ronda.Truco.Estado >= TRUCO
 
 	if yaSeFueAlMazo {
-		return fmt.Errorf("No es posible irse al mazo ahora")
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf("No es posible irse al mazo ahora"),
+		})
+		return
+
 	}
 
 	// no se puede ir al mazo sii:
@@ -789,18 +1049,37 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 	// condicionDelBobo := (envidoPropuesto && envidoPropuestoPorSuEquipo) || (trucoPropuesto && trucoPropuestoPorSuEquipo)
 
 	// if condicionDelBobo {
-	// 	return fmt.Errorf("No es posible irse al mazo ahora porque hay propuestas de tu equipo sin responder")
+
+	// push(Msg{
+	// 	Dest: []string{"ALL"},
+	// 	Tipo: "error",
+	// 	Cont: fmt.Sprintf("No es posible irse al mazo ahora porque hay propuestas de tu equipo sin responder"),
+	// }) //
+	// return
+
 	// }
 
 	noSePuedeIrPorElEnvite := (seEstabaJugandoElEnvido || seEstabaJugandoLaFlor) && p.Ronda.Envite.CantadoPor == jugada.autor
 	// la de la flor es igual al del envido; porque es un envite
 	noSePuedeIrPorElTruco := seEstabaJugandoElTruco && p.Ronda.Truco.CantadoPor == jugada.autor
 	if noSePuedeIrPorElEnvite || noSePuedeIrPorElTruco {
-		return fmt.Errorf("No es posible irse al mazo ahora")
+
+		push(Msg{
+			Dest: []string{"ALL"},
+			Tipo: "error",
+			Cont: fmt.Sprintf("No es posible irse al mazo ahora"),
+		})
+		return
+
 	}
 
 	// ok -> se va al mazo:
-	fmt.Printf("<< %s se va al mazo\n", jugada.autor.Jugador.Nombre)
+	push(Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf("%s se va al mazo", jugada.autor.Jugador.Nombre),
+	})
+
 	jugada.autor.SeFueAlMazo = true
 	equipoDelJugador := jugada.autor.Jugador.Equipo
 	p.Ronda.CantJugadoresEnJuego[equipoDelJugador]--
@@ -845,8 +1124,12 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 			e.Estado = DESHABILITADO
 			e.Puntaje = totalPts
 
-			fmt.Printf(`<< +%v puntos del envite para el equipo %s`+"\n",
-				totalPts, e.CantadoPor.Jugador.Equipo)
+			push(Msg{
+				Dest: []string{"ALL"},
+				Tipo: "ok",
+				Cont: fmt.Sprintf(`+%v puntos del envite para el equipo %s`,
+					totalPts, e.CantadoPor.Jugador.Equipo),
+			})
 
 			p.sumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
 
@@ -878,8 +1161,13 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 			}
 
 			p.Ronda.Envite.Estado = DESHABILITADO
-			fmt.Printf(`<< +%v puntos para el equipo %s por las flores`+"\n",
-				totalPts, p.Ronda.Envite.CantadoPor.Jugador.Equipo)
+
+			push(Msg{
+				Dest: []string{"ALL"},
+				Tipo: "ok",
+				Cont: fmt.Sprintf(`+%v puntos para el equipo %s por las flores`,
+					totalPts, p.Ronda.Envite.CantadoPor.Jugador.Equipo),
+			})
 
 		}
 	}
@@ -899,7 +1187,7 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 		p.Ronda.setNextTurno()
 	}
 
-	return nil
+	return
 }
 
 var jugadas = map[string]([]string){
@@ -934,11 +1222,11 @@ var jugadas = map[string]([]string){
 // ImprimirJugadas imprime las jugadas posibles
 func ImprimirJugadas() {
 	for tipoJugada, opciones := range jugadas {
-		fmt.Printf("%s: ", tipoJugada)
+		fmt.Printf("%s: ", tipoJugada) //
 		for _, jugada := range opciones {
-			fmt.Printf("%s, ", jugada)
+			fmt.Printf("%s, ", jugada) //
 		}
-		fmt.Printf("\n")
+		fmt.Printf("\n") //
 	}
 	fmt.Println()
 }
