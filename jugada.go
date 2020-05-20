@@ -686,6 +686,8 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 		fmt.Printf(`<< +%v puntos para el equipo %s`+"\n",
 			totalPts, p.Ronda.Envite.CantadoPor.Jugador.Equipo)
 
+		p.sumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
+
 	} else if laFlorEsRespondible {
 
 		// tengo que verificar si efectivamente tiene flor
@@ -725,6 +727,8 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 
 		fmt.Printf(`<< +%v puntos para el equipo %s por las flores`+"\n",
 			totalPts, p.Ronda.Envite.CantadoPor.Jugador.Equipo)
+
+		p.sumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
 
 	} else if elTrucoEsRespondible {
 
@@ -802,123 +806,83 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 		}
 	}
 
-	// p.Ronda.nextTurno()
 	// era el ultimo en tirar de esta mano?
 	eraElUltimoEnTirar := p.Ronda.getSigHabilitado(*jugada.autor) == nil
-	if eraElUltimoEnTirar {
+
+	if seFueronTodos {
+		// el equipo contrario gana la ronda
+		// y todo lo que estaba en juego hasta ahora
+		// envido; flor; truco;
+		// si no habia nada en juego -> suma 1 punto
+		if seEstabaJugandoElEnvido {
+			// cuenta como un "no quiero"
+
+			// codigo copiado de "no quiero"
+			//	no se toma en cuenta el puntaje total del ultimo toque
+			var totalPts int
+			e := &p.Ronda.Envite
+			switch e.Estado {
+			case ENVIDO:
+				totalPts = e.Puntaje - 1
+			case REALENVIDO:
+				totalPts = e.Puntaje - 2
+			case FALTAENVIDO:
+				totalPts = e.Puntaje + 1
+			}
+			e.Estado = DESHABILITADO
+			e.Puntaje = totalPts
+			p.Puntajes[e.CantadoPor.Jugador.Equipo] += totalPts
+			fmt.Printf(`<< +%v puntos del envite para el equipo %s`+"\n",
+				totalPts, e.CantadoPor.Jugador.Equipo)
+
+		}
+
+		if seEstabaJugandoLaFlor {
+			// cuenta como un "no quiero"
+			// segun el estado de la apuesta actual:
+			// los "me achico" no cuentan para la flor
+			// Flor		xcg(+3) / xcg(+3)
+			// Flor + Contra-Flor		xc(+3) / xCadaFlorDelQueHizoElDesafio(+3) + 1
+			// Flor + [Contra-Flor] + ContraFlorAlResto		~Falta Envido + *TODAS* las flores no achicadas / xcg(+3) + 1
+
+			// sumo todas las flores del equipo contrario
+			totalPts := 0
+
+			for _, m := range p.Ronda.Manojos {
+				esDelEquipoContrario := p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.autor.Jugador.Equipo
+				tieneFlor, _ := m.tieneFlor(p.Ronda.Muestra)
+				if tieneFlor && esDelEquipoContrario {
+					totalPts += 3
+				}
+			}
+
+			if p.Ronda.Envite.Estado == CONTRAFLOR || p.Ronda.Envite.Estado == CONTRAFLORALRESTO {
+				// si es contraflor o al resto
+				// se suma 1 por el `no quiero`
+				totalPts++
+			}
+
+			p.Ronda.Envite.Estado = DESHABILITADO
+			fmt.Printf(`<< +%v puntos para el equipo %s por las flores`+"\n",
+				totalPts, p.Ronda.Envite.CantadoPor.Jugador.Equipo)
+
+		}
+	}
+
+	// evaluar ronda sii:
+	// o bien se fueron todos
+	// o bien este se fue al mazo, pero alguno de sus companeros no
+	// (es decir que queda al menos 1 jugador en juego)
+	// pero evaluo si era la ronda 2 (por las dudas)
+	esTerminable := p.Ronda.ManoEnJuego >= segunda
+	hayQueEvaluarRonda := seFueronTodos || (eraElUltimoEnTirar && esTerminable)
+	if hayQueEvaluarRonda {
 		// de ser asi tengo que checkear el resultado de la mano
 		p.evaluarMano()
 		// el turno del siguiente queda dado por el ganador de esta
 	} else {
 		p.Ronda.setNextTurno()
 	}
-
-	seFueronTodos = !!seFueronTodos
-
-	/* esto lo deberia checkear evaluar mano?:
-
-		if seFueronTodos {
-			// el equipo contrario gana la ronda
-			// y todo lo que estaba en juego hasta ahora
-			// envido; flor; truco;
-			// si no habia nada en juego -> suma 1 punto
-			if seEstabaJugandoElEnvido {
-				// cuenta como un "no quiero"
-
-				// codigo copiado de "no quiero"
-				//	no se toma en cuenta el puntaje total del ultimo toque
-				var totalPts int
-				e := &p.Ronda.Envite
-				switch e.Estado {
-				case ENVIDO:
-					totalPts = e.Puntaje - 1
-				case REALENVIDO:
-					totalPts = e.Puntaje - 2
-				case FALTAENVIDO:
-					totalPts = e.Puntaje + 1
-				}
-				e.Estado = DESHABILITADO
-				e.Puntaje = totalPts
-				p.Puntajes[e.CantadoPor.Equipo] += totalPts
-				fmt.Printf(`<< +%v puntos del envite para el equipo %s`+"\n",
-					totalPts, e.CantadoPor.Equipo)
-
-			}
-
-			if seEstabaJugandoLaFlor {
-				// cuenta como un "no quiero"
-				// segun el estado de la apuesta actual:
-				// los "me achico" no cuentan para la flor
-				// Flor		xcg(+3) / xcg(+3)
-				// Flor + Contra-Flor		xc(+3) / xCadaFlorDelQueHizoElDesafio(+3) + 1
-				// Flor + [Contra-Flor] + ContraFlorAlResto		~Falta Envido + *TODAS* las flores no achicadas / xcg(+3) + 1
-
-				// sumo todas las flores del equipo contrario
-				totalPts := 0
-
-				for _, m := range p.Ronda.Manojos {
-					esDelEquipoContrario := p.Ronda.Envite.CantadoPor.Jugador.equipo != jugada.autor.Jugador.Equipo
-					tieneFlor, _ := m.tieneFlor(p.Ronda.Muestra)
-					if tieneFlor && esDelEquipoContrario {
-						totalPts += 3
-					}
-				}
-
-				if p.Ronda.Envite.Estado == CONTRAFLOR || p.Ronda.Envite.Estado == CONTRAFLORALRESTO {
-					// si es contraflor o al resto
-					// se suma 1 por el `no quiero`
-					totalPts++
-				}
-
-				p.Ronda.Envite.Estado = DESHABILITADO
-				fmt.Printf(`<< +%v puntos para el equipo %s por las flores`+"\n",
-					totalPts, p.Ronda.Envite.CantadoPor.Jugador.equipo)
-
-			}
-
-			if seEstabaJugandoElTruco {
-				// parecido a un "no quiero"
-				// todos los puntos en juego van para el equipo que hizo la apuesta de truco
-				// y se termina la ronda
-				var totalPts int
-				switch p.Ronda.Truco.Estado {
-				case TRUCO:
-					totalPts = 1
-				case TRUCOQUERIDO:
-					totalPts = 2
-				case RETRUCO:
-					totalPts = 2
-				case RETRUCOQUERIDO:
-					totalPts = 3
-				case VALE4:
-					totalPts = 3
-				case VALE4QUERIDO:
-					totalPts = 4
-				}
-				fmt.Printf(`<< +%v puntos para el equipo %s por el %s no querido por %s`+"\n",
-					totalPts,
-					p.Ronda.Truco.CantadoPor.Jugador.Equipo,
-					p.Ronda.Truco.Estado.String(),
-					jugada.autor.Jugador.Nombre)
-				termino := p.sumarPuntos(p.Ronda.Truco.CantadoPor.Jugador.Equipo, totalPts)
-				if !termino {
-					sigMano := p.Ronda.getSigMano()
-					p.nuevaRonda(sigMano)
-				}
-			}
-
-			noHabiaNadaEnJuego := !(seEstabaJugandoElEnvido || seEstabaJugandoLaFlor || seEstabaJugandoElTruco)
-			if noHabiaNadaEnJuego {
-				equipoContrario := jugada.autor.Jugador.getEquipoContrario()
-				p.Puntajes[equipoContrario]++
-			}
-
-			// como se fueron todos:
-			sigMano := p.Ronda.getSigMano()
-			p.nuevaRonda(sigMano)
-	    }
-
-	*/
 
 	return nil
 }

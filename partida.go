@@ -334,9 +334,10 @@ func (p *Partida) evaluarMano() {
 		// el turno pasa a ser el del mano.ganador
 		// pero se setea despues de evaluar la ronda
 		mano.Ganador = tiradaGanadora.autor
-		fmt.Printf("<< La %s mano la gano %s (equipo %s)\n",
+		fmt.Printf("<< La %s mano la gano el equipo %s gracia a %s\n",
 			strings.ToLower(p.Ronda.ManoEnJuego.String()),
-			mano.Ganador.Jugador.Nombre, mano.Ganador.Jugador.Equipo.String())
+			mano.Ganador.Jugador.Equipo.String(),
+			mano.Ganador.Jugador.Nombre)
 	}
 
 	// se termino la ronda?
@@ -359,7 +360,13 @@ func (p *Partida) evaluarMano() {
 // si se empieza una ronda nueva -> retorna true
 // si no se termino la ronda 	 -> retorna false
 func (p *Partida) evaluarRonda() bool {
-	imposibleQueSeHayaAcabado := p.Ronda.ManoEnJuego == primera
+
+	/* A MENOS QUE SE HAYAN IDO TODOS EN LA PRIMERA MANO!!! */
+	hayJugadoresRojo := p.Ronda.CantJugadoresEnJuego[Rojo] > 0
+	hayJugadoresAzul := p.Ronda.CantJugadoresEnJuego[Azul] > 0
+	hayJugadoresEnAmbos := hayJugadoresRojo && hayJugadoresAzul
+
+	imposibleQueSeHayaAcabado := (p.Ronda.ManoEnJuego == primera) && hayJugadoresEnAmbos
 	if imposibleQueSeHayaAcabado {
 		return false
 	}
@@ -443,23 +450,46 @@ func (p *Partida) evaluarRonda() bool {
 
 	}
 
+	/************************************************/
+
 	fmt.Printf("<< La ronda ha sido ganada por el equipo %s\n",
 		ganador.Jugador.Equipo)
 
 	// ya sabemos el ganador ahora es el
 	// momento de sumar los puntos del truco
 	var totalPts int = 0
+	var msg string
 
 	switch p.Ronda.Truco.Estado {
+	case TRUCO: // caso en que se hayan ido todos al mazo y no se haya respondido ~ equivalente a un no quiero
 	case NOCANTADO:
 		totalPts = 1
+	case RETRUCO: // same
 	case TRUCOQUERIDO:
 		totalPts = 2
+	case VALE4: // same
 	case RETRUCOQUERIDO:
 		totalPts = 3
-	default: // el vale 4
+	case VALE4QUERIDO:
 		totalPts = 4
 	}
+
+	elTrucoNoTuvoRespuesta := contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
+
+	if elTrucoNoTuvoRespuesta {
+		msg = fmt.Sprintf(`<< +%v puntos para el equipo %s por el %s no querido`+"\n",
+			totalPts,
+			ganador.Jugador.Equipo,
+			p.Ronda.Truco.Estado.String())
+
+	} else {
+		msg = fmt.Sprintf(`<< +%v puntos para el equipo %s por el %s ganado`+"\n",
+			totalPts,
+			ganador.Jugador.Equipo,
+			p.Ronda.Truco.Estado.String())
+	}
+
+	fmt.Printf(msg)
 
 	terminoLaPartida := p.sumarPuntos(ganador.Jugador.Equipo, totalPts)
 

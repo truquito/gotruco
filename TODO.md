@@ -1,3 +1,8 @@
+- los puntos de "el truco" los deberia contabilizar ronda.evaluarRonda()
+  ejemplo, en la jugada.noquiero el codigo ese no deberia estar, 
+  sino que deberia llamar a ronda.evaluarRonda()
+  tal vez hacer algo parecido para el envido/flor (?)
+
 - calc bien los puntos cuando se va al mazo (mergear con lo que esta comentado)
 
 - depues de cantar vale4 (y similares) nadie puede tirar carta, el equipo contrario debe responder si o no

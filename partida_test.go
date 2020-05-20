@@ -217,7 +217,12 @@ func TestFixNoFlor(t *testing.T) {
 	p.Print()
 
 	p.SetSigJugada("alvaro 4 basto")
+	// << Alvaro tira la carta 4 de Basto
+
 	p.SetSigJugada("roro truco")
+	// No es posible cantar truco ahora
+	// "la flor esta primero":
+	// << Andres canta flor
 
 	p.Esperar()
 
@@ -226,34 +231,54 @@ func TestFixNoFlor(t *testing.T) {
 		t.Error(`El envido esta primero!`)
 	}
 
+	// el otro que tiene flor, pero se arruga
 	p.SetSigJugada("richard no-quiero")
+	// FIX: NO ESTA OUTPUTEANDO EL NO QUIERO
+	// << +6 puntos para el equipo Azul por las flores
 
 	p.SetSigJugada("roro truco")
+	// << Roro grita truco
 
 	p.SetSigJugada("adolfo 12 oro")
 	// No era su turno, no puede tirar la carta
 
 	p.SetSigJugada("roro 7 copa")
+	// << Roro tira la carta 7 de Copa
+
 	p.SetSigJugada("andres quiero")
+	// << Andres responde quiero
+
 	p.SetSigJugada("adolfo 12 oro")
+	// << Adolfo tira la carta 12 de Oro
+
 	p.SetSigJugada("renzo 5 oro")
+	// << Renzo tira la carta 5 de Oro
 
 	p.SetSigJugada("andres flor")
 	// No es posible cantar flor
 
 	p.SetSigJugada("andres 6 basto")
+	// << Andres tira la carta 6 de Basto
 
 	p.SetSigJugada("richard flor")
 	// No es posible cantar flor
 
 	p.SetSigJugada("richard 11 copa")
-	// termina la primera mano, la gana adolfo
-	// entonces es el turno de adolfo
+	// << Richard tira la carta 11 de Copa
+
+	/* *********************************** */
+	// << La primera mano la gano Adolfo (equipo Azul)
+	// << Es el turno de Adolfo
+	/* *********************************** */
 
 	p.SetSigJugada("adolfo re-truco")
+	// << Adolfo grita re-truco
+
 	p.SetSigJugada("richard quiero")
+	// << Richard responde quiero
 
 	p.SetSigJugada("richard vale-4")
+	// << Richard grita vale 4
 
 	p.Esperar()
 
@@ -263,6 +288,7 @@ func TestFixNoFlor(t *testing.T) {
 	}
 
 	p.SetSigJugada("adolfo quiero")
+	// << Adolfo responde quiero
 
 	p.Esperar()
 
@@ -271,13 +297,38 @@ func TestFixNoFlor(t *testing.T) {
 		t.Error(`El estado del truco deberia ser VALE4QUERIDO`)
 	}
 
+	/* *********************************** */
+	// ACA EMPIEZAN A TIRAR CARTAS PARA LA SEGUNDA MANO
+	// muesta: 3 espada
+	/* *********************************** */
+
 	p.SetSigJugada("adolfo 1 basto")
+	// << Adolfo tira la carta 1 de Basto
+
 	p.SetSigJugada("renzo 7 espada")
+	// << Renzo tira la carta 7 de Espada
+
 	p.SetSigJugada("andres 4 espada")
+	// << Andres tira la carta 4 de Espada
+
 	p.SetSigJugada("richard 10 espada")
+	// << Richard tira la carta 10 de Espada
+
 	p.SetSigJugada("alvaro 6 espada")
+	// << Alvaro tira la carta 6 de Espada
+
 	p.SetSigJugada("roro re-truco")
+	// << Alvaro tira la carta 6 de Espada
+
 	p.SetSigJugada("roro mazo")
+	// << Roro se va al mazo
+
+	// era el ultimo que quedaba por tirar en esta mano
+	// -> que evalue la mano
+
+	// << +4 puntos para el equipo Azul por el vale4Querido no querido por Roro
+	// << Empieza una nueva ronda
+	// << Empieza una nueva ronda
 
 	p.Esperar()
 
