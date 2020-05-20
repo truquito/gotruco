@@ -573,6 +573,79 @@ func (p *Partida) FromJSON(partidaJSON string) error {
 	return nil
 }
 
+// Terminar espera a que se consuma toda la fila de jugadas
+// si se quisiera terminar abruptamente se deberia
+// usar otro canal tipo `p.quit<-true` y agregarle
+// el caso que corresponda al `select{...}`
+func (p *Partida) Terminar() {
+	p.Esperar() // igual si no lo pongo, este terminar no es abrupto
+	// ya que queda en segundo plano consumiendo el stack de jugadas
+	// parseadas; lo correcto seria al sigJugada checkear si hay alguna
+	// especie de flag que diga "no consumas mas jugadas"
+	// <-p.quit
+	p.quit <- true
+	// <-p.quit
+	close(p.quit)
+}
+
+// Esperar espera a que se consuma toda la fila de jugadas
+// para continuar; pero sin cerrar ningun canal
+func (p *Partida) Esperar() {
+	p.sigComando <- "__WAIT__"
+	<-p.wait
+}
+
+func (p *Partida) escuchar() {
+	for {
+		select {
+		// este canal agarra solo los comandos en forma de string
+		// luego lo pasa al otro canal de jugadas ya aceptadas
+		// en la que espera la parte interna del codigo
+		case cmd := <-p.sigComando:
+			switch cmd {
+			// case "__TERMINAR__":
+			// 	close(p.sigJugada)
+			case "__WAIT__":
+				p.sigJugada <- nil
+			default:
+				jugada, err := p.parseJugada(cmd)
+				if err != nil {
+					fmt.Println("<< " + err.Error())
+				} else {
+					p.sigJugada <- jugada
+				}
+			}
+
+		case <-p.quit:
+			// cierro todo
+
+			close(p.sigJugada)  // va a hacer que la func de parsea termine
+			close(p.sigComando) // va a hacer que salga de esta func
+			close(p.wait)
+			// p.quit <- true // para avisarle que ya cerre todo
+			return // hace que esta misma termine
+
+			// case <-time.After(1 * time.Second):
+			// default:
+		}
+	}
+}
+
+func (p *Partida) ejecutar() {
+	for {
+		sjugada, valid := p.getSigJugada()
+
+		if !valid { // el canal cerro
+			return
+		}
+
+		err := sjugada.hacer(p)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+	}
+}
+
 // NuevaPartida retorna nueva partida; error si hubo
 func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Partida, error) {
 
@@ -612,80 +685,8 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	p.sigJugada = make(chan IJugada, 1)
 	p.sigComando = make(chan string, 1)
 
-	// canal de jugadas parseadas
-	go func() {
-		for {
-			sjugada, valid := p.getSigJugada()
-
-			if !valid { // el canal cerro
-				return
-			}
-
-			err := sjugada.hacer(&p)
-			if err != nil {
-				fmt.Println(err.Error())
-			}
-		}
-	}()
-
-	// canal input
-	go func() {
-		for {
-			select {
-			// este canal agarra solo los comandos en forma de string
-			// luego lo pasa al otro canal de jugadas ya aceptadas
-			// en la que espera la parte interna del codigo
-			case cmd := <-p.sigComando:
-				switch cmd {
-				// case "__TERMINAR__":
-				// 	close(p.sigJugada)
-				case "__WAIT__":
-					p.sigJugada <- nil
-				default:
-					jugada, err := p.parseJugada(cmd)
-					if err != nil {
-						fmt.Println("<< " + err.Error())
-					} else {
-						p.sigJugada <- jugada
-					}
-				}
-
-			case <-p.quit:
-				// cierro todo
-
-				close(p.sigJugada)  // va a hacer que la func de parsea termine
-				close(p.sigComando) // va a hacer que salga de esta func
-				close(p.wait)
-				// p.quit <- true // para avisarle que ya cerre todo
-				return // hace que esta misma termine
-
-				// case <-time.After(1 * time.Second):
-				// default:
-			}
-		}
-	}()
+	go p.escuchar()
+	go p.ejecutar()
 
 	return &p, nil
-}
-
-// Terminar espera a que se consuma toda la fila de jugadas
-// si se quisiera terminar abruptamente se deberia
-// usar otro canal tipo `p.quit<-true` y agregarle
-// el caso que corresponda al `select{...}`
-func (p *Partida) Terminar() {
-	p.Esperar() // igual si no lo pongo, este terminar no es abrupto
-	// ya que queda en segundo plano consumiendo el stack de jugadas
-	// parseadas; lo correcto seria al sigJugada checkear si hay alguna
-	// especie de flag que diga "no consumas mas jugadas"
-	// <-p.quit
-	p.quit <- true
-	// <-p.quit
-	close(p.quit)
-}
-
-// Esperar espera a que se consuma toda la fila de jugadas
-// para continuar; pero sin cerrar ningun canal
-func (p *Partida) Esperar() {
-	p.sigComando <- "__WAIT__"
-	<-p.wait
 }
