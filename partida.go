@@ -314,7 +314,37 @@ func (p *Partida) evaluarMano() {
 
 	mano := p.Ronda.getManoActual()
 	esParda := maxPoder[Rojo] == maxPoder[Azul]
-	if esParda {
+
+	// caso particular de parda:
+	// cuando nadie llego a tirar ninguna carta y se fueron todos los de 1 equipo
+	// entonces la mano es ganada por el equipo contrario al ultimo que se fue
+	noSeLlegoATirarNingunaCarta := len(p.Ronda.getManoActual().CartasTiradas) == 0
+
+	if noSeLlegoATirarNingunaCarta {
+
+		var equipoGanador Equipo
+		quedanJugadoresDelRojo := p.Ronda.CantJugadoresEnJuego[Rojo] > 0
+		if quedanJugadoresDelRojo {
+			equipoGanador = Rojo
+			mano.Resultado = GanoRojo
+		} else {
+			equipoGanador = Azul
+			mano.Resultado = GanoAzul
+		}
+
+		// aca le tengo que poner un ganador para despues sacarle el equipo
+		// le asigno el primero que encuentre del equipo ganador
+		if p.Ronda.Manojos[0].Jugador.Equipo == equipoGanador {
+			mano.Ganador = &p.Ronda.Manojos[0]
+		} else {
+			mano.Ganador = &p.Ronda.Manojos[1]
+		}
+
+		// fmt.Printf("<< La %s mano la gano el equipo %s\n",
+		// 	strings.ToLower(p.Ronda.ManoEnJuego.String()),
+		// 	equipoGanador.String())
+
+	} else if esParda {
 		mano.Resultado = Empardada
 		mano.Ganador = nil
 		fmt.Printf("<< La Mano resulta parda\n")
@@ -341,10 +371,7 @@ func (p *Partida) evaluarMano() {
 	}
 
 	// se termino la ronda?
-	empiezaNuevaRonda := false
-	if p.Ronda.ManoEnJuego >= segunda {
-		empiezaNuevaRonda = p.evaluarRonda()
-	}
+	empiezaNuevaRonda := p.evaluarRonda()
 
 	// cuando termina la mano (y no se empieza una ronda) -> cambia de TRUNO
 	// cuando termina la ronda -> cambia de MANO
@@ -372,6 +399,7 @@ func (p *Partida) evaluarRonda() bool {
 	}
 
 	// de aca en mas ya se que hay al menos 2 manos jugadas
+	// (excepto el caso en que un equipo haya abandonado)
 	// asi que es seguro acceder a los indices 0 y 1 en:
 	// p.Ronda.manos[0] & p.Ronda.manos[1]
 
@@ -388,7 +416,7 @@ func (p *Partida) evaluarRonda() bool {
 	pardaSegunda := p.Ronda.Manos[1].Resultado == Empardada
 	pardaTercera := p.Ronda.Manos[2].Resultado == Empardada
 	seEstaJugandoLaSegunda := p.Ronda.ManoEnJuego == segunda
-	noSeAcaboAun := seEstaJugandoLaSegunda && hayEmpate
+	noSeAcaboAun := seEstaJugandoLaSegunda && hayEmpate && hayJugadoresEnAmbos
 
 	if noSeAcaboAun {
 		return false
@@ -397,8 +425,12 @@ func (p *Partida) evaluarRonda() bool {
 	// hay ganador -> ya se que al final voy a retornar un true
 	var ganador *Manojo
 
-	// primero el caso clasico: un equipo gano 2 o mas manos
-	if cantManosGanadas[Rojo] >= 2 {
+	if !hayJugadoresEnAmbos { // caso particular: todos abandonaron
+
+		ganador = p.Ronda.Manos[0].Ganador
+
+		// primero el caso clasico: un equipo gano 2 o mas manos
+	} else if cantManosGanadas[Rojo] >= 2 {
 		// agarro cualquier manojo de los rojos
 		// o bien es la primera o bien la segunda
 		if p.Ronda.Manos[0].Ganador.Jugador.Equipo == Rojo {
