@@ -126,9 +126,11 @@ func (jugada tocarEnvido) eval(p *Partida) error {
 	print(out)
 
 	jug := &p.jugadores[jIdx]
-	p.Puntajes[jug.Equipo] += p.Ronda.Envite.Puntaje
+
 	fmt.Printf(`<< El envido lo gano %s con %v, +%v puntos para el equipo %s`+"\n",
 		jug.Nombre, max, p.Ronda.Envite.Puntaje, jug.Equipo)
+
+	p.sumarPuntos(jug.Equipo, p.Ronda.Envite.Puntaje)
 
 	return nil
 }
@@ -242,9 +244,11 @@ func (jugada tocarFaltaEnvido) eval(p *Partida) error {
 	pts := p.calcPtsFaltaEnvido(jug.Equipo)
 
 	p.Ronda.Envite.Puntaje += pts
-	p.Puntajes[jug.Equipo] += p.Ronda.Envite.Puntaje
+
 	fmt.Printf(`<< La falta envido la gano %s con %v, +%v puntos para el equipo %s`+"\n",
 		jug.Nombre, max, p.Ronda.Envite.Puntaje, jug.Equipo)
+
+	p.sumarPuntos(jug.Equipo, p.Ronda.Envite.Puntaje)
 
 	return nil
 }
@@ -325,7 +329,7 @@ func evalFlor(p *Partida) {
 		// se le va a sumar a ese equipo:
 		// los acumulados del envite hasta ahora
 		puntosASumar := p.Ronda.Envite.Puntaje
-		p.Puntajes[equipoGanador] += puntosASumar
+		p.sumarPuntos(equipoGanador, puntosASumar)
 		habiaSolo1JugadorConFlor := len(p.Ronda.Envite.JugadoresConFlor) == 1
 		if habiaSolo1JugadorConFlor {
 			fmt.Printf(`<< +%v puntos para el equipo %s (por ser la unica flor de esta ronda)`+"\n",
@@ -596,7 +600,7 @@ func (jugada responderQuiero) hacer(p *Partida) error {
 
 		if p.Ronda.Envite.Estado == CONTRAFLOR {
 			puntosASumar := p.Ronda.Envite.Puntaje
-			p.Puntajes[equipoGanador] += puntosASumar
+			p.sumarPuntos(equipoGanador, puntosASumar)
 			fmt.Printf(`<< La contra-flor-al-resto la gano %s con %v, +%v puntos para el equipo %s`+"\n",
 				manojoConLaFlorMasAlta.Jugador.Nombre, maxFlor, puntosASumar, equipoGanador)
 
@@ -606,7 +610,7 @@ func (jugada responderQuiero) hacer(p *Partida) error {
 			// duda se cuentan las flores?
 			// puntosASumar := p.Ronda.Envite.Puntaje + p.calcPtsContraFlorAlResto(equipoGanador)
 			puntosASumar := p.calcPtsContraFlorAlResto(equipoGanador)
-			p.Puntajes[equipoGanador] += puntosASumar
+			p.sumarPuntos(equipoGanador, puntosASumar)
 
 			fmt.Printf(`<< La contra-flor-al-resto la gano %s con %v, +%v puntos para el equipo %s`+"\n",
 				manojoConLaFlorMasAlta.Jugador.Nombre, maxFlor, puntosASumar, equipoGanador)
@@ -682,7 +686,6 @@ func (jugada responderNoQuiero) hacer(p *Partida) error {
 
 		p.Ronda.Envite.Estado = DESHABILITADO
 		p.Ronda.Envite.Puntaje = totalPts
-		p.Puntajes[p.Ronda.Envite.CantadoPor.Jugador.Equipo] += totalPts
 		fmt.Printf(`<< +%v puntos para el equipo %s`+"\n",
 			totalPts, p.Ronda.Envite.CantadoPor.Jugador.Equipo)
 
@@ -831,9 +834,11 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 			}
 			e.Estado = DESHABILITADO
 			e.Puntaje = totalPts
-			p.Puntajes[e.CantadoPor.Jugador.Equipo] += totalPts
+
 			fmt.Printf(`<< +%v puntos del envite para el equipo %s`+"\n",
 				totalPts, e.CantadoPor.Jugador.Equipo)
+
+			p.sumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
 
 		}
 

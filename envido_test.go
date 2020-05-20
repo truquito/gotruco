@@ -95,7 +95,7 @@ func TestEnvidoNoQuiero(t *testing.T) {
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
-		ya que fue aceptado por Roro`)
+		ya que fue rechazado por Roro`)
 		return
 	}
 
@@ -105,11 +105,18 @@ func TestEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 1 && p.Puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[Azul] == 1)
 	if oops {
-		t.Error(`El puntaje del equipo rojo deberia de ser 1`)
+		t.Error(`El puntaje del equipo azul deberia de ser 1`)
 		return
 	}
+
+	oops = !(p.Puntajes[Rojo] == 0)
+	if oops {
+		t.Error(`El puntaje del equipo rojo deberia de ser 0`)
+		return
+	}
+
 	p.Terminar()
 }
 
