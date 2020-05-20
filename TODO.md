@@ -101,10 +101,6 @@ se lleva el puntaje el equipo azul de las 3 flores (3+3+3) ; eso esta bien?
 
 - el no quiero de la flor @TestFixNoFlor no tiene output
 
-- el ordden del output si hay flor cuando se grita truco esta mal:
-<< Andres canta flor
-No es posible cantar truco ahora
-
 - duda:
     >A truco
     >el evndio esta primer

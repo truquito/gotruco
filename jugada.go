@@ -564,16 +564,17 @@ func (jugada gritarTruco) hacer(p *Partida) {
 
 	if !trucoHabilitado {
 
-		if laFlorEstaPrimero {
-			siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
-			siguienteJugada.hacer(p)
-		}
-
 		push(Msg{
 			Dest: []string{"ALL"},
 			Tipo: "error",
 			Cont: fmt.Sprintf("No es posible cantar truco ahora"),
 		})
+
+		if laFlorEstaPrimero {
+			siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
+			siguienteJugada.hacer(p)
+		}
+
 		return
 
 	}
