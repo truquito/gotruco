@@ -185,12 +185,12 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 		case "tirar":
 			jugada = irseAlMazo{Jugada{autor: manojo}}
 		default:
-			return nil, fmt.Errorf("No esxiste esa jugada")
+			return nil, fmt.Errorf("No existe esa jugada")
 		}
 	} else {
 		match = regexps["jugadaTirada"].FindAllStringSubmatch(cmd, 1)
 		if match == nil {
-			return nil, fmt.Errorf("No esxiste esa jugada")
+			return nil, fmt.Errorf("No existe esa jugada")
 		}
 		jugadorStr := match[0][1]
 		valorStr, paloStr := match[0][2], match[0][3]
@@ -461,14 +461,11 @@ func (p *Partida) evaluarRonda() bool {
 	var msg string
 
 	switch p.Ronda.Truco.Estado {
-	case TRUCO: // caso en que se hayan ido todos al mazo y no se haya respondido ~ equivalente a un no quiero
-	case NOCANTADO:
+	case NOCANTADO, TRUCO: // caso en que se hayan ido todos al mazo y no se haya respondido ~ equivalente a un no quiero
 		totalPts = 1
-	case RETRUCO: // same
-	case TRUCOQUERIDO:
+	case TRUCOQUERIDO, RETRUCO: // same
 		totalPts = 2
-	case VALE4: // same
-	case RETRUCOQUERIDO:
+	case RETRUCOQUERIDO, VALE4: // same
 		totalPts = 3
 	case VALE4QUERIDO:
 		totalPts = 4

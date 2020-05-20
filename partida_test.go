@@ -340,3 +340,106 @@ func TestFixNoFlor(t *testing.T) {
 	p.Print()
 	p.Terminar()
 }
+
+func TestFixPanic(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	partidaJSON := `{"cantJugadores":6,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":3,"Rojo":3},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null,"jugadoresConFlor":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":6},{"palo":"Espada","valor":5},{"palo":"Espada","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}],"jugadoresConFlorQueNoCantaron":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":6},{"palo":"Espada","valor":5},{"palo":"Espada","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}]},"truco":{"cantadoPor":null,"estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":2},{"palo":"Copa","valor":7},{"palo":"Basto","valor":6}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":2},{"palo":"Copa","valor":6},{"palo":"Oro","valor":6}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":11},{"palo":"Espada","valor":1},{"palo":"Basto","valor":4}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":3},{"palo":"Basto","valor":7},{"palo":"Oro","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":5},{"palo":"Basto","valor":12},{"palo":"Espada","valor":10}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Andres","nombre":"Andres","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":6},{"palo":"Espada","valor":5},{"palo":"Espada","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}],"muestra":{"palo":"Espada","valor":3},"manos":[{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null}]}}`
+	p.FromJSON(partidaJSON)
+	p.Print()
+
+	p.SetSigJugada("alvaro 6 basto")
+	// << Alvaro tira la carta 6 de Basto
+
+	p.SetSigJugada("roro 2 basto")
+	// << Roro tira la carta 2 de Basto
+
+	p.SetSigJugada("Adolfo 4 basto")
+	// << Adolfo tira la carta 4 de Basto
+
+	p.SetSigJugada("renzo 7 basto")
+	// << Renzo tira la carta 7 de Basto
+
+	p.SetSigJugada("andres 10 espada")
+	// << Andres tira la carta 10 de Espada
+
+	p.SetSigJugada("richard flor")
+	// << Richard canta flor
+	// << +3 puntos para el equipo Rojo (por ser la unica flor de esta ronda)
+
+	p.SetSigJugada("richard 11 espada")
+	// << Richard tira la carta 11 de Espada
+
+	/*
+		// << La Mano resulta parda
+		// << Es el turno de Richard
+	*/
+
+	// ERROR: no la deberia ganar andres porque es mano (DUDA)
+
+	p.SetSigJugada("richard truco")
+	// << Richard grita truco
+
+	p.SetSigJugada("roro quiero")
+	// (Para Roro) No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo
+
+	p.SetSigJugada("adolfo quiero")
+	// << Adolfo responde quiero
+
+	p.SetSigJugada("richard 5 espada")
+	// << Richard tira la carta 5 de Espada
+
+	p.SetSigJugada("alvaro mazo")
+	// << Alvaro se va al mazo
+
+	p.SetSigJugada("roro quiero")
+	// (Para Roro) No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo
+
+	p.SetSigJugada("roro retruco")
+	// << No esxiste esa jugada
+
+	p.SetSigJugada("roro re-truco")
+	// No es posible cantar re-truco ahora
+
+	p.SetSigJugada("alvaro re-truco") // ya que se fue al mazo
+	// No es posible cantar re-truco ahora
+
+	p.SetSigJugada("Adolfo re-truco") // no es su turno ni el de su equipo
+	// No es posible cantar re-truco ahora
+
+	p.SetSigJugada("roro 6 copa")
+	// << Roro tira la carta 6 de Copa
+
+	p.SetSigJugada("adolfo re-truco")
+	// << Adolfo grita re-truco
+
+	p.SetSigJugada("adolfo 1 espada")
+	// << Adolfo tira la carta 1 de Espada
+
+	p.SetSigJugada("renzo retruco")
+	// << No esxiste esa jugada
+
+	p.SetSigJugada("renzo re-truco") // ya que ya lo canto adolfo
+	// No es posible cantar re-truco ahora
+
+	p.SetSigJugada("renzo mazo")
+	// << Renzo se va al mazo
+
+	p.Esperar()
+	p.Print()
+
+	p.SetSigJugada("andres mazo")
+	// << Andres se va al mazo
+
+	// andres se va al mazo y era el ultimo que quedaba por jugar
+	// ademas era la segunda mano -> ya se decide
+	// aunque hay un retruco propuesto <--------------
+	// si hay algo propuesto por su equipo no se puede ir <-------
+
+	// << La segunda mano la gano el equipo Rojo gracia a Richard
+	// << La ronda ha sido ganada por el equipo Rojo
+	// << +0 puntos para el equipo Rojo por el reTruco no querido
+	// << Empieza una nueva ronda
+
+	p.Esperar()
+	p.Terminar()
+}

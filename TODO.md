@@ -1,3 +1,7 @@
+- no se deberia poder ir al mazo si no tiene niguna carta left
+
+- duda: caso en TestFixPanic: no deberia ganar la mano? a quien le toca ser pie en la mano 2?
+
 - en ningun momento se deberia sumar los puntos a la partida antes de haberlos confirmado!
 
 - en los p.sumarpuntos de las jugadas deberia checkear si la partida se termino

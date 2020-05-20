@@ -781,6 +781,18 @@ func (jugada irseAlMazo) hacer(p *Partida) error {
 	// 1. el fue el que canto el envido (y el envido esta en juego)
 	// 2. tampoco se puede ir al mazo si el canto la flor o similar
 	// 3. tampoco se puede ir al mazo si el grito el truco
+	// 4. condicion del bobo: es el ultimo de su equipo que queda por
+	// jugar/tirar y hay una propuesta de truco/envite no respondida aun
+
+	// envidoPropuesto := contains([]EstadoEnvite{ENVIDO, REALENVIDO, FALTAENVIDO}, p.Ronda.Envite.Estado)
+	// envidoPropuestoPorSuEquipo := p.Ronda.Envite.CantadoPor.Jugador.Equipo == jugada.autor.Jugador.Equipo
+	// trucoPropuesto := contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
+	// trucoPropuestoPorSuEquipo := p.Ronda.Truco.CantadoPor.Jugador.Equipo == jugada.autor.Jugador.Equipo
+	// condicionDelBobo := (envidoPropuesto && envidoPropuestoPorSuEquipo) || (trucoPropuesto && trucoPropuestoPorSuEquipo)
+
+	// if condicionDelBobo {
+	// 	return fmt.Errorf("No es posible irse al mazo ahora porque hay propuestas de tu equipo sin responder")
+	// }
 
 	noSePuedeIrPorElEnvite := (seEstabaJugandoElEnvido || seEstabaJugandoLaFlor) && p.Ronda.Envite.CantadoPor == jugada.autor
 	// la de la flor es igual al del envido; porque es un envite
