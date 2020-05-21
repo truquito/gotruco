@@ -32,7 +32,7 @@ func (jugada tirarCarta) hacer(p *Partida) {
 	if enviteEnJuego {
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf("No es posible tirar una carta ahora porque el envite esta en juego"),
 		})
@@ -44,7 +44,7 @@ func (jugada tirarCarta) hacer(p *Partida) {
 	if err != nil {
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: err.Error(),
 		})
@@ -56,7 +56,7 @@ func (jugada tirarCarta) hacer(p *Partida) {
 	if !eraSuTurno {
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf("No era su turno, no puede tirar la carta"),
 		})
@@ -101,7 +101,7 @@ func (jugada tocarEnvido) hacer(p *Partida) {
 	if florEnJuego {
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf("No es posible tocar el envido ahora porque la flor esta en juego"),
 		})
@@ -119,7 +119,7 @@ func (jugada tocarEnvido) hacer(p *Partida) {
 	if !ok {
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf(`No es posible cantar 'Envido'`),
 		})
@@ -190,7 +190,7 @@ func (jugada tocarRealEnvido) hacer(p *Partida) {
 	if florEnJuego {
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf("No es posible tocar real envido ahora porque la flor esta en juego"),
 		})
@@ -208,7 +208,7 @@ func (jugada tocarRealEnvido) hacer(p *Partida) {
 	if !ok {
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf(`No es posible cantar 'Real Envido'`),
 		})
@@ -256,7 +256,7 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) {
 	if florEnJuego {
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf("No es posible tocar falta envido ahora porque la flor esta en juego"),
 		})
@@ -274,7 +274,7 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) {
 	if !ok {
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf(`No es posible cantar 'Falta Envido'`),
 		})
@@ -368,7 +368,7 @@ func (jugada cantarFlor) hacer(p *Partida) {
 	if !ok {
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf(`No es posible cantar flor`),
 		})
@@ -470,7 +470,7 @@ func (jugada cantarContraFlor) hacer(p *Partida) {
 	if !ok {
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf(`No es posible cantar contra flor`),
 		})
@@ -512,7 +512,7 @@ func (jugada cantarContraFlorAlResto) hacer(p *Partida) {
 	if !ok {
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf(`No es posible cantar contra flor al resto`),
 		})
@@ -565,7 +565,7 @@ func (jugada gritarTruco) hacer(p *Partida) {
 	if !trucoHabilitado {
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf("No es posible cantar truco ahora"),
 		})
@@ -635,7 +635,7 @@ func (jugada gritarReTruco) hacer(p *Partida) {
 		}
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf("No es posible cantar re-truco ahora"),
 		})
@@ -696,7 +696,7 @@ func (jugada gritarVale4) hacer(p *Partida) {
 		}
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf("No es posible cantar vale-4 ahora"),
 		})
@@ -724,7 +724,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 	if jugada.autor.SeFueAlMazo {
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf("Te fuiste al mazo; no podes hacer esta jugada"),
 		})
@@ -739,7 +739,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 	if florEnJuego {
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf("No es posible responder quiero ahora"),
 		})
@@ -761,7 +761,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 		// si no, esta respondiendo al pedo
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf(`(Para %s) No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo`, jugada.autor.Jugador.Nombre),
 		})
@@ -775,7 +775,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 		if !esDelEquipoContrario {
 
 			push(Msg{
-				Dest: []string{"ALL"},
+				Dest: []string{jugada.autor.Jugador.Nombre},
 				Tipo: "error",
 				Cont: fmt.Sprintf(`La jugada no es valida`),
 			})
@@ -807,7 +807,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 		if !ok {
 
 			push(Msg{
-				Dest: []string{"ALL"},
+				Dest: []string{jugada.autor.Jugador.Nombre},
 				Tipo: "error",
 				Cont: fmt.Sprintf(`La jugada no es valida`),
 			})
@@ -904,7 +904,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 		// si no, esta respondiendo al pedo
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf(`%s esta respondiendo al pedo; no hay nada respondible`, jugada.autor.Jugador.Nombre),
 		})
@@ -953,7 +953,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 		if !tieneFlor {
 
 			push(Msg{
-				Dest: []string{"ALL"},
+				Dest: []string{jugada.autor.Jugador.Nombre},
 				Tipo: "error",
 				Cont: fmt.Sprintf(`No tiene flor; la jugada es incompatible`),
 			})
@@ -1047,7 +1047,7 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 	if yaSeFueAlMazo {
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf("No es posible irse al mazo ahora"),
 		})
@@ -1069,7 +1069,7 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 	// if condicionDelBobo {
 
 	// push(Msg{
-	// 	Dest: []string{"ALL"},
+	// 	Dest: []string{jugada.autor.Jugador.Nombre},
 	// 	Tipo: "error",
 	// 	Cont: fmt.Sprintf("No es posible irse al mazo ahora porque hay propuestas de tu equipo sin responder"),
 	// }) //
@@ -1083,7 +1083,7 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 	if noSePuedeIrPorElEnvite || noSePuedeIrPorElTruco {
 
 		push(Msg{
-			Dest: []string{"ALL"},
+			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf("No es posible irse al mazo ahora"),
 		})
