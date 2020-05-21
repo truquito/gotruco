@@ -27,6 +27,21 @@ type tirarCarta struct {
 // el jugador tira una carta;
 // el parametro se encuentra en la struct como atributo
 func (jugada tirarCarta) hacer(p *Partida) {
+
+	// checkeo si se fue al mazo
+	noSeFueAlMazo := jugada.autor.SeFueAlMazo == false
+	ok := noSeFueAlMazo
+	if !ok {
+
+		push(Msg{
+			Dest: []string{jugada.autor.Jugador.Nombre},
+			Tipo: "error",
+			Cont: fmt.Sprintf("No es posible tirar una carta porque ya te fuiste al mazo"),
+		})
+		return
+
+	}
+
 	// checkeo flor en juego
 	enviteEnJuego := p.Ronda.Envite.Estado >= ENVIDO
 	if enviteEnJuego {
@@ -39,6 +54,7 @@ func (jugada tirarCarta) hacer(p *Partida) {
 		return
 
 	}
+
 	// primero que nada: tiene esa carta?
 	idx, err := jugada.autor.getCartaIdx(jugada.Carta)
 	if err != nil {
@@ -365,6 +381,7 @@ func (jugada cantarFlor) hacer(p *Partida) {
 	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
 	noCantoFlorAun := contains(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.autor)
 	ok := florHabilitada && tieneFlor && noCantoFlorAun
+
 	if !ok {
 
 		push(Msg{
@@ -376,25 +393,32 @@ func (jugada cantarFlor) hacer(p *Partida) {
 
 	}
 
+	// yo canto
 	push(Msg{
 		Dest: []string{"ALL"},
 		Tipo: "ok",
 		Cont: fmt.Sprintf("%s canta flor", jugada.autor.Jugador.Nombre),
 	})
 
+	// y me elimino de los que no-cantaron
 	p.Ronda.Envite.JugadoresConFlorQueNoCantaron = eliminar(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.autor)
 
 	yaEstabamosEnFlor := p.Ronda.Envite.Estado == FLOR
+
 	if yaEstabamosEnFlor {
+
 		p.Ronda.Envite.Puntaje += 3
 		p.Ronda.Envite.CantadoPor = jugada.autor
+
 	} else {
+
 		// se usa por si dicen "no quiero" -> se obtiene el equipo
 		// al que pertenece el que la canto en un principio para
 		// poder sumarle los puntos correspondientes
 		p.Ronda.Envite.Puntaje = 3
 		p.Ronda.Envite.CantadoPor = jugada.autor
 		p.Ronda.Envite.Estado = FLOR
+
 	}
 
 	// es el ultimo en cantar flor que faltaba?
@@ -402,7 +426,31 @@ func (jugada cantarFlor) hacer(p *Partida) {
 
 	todosLosJugadoresConFlorCantaron := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) == 0
 	if todosLosJugadoresConFlorCantaron {
+
 		evalFlor(p)
+
+	} else {
+
+		// cachear esto
+		// solos los de su equipo tienen flor?
+		// si solos los de su equipo tienen flor (y los otros no) -> las canto todas
+		soloLosDeSuEquipoTienenFlor := true
+		for _, manojo := range p.Ronda.Envite.JugadoresConFlor {
+			if manojo.Jugador.Equipo != jugada.autor.Jugador.Equipo {
+				soloLosDeSuEquipoTienenFlor = false
+				break
+			}
+		}
+
+		if soloLosDeSuEquipoTienenFlor {
+			// los quiero llamar a todos, pero no quiero hacer llamadas al pedo
+			// entonces: llamo al primero sin cantar, y que este llame al proximo
+			// y que el proximo llame al siguiente, y asi...
+			primero := p.Ronda.Envite.JugadoresConFlorQueNoCantaron[0]
+			siguienteJugada := cantarFlor{Jugada{autor: primero}}
+			siguienteJugada.hacer(p)
+		}
+
 	}
 
 	return
@@ -763,7 +811,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 		push(Msg{
 			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
-			Cont: fmt.Sprintf(`(Para %s) No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo`, jugada.autor.Jugador.Nombre),
+			Cont: fmt.Sprintf(`No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo`),
 		})
 		return
 
@@ -1194,9 +1242,7 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 	// o bien se fueron todos
 	// o bien este se fue al mazo, pero alguno de sus companeros no
 	// (es decir que queda al menos 1 jugador en juego)
-	// pero evaluo si era la ronda 2 (por las dudas)
-	esTerminable := p.Ronda.ManoEnJuego >= segunda
-	hayQueEvaluarRonda := seFueronTodos || (eraElUltimoEnTirar && esTerminable)
+	hayQueEvaluarRonda := seFueronTodos || eraElUltimoEnTirar
 	if hayQueEvaluarRonda {
 		// de ser asi tengo que checkear el resultado de la mano
 		p.evaluarMano()

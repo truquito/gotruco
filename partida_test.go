@@ -608,6 +608,11 @@ func TestFixNilPointer(t *testing.T) {
 
 	p.SetSigJugada("adolfo mazo")
 
+	p.SetSigJugada("Renzo flor")
+
+	p.Esperar()
+	fmt.Println(p.Dispatch())
+
 	// p.Print()
 	p.Terminar()
 }

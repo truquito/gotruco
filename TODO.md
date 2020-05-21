@@ -1,3 +1,7 @@
+- ahora cantar la flor es opcional -> no hacerlo
+
+- no es necesario cantar los puntaes de las flores si todos los que tienen flores son del mismo equipo
+
 - duda: caso en TestFixPanic: no deberia ganar la mano? a quien le toca ser pie en la mano 2?
 
 - en ningun momento se deberia sumar los puntos a la partida antes de haberlos confirmado!
