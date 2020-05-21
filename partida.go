@@ -311,11 +311,11 @@ func (p *Partida) evaluarMano() {
 		mano.Resultado = Empardada
 		mano.Ganador = nil
 
-		push(Msg{
+		p.OutCh <- Msg{
 			Dest: []string{"ALL"},
 			Tipo: "ok",
 			Cont: fmt.Sprintf("La Mano resulta parda"),
-		})
+		}
 		// no se cambia el turno
 
 	} else {
@@ -333,14 +333,14 @@ func (p *Partida) evaluarMano() {
 		// pero se setea despues de evaluar la ronda
 		mano.Ganador = tiradaGanadora.autor
 
-		push(Msg{
+		p.OutCh <- Msg{
 			Dest: []string{"ALL"},
 			Tipo: "ok",
 			Cont: fmt.Sprintf("La %s mano la gano el equipo %s gracia a %s",
 				strings.ToLower(p.Ronda.ManoEnJuego.String()),
 				mano.Ganador.Jugador.Equipo.String(),
 				mano.Ganador.Jugador.Nombre),
-		})
+		}
 
 	}
 
@@ -458,12 +458,12 @@ func (p *Partida) evaluarRonda() bool {
 
 	/************************************************/
 
-	push(Msg{
+	p.OutCh <- Msg{
 		Dest: []string{"ALL"},
 		Tipo: "ok",
 		Cont: fmt.Sprintf("La ronda ha sido ganada por el equipo %s",
 			ganador.Jugador.Equipo),
-	})
+	}
 
 	// ya sabemos el ganador ahora es el
 	// momento de sumar los puntos del truco
@@ -496,11 +496,11 @@ func (p *Partida) evaluarRonda() bool {
 			p.Ronda.Truco.Estado.String())
 	}
 
-	push(Msg{
+	p.OutCh <- Msg{
 		Dest: []string{"ALL"},
 		Tipo: "ok",
 		Cont: msg,
-	})
+	}
 
 	terminoLaPartida := p.sumarPuntos(ganador.Jugador.Equipo, totalPts)
 
@@ -519,28 +519,28 @@ func (p *Partida) evaluarRonda() bool {
 func (p *Partida) byeBye() {
 	if !p.NoAcabada() {
 
-		push(Msg{
+		p.OutCh <- Msg{
 			Dest: []string{"ALL"},
 			Tipo: "ok",
 			Cont: fmt.Sprintf("Se acabo la partida! el ganador fue el equipo %s",
 				p.elQueVaGanando().String()),
-		})
+		}
 
-		push(Msg{
+		p.OutCh <- Msg{
 			Dest: []string{"ALL"},
 			Tipo: "ok",
 			Cont: fmt.Sprintf("BYE BYE!"),
-		})
+		}
 
 	}
 }
 
 func (p *Partida) nuevaRonda(elMano JugadorIdx) {
-	push(Msg{
+	p.OutCh <- Msg{
 		Dest: []string{"ALL"},
 		Tipo: "ok",
 		Cont: fmt.Sprintf("Empieza una nueva ronda"),
-	})
+	}
 	p.Ronda = nuevaRonda(p.jugadores, elMano)
 	// fmt.Printf("La mano y el turno es %s\n", p.Ronda.getElMano().Jugador.Nombre)
 }
@@ -637,38 +637,6 @@ func (p *Partida) Esperar() {
 	<-p.wait
 }
 
-/**************************/
-
-// Msg mensajes a la capa de presentacion
-type Msg struct {
-	Dest []string
-	Tipo string
-	Cont string
-}
-
-func (msg Msg) String() string {
-	return fmt.Sprintf(`<< [%s] (%s) : %s`, msg.Tipo, strings.Join(msg.Dest, "/"), msg.Cont)
-}
-
-var queue []Msg
-
-func push(msg Msg) {
-	queue = append(queue, msg)
-}
-
-func dispatch() []Msg {
-	x := queue
-	queue = make([]Msg, 0)
-	return x
-}
-
-// Dispatch retorna todo el contendio acumulado de la queue
-func (p *Partida) Dispatch() []Msg {
-	return dispatch()
-}
-
-/**************************/
-
 func (p *Partida) escuchar() {
 	for {
 		select {
@@ -707,6 +675,17 @@ func (p *Partida) hello() {
 	}
 }
 
+// Msg mensajes a la capa de presentacion
+type Msg struct {
+	Dest []string
+	Tipo string
+	Cont string
+}
+
+func (msg Msg) String() string {
+	return fmt.Sprintf(`<< [%s] (%s) : %s`, msg.Tipo, strings.Join(msg.Dest, "/"), msg.Cont)
+}
+
 // NuevaPartida retorna nueva partida; error si hubo
 func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Partida, error) {
 
@@ -734,18 +713,18 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 		jugadores:     jugadores,
 	}
 
+	p.OutCh = make(chan Msg, 10) // maxima cantidad de mensajes que puede gen en 1 jugada
+	p.quit = make(chan bool, 1)
+	p.wait = make(chan bool, 1)
+	p.sigJugada = make(chan IJugada, 1)
+	p.sigComando = make(chan string, 1)
+
 	p.Puntajes = make(map[Equipo]int)
 	p.Puntajes[Rojo] = 0
 	p.Puntajes[Azul] = 0
 
 	elMano := JugadorIdx(0)
 	p.nuevaRonda(elMano)
-
-	p.OutCh = make(chan Msg)
-	p.quit = make(chan bool, 1)
-	p.wait = make(chan bool, 1)
-	p.sigJugada = make(chan IJugada, 1)
-	p.sigComando = make(chan string, 1)
 
 	go p.escuchar()
 	go p.ejecutar()

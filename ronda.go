@@ -291,11 +291,6 @@ func (r *Ronda) setNextTurnoPosMano() {
 			r.Turno = JugadorIdx(r.getIdx(*r.getManoAnterior().Ganador))
 		}
 	}
-	push(Msg{
-		Dest: []string{"ALL"},
-		Tipo: "error",
-		Cont: fmt.Sprintf("Es el turno de %s", r.Manojos[r.Turno].Jugador.Nombre),
-	})
 }
 
 func (r *Ronda) setManojos(manojos []Manojo) {

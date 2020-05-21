@@ -54,6 +54,13 @@ func newLogFile() LogFile {
 	return LogFile{path: logFile}
 }
 
+func consumir(ch chan truco.Msg) {
+	for i := 0; i < len(ch); i++ {
+		msg := <-ch
+		fmt.Println(msg)
+	}
+}
+
 func handleIO() {
 	for {
 		cmd := readLn()
@@ -71,8 +78,7 @@ func main() {
 	logfile.Write(p.ToJSON())
 
 	p.Print()
-	output := p.Dispatch()
-	print(output)
+	consumir(p.OutCh)
 
 	// hago una gorutine (y channel para avisar) para el io
 	go handleIO()
@@ -85,10 +91,9 @@ func main() {
 			if err != nil {
 				fmt.Println("<< " + err.Error())
 			}
-			output := p.Dispatch()
-			print(output)
+			// consumo el channel de output
+			consumir(p.OutCh)
 			p.Print()
-			// go handleIO()
 		case msg := <-p.OutCh:
 			// me llego algo tipo un mensaje de timeout
 			fmt.Println(msg.String()[3:])

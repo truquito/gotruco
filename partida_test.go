@@ -577,10 +577,10 @@ func TestFixNilPointer(t *testing.T) {
 	p.SetSigJugada("Renzo flor")
 
 	p.Esperar()
-	output := p.Dispatch()
-	for _, msg := range output {
-		fmt.Println(msg)
-	}
+	// output := p.Dispatch()
+	// for _, msg := range output {
+	// 	fmt.Println(msg)
+	// }
 
 	// p.Print()
 	p.Terminar()
@@ -608,10 +608,10 @@ func TestFixNoDejaIrseAlMazo(t *testing.T) {
 	p.SetSigJugada("andres mazo")
 
 	p.Esperar()
-	output := p.Dispatch()
-	for _, msg := range output {
-		fmt.Println(msg)
-	}
+	// output := p.Dispatch()
+	// for _, msg := range output {
+	// 	fmt.Println(msg)
+	// }
 
 	p.Print()
 	p.Terminar()
@@ -644,10 +644,10 @@ func TestFixFlorObligatoria(t *testing.T) {
 	p.SetSigJugada("roro 1 oro")
 
 	p.Esperar()
-	output := p.Dispatch()
-	for _, msg := range output {
-		fmt.Println(msg)
-	}
+	// output := p.Dispatch()
+	// for _, msg := range output {
+	// 	fmt.Println(msg)
+	// }
 
 	p.Print()
 	p.Terminar()
@@ -668,10 +668,10 @@ func TestFixNoPermiteContraFlor(t *testing.T) {
 	p.SetSigJugada("renzo contra-flor")
 
 	p.Esperar()
-	output := p.Dispatch()
-	for _, msg := range output {
-		fmt.Println(msg)
-	}
+	// output := p.Dispatch()
+	// for _, msg := range output {
+	// 	fmt.Println(msg)
+	// }
 
 	p.Print()
 	p.Terminar()
