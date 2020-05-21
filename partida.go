@@ -642,6 +642,10 @@ type Msg struct {
 	Cont string
 }
 
+func (msg Msg) String() string {
+	return fmt.Sprintf(`<< [%s] (%s) : %s`, msg.Tipo, strings.Join(msg.Dest, "/"), msg.Cont)
+}
+
 var queue []Msg
 
 func push(msg Msg) {

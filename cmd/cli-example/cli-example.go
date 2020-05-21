@@ -40,8 +40,8 @@ func print(output []truco.Msg) {
 	if output == nil {
 		return
 	}
-	for _, elem := range output {
-		fmt.Println("<< ", elem.Cont)
+	for _, msg := range output {
+		fmt.Print(msg)
 	}
 }
 
