@@ -596,6 +596,9 @@ type gritarReTruco struct {
 	Jugada
 }
 
+// checkeaos de este tipo:
+// que pasa cuando gritan re-truco cuando el campo truco se encuentra nil
+// ese fue el nil pointer exception
 func (jugada gritarReTruco) hacer(p *Partida) {
 
 	// checkeos generales:
@@ -613,12 +616,12 @@ func (jugada gritarReTruco) hacer(p *Partida) {
 
 	// CASO I:
 	trucoGritado := p.Ronda.Truco.Estado == TRUCO
-	unoDelEquipoContrarioGritoTruco := p.Ronda.Truco.CantadoPor.Jugador.Equipo != jugada.autor.Jugador.Equipo
+	unoDelEquipoContrarioGritoTruco := trucoGritado && p.Ronda.Truco.CantadoPor.Jugador.Equipo != jugada.autor.Jugador.Equipo
 	casoI := trucoGritado && unoDelEquipoContrarioGritoTruco
 
 	// CASO I:
 	trucoYaQuerido := p.Ronda.Truco.Estado == TRUCOQUERIDO
-	unoDeMiEquipoQuizo := p.Ronda.Truco.CantadoPor.Jugador.Equipo == jugada.autor.Jugador.Equipo
+	unoDeMiEquipoQuizo := trucoYaQuerido && p.Ronda.Truco.CantadoPor.Jugador.Equipo == jugada.autor.Jugador.Equipo
 	esTurnoDeMiEquipo := p.getJugador(p.Ronda.Turno).Equipo == jugada.autor.Jugador.Equipo
 	casoII := trucoYaQuerido && unoDeMiEquipoQuizo && esTurnoDeMiEquipo
 
@@ -673,12 +676,14 @@ func (jugada gritarVale4) hacer(p *Partida) {
 
 	// CASO I:
 	reTrucoGritado := p.Ronda.Truco.Estado == RETRUCO
-	unoDelEquipoContrarioGritoReTruco := p.Ronda.Truco.CantadoPor.Jugador.Equipo != jugada.autor.Jugador.Equipo
+	// para eviat el nil primero checkeo que haya sido gritado reTrucoGritado &&
+	unoDelEquipoContrarioGritoReTruco := reTrucoGritado && p.Ronda.Truco.CantadoPor.Jugador.Equipo != jugada.autor.Jugador.Equipo
 	casoI := reTrucoGritado && unoDelEquipoContrarioGritoReTruco
 
 	// CASO I:
 	retrucoYaQuerido := p.Ronda.Truco.Estado == RETRUCOQUERIDO
-	suEquipotieneElQuiero := p.Ronda.Truco.CantadoPor.Jugador.Equipo == jugada.autor.Jugador.Equipo
+	// para eviat el nil primero checkeo que haya sido gritado reTrucoGritado &&
+	suEquipotieneElQuiero := retrucoYaQuerido && p.Ronda.Truco.CantadoPor.Jugador.Equipo == jugada.autor.Jugador.Equipo
 	casoII := retrucoYaQuerido && suEquipotieneElQuiero
 
 	vale4Habilitado := noSeFueAlMazo && (casoI || casoII) && noSeEstaJugandoElEnvite && !laFlorEstaPrimero
