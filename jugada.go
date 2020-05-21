@@ -1090,7 +1090,7 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 	yaSeFueAlMazo := jugada.autor.SeFueAlMazo == true
 	seEstabaJugandoElEnvido := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO)
 	seEstabaJugandoLaFlor := p.Ronda.Envite.Estado >= FLOR
-	seEstabaJugandoElTruco := p.Ronda.Truco.Estado >= TRUCO
+	seEstabaJugandoElTruco := contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
 
 	if yaSeFueAlMazo {
 
