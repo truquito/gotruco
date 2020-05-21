@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
+	"time"
 )
 
 // el envido, la primera o la mentira
@@ -83,6 +84,7 @@ type Partida struct {
 	Puntajes      map[Equipo]int `json:"puntajes"`
 	Ronda         Ronda          `json:"ronda"`
 
+	OutCh      chan Msg
 	quit       chan bool
 	wait       chan bool
 	sigJugada  chan IJugada
@@ -586,6 +588,8 @@ func (p *Partida) SetSigJugada(cmd string) error {
 
 	p.sigJugada <- jugada
 
+	p.Esperar() // hasta que no termine que no retorne
+
 	return nil
 }
 
@@ -696,6 +700,13 @@ func (p *Partida) ejecutar() {
 	}
 }
 
+func (p *Partida) hello() {
+	for {
+		time.Sleep(5000 * time.Millisecond)
+		p.OutCh <- Msg{[]string{"ALL"}, "INT", "INTERRUMPING!!"}
+	}
+}
+
 // NuevaPartida retorna nueva partida; error si hubo
 func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Partida, error) {
 
@@ -730,6 +741,7 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	elMano := JugadorIdx(0)
 	p.nuevaRonda(elMano)
 
+	p.OutCh = make(chan Msg)
 	p.quit = make(chan bool, 1)
 	p.wait = make(chan bool, 1)
 	p.sigJugada = make(chan IJugada, 1)
@@ -737,6 +749,7 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 
 	go p.escuchar()
 	go p.ejecutar()
+	go p.hello()
 
 	return &p, nil
 }

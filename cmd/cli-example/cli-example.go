@@ -15,15 +15,9 @@ import (
 var reader = bufio.NewReader(os.Stdin)
 
 func readLn() string {
-	fmt.Printf("\n>> ")
+	fmt.Printf(">> ")
 	cmd, _ := reader.ReadString('\n')
 	return strings.TrimSuffix(cmd, "\n")
-}
-
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
 }
 
 func print(output []truco.Msg) {
@@ -31,7 +25,7 @@ func print(output []truco.Msg) {
 		return
 	}
 	for _, msg := range output {
-		fmt.Print(msg)
+		fmt.Println(msg)
 	}
 }
 
@@ -60,7 +54,17 @@ func newLogFile() LogFile {
 	return LogFile{path: logFile}
 }
 
+func handleIO() {
+	for {
+		cmd := readLn()
+		ioCh <- cmd
+	}
+}
+
+var ioCh chan string = make(chan string, 1)
+
 func main() {
+
 	logfile := newLogFile()
 
 	p, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
@@ -70,25 +74,30 @@ func main() {
 	output := p.Dispatch()
 	print(output)
 
-	for {
-		cmd := readLn()
-		logfile.Write(cmd)
+	// hago una gorutine (y channel para avisar) para el io
+	go handleIO()
 
-		err := p.SetSigJugada(cmd)
-		if err != nil {
-			fmt.Println("<< " + err.Error())
+	for {
+		select {
+		case cmd := <-ioCh:
+			logfile.Write(cmd)
+			err := p.SetSigJugada(cmd)
+			if err != nil {
+				fmt.Println("<< " + err.Error())
+			}
+			output := p.Dispatch()
+			print(output)
+			p.Print()
+			// go handleIO()
+		case msg := <-p.OutCh:
+			// me llego algo tipo un mensaje de timeout
+			fmt.Println(msg.String()[3:])
+			fmt.Printf(">> ")
 		}
 
-		p.Esperar()
-		output := p.Dispatch()
-		print(output)
-
-		p.Print()
-
-		if p.NoAcabada() {
+		if !p.NoAcabada() {
 			break
 		}
 	}
 
-	fmt.Println("se fini")
 }
