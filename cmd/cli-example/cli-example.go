@@ -15,6 +15,7 @@ import (
 var reader = bufio.NewReader(os.Stdin)
 
 func readLn() string {
+	fmt.Printf("\n>> ")
 	cmd, _ := reader.ReadString('\n')
 	return strings.TrimSuffix(cmd, "\n")
 }
@@ -23,17 +24,6 @@ func check(e error) {
 	if e != nil {
 		panic(e)
 	}
-}
-
-func _log(str, logFile string) {
-	f, err := os.OpenFile(logFile, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
-	if err != nil {
-		log.Println(err)
-	}
-	defer f.Close()
-
-	logger := log.New(f, "", log.LstdFlags)
-	logger.Println(str)
 }
 
 func print(output []truco.Msg) {
@@ -45,30 +35,60 @@ func print(output []truco.Msg) {
 	}
 }
 
-func main() {
+// LogFile log file
+type LogFile struct {
+	path string
+}
+
+// Log str to logFile
+func (lf LogFile) Write(str string) {
+	f, err := os.OpenFile(lf.path, os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		log.Println(err)
+	}
+	defer f.Close()
+
+	logger := log.New(f, "", log.LstdFlags)
+	logger.Println(str)
+}
+
+func newLogFile() LogFile {
 	timestamp := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
 	logPath := "/home/juan/Workspace/_tmp/truco_logs/"
 	logFile := logPath + timestamp + ".log"
 
+	return LogFile{path: logFile}
+}
+
+func main() {
+	logfile := newLogFile()
+
 	p, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
-	_log(p.ToJSON(), logFile)
+	logfile.Write(p.ToJSON())
 
 	p.Print()
 	output := p.Dispatch()
 	print(output)
-	for p.NoAcabada() {
-		fmt.Printf("\n>> ")
+
+	for {
 		cmd := readLn()
-		_log(cmd, logFile)
-		// tuvo error?
+		logfile.Write(cmd)
+
 		err := p.SetSigJugada(cmd)
 		if err != nil {
 			fmt.Println("<< " + err.Error())
 		}
+
 		p.Esperar()
-		// obtengo un array de mensajes como output
 		output := p.Dispatch()
 		print(output)
+
 		p.Print()
+
+		if p.NoAcabada() {
+			break
+		}
 	}
+
+	fmt.Println("se fini")
 }
