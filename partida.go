@@ -586,9 +586,7 @@ func (p *Partida) SetSigJugada(cmd string) error {
 		return err
 	}
 
-	p.sigJugada <- jugada
-
-	p.Esperar() // hasta que no termine que no retorne
+	jugada.hacer(p)
 
 	return nil
 }
@@ -713,7 +711,7 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 		jugadores:     jugadores,
 	}
 
-	p.OutCh = make(chan Msg, 10) // maxima cantidad de mensajes que puede gen en 1 jugada
+	p.OutCh = make(chan Msg, 3) // maxima cantidad de mensajes que puede gen en 1 jugada
 	p.quit = make(chan bool, 1)
 	p.wait = make(chan bool, 1)
 	p.sigJugada = make(chan IJugada, 1)
@@ -727,7 +725,7 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	p.nuevaRonda(elMano)
 
 	go p.escuchar()
-	go p.ejecutar()
+	// go p.ejecutar()
 	go p.hello()
 
 	return &p, nil
