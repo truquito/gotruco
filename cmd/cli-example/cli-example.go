@@ -2,7 +2,10 @@ package main
 
 import (
 	"bufio"
+	"bytes"
+	"encoding/gob"
 	"fmt"
+	"io"
 	"log"
 	"os"
 	"strconv"
@@ -54,17 +57,30 @@ func newLogFile() LogFile {
 	return LogFile{path: logFile}
 }
 
-func consumir(ch chan truco.Msg) {
-	for i := 0; i < len(ch); i++ {
-		msg := <-ch
-		fmt.Println(msg)
-	}
-}
-
 func handleIO() {
 	for {
 		cmd := readLn()
 		ioCh <- cmd
+	}
+}
+
+func read(buff *bytes.Buffer) (*truco.Msg, error) {
+	e := new(truco.Msg)
+	dec := gob.NewDecoder(buff)
+	err := dec.Decode(e)
+	if err != nil {
+		return nil, err
+	}
+	return e, nil
+}
+
+func consume(buff *bytes.Buffer) {
+	for {
+		e, err := read(buff)
+		if err == io.EOF {
+			break
+		}
+		fmt.Println(*e)
 	}
 }
 
@@ -78,7 +94,7 @@ func main() {
 	logfile.Write(p.ToJSON())
 
 	p.Print()
-	consumir(p.OutCh)
+	consume(p.Stdout)
 
 	// hago una gorutine (y channel para avisar) para el io
 	go handleIO()
@@ -92,12 +108,12 @@ func main() {
 				fmt.Println("<< " + err.Error())
 			}
 			// consumo el channel de output
-			consumir(p.OutCh)
+			consume(p.Stdout)
 			p.Print()
-		case msg := <-p.OutCh:
+			// case msg := <-p.ErrCh:
 			// me llego algo tipo un mensaje de timeout
-			fmt.Println(msg.String()[3:])
-			fmt.Printf(">> ")
+			// fmt.Println(msg.String()[3:])
+			// fmt.Printf(">> ")
 		}
 
 		if !p.NoAcabada() {

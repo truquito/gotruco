@@ -61,7 +61,6 @@ func TestTirada1(t *testing.T) {
 	p.SetSigJugada("Renzo 4 Oro")
 	p.SetSigJugada("Andres 10 Copa")
 	p.SetSigJugada("Richard 10 Oro")
-	p.Esperar()
 
 	// como la muestra es Palo: Oro, Valor: 3 -> gana alvaro
 	if !(len(p.Ronda.Manos[primera].CartasTiradas) == 6) {
@@ -84,7 +83,6 @@ func TestTirada1(t *testing.T) {
 	p.SetSigJugada("Renzo 4 Espada")
 	p.SetSigJugada("Andres 7 Oro")
 	p.SetSigJugada("Richard 2 Oro")
-	p.Esperar()
 
 	// como la muestra es Palo: Oro, Valor: 3 -> gana richard
 	if !(len(p.Ronda.Manos[segunda].CartasTiradas) == 6) {
@@ -121,7 +119,6 @@ func TestTirada1(t *testing.T) {
 	p.SetSigJugada("Adolfo 3 Copa")
 	p.SetSigJugada("Renzo 1 Espada")
 	p.SetSigJugada("Andres 11 Basto")
-	p.Esperar()
 
 	// para este momento ya cambio a una nueva ronda
 	// como la muestra es Palo: Oro, Valor: 3 -> gana Renzo con el 1 de espada
@@ -132,8 +129,7 @@ func TestTirada1(t *testing.T) {
 
 	}
 
-	p.Esperar()
-	p.Terminar()
+	
 }
 
 // no deja irse al mazo a alvaro;
@@ -146,11 +142,11 @@ func TestFixIrseAlMazo(t *testing.T) {
 	p.Print()
 
 	p.SetSigJugada("alvaro mazo")
-	p.Esperar()
+
 	elManojoDeAlvaro := p.Ronda.Manojos[0]
 	if !(elManojoDeAlvaro.SeFueAlMazo == true) {
 		t.Error(`Alvaro se debio de haber ido al mazo`)
 	}
 
-	p.Terminar()
+	
 }

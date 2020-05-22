@@ -137,7 +137,7 @@ func TestFlorFlorContraFlorQuiero(t *testing.T) {
 	p.SetSigJugada("Renzo Flor")
 	p.SetSigJugada("Adolfo Contra-flor-al-resto")
 	p.SetSigJugada("Richard Quiero")
-	p.Esperar()
+	
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -178,7 +178,7 @@ func TestFixFlor(t *testing.T) {
 	p.SetSigJugada("alvaro envido")
 	// pero Richard tiene flor
 	// y no le esta sumando esos puntos
-	p.Esperar()
+	
 
 	if !(p.Ronda.Envite.Estado == DESHABILITADO) {
 		t.Error(`El estado de la flor deberia ser 'deshabilitado'`)
@@ -199,7 +199,7 @@ func TestFixFlor(t *testing.T) {
 	p.SetSigJugada("richard 11 espada")
 	p.SetSigJugada("alvaro 12 basto")
 	p.SetSigJugada("roro 10 basto")
-	p.Esperar()
+	
 
 	if !(p.Puntajes[Rojo] == 3) {
 		t.Error(`El puntaje del equipo rojo deberia ser 3 por la flor de richard`)
@@ -207,7 +207,7 @@ func TestFixFlor(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia ser 1 por la ronda ganada`)
 	}
 
-	p.Terminar()
+	
 }
 
 // bug a arreglar:
@@ -221,13 +221,13 @@ func TestFixFlorBucle(t *testing.T) {
 	p.SetSigJugada("alvaro mazo")
 	p.SetSigJugada("roro flor")
 	p.SetSigJugada("richard flor")
-	p.Esperar()
+	
 
 	if !(p.Puntajes[Rojo] == 6) {
 		t.Error(`El puntaje del equipo rojo deberia ser 6 por las 2 flores`)
 	}
 
-	p.Terminar()
+	
 }
 
 // bug a arreglar:
@@ -247,7 +247,7 @@ func TestFixContraFlor(t *testing.T) {
 	p.SetSigJugada("renzo contra-flor")
 	p.SetSigJugada("adolfo quiero")
 
-	p.Esperar()
+	
 
 	// if !(p.Puntajes[Rojo] == 3) {
 	// 	t.Error(`El puntaje del equipo rojo deberia ser 3 por la flor de richard`)
@@ -255,5 +255,5 @@ func TestFixContraFlor(t *testing.T) {
 	// 	t.Error(`El puntaje del equipo azul deberia ser 1 por la ronda ganada`)
 	// }
 
-	p.Terminar()
+	
 }

@@ -2,6 +2,7 @@ package truco
 
 import (
 	"bytes"
+	"encoding/gob"
 	"encoding/json"
 	"fmt"
 	"regexp"
@@ -76,6 +77,23 @@ func (e *Equipo) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+// Msg mensajes a la capa de presentacion
+type Msg struct {
+	Dest []string
+	Tipo string
+	Cont string
+}
+
+func (msg Msg) String() string {
+	return fmt.Sprintf(`<< [%s] (%s) : %s`, msg.Tipo, strings.Join(msg.Dest, "/"), msg.Cont)
+}
+
+func write(buff *bytes.Buffer, d *Msg) error {
+	enc := gob.NewEncoder(buff)
+	err := enc.Encode(d)
+	return err
+}
+
 // Partida :
 type Partida struct {
 	jugadores     []Jugador
@@ -84,11 +102,8 @@ type Partida struct {
 	Puntajes      map[Equipo]int `json:"puntajes"`
 	Ronda         Ronda          `json:"ronda"`
 
-	OutCh      chan Msg
-	quit       chan bool
-	wait       chan bool
-	sigJugada  chan IJugada
-	sigComando chan string
+	Stdout *bytes.Buffer
+	ErrCh  chan bool
 }
 
 func (p *Partida) parseJugada(cmd string) (IJugada, error) {
@@ -311,11 +326,11 @@ func (p *Partida) evaluarMano() {
 		mano.Resultado = Empardada
 		mano.Ganador = nil
 
-		p.OutCh <- Msg{
+		write(p.Stdout, &Msg{
 			Dest: []string{"ALL"},
 			Tipo: "ok",
 			Cont: fmt.Sprintf("La Mano resulta parda"),
-		}
+		})
 		// no se cambia el turno
 
 	} else {
@@ -333,14 +348,14 @@ func (p *Partida) evaluarMano() {
 		// pero se setea despues de evaluar la ronda
 		mano.Ganador = tiradaGanadora.autor
 
-		p.OutCh <- Msg{
+		write(p.Stdout, &Msg{
 			Dest: []string{"ALL"},
 			Tipo: "ok",
 			Cont: fmt.Sprintf("La %s mano la gano el equipo %s gracia a %s",
 				strings.ToLower(p.Ronda.ManoEnJuego.String()),
 				mano.Ganador.Jugador.Equipo.String(),
 				mano.Ganador.Jugador.Nombre),
-		}
+		})
 
 	}
 
@@ -458,12 +473,12 @@ func (p *Partida) evaluarRonda() bool {
 
 	/************************************************/
 
-	p.OutCh <- Msg{
+	write(p.Stdout, &Msg{
 		Dest: []string{"ALL"},
 		Tipo: "ok",
 		Cont: fmt.Sprintf("La ronda ha sido ganada por el equipo %s",
 			ganador.Jugador.Equipo),
-	}
+	})
 
 	// ya sabemos el ganador ahora es el
 	// momento de sumar los puntos del truco
@@ -496,11 +511,11 @@ func (p *Partida) evaluarRonda() bool {
 			p.Ronda.Truco.Estado.String())
 	}
 
-	p.OutCh <- Msg{
+	write(p.Stdout, &Msg{
 		Dest: []string{"ALL"},
 		Tipo: "ok",
 		Cont: msg,
-	}
+	})
 
 	terminoLaPartida := p.sumarPuntos(ganador.Jugador.Equipo, totalPts)
 
@@ -519,28 +534,28 @@ func (p *Partida) evaluarRonda() bool {
 func (p *Partida) byeBye() {
 	if !p.NoAcabada() {
 
-		p.OutCh <- Msg{
+		write(p.Stdout, &Msg{
 			Dest: []string{"ALL"},
 			Tipo: "ok",
 			Cont: fmt.Sprintf("Se acabo la partida! el ganador fue el equipo %s",
 				p.elQueVaGanando().String()),
-		}
+		})
 
-		p.OutCh <- Msg{
+		write(p.Stdout, &Msg{
 			Dest: []string{"ALL"},
 			Tipo: "ok",
 			Cont: fmt.Sprintf("BYE BYE!"),
-		}
+		})
 
 	}
 }
 
 func (p *Partida) nuevaRonda(elMano JugadorIdx) {
-	p.OutCh <- Msg{
+	write(p.Stdout, &Msg{
 		Dest: []string{"ALL"},
 		Tipo: "ok",
 		Cont: fmt.Sprintf("Empieza una nueva ronda"),
-	}
+	})
 	p.Ronda = nuevaRonda(p.jugadores, elMano)
 	// fmt.Printf("La mano y el turno es %s\n", p.Ronda.getElMano().Jugador.Nombre)
 }
@@ -591,100 +606,14 @@ func (p *Partida) SetSigJugada(cmd string) error {
 	return nil
 }
 
-// devuelve solo la siguiente jugada VALIDA
-// si no es valida es como si no hubiese pasado nada
-func (p *Partida) getSigJugada() (IJugada, bool) {
-	var (
-		iJugada IJugada
-		valid   bool
-	)
-	for {
-		iJugada, valid = <-p.sigJugada
-		if !valid {
-			// se cerro el p.sigJugada
-			return iJugada, valid
-			// p.quit <- true
-		} else if iJugada == nil {
-			p.wait <- true
-		} else {
-			break
-		}
-	}
-	return iJugada, valid
-}
-
-// Terminar espera a que se consuma toda la fila de jugadas
-// si se quisiera terminar abruptamente se deberia
-// usar otro canal tipo `p.quit<-true` y agregarle
-// el caso que corresponda al `select{...}`
-func (p *Partida) Terminar() {
-	p.Esperar() // igual si no lo pongo, este terminar no es abrupto
-	// ya que queda en segundo plano consumiendo el stack de jugadas
-	// parseadas; lo correcto seria al sigJugada checkear si hay alguna
-	// especie de flag que diga "no consumas mas jugadas"
-	// <-p.quit
-	p.quit <- true
-	// <-p.quit
-	close(p.quit)
-}
-
-// Esperar espera a que se consuma toda la fila de jugadas
-// para continuar; pero sin cerrar ningun canal
-func (p *Partida) Esperar() {
-	p.sigJugada <- nil
-	<-p.wait
-}
-
-func (p *Partida) escuchar() {
-	for {
-		select {
-
-		case <-p.quit:
-			// cierro todo
-
-			close(p.sigJugada)  // va a hacer que la func de parsea termine
-			close(p.sigComando) // va a hacer que salga de esta func
-			close(p.wait)
-			// p.quit <- true // para avisarle que ya cerre todo
-			return // hace que esta misma termine
-
-			// case <-time.After(1 * time.Second):
-			// default:
-		}
-	}
-}
-
-func (p *Partida) ejecutar() {
-	for {
-		sjugada, valid := p.getSigJugada()
-
-		if !valid { // el canal cerro
-			return
-		}
-
-		sjugada.hacer(p)
-	}
-}
-
 func (p *Partida) hello() {
 	for {
 		time.Sleep(5000 * time.Millisecond)
-		p.OutCh <- Msg{[]string{"ALL"}, "INT", "INTERRUMPING!!"}
+		write(p.Stdout, &Msg{[]string{"ALL"}, "INT", "INTERRUMPING!!"})
 	}
 }
 
-// Msg mensajes a la capa de presentacion
-type Msg struct {
-	Dest []string
-	Tipo string
-	Cont string
-}
-
-func (msg Msg) String() string {
-	return fmt.Sprintf(`<< [%s] (%s) : %s`, msg.Tipo, strings.Join(msg.Dest, "/"), msg.Cont)
-}
-
-// NuevaPartida retorna nueva partida; error si hubo
+// NuevaPartida retorna n)ueva partida; error si hubo
 func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Partida, error) {
 
 	mismaCantidadDeJugadores := len(equipoRojo) == len(equipoAzul)
@@ -711,11 +640,8 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 		jugadores:     jugadores,
 	}
 
-	p.OutCh = make(chan Msg, 3) // maxima cantidad de mensajes que puede gen en 1 jugada
-	p.quit = make(chan bool, 1)
-	p.wait = make(chan bool, 1)
-	p.sigJugada = make(chan IJugada, 1)
-	p.sigComando = make(chan string, 1)
+	p.Stdout = new(bytes.Buffer)
+	p.ErrCh = make(chan bool, 1)
 
 	p.Puntajes = make(map[Equipo]int)
 	p.Puntajes[Rojo] = 0
@@ -723,10 +649,6 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 
 	elMano := JugadorIdx(0)
 	p.nuevaRonda(elMano)
-
-	go p.escuchar()
-	// go p.ejecutar()
-	go p.hello()
 
 	return &p, nil
 }

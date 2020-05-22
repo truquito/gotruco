@@ -145,7 +145,7 @@ func TestPartida1(t *testing.T) {
 	p.SetSigJugada("Adolfo Flor")
 	p.SetSigJugada("Renzo Contra-flor")
 	p.SetSigJugada("Alvaro Quiero")
-	p.Terminar()
+	
 }
 
 func TestPartidaComandosInvalidos(t *testing.T) {
@@ -157,7 +157,7 @@ func TestPartidaComandosInvalidos(t *testing.T) {
 	p.SetSigJugada("Schumacher Flor")
 	p.SetSigJugada("Adolfo Flor")
 
-	p.Terminar()
+	
 
 }
 
@@ -203,11 +203,11 @@ func TestFixNacho(t *testing.T) {
 	p.SetSigJugada("renzo mazo")
 	p.SetSigJugada("andres mazo")
 
-	p.Esperar()
+	
 
 	p.Print()
 
-	p.Terminar()
+	
 }
 
 func TestFixNoFlor(t *testing.T) {
@@ -224,7 +224,7 @@ func TestFixNoFlor(t *testing.T) {
 	// "la flor esta primero":
 	// << Andres canta flor
 
-	p.Esperar()
+	
 
 	oops = !(p.Ronda.Envite.Estado == FLOR)
 	if oops {
@@ -280,7 +280,7 @@ func TestFixNoFlor(t *testing.T) {
 	p.SetSigJugada("richard vale-4")
 	// << Richard grita vale 4
 
-	p.Esperar()
+	
 
 	oops = !(p.Ronda.Truco.Estado == VALE4)
 	if oops {
@@ -290,7 +290,7 @@ func TestFixNoFlor(t *testing.T) {
 	p.SetSigJugada("adolfo quiero")
 	// << Adolfo responde quiero
 
-	p.Esperar()
+	
 
 	oops = !(p.Ronda.Truco.Estado == VALE4QUERIDO)
 	if oops {
@@ -330,7 +330,7 @@ func TestFixNoFlor(t *testing.T) {
 	// << Empieza una nueva ronda
 	// << Empieza una nueva ronda
 
-	p.Esperar()
+	
 
 	oops = !(p.getMaxPuntaje() == 6+4) // 6 de las 2 flores
 	if oops {
@@ -338,7 +338,7 @@ func TestFixNoFlor(t *testing.T) {
 	}
 
 	p.Print()
-	p.Terminar()
+	
 }
 
 func TestFixPanic(t *testing.T) {
@@ -424,7 +424,7 @@ func TestFixPanic(t *testing.T) {
 	p.SetSigJugada("renzo mazo")
 	// << Renzo se va al mazo
 
-	p.Esperar()
+	
 	p.Print()
 
 	p.SetSigJugada("andres mazo")
@@ -440,8 +440,8 @@ func TestFixPanic(t *testing.T) {
 	// << +0 puntos para el equipo Rojo por el reTruco no querido
 	// << Empieza una nueva ronda
 
-	p.Esperar()
-	p.Terminar()
+	
+	
 }
 
 func TestFixBocha(t *testing.T) {
@@ -469,9 +469,9 @@ func TestFixBocha(t *testing.T) {
 	// << +1 puntos para el equipo Rojo por el noCantado ganado
 	// << Empieza una nueva ronda
 
-	p.Esperar()
+	
 	p.Print()
-	p.Terminar()
+	
 }
 
 func TestFixBochaParte2(t *testing.T) {
@@ -505,9 +505,9 @@ func TestFixBochaParte2(t *testing.T) {
 	// << +1 puntos para el equipo Rojo por el noCantado ganado
 	// << Empieza una nueva ronda
 
-	p.Esperar()
+	
 	p.Print()
-	p.Terminar()
+	
 }
 
 func TestFixBochaParte3(t *testing.T) {
@@ -531,9 +531,9 @@ func TestFixBochaParte3(t *testing.T) {
 	p.SetSigJugada("richard quiero")
 	// (Para Richard) No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo
 
-	p.Esperar()
+	
 	p.Print()
-	p.Terminar()
+	
 }
 
 func TestFixAutoQuerer(t *testing.T) {
@@ -547,7 +547,7 @@ func TestFixAutoQuerer(t *testing.T) {
 	p.SetSigJugada("adolfo quiero")
 
 	p.Print()
-	p.Terminar()
+	
 }
 
 func TestFixNilPointer(t *testing.T) {
@@ -576,14 +576,14 @@ func TestFixNilPointer(t *testing.T) {
 	p.SetSigJugada("adolfo mazo")
 	p.SetSigJugada("Renzo flor")
 
-	p.Esperar()
+	
 	// output := p.Dispatch()
 	// for _, msg := range output {
 	// 	fmt.Println(msg)
 	// }
 
 	// p.Print()
-	p.Terminar()
+	
 }
 
 func TestFixNoDejaIrseAlMazo(t *testing.T) {
@@ -607,14 +607,14 @@ func TestFixNoDejaIrseAlMazo(t *testing.T) {
 	p.SetSigJugada("andres mazo")
 	p.SetSigJugada("andres mazo")
 
-	p.Esperar()
+	
 	// output := p.Dispatch()
 	// for _, msg := range output {
 	// 	fmt.Println(msg)
 	// }
 
 	p.Print()
-	p.Terminar()
+	
 }
 
 func TestFixFlorObligatoria(t *testing.T) {
@@ -643,14 +643,14 @@ func TestFixFlorObligatoria(t *testing.T) {
 	p.SetSigJugada("richard 10 oro")
 	p.SetSigJugada("roro 1 oro")
 
-	p.Esperar()
+	
 	// output := p.Dispatch()
 	// for _, msg := range output {
 	// 	fmt.Println(msg)
 	// }
 
 	p.Print()
-	p.Terminar()
+	
 }
 
 func TestFixNoPermiteContraFlor(t *testing.T) {
@@ -667,12 +667,12 @@ func TestFixNoPermiteContraFlor(t *testing.T) {
 	p.SetSigJugada("renzo quiero")
 	p.SetSigJugada("renzo contra-flor")
 
-	p.Esperar()
+	
 	// output := p.Dispatch()
 	// for _, msg := range output {
 	// 	fmt.Println(msg)
 	// }
 
 	p.Print()
-	p.Terminar()
+	
 }
