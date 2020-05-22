@@ -7,7 +7,6 @@ import (
 	"fmt"
 	"regexp"
 	"strings"
-	"time"
 )
 
 // el envido, la primera o la mentira
@@ -606,13 +605,10 @@ func (p *Partida) SetSigJugada(cmd string) error {
 	return nil
 }
 
-func (p *Partida) hello() {
-	for {
-		time.Sleep(5000 * time.Millisecond)
-		// ojo primero hay que grabar el buff, luego avisar
-		write(p.Stdout, &Msg{[]string{"ALL"}, "INT", "INTERRUMPING!!"})
-		p.ErrCh <- true
-	}
+func (p *Partida) notify() {
+	// ojo primero hay que grabar el buff, luego avisar
+	write(p.Stdout, &Msg{[]string{"ALL"}, "INT", "INTERRUMPING!!"})
+	p.ErrCh <- true
 }
 
 // NuevaPartida retorna n)ueva partida; error si hubo
@@ -651,8 +647,6 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 
 	elMano := JugadorIdx(0)
 	p.nuevaRonda(elMano)
-
-	go p.hello()
 
 	return &p, nil
 }
