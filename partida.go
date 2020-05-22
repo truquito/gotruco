@@ -609,7 +609,9 @@ func (p *Partida) SetSigJugada(cmd string) error {
 func (p *Partida) hello() {
 	for {
 		time.Sleep(5000 * time.Millisecond)
+		// ojo primero hay que grabar el buff, luego avisar
 		write(p.Stdout, &Msg{[]string{"ALL"}, "INT", "INTERRUMPING!!"})
+		p.ErrCh <- true
 	}
 }
 
@@ -649,6 +651,8 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 
 	elMano := JugadorIdx(0)
 	p.nuevaRonda(elMano)
+
+	go p.hello()
 
 	return &p, nil
 }

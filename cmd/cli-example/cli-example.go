@@ -110,10 +110,9 @@ func main() {
 			// consumo el channel de output
 			consume(p.Stdout)
 			p.Print()
-			// case msg := <-p.ErrCh:
-			// me llego algo tipo un mensaje de timeout
-			// fmt.Println(msg.String()[3:])
-			// fmt.Printf(">> ")
+		case <-p.ErrCh:
+			consume(p.Stdout)
+			fmt.Printf(">> ")
 		}
 
 		if !p.NoAcabada() {
