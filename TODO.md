@@ -1,6 +1,5 @@
 
 # BUGS
-- [FACIIIIIIL] si te quedaste sin cartas -> no te podes ir al mazo
 - [FACIL] ahora cantar la flor es opcional -> no hacerlo
 - [RELACIONADO] ^ es necesario que sea tu turno para cantar la flor? o es tipo
     irse al mazo????
@@ -65,7 +64,8 @@
 - que pasa si uno me manda un mensaje de terminar al canal <-- tokens
 - agregar el control de que los len(nombres de los jguadores) tienen que ser > 0
 - agregarle un ID a jugador y que las busquedas las haga por este campo
-    esta id debe ser sercreta y random; porque si yo se la id de otro puedo jugar por el
+    esta id debe ser sercreta y random; porque si yo se la id de otro puedo 
+    jugar por el
 
 # PERFORMANCE
 - que es mas rapido para saber si un jugador tiene flor:
@@ -93,3 +93,5 @@
     *se juega el envido*
     ----> ahora el truco sigue en juego como si lo hubiese cantado A? o hay que 
     volver a cantarlo?
+- tiene sentido que alguien cante envido incluso cuando ya tiro todas sus cartas?
+    checkear la cond. yaTiroTodasSusCartas en casos envido/truco

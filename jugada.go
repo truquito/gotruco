@@ -42,6 +42,21 @@ func (jugada tirarCarta) hacer(p *Partida) {
 
 	}
 
+	// esto es un tanto redundante porque es imposible que no sea su turno
+	// (checkeado mas adelante) y que al mismo tiempo tenga algo para tirar
+	// luego de haber jugado sus 3 cartas; aun asi lo dejo
+	yaTiroTodasSusCartas := jugada.autor.getCantCartasTiradas() == 3
+	if yaTiroTodasSusCartas {
+
+		write(p.Stdout, &Msg{
+			Dest: []string{jugada.autor.Jugador.Nombre},
+			Tipo: "error",
+			Cont: fmt.Sprintf("No es posible tirar una carta porque ya las tiraste todas"),
+		})
+		return
+
+	}
+
 	// checkeo flor en juego
 	enviteEnJuego := p.Ronda.Envite.Estado >= ENVIDO
 	if enviteEnJuego {
@@ -936,8 +951,8 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 			Tipo: "error",
 			Cont: fmt.Sprintf("Te fuiste al mazo; no podes hacer esta jugada"),
 		})
-		return
 
+		return
 	}
 
 	// checkeo flor en juego
@@ -1076,11 +1091,8 @@ type irseAlMazo struct {
 func (jugada irseAlMazo) hacer(p *Partida) {
 	// checkeos:
 	yaSeFueAlMazo := jugada.autor.SeFueAlMazo == true
-	seEstabaJugandoElEnvido := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO)
-	seEstabaJugandoLaFlor := p.Ronda.Envite.Estado >= FLOR
-	seEstabaJugandoElTruco := contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
-
-	if yaSeFueAlMazo {
+	yaTiroTodasSusCartas := jugada.autor.getCantCartasTiradas() == 3
+	if yaSeFueAlMazo || yaTiroTodasSusCartas {
 
 		write(p.Stdout, &Msg{
 			Dest: []string{jugada.autor.Jugador.Nombre},
@@ -1091,6 +1103,9 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 
 	}
 
+	seEstabaJugandoElEnvido := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO)
+	seEstabaJugandoLaFlor := p.Ronda.Envite.Estado >= FLOR
+	seEstabaJugandoElTruco := contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
 	// no se puede ir al mazo sii:
 	// 1. el fue el que canto el envido (y el envido esta en juego)
 	// 2. tampoco se puede ir al mazo si el canto la flor o similar
