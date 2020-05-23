@@ -4,13 +4,6 @@
 
 - duda: caso en TestFixPanic: no deberia ganar la mano? a quien le toca ser pie en la mano 2?
 
-- los puntos de "el truco" los deberia contabilizar ronda.evaluarRonda()
-  ejemplo, en la jugada.noquiero el codigo ese no deberia estar, 
-  sino que deberia llamar a ronda.evaluarRonda()
-  tal vez hacer algo parecido para el envido/flor (?)
-
-- calc bien los puntos cuando se va al mazo (mergear con lo que esta comentado)
-
 - depues de cantar vale4 (y similares) nadie puede tirar carta, el equipo contrario debe responder si o no
 
 - no necesariamente tiene que ser RETRUCOQUERIDO el estado del truco para
@@ -131,9 +124,6 @@ se lleva el puntaje el equipo azul de las 3 flores (3+3+3) ; eso esta bien?
     SOLUCION: QUE EN LA STRUCT DEL ENVIDO EL PUNTERO SEA A EL MANOJO NO AL PERFIL;
     luego usar p.Ronda.getPerfil( p.Ronda.envido.cantadoPor )
 
-    
-
-- eliminar p.getJugador() y usar Ronda.getManojo()
 
 - JugadorIdx al pedo?
 
@@ -172,7 +162,5 @@ se lleva el puntaje el equipo azul de las 3 flores (3+3+3) ; eso esta bien?
     computar las "respuestas que se escucharian"
 
 - ganador de una mano en ronda.mano.ganador
-
-- cuando se suman puntos -> checkear que no se haya acabado la partida
 
 - seguridad: que pasa si uno me manda un mensaje de terminar al canal <-- tokens

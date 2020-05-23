@@ -214,7 +214,7 @@ func (jugada tocarRealEnvido) hacer(p *Partida) {
 
 	}
 	esPrimeraMano := p.Ronda.ManoEnJuego == primera
-	esSuTurno := p.getJugador(p.Ronda.Turno) == jugada.autor.Jugador
+	esSuTurno := p.Ronda.getElTurno() == jugada.autor
 	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
 	realEnvidoHabilitado := (p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.Estado == ENVIDO)
 	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.autor.Jugador.Equipo
@@ -279,7 +279,8 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) {
 		return
 
 	}
-	esSuTurno := p.getJugador(p.Ronda.Turno) == jugada.autor.Jugador
+
+	esSuTurno := p.Ronda.getElTurno() == jugada.autor
 	esPrimeraMano := p.Ronda.ManoEnJuego == primera
 	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
 	faltaEnvidoHabilitado := p.Ronda.Envite.Estado >= NOCANTADOAUN && p.Ronda.Envite.Estado < FALTAENVIDO
@@ -607,7 +608,7 @@ func (jugada gritarTruco) hacer(p *Partida) {
 	noSeCantoFlor := p.Ronda.Envite.Estado != DESHABILITADO
 	laFlorEstaPrimero := hayFlor && noSeCantoFlor
 	trucoNoSeJugoAun := p.Ronda.Truco.Estado == NOCANTADO
-	esSuTurno := p.getJugador(p.Ronda.Turno) == jugada.autor.Jugador
+	esSuTurno := p.Ronda.getElTurno() == jugada.autor
 	trucoHabilitado := noSeFueAlMazo && trucoNoSeJugoAun && esSuTurno && noSeEstaJugandoElEnvite && !laFlorEstaPrimero
 
 	if !trucoHabilitado {
@@ -670,7 +671,7 @@ func (jugada gritarReTruco) hacer(p *Partida) {
 	// CASO I:
 	trucoYaQuerido := p.Ronda.Truco.Estado == TRUCOQUERIDO
 	unoDeMiEquipoQuizo := trucoYaQuerido && p.Ronda.Truco.CantadoPor.Jugador.Equipo == jugada.autor.Jugador.Equipo
-	esTurnoDeMiEquipo := p.getJugador(p.Ronda.Turno).Equipo == jugada.autor.Jugador.Equipo
+	esTurnoDeMiEquipo := p.Ronda.getElTurno().Jugador.Equipo == jugada.autor.Jugador.Equipo
 	casoII := trucoYaQuerido && unoDeMiEquipoQuizo && esTurnoDeMiEquipo
 
 	reTrucoHabilitado := noSeFueAlMazo && noSeEstaJugandoElEnvite && (casoI || casoII) && !laFlorEstaPrimero

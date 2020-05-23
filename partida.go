@@ -213,12 +213,6 @@ func (p *Partida) getPuntuacionMalas() int {
 	return p.Puntuacion.toInt() / 2
 }
 
-// getJugador dado un indice de jugador,
-// devuelve su puntero correspondiente
-func (p *Partida) getJugador(jIdx JugadorIdx) *Jugador {
-	return &p.jugadores[jIdx]
-}
-
 // NoAcabada retorna true si la partida acabo
 func (p *Partida) NoAcabada() bool {
 	return p.getMaxPuntaje() < p.Puntuacion.toInt()
