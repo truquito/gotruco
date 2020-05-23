@@ -7,6 +7,13 @@ import (
 	"github.com/jpfilevich/canvas"
 )
 
+func chop(str string, l int) string {
+	if len(str) <= l {
+		return str
+	}
+	return str[:l]
+}
+
 type posicion int
 
 const (

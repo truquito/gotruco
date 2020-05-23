@@ -1,16 +1,8 @@
 package truco
 
 import (
-	"fmt"
 	"reflect"
 )
-
-func chop(str string, l int) string {
-	if len(str) <= l {
-		return str
-	}
-	return str[:l]
-}
 
 func contains(slice interface{}, item interface{}) bool {
 	s := reflect.ValueOf(slice)
@@ -64,28 +56,6 @@ func max(nums ...int) int {
 	return max
 }
 
-func abs(x int) int {
-	if x < 0 {
-		return -x
-	}
-	return x
-}
-
-// complemento de 'x in A, where A=[0, 1, 2]' devuelve
-// *por separado*, el conjunto ordenado 'A - x'
-// (A sin el elemento x)
-// PRE: 0 <= x <= 2
-func complemento(x int) (p, q int) {
-	switch x {
-	case 0:
-		return 1, 2
-	case 1:
-		return 0, 2
-	default: // x == 2
-		return 0, 1
-	}
-}
-
 // ver documentacion cambio de variable
 func cv(x, mano JugadorIdx, cantJugadores int) (y JugadorIdx) {
 	if x >= mano {
@@ -95,10 +65,4 @@ func cv(x, mano JugadorIdx, cantJugadores int) (y JugadorIdx) {
 		y = x + c
 	}
 	return y
-}
-
-func print(a []string) {
-	for _, s := range a {
-		fmt.Print(s)
-	}
 }
