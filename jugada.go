@@ -1040,6 +1040,11 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 		}
 
 		// todo ok: tiene flor; se pasa a jugar:
+		write(p.Stdout, &Msg{
+			Dest: []string{"ALL"},
+			Tipo: "ok",
+			Cont: fmt.Sprintf("%s responde con flor me achico", jugada.autor.Jugador.Nombre),
+		})
 
 		// cuenta como un "no quiero" (codigo copiado)
 		// segun el estado de la apuesta actual:

@@ -1,17 +1,17 @@
 
 # BUGS
-- [FACIL] ahora cantar la flor es opcional -> no hacerlo
+- [MEDIO] ahora cantar la flor es opcional -> no hacerlo
 - [RELACIONADO] ^ es necesario que sea tu turno para cantar la flor? o es tipo
     irse al mazo????
 - [RELACIONADO] ^ que pasa si hay 3 con flor A,B y C; 
     * A canta flor, 
     * B dice contra flor, 
     * A dice quiero -> pero B nunca canto su flor
-- [FACIL] no es necesario cantar los puntajes de las flores si todos los que 
+- [MEDIO] no es necesario cantar los puntajes de las flores si todos los que 
     tienen flores son del mismo equipo
 - depues de cantar vale4 (y similares) nadie puede tirar carta, el equipo 
     contrario debe responder si o no
-- [BUENO] en el caso TestFixNacho:
+- [MEDIO] en el caso TestFixNacho:
     luego de que `adolfo re-truco` no se deberia poder tirar nada, solo irse al 
     mazo ya que la ronda termina y nadie dijo quiero o no quiero
 - [HECHO?] alguien que se fue al mazo con flor puede llegar a decir quiero a una 
@@ -26,7 +26,6 @@
     contesta la apuesta y juega su carta? no deberia de estar permitido
 - puede que se llame a p.evaluarMano() y que no se haya tirado ninguna carta?
     de se asi -> que pasaria?
-- [FACIL] el no quiero de la flor @TestFixNoFlor no tiene output
 - [BUG] recontra revisar para todas las jugadas:
     checkeos de la gente que se fue al mazo no podria hacer nada:
     eg:
@@ -49,9 +48,10 @@
         p.SetSigJugada("Alvaro Real-Envido")
         p.SetSigJugada("Roro Falta-Envido")
         p.SetSigJugada("Roro Quiero")
-- [FACIL] test envido n-veces -> deberia tener un parate
+- [MEDIO] test envido n-veces -> deberia tener un parate
 
 # LIMPIEZA DE CODIGO
+- Hay codigo repetido entre noQuiero y mazo cuando niega la flor (codigo copiado)
 - hay redundancia entre cantarFloresSiLasHay y cantarFlores
 - hay redundancia entre p.Ronda.getLaFlorMasAlta y 
     manojoConLaFlorGanadora, _, _ := p.Ronda.execCantarFlores(aPartirDe)
