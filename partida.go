@@ -555,8 +555,14 @@ func (p *Partida) nuevaRonda(elMano JugadorIdx) {
 		Tipo: "ok",
 		Cont: fmt.Sprintf("Empieza una nueva ronda"),
 	})
+
 	p.Ronda = nuevaRonda(p.jugadores, elMano)
-	// fmt.Printf("La mano y el turno es %s\n", p.Ronda.getElMano().Jugador.Nombre)
+
+	write(p.Stdout, &Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf("La mano y el turno es %s\n", p.Ronda.getElMano().Jugador.Nombre),
+	})
 }
 
 // Print imprime la partida
