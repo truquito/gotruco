@@ -1248,7 +1248,11 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 		p.evaluarMano()
 		// el turno del siguiente queda dado por el ganador de esta
 	} else {
-		p.Ronda.setNextTurno()
+		// cambio de turno solo si era su turno
+		eraSuTurno := p.Ronda.getElTurno() == jugada.autor
+		if eraSuTurno {
+			p.Ronda.setNextTurno()
+		}
 	}
 
 	return
