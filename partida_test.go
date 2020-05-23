@@ -139,12 +139,12 @@ func TestPartida1(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido") // no estoy recibiendo output
-	p.SetSigJugada("Alvaro Flor")
-	p.SetSigJugada("Roro Mazo") // no estoy recibiendo output
-	p.SetSigJugada("Adolfo Flor")
-	p.SetSigJugada("Renzo Contra-flor")
-	p.SetSigJugada("Alvaro Quiero")
+	p.Cmd("Alvaro Envido") // no estoy recibiendo output
+	p.Cmd("Alvaro Flor")
+	p.Cmd("Roro Mazo") // no estoy recibiendo output
+	p.Cmd("Adolfo Flor")
+	p.Cmd("Renzo Contra-flor")
+	p.Cmd("Alvaro Quiero")
 
 }
 
@@ -152,10 +152,10 @@ func TestPartidaComandosInvalidos(t *testing.T) {
 
 	p, _ := NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
 
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Quiero")
-	p.SetSigJugada("Schumacher Flor")
-	p.SetSigJugada("Adolfo Flor")
+	p.Cmd("Alvaro Envido")
+	p.Cmd("Quiero")
+	p.Cmd("Schumacher Flor")
+	p.Cmd("Adolfo Flor")
 
 }
 
@@ -174,32 +174,32 @@ func TestFixNacho(t *testing.T) {
 	p.FromJSON(partidaJSON)
 	p.Print()
 
-	p.SetSigJugada("alvaro 6 basto")
-	p.SetSigJugada("roro 2 basto")
-	p.SetSigJugada("Adolfo 4 basto")
-	p.SetSigJugada("renzo 7 basto")
-	p.SetSigJugada("andres 10 espada")
-	p.SetSigJugada("richard flor")
-	p.SetSigJugada("richard 11 espada")
+	p.Cmd("alvaro 6 basto")
+	p.Cmd("roro 2 basto")
+	p.Cmd("Adolfo 4 basto")
+	p.Cmd("renzo 7 basto")
+	p.Cmd("andres 10 espada")
+	p.Cmd("richard flor")
+	p.Cmd("richard 11 espada")
 
-	p.SetSigJugada("richard truco") // el envido deberia pasar a inhabilitado
+	p.Cmd("richard truco") // el envido deberia pasar a inhabilitado
 
-	p.SetSigJugada("roro quiero") // no deberia poder ya que es de su mismo equipo
-	p.SetSigJugada("adolfo quiero")
-	p.SetSigJugada("richard 5 espada")
-	p.SetSigJugada("alvaro mazo")
-	p.SetSigJugada("roro quiero")     // no hay nada que querer
-	p.SetSigJugada("roro retruco")    // syntaxis invalida
-	p.SetSigJugada("roro re-truco")   // no debe permitir
-	p.SetSigJugada("alvaro re-truco") // no deberia dejarlo porque se fue al mazo
-	p.SetSigJugada("Adolfo re-truco") // ojo que nadie le acepto el re-truco
-	p.SetSigJugada("roro 6 copa")     // no deberia dejarlo porque ya paso su turno
-	p.SetSigJugada("adolfo re-truco")
-	p.SetSigJugada("adolfo 1 espada")
-	p.SetSigJugada("renzo retruco")
-	p.SetSigJugada("renzo re-truco")
-	p.SetSigJugada("renzo mazo")
-	p.SetSigJugada("andres mazo")
+	p.Cmd("roro quiero") // no deberia poder ya que es de su mismo equipo
+	p.Cmd("adolfo quiero")
+	p.Cmd("richard 5 espada")
+	p.Cmd("alvaro mazo")
+	p.Cmd("roro quiero")     // no hay nada que querer
+	p.Cmd("roro retruco")    // syntaxis invalida
+	p.Cmd("roro re-truco")   // no debe permitir
+	p.Cmd("alvaro re-truco") // no deberia dejarlo porque se fue al mazo
+	p.Cmd("Adolfo re-truco") // ojo que nadie le acepto el re-truco
+	p.Cmd("roro 6 copa")     // no deberia dejarlo porque ya paso su turno
+	p.Cmd("adolfo re-truco")
+	p.Cmd("adolfo 1 espada")
+	p.Cmd("renzo retruco")
+	p.Cmd("renzo re-truco")
+	p.Cmd("renzo mazo")
+	p.Cmd("andres mazo")
 
 	p.Print()
 
@@ -211,10 +211,10 @@ func TestFixNoFlor(t *testing.T) {
 	p.FromJSON(partidaJSON)
 	p.Print()
 
-	p.SetSigJugada("alvaro 4 basto")
+	p.Cmd("alvaro 4 basto")
 	// << Alvaro tira la carta 4 de Basto
 
-	p.SetSigJugada("roro truco")
+	p.Cmd("roro truco")
 	// No es posible cantar truco ahora
 	// "la flor esta primero":
 	// << Andres canta flor
@@ -225,38 +225,38 @@ func TestFixNoFlor(t *testing.T) {
 	}
 
 	// el otro que tiene flor, pero se arruga
-	p.SetSigJugada("richard no-quiero")
+	p.Cmd("richard no-quiero")
 	// FIX: NO ESTA OUTPUTEANDO EL NO QUIERO
 	// << +6 puntos para el equipo Azul por las flores
 
-	p.SetSigJugada("roro truco")
+	p.Cmd("roro truco")
 	// << Roro grita truco
 
-	p.SetSigJugada("adolfo 12 oro")
+	p.Cmd("adolfo 12 oro")
 	// No era su turno, no puede tirar la carta
 
-	p.SetSigJugada("roro 7 copa")
+	p.Cmd("roro 7 copa")
 	// << Roro tira la carta 7 de Copa
 
-	p.SetSigJugada("andres quiero")
+	p.Cmd("andres quiero")
 	// << Andres responde quiero
 
-	p.SetSigJugada("adolfo 12 oro")
+	p.Cmd("adolfo 12 oro")
 	// << Adolfo tira la carta 12 de Oro
 
-	p.SetSigJugada("renzo 5 oro")
+	p.Cmd("renzo 5 oro")
 	// << Renzo tira la carta 5 de Oro
 
-	p.SetSigJugada("andres flor")
+	p.Cmd("andres flor")
 	// No es posible cantar flor
 
-	p.SetSigJugada("andres 6 basto")
+	p.Cmd("andres 6 basto")
 	// << Andres tira la carta 6 de Basto
 
-	p.SetSigJugada("richard flor")
+	p.Cmd("richard flor")
 	// No es posible cantar flor
 
-	p.SetSigJugada("richard 11 copa")
+	p.Cmd("richard 11 copa")
 	// << Richard tira la carta 11 de Copa
 
 	/* *********************************** */
@@ -264,13 +264,13 @@ func TestFixNoFlor(t *testing.T) {
 	// << Es el turno de Adolfo
 	/* *********************************** */
 
-	p.SetSigJugada("adolfo re-truco")
+	p.Cmd("adolfo re-truco")
 	// << Adolfo grita re-truco
 
-	p.SetSigJugada("richard quiero")
+	p.Cmd("richard quiero")
 	// << Richard responde quiero
 
-	p.SetSigJugada("richard vale-4")
+	p.Cmd("richard vale-4")
 	// << Richard grita vale 4
 
 	oops = !(p.Ronda.Truco.Estado == VALE4)
@@ -278,7 +278,7 @@ func TestFixNoFlor(t *testing.T) {
 		t.Error(`Richard deberia poder gritar vale4`)
 	}
 
-	p.SetSigJugada("adolfo quiero")
+	p.Cmd("adolfo quiero")
 	// << Adolfo responde quiero
 
 	oops = !(p.Ronda.Truco.Estado == VALE4QUERIDO)
@@ -291,25 +291,25 @@ func TestFixNoFlor(t *testing.T) {
 	// muesta: 3 espada
 	/* *********************************** */
 
-	p.SetSigJugada("adolfo 1 basto")
+	p.Cmd("adolfo 1 basto")
 	// << Adolfo tira la carta 1 de Basto
 
-	p.SetSigJugada("renzo 7 espada")
+	p.Cmd("renzo 7 espada")
 	// << Renzo tira la carta 7 de Espada
 
-	p.SetSigJugada("andres 4 espada")
+	p.Cmd("andres 4 espada")
 	// << Andres tira la carta 4 de Espada
 
-	p.SetSigJugada("richard 10 espada")
+	p.Cmd("richard 10 espada")
 	// << Richard tira la carta 10 de Espada
 
-	p.SetSigJugada("alvaro 6 espada")
+	p.Cmd("alvaro 6 espada")
 	// << Alvaro tira la carta 6 de Espada
 
-	p.SetSigJugada("roro re-truco")
+	p.Cmd("roro re-truco")
 	// << Alvaro tira la carta 6 de Espada
 
-	p.SetSigJugada("roro mazo")
+	p.Cmd("roro mazo")
 	// << Roro se va al mazo
 
 	// era el ultimo que quedaba por tirar en esta mano
@@ -334,26 +334,26 @@ func TestFixPanic(t *testing.T) {
 	p.FromJSON(partidaJSON)
 	p.Print()
 
-	p.SetSigJugada("alvaro 6 basto")
+	p.Cmd("alvaro 6 basto")
 	// << Alvaro tira la carta 6 de Basto
 
-	p.SetSigJugada("roro 2 basto")
+	p.Cmd("roro 2 basto")
 	// << Roro tira la carta 2 de Basto
 
-	p.SetSigJugada("Adolfo 4 basto")
+	p.Cmd("Adolfo 4 basto")
 	// << Adolfo tira la carta 4 de Basto
 
-	p.SetSigJugada("renzo 7 basto")
+	p.Cmd("renzo 7 basto")
 	// << Renzo tira la carta 7 de Basto
 
-	p.SetSigJugada("andres 10 espada")
+	p.Cmd("andres 10 espada")
 	// << Andres tira la carta 10 de Espada
 
-	p.SetSigJugada("richard flor")
+	p.Cmd("richard flor")
 	// << Richard canta flor
 	// << +3 puntos para el equipo Rojo (por ser la unica flor de esta ronda)
 
-	p.SetSigJugada("richard 11 espada")
+	p.Cmd("richard 11 espada")
 	// << Richard tira la carta 11 de Espada
 
 	/*
@@ -363,57 +363,57 @@ func TestFixPanic(t *testing.T) {
 
 	// ERROR: no la deberia ganar andres porque es mano (DUDA)
 
-	p.SetSigJugada("richard truco")
+	p.Cmd("richard truco")
 	// << Richard grita truco
 
-	p.SetSigJugada("roro quiero")
+	p.Cmd("roro quiero")
 	// (Para Roro) No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo
 
-	p.SetSigJugada("adolfo quiero")
+	p.Cmd("adolfo quiero")
 	// << Adolfo responde quiero
 
-	p.SetSigJugada("richard 5 espada")
+	p.Cmd("richard 5 espada")
 	// << Richard tira la carta 5 de Espada
 
-	p.SetSigJugada("alvaro mazo")
+	p.Cmd("alvaro mazo")
 	// << Alvaro se va al mazo
 
-	p.SetSigJugada("roro quiero")
+	p.Cmd("roro quiero")
 	// (Para Roro) No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo
 
-	p.SetSigJugada("roro retruco")
+	p.Cmd("roro retruco")
 	// << No esxiste esa jugada
 
-	p.SetSigJugada("roro re-truco")
+	p.Cmd("roro re-truco")
 	// No es posible cantar re-truco ahora
 
-	p.SetSigJugada("alvaro re-truco") // ya que se fue al mazo
+	p.Cmd("alvaro re-truco") // ya que se fue al mazo
 	// No es posible cantar re-truco ahora
 
-	p.SetSigJugada("Adolfo re-truco") // no es su turno ni el de su equipo
+	p.Cmd("Adolfo re-truco") // no es su turno ni el de su equipo
 	// No es posible cantar re-truco ahora
 
-	p.SetSigJugada("roro 6 copa")
+	p.Cmd("roro 6 copa")
 	// << Roro tira la carta 6 de Copa
 
-	p.SetSigJugada("adolfo re-truco")
+	p.Cmd("adolfo re-truco")
 	// << Adolfo grita re-truco
 
-	p.SetSigJugada("adolfo 1 espada")
+	p.Cmd("adolfo 1 espada")
 	// << Adolfo tira la carta 1 de Espada
 
-	p.SetSigJugada("renzo retruco")
+	p.Cmd("renzo retruco")
 	// << No esxiste esa jugada
 
-	p.SetSigJugada("renzo re-truco") // ya que ya lo canto adolfo
+	p.Cmd("renzo re-truco") // ya que ya lo canto adolfo
 	// No es posible cantar re-truco ahora
 
-	p.SetSigJugada("renzo mazo")
+	p.Cmd("renzo mazo")
 	// << Renzo se va al mazo
 
 	p.Print()
 
-	p.SetSigJugada("andres mazo")
+	p.Cmd("andres mazo")
 	// << Andres se va al mazo
 
 	// andres se va al mazo y era el ultimo que quedaba por jugar
@@ -434,13 +434,13 @@ func TestFixBocha(t *testing.T) {
 	p.FromJSON(partidaJSON)
 	p.Print()
 
-	p.SetSigJugada("alvaro mazo")
+	p.Cmd("alvaro mazo")
 	// << Alvaro se va al mazo
 
-	p.SetSigJugada("adolfo mazo")
+	p.Cmd("adolfo mazo")
 	// << Adolfo se va al mazo
 
-	p.SetSigJugada("andres mazo")
+	p.Cmd("andres mazo")
 	// << Andres se va al mazo
 
 	/*
@@ -463,25 +463,25 @@ func TestFixBochaParte2(t *testing.T) {
 	p.FromJSON(partidaJSON)
 	p.Print()
 
-	p.SetSigJugada("roro envido")
+	p.Cmd("roro envido")
 	// No es posible cantar 'Envido'
 
-	p.SetSigJugada("andres quiero")
+	p.Cmd("andres quiero")
 	// (Para Andres) No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo
 
-	p.SetSigJugada("andres quiero")
+	p.Cmd("andres quiero")
 	// (Para Andres) No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo
 
-	p.SetSigJugada("alvaro mazo")
+	p.Cmd("alvaro mazo")
 	// << Alvaro se va al mazo
 
-	p.SetSigJugada("adolfo 1 copa")
+	p.Cmd("adolfo 1 copa")
 	// Esa carta no se encuentra en este manojo
 
-	p.SetSigJugada("adolfo mazo")
+	p.Cmd("adolfo mazo")
 	// << Adolfo se va al mazo
 
-	p.SetSigJugada("andres mazo")
+	p.Cmd("andres mazo")
 	// << Andres se va al mazo
 
 	// << La ronda ha sido ganada por el equipo Rojo
@@ -498,19 +498,19 @@ func TestFixBochaParte3(t *testing.T) {
 	p.FromJSON(partidaJSON)
 	p.Print()
 
-	p.SetSigJugada("richard flor")
+	p.Cmd("richard flor")
 	// No es posible cantar flor
 
-	p.SetSigJugada("andres quiero")
+	p.Cmd("andres quiero")
 	// (Para Andres) No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo
 
-	p.SetSigJugada("andres contra-flor")
+	p.Cmd("andres contra-flor")
 	// No es posible cantar contra flor
 
-	p.SetSigJugada("richard contra-flor")
+	p.Cmd("richard contra-flor")
 	// No es posible cantar contra flor
 
-	p.SetSigJugada("richard quiero")
+	p.Cmd("richard quiero")
 	// (Para Richard) No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo
 
 	p.Print()
@@ -523,9 +523,9 @@ func TestFixAutoQuerer(t *testing.T) {
 	p.FromJSON(partidaJSON)
 	p.Print()
 
-	p.SetSigJugada("alvaro envido")
-	p.SetSigJugada("alvaro quiero")
-	p.SetSigJugada("adolfo quiero")
+	p.Cmd("alvaro envido")
+	p.Cmd("alvaro quiero")
+	p.Cmd("adolfo quiero")
 
 	p.Print()
 
@@ -538,24 +538,24 @@ func TestFixNilPointer(t *testing.T) {
 	p.Ronda.Turno = 3 // es el turno de renzo
 	p.Print()
 
-	p.SetSigJugada("renzo6 basto")
-	p.SetSigJugada("renzo 6 basto")
-	p.SetSigJugada("andres truco")
-	p.SetSigJugada("renzo quiero")
-	p.SetSigJugada("andres re-truco")
-	p.SetSigJugada("andres 3 oro")
-	p.SetSigJugada("richard vale-4")
-	p.SetSigJugada("richard re-truco")
-	p.SetSigJugada("andres quiero")
-	p.SetSigJugada("richard mazo")
-	p.SetSigJugada("alvaro vale-4")
-	p.SetSigJugada("andres quiero")
-	p.SetSigJugada("roro quiero")
-	p.SetSigJugada("alvaro mazo")
-	p.SetSigJugada("roro mazo")
-	p.SetSigJugada("roro 12 oro")
-	p.SetSigJugada("adolfo mazo")
-	p.SetSigJugada("Renzo flor")
+	p.Cmd("renzo6 basto")
+	p.Cmd("renzo 6 basto")
+	p.Cmd("andres truco")
+	p.Cmd("renzo quiero")
+	p.Cmd("andres re-truco")
+	p.Cmd("andres 3 oro")
+	p.Cmd("richard vale-4")
+	p.Cmd("richard re-truco")
+	p.Cmd("andres quiero")
+	p.Cmd("richard mazo")
+	p.Cmd("alvaro vale-4")
+	p.Cmd("andres quiero")
+	p.Cmd("roro quiero")
+	p.Cmd("alvaro mazo")
+	p.Cmd("roro mazo")
+	p.Cmd("roro 12 oro")
+	p.Cmd("adolfo mazo")
+	p.Cmd("Renzo flor")
 
 	// output := p.Dispatch()
 	// for _, msg := range output {
@@ -572,20 +572,20 @@ func TestFixNoDejaIrseAlMazo(t *testing.T) {
 	p.FromJSON(partidaJSON)
 	p.Print()
 
-	p.SetSigJugada("alvaro 11 copa")
-	p.SetSigJugada("roro 6 basto")
-	p.SetSigJugada("adolfo 12 espada")
-	p.SetSigJugada("renzo 2 espada")
-	p.SetSigJugada("renzo flor")
-	p.SetSigJugada("andres 6 oro")
-	p.SetSigJugada("richard truco")
-	p.SetSigJugada("andres quiero")
-	p.SetSigJugada("alvaro 7 oro")
-	p.SetSigJugada("roro 2 copa")
-	p.SetSigJugada("richard 2 oro")
-	p.SetSigJugada("renzo mazo")
-	p.SetSigJugada("andres mazo")
-	p.SetSigJugada("andres mazo")
+	p.Cmd("alvaro 11 copa")
+	p.Cmd("roro 6 basto")
+	p.Cmd("adolfo 12 espada")
+	p.Cmd("renzo 2 espada")
+	p.Cmd("renzo flor")
+	p.Cmd("andres 6 oro")
+	p.Cmd("richard truco")
+	p.Cmd("andres quiero")
+	p.Cmd("alvaro 7 oro")
+	p.Cmd("roro 2 copa")
+	p.Cmd("richard 2 oro")
+	p.Cmd("renzo mazo")
+	p.Cmd("andres mazo")
+	p.Cmd("andres mazo")
 
 	// output := p.Dispatch()
 	// for _, msg := range output {
@@ -602,25 +602,25 @@ func TestFixFlorObligatoria(t *testing.T) {
 	p.FromJSON(partidaJSON)
 	p.Print()
 
-	p.SetSigJugada("alvaro 2 basto") // alvaro deberia primero cantar flor
+	p.Cmd("alvaro 2 basto") // alvaro deberia primero cantar flor
 	// p.SetSigJugada("alvaro flor")
-	p.SetSigJugada("roro 5 copa")
-	p.SetSigJugada("adolfo 7 espada")
-	p.SetSigJugada("renzo 1 espada")
-	p.SetSigJugada("andres 10 espada")
-	p.SetSigJugada("richard 3 basto")
-	p.SetSigJugada("alvaro envido")
-	p.SetSigJugada("alvaro 1 oro")
-	p.SetSigJugada("roro 2 espada")
-	p.SetSigJugada("adolfo truco")
-	p.SetSigJugada("roro quiero")
-	p.SetSigJugada("renzo quiero")
-	p.SetSigJugada("adolfo 5 basto")
-	p.SetSigJugada("renzo quiero")
-	p.SetSigJugada("renzo 11 copa")
-	p.SetSigJugada("andres 2 oro")
-	p.SetSigJugada("richard 10 oro")
-	p.SetSigJugada("roro 1 oro")
+	p.Cmd("roro 5 copa")
+	p.Cmd("adolfo 7 espada")
+	p.Cmd("renzo 1 espada")
+	p.Cmd("andres 10 espada")
+	p.Cmd("richard 3 basto")
+	p.Cmd("alvaro envido")
+	p.Cmd("alvaro 1 oro")
+	p.Cmd("roro 2 espada")
+	p.Cmd("adolfo truco")
+	p.Cmd("roro quiero")
+	p.Cmd("renzo quiero")
+	p.Cmd("adolfo 5 basto")
+	p.Cmd("renzo quiero")
+	p.Cmd("renzo 11 copa")
+	p.Cmd("andres 2 oro")
+	p.Cmd("richard 10 oro")
+	p.Cmd("roro 1 oro")
 
 	// output := p.Dispatch()
 	// for _, msg := range output {
@@ -637,13 +637,13 @@ func TestFixNoPermiteContraFlor(t *testing.T) {
 	p.FromJSON(partidaJSON)
 	p.Print()
 
-	p.SetSigJugada("alvaro 1 basto")
-	p.SetSigJugada("roro 4 oro")
-	p.SetSigJugada("adolfo flor")
-	p.SetSigJugada("adolfo 11 basto")
-	p.SetSigJugada("renzo 12 basto")
-	p.SetSigJugada("renzo quiero")
-	p.SetSigJugada("renzo contra-flor")
+	p.Cmd("alvaro 1 basto")
+	p.Cmd("roro 4 oro")
+	p.Cmd("adolfo flor")
+	p.Cmd("adolfo 11 basto")
+	p.Cmd("renzo 12 basto")
+	p.Cmd("renzo quiero")
+	p.Cmd("renzo contra-flor")
 
 	// output := p.Dispatch()
 	// for _, msg := range output {
@@ -660,13 +660,13 @@ func TestFixDeberiaGanarAzul(t *testing.T) {
 	p.FromJSON(partidaJSON)
 	p.Print()
 
-	p.SetSigJugada("alvaro 10 oro")
-	p.SetSigJugada("roro 10 copa")
-	p.SetSigJugada("adolfo 2 copa")
-	p.SetSigJugada("renzo 4 basto")
-	p.SetSigJugada("renzo mazo")
-	p.SetSigJugada("alvaro mazo")
-	p.SetSigJugada("roro mazo")
+	p.Cmd("alvaro 10 oro")
+	p.Cmd("roro 10 copa")
+	p.Cmd("adolfo 2 copa")
+	p.Cmd("renzo 4 basto")
+	p.Cmd("renzo mazo")
+	p.Cmd("alvaro mazo")
+	p.Cmd("roro mazo")
 
 	oops = !(p.Puntajes[Rojo] == 0 && p.Puntajes[Azul] > 0)
 	if oops {
@@ -682,8 +682,8 @@ func TestFixPierdeTurno(t *testing.T) {
 	p.FromJSON(partidaJSON)
 	p.Print()
 
-	p.SetSigJugada("alvaro 5 copa")
-	p.SetSigJugada("adolfo mazo")
+	p.Cmd("alvaro 5 copa")
+	p.Cmd("adolfo mazo")
 
 	oops = !(p.Ronda.getElTurno().Jugador.Nombre == "Roro")
 	if oops {

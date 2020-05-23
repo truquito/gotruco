@@ -132,12 +132,11 @@ func TestFlorFlorContraFlorQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Flor")
-	p.SetSigJugada("Roro Mazo")
-	p.SetSigJugada("Renzo Flor")
-	p.SetSigJugada("Adolfo Contra-flor-al-resto")
-	p.SetSigJugada("Richard Quiero")
-	
+	p.Cmd("Alvaro Flor")
+	p.Cmd("Roro Mazo")
+	p.Cmd("Renzo Flor")
+	p.Cmd("Adolfo Contra-flor-al-resto")
+	p.Cmd("Richard Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -175,10 +174,9 @@ func TestFixFlor(t *testing.T) {
 	p.FromJSON(partidaJSON)
 	p.Print()
 
-	p.SetSigJugada("alvaro envido")
+	p.Cmd("alvaro envido")
 	// pero Richard tiene flor
 	// y no le esta sumando esos puntos
-	
 
 	if !(p.Ronda.Envite.Estado == DESHABILITADO) {
 		t.Error(`El estado de la flor deberia ser 'deshabilitado'`)
@@ -186,20 +184,19 @@ func TestFixFlor(t *testing.T) {
 		t.Error(`El puntaje del equipo rojo deberia ser 3 por la flor de richard`)
 	}
 
-	p.SetSigJugada("alvaro 6 espada")
-	p.SetSigJugada("alvaro 6 espada")
-	p.SetSigJugada("roro 5 espada")
-	p.SetSigJugada("adolfo 10 oro")
-	p.SetSigJugada("renzo 6 basto")
-	p.SetSigJugada("andres 6 copa")
-	p.SetSigJugada("richard 3 espada")
-	p.SetSigJugada("adolfo 10 copa")
-	p.SetSigJugada("renzo 10 espada")
-	p.SetSigJugada("andres 3 copa")
-	p.SetSigJugada("richard 11 espada")
-	p.SetSigJugada("alvaro 12 basto")
-	p.SetSigJugada("roro 10 basto")
-	
+	p.Cmd("alvaro 6 espada")
+	p.Cmd("alvaro 6 espada")
+	p.Cmd("roro 5 espada")
+	p.Cmd("adolfo 10 oro")
+	p.Cmd("renzo 6 basto")
+	p.Cmd("andres 6 copa")
+	p.Cmd("richard 3 espada")
+	p.Cmd("adolfo 10 copa")
+	p.Cmd("renzo 10 espada")
+	p.Cmd("andres 3 copa")
+	p.Cmd("richard 11 espada")
+	p.Cmd("alvaro 12 basto")
+	p.Cmd("roro 10 basto")
 
 	if !(p.Puntajes[Rojo] == 3) {
 		t.Error(`El puntaje del equipo rojo deberia ser 3 por la flor de richard`)
@@ -207,7 +204,6 @@ func TestFixFlor(t *testing.T) {
 		t.Error(`El puntaje del equipo azul deberia ser 1 por la ronda ganada`)
 	}
 
-	
 }
 
 // bug a arreglar:
@@ -218,16 +214,14 @@ func TestFixFlorBucle(t *testing.T) {
 	p.FromJSON(partidaJSON)
 	p.Print()
 
-	p.SetSigJugada("alvaro mazo")
-	p.SetSigJugada("roro flor")
-	p.SetSigJugada("richard flor")
-	
+	p.Cmd("alvaro mazo")
+	p.Cmd("roro flor")
+	p.Cmd("richard flor")
 
 	if !(p.Puntajes[Rojo] == 6) {
 		t.Error(`El puntaje del equipo rojo deberia ser 6 por las 2 flores`)
 	}
 
-	
 }
 
 // bug a arreglar:
@@ -238,16 +232,14 @@ func TestFixContraFlor(t *testing.T) {
 	p.FromJSON(partidaJSON)
 	p.Print()
 
-	p.SetSigJugada("alvaro 1 basto")
-	p.SetSigJugada("roro 4 oro")
-	p.SetSigJugada("adolfo flor")
-	p.SetSigJugada("adolfo 11 basto")
-	p.SetSigJugada("renzo 12 basto")
-	p.SetSigJugada("renzo quiero")
-	p.SetSigJugada("renzo contra-flor")
-	p.SetSigJugada("adolfo quiero")
-
-	
+	p.Cmd("alvaro 1 basto")
+	p.Cmd("roro 4 oro")
+	p.Cmd("adolfo flor")
+	p.Cmd("adolfo 11 basto")
+	p.Cmd("renzo 12 basto")
+	p.Cmd("renzo quiero")
+	p.Cmd("renzo contra-flor")
+	p.Cmd("adolfo quiero")
 
 	// if !(p.Puntajes[Rojo] == 3) {
 	// 	t.Error(`El puntaje del equipo rojo deberia ser 3 por la flor de richard`)
@@ -255,5 +247,4 @@ func TestFixContraFlor(t *testing.T) {
 	// 	t.Error(`El puntaje del equipo azul deberia ser 1 por la ronda ganada`)
 	// }
 
-	
 }

@@ -1,4 +1,3 @@
-
 # BUGS
 - [MEDIO] ahora cantar la flor es opcional -> no hacerlo
 - [RELACIONADO] ^ es necesario que sea tu turno para cantar la flor? o es tipo
@@ -32,13 +31,7 @@
         los que se fueron al mazo pueden decir quiero/noquiero
     idea solucion: que la struct Jugada de la que todas extienden tenga un 
     metodo que checkeo eso:
-- [FACIL] antes de jugada.hacer() agregarle algo tipo:
-    ````
-    termino := p.sumarPuntos(p.Ronda.truco.cantadoPor.jugador.equipo, totalPts)
-        if !termino {
-        p.nuevaRonda()
-    }
-    ````
+
 - probar una ronda de envidos donde el mano es el ultimo jugador probablemente 
     de error out of index porque esta mal programadao el get ronda.Envidos()
 -   no deberia poder auto quererse **ni auto no-quererse**

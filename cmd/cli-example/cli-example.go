@@ -104,7 +104,7 @@ func main() {
 		select {
 		case cmd := <-ioCh:
 			logfile.Write(cmd)
-			err := p.SetSigJugada(cmd)
+			err := p.Cmd(cmd)
 			if err != nil {
 				fmt.Println("<< " + err.Error())
 			}
@@ -116,7 +116,7 @@ func main() {
 			fmt.Printf(">> ")
 		}
 
-		if !p.NoAcabada() {
+		if p.Terminada() {
 			break
 		}
 	}

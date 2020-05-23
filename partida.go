@@ -213,9 +213,9 @@ func (p *Partida) getPuntuacionMalas() int {
 	return p.Puntuacion.toInt() / 2
 }
 
-// NoAcabada retorna true si la partida acabo
-func (p *Partida) NoAcabada() bool {
-	return p.getMaxPuntaje() < p.Puntuacion.toInt()
+// Terminada retorna true si la partida acabo
+func (p *Partida) Terminada() bool {
+	return p.getMaxPuntaje() >= p.Puntuacion.toInt()
 }
 
 func (p *Partida) elChico() int {
@@ -254,10 +254,7 @@ func (p *Partida) calcPtsFaltaEnvido(ganadorDelEnvite Equipo) int {
 // retorna true si termino la partida
 func (p *Partida) sumarPuntos(e Equipo, totalPts int) bool {
 	p.Puntajes[e] += totalPts
-	if p.NoAcabada() {
-		return false
-	}
-	return true
+	return p.Terminada()
 }
 
 // evalua todas las cartas y decide que equipo gano
@@ -529,7 +526,7 @@ func (p *Partida) evaluarRonda() bool {
 }
 
 func (p *Partida) byeBye() {
-	if !p.NoAcabada() {
+	if p.Terminada() {
 
 		write(p.Stdout, &Msg{
 			Dest: []string{"ALL"},
@@ -585,8 +582,12 @@ func (p *Partida) FromJSON(partidaJSON string) error {
 	return nil
 }
 
-// SetSigJugada nexo capa presentacion con capa logica
-func (p *Partida) SetSigJugada(cmd string) error {
+// Cmd nexo capa presentacion con capa logica
+func (p *Partida) Cmd(cmd string) error {
+
+	if p.Terminada() {
+		return fmt.Errorf("La partida ya termino")
+	}
 
 	// checkeo sintactico
 	// ok := regexp.MustCompile(`^(\w|-)+\s(\w|-)+\n?$`).MatchString(cmd)

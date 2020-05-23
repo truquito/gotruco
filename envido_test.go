@@ -41,8 +41,8 @@ func TestEnvidoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Roro Quiero")
+	p.Cmd("Alvaro Envido")
+	p.Cmd("Roro Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -87,8 +87,8 @@ func TestEnvidoNoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Roro No-Quiero")
+	p.Cmd("Alvaro Envido")
+	p.Cmd("Roro No-Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -139,8 +139,8 @@ func TestRealEnvidoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Real-Envido")
-	p.SetSigJugada("Roro Quiero")
+	p.Cmd("Alvaro Real-Envido")
+	p.Cmd("Roro Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -185,8 +185,8 @@ func TestRealEnvidoNoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Real-Envido")
-	p.SetSigJugada("Roro No-Quiero")
+	p.Cmd("Alvaro Real-Envido")
+	p.Cmd("Roro No-Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -231,8 +231,8 @@ func TestFaltaEnvidoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Falta-Envido")
-	p.SetSigJugada("Roro Quiero")
+	p.Cmd("Alvaro Falta-Envido")
+	p.Cmd("Roro Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -277,8 +277,8 @@ func TestFaltaEnvidoNoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Falta-Envido")
-	p.SetSigJugada("Roro No-Quiero")
+	p.Cmd("Alvaro Falta-Envido")
+	p.Cmd("Roro No-Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -323,7 +323,7 @@ func TestEnvidoEnvidoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido")
+	p.Cmd("Alvaro Envido")
 
 	oops = p.Ronda.Envite.Estado != ENVIDO
 	if oops {
@@ -337,7 +337,7 @@ func TestEnvidoEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	p.SetSigJugada("Roro Envido")
+	p.Cmd("Roro Envido")
 
 	oops = p.Ronda.Envite.Estado != ENVIDO
 	if oops {
@@ -352,7 +352,7 @@ func TestEnvidoEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	p.SetSigJugada("Alvaro Quiero")
+	p.Cmd("Alvaro Quiero")
 
 }
 
@@ -378,9 +378,9 @@ func TestEnvidoEnvidoNoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Roro Envido")
-	p.SetSigJugada("Alvaro No-Quiero")
+	p.Cmd("Alvaro Envido")
+	p.Cmd("Roro Envido")
+	p.Cmd("Alvaro No-Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -425,9 +425,9 @@ func TestEnvidoRealEnvidoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Roro Real-Envido")
-	p.SetSigJugada("Alvaro Quiero")
+	p.Cmd("Alvaro Envido")
+	p.Cmd("Roro Real-Envido")
+	p.Cmd("Alvaro Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -472,9 +472,9 @@ func TestEnvidoRealEnvidoNoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Roro Real-Envido")
-	p.SetSigJugada("Alvaro No-Quiero")
+	p.Cmd("Alvaro Envido")
+	p.Cmd("Roro Real-Envido")
+	p.Cmd("Alvaro No-Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -519,9 +519,9 @@ func TestEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Roro Falta-Envido")
-	p.SetSigJugada("Alvaro Quiero")
+	p.Cmd("Alvaro Envido")
+	p.Cmd("Roro Falta-Envido")
+	p.Cmd("Alvaro Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -566,9 +566,9 @@ func TestEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Roro Falta-Envido")
-	p.SetSigJugada("Alvaro No-Quiero")
+	p.Cmd("Alvaro Envido")
+	p.Cmd("Roro Falta-Envido")
+	p.Cmd("Alvaro No-Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -613,9 +613,9 @@ func TestRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Real-Envido")
-	p.SetSigJugada("Roro Falta-Envido")
-	p.SetSigJugada("Alvaro Quiero")
+	p.Cmd("Alvaro Real-Envido")
+	p.Cmd("Roro Falta-Envido")
+	p.Cmd("Alvaro Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -660,9 +660,9 @@ func TestRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Real-Envido")
-	p.SetSigJugada("Roro Falta-Envido")
-	p.SetSigJugada("Alvaro No-Quiero")
+	p.Cmd("Alvaro Real-Envido")
+	p.Cmd("Roro Falta-Envido")
+	p.Cmd("Alvaro No-Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -707,10 +707,10 @@ func TestEnvidoEnvidoRealEnvidoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Roro Envido")
-	p.SetSigJugada("Alvaro Real-Envido")
-	p.SetSigJugada("Roro Quiero")
+	p.Cmd("Alvaro Envido")
+	p.Cmd("Roro Envido")
+	p.Cmd("Alvaro Real-Envido")
+	p.Cmd("Roro Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -755,10 +755,10 @@ func TestEnvidoEnvidoRealEnvidoNoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Roro Envido")
-	p.SetSigJugada("Alvaro Real-Envido")
-	p.SetSigJugada("Roro No-Quiero")
+	p.Cmd("Alvaro Envido")
+	p.Cmd("Roro Envido")
+	p.Cmd("Alvaro Real-Envido")
+	p.Cmd("Roro No-Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -803,10 +803,10 @@ func TestEnvidoEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Roro Envido")
-	p.SetSigJugada("Alvaro Falta-Envido")
-	p.SetSigJugada("Roro Quiero")
+	p.Cmd("Alvaro Envido")
+	p.Cmd("Roro Envido")
+	p.Cmd("Alvaro Falta-Envido")
+	p.Cmd("Roro Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -851,10 +851,10 @@ func TestEnvidoEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Roro Envido")
-	p.SetSigJugada("Alvaro Falta-Envido")
-	p.SetSigJugada("Roro No-Quiero")
+	p.Cmd("Alvaro Envido")
+	p.Cmd("Roro Envido")
+	p.Cmd("Alvaro Falta-Envido")
+	p.Cmd("Roro No-Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -899,10 +899,10 @@ func TestEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Roro Real-Envido")
-	p.SetSigJugada("Alvaro Falta-Envido")
-	p.SetSigJugada("Roro Quiero")
+	p.Cmd("Alvaro Envido")
+	p.Cmd("Roro Real-Envido")
+	p.Cmd("Alvaro Falta-Envido")
+	p.Cmd("Roro Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -947,10 +947,10 @@ func TestEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Roro Real-Envido")
-	p.SetSigJugada("Alvaro Falta-Envido")
-	p.SetSigJugada("Roro No-Quiero")
+	p.Cmd("Alvaro Envido")
+	p.Cmd("Roro Real-Envido")
+	p.Cmd("Alvaro Falta-Envido")
+	p.Cmd("Roro No-Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -995,11 +995,11 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Roro Envido")
-	p.SetSigJugada("Alvaro Real-Envido")
-	p.SetSigJugada("Roro Falta-Envido")
-	p.SetSigJugada("Alvaro Quiero")
+	p.Cmd("Alvaro Envido")
+	p.Cmd("Roro Envido")
+	p.Cmd("Alvaro Real-Envido")
+	p.Cmd("Roro Falta-Envido")
+	p.Cmd("Alvaro Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -1044,11 +1044,11 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro Envido")
-	p.SetSigJugada("Roro Envido")
-	p.SetSigJugada("Alvaro Real-Envido")
-	p.SetSigJugada("Roro Falta-Envido")
-	p.SetSigJugada("Alvaro No-Quiero")
+	p.Cmd("Alvaro Envido")
+	p.Cmd("Roro Envido")
+	p.Cmd("Alvaro Real-Envido")
+	p.Cmd("Roro Falta-Envido")
+	p.Cmd("Alvaro No-Quiero")
 
 	oops = p.Ronda.Envite.Estado != DESHABILITADO
 	if oops {
@@ -1137,8 +1137,8 @@ func TestCalcEnvido(t *testing.T) {
 		}
 	}
 	p.Ronda.Turno = 3
-	p.SetSigJugada("D Envido")
-	p.SetSigJugada("C Quiero")
+	p.Cmd("D Envido")
+	p.Cmd("C Quiero")
 
 	oops = !(p.Puntajes[Azul] == 4+2)
 	if oops {
@@ -1215,8 +1215,8 @@ func TestCalcEnvido2(t *testing.T) {
 	}
 
 	p.Ronda.Turno = 3
-	p.SetSigJugada("D Envido")
-	p.SetSigJugada("C Quiero")
+	p.Cmd("D Envido")
+	p.Cmd("C Quiero")
 
 	oops = !(p.Puntajes[Rojo] == 3+2)
 	if oops {

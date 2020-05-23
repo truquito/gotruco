@@ -55,12 +55,12 @@ func TestTirada1(t *testing.T) {
 		},
 	)
 
-	p.SetSigJugada("Alvaro 2 Oro")
-	p.SetSigJugada("Roro 5 Oro")
-	p.SetSigJugada("Adolfo 1 Copa")
-	p.SetSigJugada("Renzo 4 Oro")
-	p.SetSigJugada("Andres 10 Copa")
-	p.SetSigJugada("Richard 10 Oro")
+	p.Cmd("Alvaro 2 Oro")
+	p.Cmd("Roro 5 Oro")
+	p.Cmd("Adolfo 1 Copa")
+	p.Cmd("Renzo 4 Oro")
+	p.Cmd("Andres 10 Copa")
+	p.Cmd("Richard 10 Oro")
 
 	// como la muestra es Palo: Oro, Valor: 3 -> gana alvaro
 	if !(len(p.Ronda.Manos[primera].CartasTiradas) == 6) {
@@ -77,12 +77,12 @@ func TestTirada1(t *testing.T) {
 	}
 
 	// como alvaro gano la mano anterior -> empieza tirando el
-	p.SetSigJugada("Alvaro 6 Basto")
-	p.SetSigJugada("Roro 5 Espada")
-	p.SetSigJugada("Adolfo 2 Copa")
-	p.SetSigJugada("Renzo 4 Espada")
-	p.SetSigJugada("Andres 7 Oro")
-	p.SetSigJugada("Richard 2 Oro")
+	p.Cmd("Alvaro 6 Basto")
+	p.Cmd("Roro 5 Espada")
+	p.Cmd("Adolfo 2 Copa")
+	p.Cmd("Renzo 4 Espada")
+	p.Cmd("Andres 7 Oro")
+	p.Cmd("Richard 2 Oro")
 
 	// como la muestra es Palo: Oro, Valor: 3 -> gana richard
 	if !(len(p.Ronda.Manos[segunda].CartasTiradas) == 6) {
@@ -113,12 +113,12 @@ func TestTirada1(t *testing.T) {
 	}
 
 	// como richard gano la mano anterior -> empieza tirando el
-	p.SetSigJugada("Richard 1 Basto")
-	p.SetSigJugada("Alvaro 7 Basto")
-	p.SetSigJugada("Roro 5 Basto")
-	p.SetSigJugada("Adolfo 3 Copa")
-	p.SetSigJugada("Renzo 1 Espada")
-	p.SetSigJugada("Andres 11 Basto")
+	p.Cmd("Richard 1 Basto")
+	p.Cmd("Alvaro 7 Basto")
+	p.Cmd("Roro 5 Basto")
+	p.Cmd("Adolfo 3 Copa")
+	p.Cmd("Renzo 1 Espada")
+	p.Cmd("Andres 11 Basto")
 
 	// para este momento ya cambio a una nueva ronda
 	// como la muestra es Palo: Oro, Valor: 3 -> gana Renzo con el 1 de espada
@@ -129,7 +129,6 @@ func TestTirada1(t *testing.T) {
 
 	}
 
-	
 }
 
 // no deja irse al mazo a alvaro;
@@ -141,12 +140,11 @@ func TestFixIrseAlMazo(t *testing.T) {
 	json.Unmarshal([]byte(partidaJSON), &p)
 	p.Print()
 
-	p.SetSigJugada("alvaro mazo")
+	p.Cmd("alvaro mazo")
 
 	elManojoDeAlvaro := p.Ronda.Manojos[0]
 	if !(elManojoDeAlvaro.SeFueAlMazo == true) {
 		t.Error(`Alvaro se debio de haber ido al mazo`)
 	}
 
-	
 }
