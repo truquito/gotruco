@@ -90,7 +90,8 @@ func main() {
 
 	logfile := newLogFile()
 
-	p, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	p, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	// p, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
 	logfile.Write(p.ToJSON())
 
 	p.Print()

@@ -101,8 +101,8 @@ type Partida struct {
 	Puntajes      map[Equipo]int `json:"puntajes"`
 	Ronda         Ronda          `json:"ronda"`
 
-	Stdout *bytes.Buffer
-	ErrCh  chan bool
+	Stdout *bytes.Buffer `json:"-"`
+	ErrCh  chan bool     `json:"-"`
 }
 
 func (p *Partida) parseJugada(cmd string) (IJugada, error) {
@@ -415,7 +415,10 @@ func (p *Partida) evaluarRonda() bool {
 
 	if !hayJugadoresEnAmbos { // caso particular: todos abandonaron
 
-		ganador = p.Ronda.Manos[0].Ganador
+		// enonces como antes paso por evaluar mano
+		// y seteo a ganador de la ultima mano jugada (la "actual")
+		// al equipo que no abandono -> lo sacao de ahi
+		ganador = p.Ronda.getManoActual().Ganador
 
 		// primero el caso clasico: un equipo gano 2 o mas manos
 	} else if cantManosGanadas[Rojo] >= 2 {

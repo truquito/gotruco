@@ -145,7 +145,7 @@ func TestPartida1(t *testing.T) {
 	p.SetSigJugada("Adolfo Flor")
 	p.SetSigJugada("Renzo Contra-flor")
 	p.SetSigJugada("Alvaro Quiero")
-	
+
 }
 
 func TestPartidaComandosInvalidos(t *testing.T) {
@@ -156,8 +156,6 @@ func TestPartidaComandosInvalidos(t *testing.T) {
 	p.SetSigJugada("Quiero")
 	p.SetSigJugada("Schumacher Flor")
 	p.SetSigJugada("Adolfo Flor")
-
-	
 
 }
 
@@ -203,11 +201,8 @@ func TestFixNacho(t *testing.T) {
 	p.SetSigJugada("renzo mazo")
 	p.SetSigJugada("andres mazo")
 
-	
-
 	p.Print()
 
-	
 }
 
 func TestFixNoFlor(t *testing.T) {
@@ -223,8 +218,6 @@ func TestFixNoFlor(t *testing.T) {
 	// No es posible cantar truco ahora
 	// "la flor esta primero":
 	// << Andres canta flor
-
-	
 
 	oops = !(p.Ronda.Envite.Estado == FLOR)
 	if oops {
@@ -280,8 +273,6 @@ func TestFixNoFlor(t *testing.T) {
 	p.SetSigJugada("richard vale-4")
 	// << Richard grita vale 4
 
-	
-
 	oops = !(p.Ronda.Truco.Estado == VALE4)
 	if oops {
 		t.Error(`Richard deberia poder gritar vale4`)
@@ -289,8 +280,6 @@ func TestFixNoFlor(t *testing.T) {
 
 	p.SetSigJugada("adolfo quiero")
 	// << Adolfo responde quiero
-
-	
 
 	oops = !(p.Ronda.Truco.Estado == VALE4QUERIDO)
 	if oops {
@@ -330,15 +319,13 @@ func TestFixNoFlor(t *testing.T) {
 	// << Empieza una nueva ronda
 	// << Empieza una nueva ronda
 
-	
-
 	oops = !(p.getMaxPuntaje() == 6+4) // 6 de las 2 flores
 	if oops {
 		t.Error(`suma mal los puntos cuando roro se fue al mazo`)
 	}
 
 	p.Print()
-	
+
 }
 
 func TestFixPanic(t *testing.T) {
@@ -424,7 +411,6 @@ func TestFixPanic(t *testing.T) {
 	p.SetSigJugada("renzo mazo")
 	// << Renzo se va al mazo
 
-	
 	p.Print()
 
 	p.SetSigJugada("andres mazo")
@@ -440,8 +426,6 @@ func TestFixPanic(t *testing.T) {
 	// << +0 puntos para el equipo Rojo por el reTruco no querido
 	// << Empieza una nueva ronda
 
-	
-	
 }
 
 func TestFixBocha(t *testing.T) {
@@ -469,9 +453,8 @@ func TestFixBocha(t *testing.T) {
 	// << +1 puntos para el equipo Rojo por el noCantado ganado
 	// << Empieza una nueva ronda
 
-	
 	p.Print()
-	
+
 }
 
 func TestFixBochaParte2(t *testing.T) {
@@ -505,9 +488,8 @@ func TestFixBochaParte2(t *testing.T) {
 	// << +1 puntos para el equipo Rojo por el noCantado ganado
 	// << Empieza una nueva ronda
 
-	
 	p.Print()
-	
+
 }
 
 func TestFixBochaParte3(t *testing.T) {
@@ -531,9 +513,8 @@ func TestFixBochaParte3(t *testing.T) {
 	p.SetSigJugada("richard quiero")
 	// (Para Richard) No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo
 
-	
 	p.Print()
-	
+
 }
 
 func TestFixAutoQuerer(t *testing.T) {
@@ -547,7 +528,7 @@ func TestFixAutoQuerer(t *testing.T) {
 	p.SetSigJugada("adolfo quiero")
 
 	p.Print()
-	
+
 }
 
 func TestFixNilPointer(t *testing.T) {
@@ -576,14 +557,13 @@ func TestFixNilPointer(t *testing.T) {
 	p.SetSigJugada("adolfo mazo")
 	p.SetSigJugada("Renzo flor")
 
-	
 	// output := p.Dispatch()
 	// for _, msg := range output {
 	// 	fmt.Println(msg)
 	// }
 
 	// p.Print()
-	
+
 }
 
 func TestFixNoDejaIrseAlMazo(t *testing.T) {
@@ -607,14 +587,13 @@ func TestFixNoDejaIrseAlMazo(t *testing.T) {
 	p.SetSigJugada("andres mazo")
 	p.SetSigJugada("andres mazo")
 
-	
 	// output := p.Dispatch()
 	// for _, msg := range output {
 	// 	fmt.Println(msg)
 	// }
 
 	p.Print()
-	
+
 }
 
 func TestFixFlorObligatoria(t *testing.T) {
@@ -643,14 +622,13 @@ func TestFixFlorObligatoria(t *testing.T) {
 	p.SetSigJugada("richard 10 oro")
 	p.SetSigJugada("roro 1 oro")
 
-	
 	// output := p.Dispatch()
 	// for _, msg := range output {
 	// 	fmt.Println(msg)
 	// }
 
 	p.Print()
-	
+
 }
 
 func TestFixNoPermiteContraFlor(t *testing.T) {
@@ -667,12 +645,33 @@ func TestFixNoPermiteContraFlor(t *testing.T) {
 	p.SetSigJugada("renzo quiero")
 	p.SetSigJugada("renzo contra-flor")
 
-	
 	// output := p.Dispatch()
 	// for _, msg := range output {
 	// 	fmt.Println(msg)
 	// }
 
 	p.Print()
-	
+
+}
+
+func TestFixDeberiaGanarAzul(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	partidaJSON := `{"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null,"jugadoresConFlor":null,"jugadoresConFlorQueNoCantaron":[]},"truco":{"cantadoPor":null,"estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":10},{"palo":"Espada","valor":10},{"palo":"Oro","valor":7}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":10},{"palo":"Oro","valor":5},{"palo":"Espada","valor":1}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":2},{"palo":"Espada","valor":3},{"palo":"Basto","valor":7}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":4},{"palo":"Espada","valor":6},{"palo":"Copa","valor":12}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Basto","valor":12},"manos":[{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null}]}}`
+	p.FromJSON(partidaJSON)
+	p.Print()
+
+	p.SetSigJugada("alvaro 10 oro")
+	p.SetSigJugada("roro 10 copa")
+	p.SetSigJugada("adolfo 2 copa")
+	p.SetSigJugada("renzo 4 basto")
+	p.SetSigJugada("renzo mazo")
+	p.SetSigJugada("alvaro mazo")
+	p.SetSigJugada("roro mazo")
+
+	oops = !(p.Puntajes[Rojo] == 0 && p.Puntajes[Azul] > 0)
+	if oops {
+		t.Error(`La ronda deberia de haber sido ganado por Azul`)
+		return
+	}
+
 }
