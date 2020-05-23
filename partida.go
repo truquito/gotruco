@@ -561,11 +561,8 @@ func (p *Partida) nuevaRonda(elMano JugadorIdx) {
 
 // Print imprime la partida
 func (p *Partida) Print() {
-	// como tiene el parametro en Print
-	// basta con tener una sola instancia de impresora
-	// para imprimir varias instancias de partidas diferentes
-	printer := nuevaImpresora()
-	printer.Print(p)
+	render := renderizar(p)
+	fmt.Print(render)
 }
 
 // ToJSON retorna la partida en formato json
