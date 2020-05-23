@@ -770,7 +770,8 @@ type responderQuiero struct {
 }
 
 func (jugada responderQuiero) hacer(p *Partida) {
-	if jugada.autor.SeFueAlMazo {
+	seFueAlMazo := jugada.autor.SeFueAlMazo
+	if seFueAlMazo {
 
 		write(p.Stdout, &Msg{
 			Dest: []string{jugada.autor.Jugador.Nombre},
@@ -926,6 +927,19 @@ type responderNoQuiero struct {
 }
 
 func (jugada responderNoQuiero) hacer(p *Partida) {
+
+	seFueAlMazo := jugada.autor.SeFueAlMazo
+	if seFueAlMazo {
+
+		write(p.Stdout, &Msg{
+			Dest: []string{jugada.autor.Jugador.Nombre},
+			Tipo: "error",
+			Cont: fmt.Sprintf("Te fuiste al mazo; no podes hacer esta jugada"),
+		})
+		return
+
+	}
+
 	// checkeo flor en juego
 	// caso particular del checkeo: no se le puede decir quiero a la flor
 	// pero si a la contra flor o contra flor al resto
