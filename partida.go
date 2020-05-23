@@ -371,6 +371,7 @@ func (p *Partida) evaluarMano() {
 	}
 }
 
+// tener siempre en cuenta que evaluar la ronda es sinonimo de evaluar el truco
 // se acabo la ronda?
 // si se empieza una ronda nueva -> retorna true
 // si no se termino la ronda 	 -> retorna false

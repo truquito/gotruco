@@ -4,12 +4,6 @@
 
 - duda: caso en TestFixPanic: no deberia ganar la mano? a quien le toca ser pie en la mano 2?
 
-- en ningun momento se deberia sumar los puntos a la partida antes de haberlos confirmado!
-
-- en los p.sumarpuntos de las jugadas deberia checkear si la partida se termino
-
-- imprimer para 2 y 4 jugadores
-
 - los puntos de "el truco" los deberia contabilizar ronda.evaluarRonda()
   ejemplo, en la jugada.noquiero el codigo ese no deberia estar, 
   sino que deberia llamar a ronda.evaluarRonda()

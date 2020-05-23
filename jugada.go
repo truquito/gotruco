@@ -1048,34 +1048,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 
 	} else if elTrucoEsRespondible {
 
-		// si dice no quiero:
-		// todos los puntos en juego van para el equipo que hizo la apuesta de truco
-		// y se termina la ronda
-		var totalPts int
-		switch p.Ronda.Truco.Estado {
-		case TRUCO:
-			totalPts = 1
-		case RETRUCO:
-			totalPts = 2
-		case VALE4:
-			totalPts = 3
-		}
-
-		write(p.Stdout, &Msg{
-			Dest: []string{"ALL"},
-			Tipo: "ok",
-			Cont: fmt.Sprintf(`+%v puntos para el equipo %s por el %s no querido por %s`,
-				totalPts,
-				p.Ronda.Truco.CantadoPor.Jugador.Equipo,
-				p.Ronda.Truco.Estado.String(),
-				jugada.autor.Jugador.Nombre),
-		})
-
-		termino := p.sumarPuntos(p.Ronda.Truco.CantadoPor.Jugador.Equipo, totalPts)
-		if !termino {
-			sigMano := p.Ronda.getSigElMano()
-			p.nuevaRonda(sigMano)
-		}
+		p.evaluarRonda()
 	}
 
 	return
