@@ -1,4 +1,7 @@
 # BUGS
+- probar una ronda de envidos donde el mano es el ultimo jugador probablemente 
+    de error out of index porque esta mal programadao el get ronda.Envidos()
+
 - [MEDIO] ahora cantar la flor es opcional -> no hacerlo
 - [RELACIONADO] ^ es necesario que sea tu turno para cantar la flor? o es tipo
     irse al mazo????
@@ -8,23 +11,25 @@
     * A dice quiero -> pero B nunca canto su flor
 - [MEDIO] no es necesario cantar los puntajes de las flores si todos los que 
     tienen flores son del mismo equipo
-- depues de cantar vale4 (y similares) nadie puede tirar carta, el equipo 
+
+- [MEDIO] depues de cantar vale4 (y similares) nadie puede tirar carta, el equipo 
     contrario debe responder si o no
-- [MEDIO] en el caso TestFixNacho:
+- [RELACIONADO] ^ en el caso TestFixNacho:
     luego de que `adolfo re-truco` no se deberia poder tirar nada, solo irse al 
     mazo ya que la ronda termina y nadie dijo quiero o no quiero
+- no puede tirar carta si el estado del truco es respondible por uno de
+    su propio equipo (contrario al que propuso el truco)
+- [RELACIONADO] ^ que pasa si alguien dice truco al final, y el ultimo no 
+    contesta la apuesta y juega su carta? no deberia de estar permitido
+
 - [HECHO?] alguien que se fue al mazo con flor puede llegar a decir quiero a una 
     contraflor (DE HECHO, DEBERIA SER UN CHECKING PARA TODAS LAS JUGADAS)
 - [HECHO?] se esta jugando de a 2 (o mas) uno tiene flor, pero el otro se va al 
     mazo deberia de sumar los puntos de la flor a pesar de que no fue cantada
 - si 2 tienen flor y esos 2 las cantan -> tampoco termina el bucle de la flor 
     log: `fix 2 flores y bucle.log`
-- no puede tirar carta si el estado del truco es respondible por uno de
-    su propio equipo (contrario al que propuso el truco)
-- [RELACIONADO] ^ que pasa si alguien dice truco al final, y el ultimo no 
-    contesta la apuesta y juega su carta? no deberia de estar permitido
 - puede que se llame a p.evaluarMano() y que no se haya tirado ninguna carta?
-    de se asi -> que pasaria?
+    de ser asi -> que pasaria?
 - [BUG] recontra revisar para todas las jugadas:
     checkeos de la gente que se fue al mazo no podria hacer nada:
     eg:
@@ -32,8 +37,6 @@
     idea solucion: que la struct Jugada de la que todas extienden tenga un 
     metodo que checkeo eso:
 
-- probar una ronda de envidos donde el mano es el ultimo jugador probablemente 
-    de error out of index porque esta mal programadao el get ronda.Envidos()
 -   no deberia poder auto quererse **ni auto no-quererse**
     eg.
         p.SetSigJugada("Alvaro Envido")
