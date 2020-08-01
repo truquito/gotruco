@@ -70,6 +70,19 @@ func (jugada tirarCarta) hacer(p *Partida) {
 
 	}
 
+	// checkeo si tiene flor
+	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
+	if tieneFlor {
+
+		write(p.Stdout, &Msg{
+			Dest: []string{jugada.autor.Jugador.Nombre},
+			Tipo: "error",
+			Cont: fmt.Sprintf("No es posible tirar una carta sin antes cantar la flor"),
+		})
+		return
+
+	}
+
 	// primero que nada: tiene esa carta?
 	idx, err := jugada.autor.getCartaIdx(jugada.Carta)
 	if err != nil {

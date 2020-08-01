@@ -2,7 +2,6 @@
 - probar una ronda de envidos donde el mano es el ultimo jugador probablemente 
     de error out of index porque esta mal programadao el get ronda.Envidos()
 
-- [MEDIO] ahora cantar la flor es opcional -> no hacerlo
 - [RELACIONADO] ^ es necesario que sea tu turno para cantar la flor? o es tipo
     irse al mazo????
 - [RELACIONADO] ^ que pasa si hay 3 con flor A,B y C; 
@@ -12,8 +11,7 @@
 - [MEDIO] no es necesario cantar los puntajes de las flores si todos los que 
     tienen flores son del mismo equipo
 
-- [MEDIO] depues de cantar vale4 (y similares) nadie puede tirar carta, el equipo 
-    contrario debe responder si o no
+- [MEDIO] depues de cantar vale4 (y similares) nadie puede tirar carta, el equipo contrario debe responder si o no
 - [RELACIONADO] ^ en el caso TestFixNacho:
     luego de que `adolfo re-truco` no se deberia poder tirar nada, solo irse al 
     mazo ya que la ronda termina y nadie dijo quiero o no quiero
