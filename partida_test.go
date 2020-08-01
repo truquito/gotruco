@@ -195,11 +195,24 @@ func TestFixNacho(t *testing.T) {
 	p.Cmd("Adolfo re-truco") // ojo que nadie le acepto el re-truco
 	p.Cmd("roro 6 copa")     // no deberia dejarlo porque ya paso su turno
 	p.Cmd("adolfo re-truco")
+
 	p.Cmd("adolfo 1 espada")
 	p.Cmd("renzo retruco")
 	p.Cmd("renzo re-truco")
+
+	p.Cmd("renzo 3 oro") // no deberia de dejarlo porque el equipo contrario
+	// propuso un re-truco
+
+	oops = !(p.Ronda.getElTurno().Jugador.Nombre == "Renzo")
+	if oops {
+		t.Error(`Deberia ser el turno de Renzo`)
+		return
+	}
+
 	p.Cmd("renzo mazo")
 	p.Cmd("andres mazo")
+
+	consume(p.Stdout)
 
 	p.Print()
 

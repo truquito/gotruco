@@ -70,19 +70,6 @@ func (jugada tirarCarta) hacer(p *Partida) {
 
 	}
 
-	// checkeo si tiene flor
-	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
-	if tieneFlor {
-
-		write(p.Stdout, &Msg{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Tipo: "error",
-			Cont: fmt.Sprintf("No es posible tirar una carta sin antes cantar la flor"),
-		})
-		return
-
-	}
-
 	// primero que nada: tiene esa carta?
 	idx, err := jugada.autor.getCartaIdx(jugada.Carta)
 	if err != nil {
@@ -103,6 +90,35 @@ func (jugada tirarCarta) hacer(p *Partida) {
 			Dest: []string{jugada.autor.Jugador.Nombre},
 			Tipo: "error",
 			Cont: fmt.Sprintf("No era su turno, no puede tirar la carta"),
+		})
+		return
+
+	}
+
+	// checkeo si tiene flor
+	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
+	noCantoFlorAun := contains(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.autor)
+	noPuedeTirar := tieneFlor && noCantoFlorAun
+	if noPuedeTirar {
+
+		write(p.Stdout, &Msg{
+			Dest: []string{jugada.autor.Jugador.Nombre},
+			Tipo: "error",
+			Cont: fmt.Sprintf("No es posible tirar una carta sin antes cantar la flor"),
+		})
+		return
+
+	}
+
+	trucoGritado := contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
+	unoDelEquipoContrarioGritoTruco := trucoGritado && p.Ronda.Truco.CantadoPor.Jugador.Equipo != jugada.autor.Jugador.Equipo
+	elTrucoEsRespondible := trucoGritado && unoDelEquipoContrarioGritoTruco
+	if elTrucoEsRespondible {
+
+		write(p.Stdout, &Msg{
+			Dest: []string{jugada.autor.Jugador.Nombre},
+			Tipo: "error",
+			Cont: fmt.Sprintf("No es posible tirar una carta porque tu equipo debe responder la propuesta del truco"),
 		})
 		return
 

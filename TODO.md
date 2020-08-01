@@ -11,15 +11,6 @@
 - [MEDIO] no es necesario cantar los puntajes de las flores si todos los que 
     tienen flores son del mismo equipo
 
-- [MEDIO] depues de cantar vale4 (y similares) nadie puede tirar carta, el equipo contrario debe responder si o no
-- [RELACIONADO] ^ en el caso TestFixNacho:
-    luego de que `adolfo re-truco` no se deberia poder tirar nada, solo irse al 
-    mazo ya que la ronda termina y nadie dijo quiero o no quiero
-- no puede tirar carta si el estado del truco es respondible por uno de
-    su propio equipo (contrario al que propuso el truco)
-- [RELACIONADO] ^ que pasa si alguien dice truco al final, y el ultimo no 
-    contesta la apuesta y juega su carta? no deberia de estar permitido
-
 - [HECHO?] alguien que se fue al mazo con flor puede llegar a decir quiero a una 
     contraflor (DE HECHO, DEBERIA SER UN CHECKING PARA TODAS LAS JUGADAS)
 - [HECHO?] se esta jugando de a 2 (o mas) uno tiene flor, pero el otro se va al 

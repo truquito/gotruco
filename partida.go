@@ -5,6 +5,7 @@ import (
 	"encoding/gob"
 	"encoding/json"
 	"fmt"
+	"io"
 	"regexp"
 	"strings"
 )
@@ -91,6 +92,26 @@ func write(buff *bytes.Buffer, d *Msg) error {
 	enc := gob.NewEncoder(buff)
 	err := enc.Encode(d)
 	return err
+}
+
+func read(buff *bytes.Buffer) (*Msg, error) {
+	e := new(Msg)
+	dec := gob.NewDecoder(buff)
+	err := dec.Decode(e)
+	if err != nil {
+		return nil, err
+	}
+	return e, nil
+}
+
+func consume(buff *bytes.Buffer) {
+	for {
+		e, err := read(buff)
+		if err == io.EOF {
+			break
+		}
+		fmt.Println(*e)
+	}
 }
 
 // Partida :
