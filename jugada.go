@@ -650,7 +650,7 @@ func (jugada gritarTruco) hacer(p *Partida) {
 	// checkeos:
 	noSeFueAlMazo := jugada.autor.SeFueAlMazo == false
 	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
-	hayFlor, manojosConFlor := p.Ronda.getFlores()
+	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
 	noSeCantoFlor := p.Ronda.Envite.Estado != DESHABILITADO
 	laFlorEstaPrimero := hayFlor && noSeCantoFlor
 	trucoNoSeJugoAun := p.Ronda.Truco.Estado == NOCANTADO
@@ -666,6 +666,7 @@ func (jugada gritarTruco) hacer(p *Partida) {
 		})
 
 		if laFlorEstaPrimero {
+			manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
 			siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
 			siguienteJugada.hacer(p)
 		}
