@@ -196,11 +196,12 @@ func (jugada tocarEnvido) hacer(p *Partida) {
 	})
 
 	// ahora checkeo si alguien tiene flor
-	hayFlor, manojosConFlor := p.Ronda.getFlores()
+	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
 	if hayFlor {
 		// todo: deberia ir al estado magico en el que espera
 		// solo por jugadas de tipo flor-related
 		// lo mismo para el real-envido; falta-envido
+		manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
 		siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
 		siguienteJugada.hacer(p)
 
@@ -288,9 +289,10 @@ func (jugada tocarRealEnvido) hacer(p *Partida) {
 	p.Ronda.Envite.CantadoPor = jugada.autor
 
 	// ahora checkeo si alguien tiene flor
-	hayFlor, manojosConFlor := p.Ronda.getFlores()
+	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
 
 	if hayFlor {
+		manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
 		siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
 		siguienteJugada.hacer(p)
 
@@ -355,9 +357,10 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) {
 	p.Ronda.Envite.CantadoPor = jugada.autor
 
 	// ahora checkeo si alguien tiene flor
-	hayFlor, manojosConFlor := p.Ronda.getFlores()
+	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
 	if hayFlor {
 		p.Ronda.Envite.Estado = DESHABILITADO
+		manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
 		siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
 		siguienteJugada.hacer(p)
 	}
@@ -700,7 +703,7 @@ func (jugada gritarReTruco) hacer(p *Partida) {
 	// checkeos generales:
 	noSeFueAlMazo := jugada.autor.SeFueAlMazo == false
 	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
-	hayFlor, manojosConFlor := p.Ronda.getFlores()
+	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
 	noSeCantoFlor := p.Ronda.Envite.Estado != DESHABILITADO
 	laFlorEstaPrimero := hayFlor && noSeCantoFlor
 
@@ -726,6 +729,7 @@ func (jugada gritarReTruco) hacer(p *Partida) {
 	if !reTrucoHabilitado {
 
 		if laFlorEstaPrimero {
+			manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
 			siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
 			siguienteJugada.hacer(p)
 		}
@@ -760,7 +764,7 @@ func (jugada gritarVale4) hacer(p *Partida) {
 	noSeFueAlMazo := jugada.autor.SeFueAlMazo == false
 
 	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
-	hayFlor, manojosConFlor := p.Ronda.getFlores()
+	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
 	noSeCantoFlor := p.Ronda.Envite.Estado != DESHABILITADO
 	laFlorEstaPrimero := hayFlor && noSeCantoFlor
 
@@ -787,6 +791,7 @@ func (jugada gritarVale4) hacer(p *Partida) {
 	if !vale4Habilitado {
 
 		if laFlorEstaPrimero {
+			manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
 			siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
 			siguienteJugada.hacer(p)
 		}
