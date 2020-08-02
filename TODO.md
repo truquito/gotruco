@@ -1,18 +1,6 @@
 # BUGS
-- que pasa si la mano ya se fue antes de que hagan el envido: no deberia de 
-    cantar nada
 - [HECHO?] alguien que se fue al mazo con flor puede llegar a decir quiero a una 
     contraflor (DE HECHO, DEBERIA SER UN CHECKING PARA TODAS LAS JUGADAS)
-- si 2 tienen flor y esos 2 las cantan -> tampoco termina el bucle de la flor 
-    log: `fix 2 flores y bucle.log`
-- puede que se llame a p.evaluarMano() y que no se haya tirado ninguna carta?
-    de ser asi -> que pasaria?
-- [BUG] recontra revisar para todas las jugadas:
-    checkeos de la gente que se fue al mazo no podria hacer nada:
-    eg:
-        los que se fueron al mazo pueden decir quiero/noquiero
-    idea solucion: que la struct Jugada de la que todas extienden tenga un 
-    metodo que checkeo eso:
 
 # LIMPIEZA DE CODIGO
 - Hay codigo repetido entre noQuiero y mazo cuando niega la flor (codigo copiado)
@@ -32,6 +20,12 @@
     jugar por el
 - generar un comando especial que genere un panic, para asi testear los planes
     de contingencia en caso de falla
+- recontra revisar para todas las jugadas:
+    checkeos de la gente que se fue al mazo no podria hacer nada:
+    eg:
+        los que se fueron al mazo pueden decir quiero/noquiero
+    idea solucion: que la struct Jugada de la que todas extienden tenga un 
+    metodo que checkeo eso:
 
 # PERFORMANCE
 - que es mas rapido para saber si un jugador tiene flor:

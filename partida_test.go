@@ -887,3 +887,32 @@ func TestEnvidoManoSeFue(t *testing.T) {
 	consume(p.Stdout)
 	p.Print()
 }
+
+func TestFlorBlucle(t *testing.T) {
+	p, _ := NuevaPartida(20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.setMuestra(Carta{Palo: Oro, Valor: 3})
+	p.Ronda.setManojos(
+		[]Manojo{
+			Manojo{ // Alvaro tiene flor
+				Cartas: [3]Carta{
+					Carta{Palo: Oro, Valor: 2},
+					Carta{Palo: Basto, Valor: 6},
+					Carta{Palo: Basto, Valor: 7},
+				},
+			},
+			Manojo{ // Roro tiene flor
+				Cartas: [3]Carta{
+					Carta{Palo: Oro, Valor: 5},
+					Carta{Palo: Espada, Valor: 5},
+					Carta{Palo: Espada, Valor: 5},
+				},
+			},
+		},
+	)
+
+	p.Cmd("alvaro flor")
+	p.Cmd("roro flor")
+
+	consume(p.Stdout)
+	p.Print()
+}
