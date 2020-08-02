@@ -1022,6 +1022,18 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 
 	if elEnvidoEsRespondible {
 
+		esDelEquipoContrario := jugada.getAutor().Jugador.Equipo != p.Ronda.Envite.CantadoPor.Jugador.Equipo
+		if !esDelEquipoContrario {
+
+			write(p.Stdout, &Msg{
+				Dest: []string{jugada.autor.Jugador.Nombre},
+				Tipo: "error",
+				Cont: fmt.Sprintf(`La jugada no es valida`),
+			})
+			return
+
+		}
+
 		write(p.Stdout, &Msg{
 			Dest: []string{"ALL"},
 			Tipo: "ok",
@@ -1057,13 +1069,15 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 
 		// tengo que verificar si efectivamente tiene flor
 		tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
+		esDelEquipoContrario := jugada.getAutor().Jugador.Equipo != p.Ronda.Envite.CantadoPor.Jugador.Equipo
+		ok := tieneFlor && esDelEquipoContrario
 
-		if !tieneFlor {
+		if !ok {
 
 			write(p.Stdout, &Msg{
 				Dest: []string{jugada.autor.Jugador.Nombre},
 				Tipo: "error",
-				Cont: fmt.Sprintf(`No tiene flor; la jugada es incompatible`),
+				Cont: fmt.Sprintf(`La jugada no es valida`),
 			})
 			return
 

@@ -616,7 +616,7 @@ func TestFixFlorObligatoria(t *testing.T) {
 	p.Print()
 
 	p.Cmd("alvaro 2 basto") // alvaro deberia primero cantar flor
-	// p.SetSigJugada("alvaro flor")
+	// p.Cmd("alvaro flor")
 	p.Cmd("roro 5 copa")
 	p.Cmd("adolfo 7 espada")
 	p.Cmd("renzo 1 espada")
@@ -819,6 +819,27 @@ func TestFixTopeEnvido(t *testing.T) {
 	p.Cmd("Roro envido") // debe retornar error
 
 	p.Cmd("Roro quiero")
+
+	consume(p.Stdout)
+	p.Print()
+}
+
+func TestAutoQuererse(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	partidaJSON := `{"cantJugadores":6,"puntuacion":20,"puntajes":{"Azul":10,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":3,"Rojo":3},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null,"jugadoresConFlor":null,"jugadoresConFlorQueNoCantaron":[]},"truco":{"cantadoPor":null,"estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":5},{"palo":"Basto","valor":1},{"palo":"Basto","valor":7}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":11},{"palo":"Basto","valor":3},{"palo":"Oro","valor":6}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":1},{"palo":"Espada","valor":10},{"palo":"Basto","valor":6}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":4},{"palo":"Copa","valor":12},{"palo":"Basto","valor":10}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":10},{"palo":"Copa","valor":7},{"palo":"Espada","valor":7}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Andres","nombre":"Andres","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":10},{"palo":"Copa","valor":1},{"palo":"Oro","valor":12}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}],"muestra":{"palo":"Basto","valor":4},"manos":[{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null}]}}`
+	p.FromJSON(partidaJSON)
+	p.Print()
+
+	// no deberia poder auto quererse **ni auto no-quererse**
+
+	p.Cmd("Alvaro Envido")
+	p.Cmd("Roro Envido")
+	p.Cmd("Alvaro Real-Envido")
+	p.Cmd("Roro Falta-Envido")
+	p.Cmd("Roro Quiero")     // no lo deberia dejar
+	p.Cmd("Roro no-quiero")  // no lo deberia dejar
+	p.Cmd("Renzo Quiero")    // no lo deberia dejar
+	p.Cmd("Renzo no-quiero") // no lo deberia dejar
 
 	consume(p.Stdout)
 	p.Print()
