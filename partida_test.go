@@ -722,3 +722,77 @@ func TestFixTieneFlor(t *testing.T) {
 	}
 
 }
+
+func Test2FloresSeVaAlMazo(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	partidaJSON := `{"cantJugadores":6,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":3,"Rojo":3},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null,"jugadoresConFlor":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":6},{"palo":"Espada","valor":5},{"palo":"Espada","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}],"jugadoresConFlorQueNoCantaron":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":6},{"palo":"Espada","valor":5},{"palo":"Espada","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}]},"truco":{"cantadoPor":null,"estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":2},{"palo":"Copa","valor":7},{"palo":"Copa","valor":1}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":2},{"palo":"Copa","valor":6},{"palo":"Oro","valor":6}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":11},{"palo":"Espada","valor":1},{"palo":"Basto","valor":4}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":3},{"palo":"Basto","valor":7},{"palo":"Oro","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":5},{"palo":"Basto","valor":12},{"palo":"Espada","valor":10}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Andres","nombre":"Andres","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":6},{"palo":"Espada","valor":5},{"palo":"Espada","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}],"muestra":{"palo":"Espada","valor":3},"manos":[{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null}]}}`
+	p.FromJSON(partidaJSON)
+	p.Print()
+
+	p.Cmd("alvaro 1 copa") // no deberia dejarlo porque tiene flor
+	p.Cmd("alvaro envido") // no deberia dejarlo porque tiene flor
+	p.Cmd("alvaro flor")
+	p.Cmd("richard mazo") // lo deja que se vaya
+
+	consume(p.Stdout)
+	p.Print()
+}
+
+func TestTodoTienenFlor(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	p.Ronda.setMuestra(Carta{Palo: Oro, Valor: 3})
+	p.Ronda.setManojos(
+		[]Manojo{
+			Manojo{ // Alvaro tiene flor
+				Cartas: [3]Carta{
+					Carta{Palo: Oro, Valor: 2},
+					Carta{Palo: Basto, Valor: 6},
+					Carta{Palo: Basto, Valor: 7},
+				},
+			},
+			Manojo{ // Roro no tiene flor
+				Cartas: [3]Carta{
+					Carta{Palo: Oro, Valor: 5},
+					Carta{Palo: Espada, Valor: 5},
+					Carta{Palo: Basto, Valor: 5},
+				},
+			},
+			Manojo{ // Adolfo tiene flor
+				Cartas: [3]Carta{
+					Carta{Palo: Copa, Valor: 1},
+					Carta{Palo: Copa, Valor: 2},
+					Carta{Palo: Copa, Valor: 3},
+				},
+			},
+			Manojo{ // Renzo no tiene flor
+				Cartas: [3]Carta{
+					Carta{Palo: Copa, Valor: 10},
+					Carta{Palo: Oro, Valor: 7},
+					Carta{Palo: Basto, Valor: 11},
+				},
+			},
+			Manojo{ // Andres tiene  flor
+				Cartas: [3]Carta{
+					Carta{Palo: Oro, Valor: 4},
+					Carta{Palo: Espada, Valor: 4},
+					Carta{Palo: Espada, Valor: 1},
+				},
+			},
+			Manojo{ // Richard no tiene flor
+				Cartas: [3]Carta{
+					Carta{Palo: Copa, Valor: 11},
+					Carta{Palo: Oro, Valor: 2},
+					Carta{Palo: Basto, Valor: 1},
+				},
+			},
+		},
+	)
+
+	p.Cmd("Alvaro Envido") // no estoy recibiendo output
+	p.Cmd("Alvaro Flor")
+	p.Cmd("Roro Mazo") // no estoy recibiendo output
+	p.Cmd("Adolfo Flor")
+
+	consume(p.Stdout)
+	p.Print()
+}
