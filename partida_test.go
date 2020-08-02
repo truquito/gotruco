@@ -1002,3 +1002,53 @@ func TestFixDesconcertante(t *testing.T) {
 	consume(p.Stdout)
 	p.Print()
 }
+
+func TestMalaAsignacionPts(t *testing.T) {
+	p, _ := NuevaPartida(20, []string{"Alvaro"}, []string{"Roro"})
+
+	p.Ronda.setMuestra(Carta{Palo: Basto, Valor: 12})
+	p.Puntajes[Rojo] = 3
+	p.Puntajes[Azul] = 2
+	p.Ronda.Turno = 1
+	p.Ronda.ElMano = 1
+	p.Ronda.setManojos(
+		[]Manojo{
+			Manojo{ // Alvaro
+				Cartas: [3]Carta{
+					Carta{Palo: Oro, Valor: 10},
+					Carta{Palo: Oro, Valor: 12},
+					Carta{Palo: Espada, Valor: 5},
+				},
+			},
+			Manojo{ // Roro
+				Cartas: [3]Carta{
+					Carta{Palo: Oro, Valor: 1},
+					Carta{Palo: Espada, Valor: 1},
+					Carta{Palo: Espada, Valor: 11},
+				},
+			},
+		},
+	)
+
+	p.Print()
+
+	p.Cmd("alvaro vale-4")
+	p.Cmd("alvaro truco")
+	p.Cmd("roro truco")
+	p.Cmd("alvaro re-truco")
+	p.Cmd("roro vale-4")
+	p.Cmd("alvaro quiero")
+	p.Cmd("roro 1 espada")
+	p.Cmd("alvaro 12 oro")
+	p.Cmd("roro 1 oro")
+	p.Cmd("alvaro 5 espada")
+
+	consume(p.Stdout)
+	p.Print()
+
+	oops = !(p.Puntajes[Rojo] == 7 && p.Puntajes[Azul] == 2)
+	if oops {
+		t.Error(`Asigno mal los puntos`)
+		return
+	}
+}
