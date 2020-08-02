@@ -357,8 +357,15 @@ func (r *Ronda) execElEnvido() (jIdx JugadorIdx, max int, stdOut []string) {
 	// `jIdx` indica el jugador con el envido mas alto
 	// var jIdx JugadorIdx
 
-	// empieza la mano
+	// empieza el mas cercano a la mano (inclusive), el que no se haya ido aun
 	jIdx = r.ElMano
+	for r.Manojos[jIdx].SeFueAlMazo {
+		jIdx++
+		if int(jIdx) == cantJugadores {
+			jIdx = 0
+		}
+	}
+
 	yaDijeron[jIdx] = true
 	out := fmt.Sprintf(`   %s dice: "tengo %v"`, r.Manojos[jIdx].Jugador.Nombre,
 		envidos[jIdx])
