@@ -1,6 +1,4 @@
 # BUGS
-- [FACIL?] que la version json no contenga a los que tienen flores: que los 
-    cargue automaticamente
 - probar una ronda de envidos donde el mano es el ultimo jugador probablemente 
     de error out of index porque esta mal programadao el get ronda.Envidos()
 
@@ -22,14 +20,6 @@
         los que se fueron al mazo pueden decir quiero/noquiero
     idea solucion: que la struct Jugada de la que todas extienden tenga un 
     metodo que checkeo eso:
-
--   no deberia poder auto quererse **ni auto no-quererse**
-    eg.
-        p.SetSigJugada("Alvaro Envido")
-        p.SetSigJugada("Roro Envido")
-        p.SetSigJugada("Alvaro Real-Envido")
-        p.SetSigJugada("Roro Falta-Envido")
-        p.SetSigJugada("Roro Quiero")
 
 # LIMPIEZA DE CODIGO
 - Hay codigo repetido entre noQuiero y mazo cuando niega la flor (codigo copiado)
