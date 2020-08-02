@@ -1,15 +1,8 @@
 # BUGS
-- probar una ronda de envidos donde el mano es el ultimo jugador probablemente 
-    de error out of index porque esta mal programadao el get ronda.Envidos()
-
-- [RELACIONADO] ^ que pasa si hay 3 con flor A,B y C; 
-    * A canta flor, 
-    * B dice contra flor, 
-    * A dice quiero -> pero B nunca canto su flor
-
+- que pasa si la mano ya se fue antes de que hagan el envido: no deberia de 
+    cantar nada
 - [HECHO?] alguien que se fue al mazo con flor puede llegar a decir quiero a una 
     contraflor (DE HECHO, DEBERIA SER UN CHECKING PARA TODAS LAS JUGADAS)
-
 - si 2 tienen flor y esos 2 las cantan -> tampoco termina el bucle de la flor 
     log: `fix 2 flores y bucle.log`
 - puede que se llame a p.evaluarMano() y que no se haya tirado ninguna carta?
@@ -37,6 +30,8 @@
 - agregarle un ID a jugador y que las busquedas las haga por este campo
     esta id debe ser sercreta y random; porque si yo se la id de otro puedo 
     jugar por el
+- generar un comando especial que genere un panic, para asi testear los planes
+    de contingencia en caso de falla
 
 # PERFORMANCE
 - que es mas rapido para saber si un jugador tiene flor:
@@ -72,3 +67,20 @@
     tienen flores son del mismo equipo. Es necesario cantar los puntajes?
     TestTodoTienenFlor
 - es necesario que sea tu turno para cantar la flor? o es tipo irse al mazo????
+- todos los escenarios posibles de flor de TestTirada1.
+  obs: ahora si todos cantan flor de una (como esta) entonces se fuega simplemente
+  "la flor"
+  si uno dice no quiero ~ con flor me achico -> acarrea a todo el equipo
+  deberia ser asi?
+
+  p.Cmd("Richard flor")
+  p.Cmd("Adolfo no-quiero") <-----
+  << [ok] (ALL) : +12 puntos para el equipo Rojo por las flores
+  p.Cmd("Renzo flor")
+  p.Cmd("Alvaro flor")
+
+  - [RELACIONADO] ^ que pasa si hay 3 con flor A,B y C; 
+    * A canta flor, 
+    * B dice contra flor, 
+    * A dice quiero -> pero C nunca canto su flor
+    la tiene en cuenta, a pesar de que nunca canto flor

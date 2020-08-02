@@ -55,12 +55,24 @@ func TestTirada1(t *testing.T) {
 		},
 	)
 
+	p.Print()
+	p.Cmd("Richard flor")
+	p.Cmd("Adolfo contra-flor")
+	p.Cmd("Richard quiero")
+	// p.Cmd("Adolfo no-quiero") // si dice no quero autoamticamente acarrea a alvaro
+	// ademas suma 12 puntos y renzo no llego a decir que tenia flor,
+	// deberia cantar la de renzo tambien
+	p.Cmd("Renzo flor")
+	p.Cmd("Alvaro flor")
+
 	p.Cmd("Alvaro 2 Oro")
 	p.Cmd("Roro 5 Oro")
 	p.Cmd("Adolfo 1 Copa")
 	p.Cmd("Renzo 4 Oro")
 	p.Cmd("Andres 10 Copa")
 	p.Cmd("Richard 10 Oro")
+
+	consume(p.Stdout)
 
 	// como la muestra es Palo: Oro, Valor: 3 -> gana alvaro
 	if !(len(p.Ronda.Manos[primera].CartasTiradas) == 6) {

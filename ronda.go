@@ -376,6 +376,11 @@ func (r *Ronda) execElEnvido() (jIdx JugadorIdx, max int, stdOut []string) {
 	// iterador
 	i := r.ElMano + 1
 
+	// fix el mano es el ultimo
+	if int(r.ElMano) == cantJugadores-1 {
+		i = 0
+	}
+
 	// termina el bucle cuando se haya dado
 	// "una vuelta completa" de:mano+1 hasta:mano
 	// ergo, cuando se "resetea" el iterador,

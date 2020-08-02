@@ -96,9 +96,10 @@ func (jugada tirarCarta) hacer(p *Partida) {
 	}
 
 	// checkeo si tiene flor
+	florHabilitada := (p.Ronda.Envite.Estado >= NOCANTADOAUN && p.Ronda.Envite.Estado <= FLOR) && p.Ronda.ManoEnJuego == primera
 	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
 	noCantoFlorAun := contains(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.autor)
-	noPuedeTirar := tieneFlor && noCantoFlorAun
+	noPuedeTirar := florHabilitada && tieneFlor && noCantoFlorAun
 	if noPuedeTirar {
 
 		write(p.Stdout, &Msg{
@@ -921,7 +922,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 			write(p.Stdout, &Msg{
 				Dest: []string{"ALL"},
 				Tipo: "ok",
-				Cont: fmt.Sprintf(`La contra-flor-al-resto la gano %s con %v, +%v puntos para el equipo %s`,
+				Cont: fmt.Sprintf(`La contra-flor la gano %s con %v, +%v puntos para el equipo %s`,
 					manojoConLaFlorMasAlta.Jugador.Nombre, maxFlor, puntosASumar, equipoGanador),
 			})
 
