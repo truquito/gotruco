@@ -654,7 +654,7 @@ func (jugada gritarTruco) hacer(p *Partida) {
 	noSeFueAlMazo := jugada.autor.SeFueAlMazo == false
 	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
 	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
-	noSeCantoFlor := p.Ronda.Envite.Estado != DESHABILITADO
+	noSeCantoFlor := p.Ronda.Envite.Estado > DESHABILITADO && p.Ronda.Envite.Estado < FLOR
 	laFlorEstaPrimero := hayFlor && noSeCantoFlor
 	trucoNoSeJugoAun := p.Ronda.Truco.Estado == NOCANTADO
 	esSuTurno := p.Ronda.getElTurno() == jugada.autor
@@ -704,7 +704,7 @@ func (jugada gritarReTruco) hacer(p *Partida) {
 	noSeFueAlMazo := jugada.autor.SeFueAlMazo == false
 	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
 	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
-	noSeCantoFlor := p.Ronda.Envite.Estado != DESHABILITADO
+	noSeCantoFlor := p.Ronda.Envite.Estado > DESHABILITADO && p.Ronda.Envite.Estado < FLOR
 	laFlorEstaPrimero := hayFlor && noSeCantoFlor
 
 	/*
@@ -765,7 +765,7 @@ func (jugada gritarVale4) hacer(p *Partida) {
 
 	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
 	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
-	noSeCantoFlor := p.Ronda.Envite.Estado != DESHABILITADO
+	noSeCantoFlor := p.Ronda.Envite.Estado > DESHABILITADO && p.Ronda.Envite.Estado < FLOR
 	laFlorEstaPrimero := hayFlor && noSeCantoFlor
 
 	/*
