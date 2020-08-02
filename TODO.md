@@ -1,6 +1,4 @@
 # BUGS
-- [HECHO?] alguien que se fue al mazo con flor puede llegar a decir quiero a una 
-    contraflor (DE HECHO, DEBERIA SER UN CHECKING PARA TODAS LAS JUGADAS)
 
 # LIMPIEZA DE CODIGO
 - Hay codigo repetido entre noQuiero y mazo cuando niega la flor (codigo copiado)

@@ -916,3 +916,62 @@ func TestFlorBlucle(t *testing.T) {
 	consume(p.Stdout)
 	p.Print()
 }
+
+func TestQuieroContraflorDesdeMazo(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	p.Ronda.setMuestra(Carta{Palo: Oro, Valor: 3})
+	p.Ronda.setManojos(
+		[]Manojo{
+			Manojo{ // Alvaro tiene flor
+				Cartas: [3]Carta{
+					Carta{Palo: Oro, Valor: 2},
+					Carta{Palo: Basto, Valor: 6},
+					Carta{Palo: Basto, Valor: 7},
+				},
+			},
+			Manojo{ // Roro no tiene flor
+				Cartas: [3]Carta{
+					Carta{Palo: Oro, Valor: 5},
+					Carta{Palo: Espada, Valor: 5},
+					Carta{Palo: Basto, Valor: 5},
+				},
+			},
+			Manojo{ // Adolfo tiene flor
+				Cartas: [3]Carta{
+					Carta{Palo: Copa, Valor: 1},
+					Carta{Palo: Copa, Valor: 2},
+					Carta{Palo: Copa, Valor: 3},
+				},
+			},
+			Manojo{ // Renzo no tiene flor
+				Cartas: [3]Carta{
+					Carta{Palo: Copa, Valor: 10},
+					Carta{Palo: Copa, Valor: 4},
+					Carta{Palo: Copa, Valor: 11},
+				},
+			},
+			Manojo{ // Andres tiene  flor
+				Cartas: [3]Carta{
+					Carta{Palo: Oro, Valor: 4},
+					Carta{Palo: Espada, Valor: 4},
+					Carta{Palo: Espada, Valor: 1},
+				},
+			},
+			Manojo{ // Richard no tiene flor
+				Cartas: [3]Carta{
+					Carta{Palo: Copa, Valor: 12},
+					Carta{Palo: Oro, Valor: 2},
+					Carta{Palo: Basto, Valor: 1},
+				},
+			},
+		},
+	)
+
+	p.Cmd("alvaro flor")
+	p.Cmd("andres mazo") // cambiarlo por andres depues
+	p.Cmd("renzo contra-flor")
+	p.Cmd("andres quiero")
+
+	consume(p.Stdout)
+	p.Print()
+}

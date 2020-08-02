@@ -911,6 +911,12 @@ func (jugada responderQuiero) hacer(p *Partida) {
 
 		}
 
+		write(p.Stdout, &Msg{
+			Dest: []string{"ALL"},
+			Tipo: "ok",
+			Cont: fmt.Sprintf("%s responde quiero", jugada.autor.Jugador.Nombre),
+		})
+
 		// empieza cantando el autor del envite no el que "quizo"
 		manojoConLaFlorMasAlta, maxFlor := p.Ronda.getLaFlorMasAlta()
 		equipoGanador := manojoConLaFlorMasAlta.Jugador.Equipo
