@@ -174,7 +174,8 @@ func (jugada tocarEnvido) hacer(p *Partida) {
 	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.autor.Jugador.Equipo
 	envidoHabilitado := (p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.Estado == ENVIDO)
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == ENVIDO
-	ok := (envidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario) && (esSuTurno || yaEstabamosEnEnvido)
+	apuestaSaturada := p.Ronda.Envite.Puntaje >= p.calcPtsFalta()
+	ok := (envidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario) && (esSuTurno || yaEstabamosEnEnvido) && !apuestaSaturada
 
 	if !ok {
 

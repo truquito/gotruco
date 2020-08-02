@@ -1,9 +1,9 @@
 # BUGS
+- [FACIL?] que la version json no contenga a los que tienen flores: que los 
+    cargue automaticamente
 - probar una ronda de envidos donde el mano es el ultimo jugador probablemente 
     de error out of index porque esta mal programadao el get ronda.Envidos()
 
-- [RELACIONADO] ^ es necesario que sea tu turno para cantar la flor? o es tipo
-    irse al mazo????
 - [RELACIONADO] ^ que pasa si hay 3 con flor A,B y C; 
     * A canta flor, 
     * B dice contra flor, 
@@ -30,7 +30,6 @@
         p.SetSigJugada("Alvaro Real-Envido")
         p.SetSigJugada("Roro Falta-Envido")
         p.SetSigJugada("Roro Quiero")
-- [MEDIO] test envido n-veces -> deberia tener un parate
 
 # LIMPIEZA DE CODIGO
 - Hay codigo repetido entre noQuiero y mazo cuando niega la flor (codigo copiado)
@@ -82,3 +81,4 @@
 - no es necesario cantar los puntajes de las flores si todos los que 
     tienen flores son del mismo equipo. Es necesario cantar los puntajes?
     TestTodoTienenFlor
+- es necesario que sea tu turno para cantar la flor? o es tipo irse al mazo????

@@ -248,6 +248,11 @@ func (p *Partida) estaEnMalas(e Equipo) bool {
 	return p.Puntajes[e] < p.elChico()
 }
 
+// retorna la cantidad de puntos que le falta para ganar al que va ganando
+func (p *Partida) calcPtsFalta() int {
+	return p.Puntuacion.toInt() - p.Puntajes[p.elQueVaGanando()]
+}
+
 // retorna la cantidad de puntos que le corresponderian
 // a `ganadorDelEnvite` si hubiese ganado un "Contra flor al resto"
 // sin tener en cuenta los puntos acumulados de envites anteriores
@@ -266,7 +271,7 @@ func (p *Partida) calcPtsFaltaEnvido(ganadorDelEnvite Equipo) int {
 		return loQueLeFaltaAlGANADORparaGanarElChico
 	}
 	//else {
-	loQueLeFaltaAlQUEvaGANANDOparaGanarElChico := p.Puntuacion.toInt() - p.Puntajes[p.elQueVaGanando()]
+	loQueLeFaltaAlQUEvaGANANDOparaGanarElChico := p.calcPtsFalta()
 	return loQueLeFaltaAlQUEvaGANANDOparaGanarElChico
 	//}
 
