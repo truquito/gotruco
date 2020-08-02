@@ -586,10 +586,15 @@ func (p *Partida) nuevaRonda(elMano JugadorIdx) {
 	})
 }
 
+// ToString retorna su render
+func (p *Partida) ToString() string {
+	render := renderizar(p)
+	return render
+}
+
 // Print imprime la partida
 func (p *Partida) Print() {
-	render := renderizar(p)
-	fmt.Print(render)
+	fmt.Print(p.ToString())
 }
 
 // ToJSON retorna la partida en formato json
