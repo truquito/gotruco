@@ -428,7 +428,19 @@ func (p *PartidaDT) ToJSON() string {
 }
 
 // FromJSON carga una partida en formato json
+// ojo que este es PUBLICO!!! no cachea flores
 func (p *PartidaDT) FromJSON(partidaJSON string) error {
+	err := json.Unmarshal([]byte(partidaJSON), &p)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+// FromJSON carga una partida en formato json
+// ojo que este es PRIVADO!!!
+// el metodo privado cachea las flores
+func (p *PartidaDT) fromJSON(partidaJSON string) error {
 	err := json.Unmarshal([]byte(partidaJSON), &p)
 	if err != nil {
 		return err
