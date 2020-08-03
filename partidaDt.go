@@ -71,7 +71,7 @@ type PartidaDT struct {
 	Ronda         Ronda          `json:"ronda"`
 }
 
-func (p *Partida) getMaxPuntaje() int {
+func (p *PartidaDT) getMaxPuntaje() int {
 	if p.Puntajes[Rojo] > p.Puntajes[Azul] {
 		return p.Puntajes[Rojo]
 	}
@@ -79,7 +79,7 @@ func (p *Partida) getMaxPuntaje() int {
 }
 
 // retorna el equipo que va ganando
-func (p *Partida) elQueVaGanando() Equipo {
+func (p *PartidaDT) elQueVaGanando() Equipo {
 	vaGanandoRojo := p.Puntajes[Rojo] > p.Puntajes[Azul]
 	if vaGanandoRojo {
 		return Rojo
@@ -89,38 +89,38 @@ func (p *Partida) elQueVaGanando() Equipo {
 
 // getPuntuacionMalas devuelve la mitad de la puntuacion
 // total jugable durante toda la partida
-func (p *Partida) getPuntuacionMalas() int {
+func (p *PartidaDT) getPuntuacionMalas() int {
 	return p.Puntuacion.toInt() / 2
 }
 
 // Terminada retorna true si la partida acabo
-func (p *Partida) Terminada() bool {
+func (p *PartidaDT) Terminada() bool {
 	return p.getMaxPuntaje() >= p.Puntuacion.toInt()
 }
 
-func (p *Partida) elChico() int {
+func (p *PartidaDT) elChico() int {
 	return p.Puntuacion.toInt() / 2
 }
 
 // retorna true si `e` esta en malas
-func (p *Partida) estaEnMalas(e Equipo) bool {
+func (p *PartidaDT) estaEnMalas(e Equipo) bool {
 	return p.Puntajes[e] < p.elChico()
 }
 
 // retorna la cantidad de puntos que le falta para ganar al que va ganando
-func (p *Partida) calcPtsFalta() int {
+func (p *PartidaDT) calcPtsFalta() int {
 	return p.Puntuacion.toInt() - p.Puntajes[p.elQueVaGanando()]
 }
 
 // retorna la cantidad de puntos que le corresponderian
 // a `ganadorDelEnvite` si hubiese ganado un "Contra flor al resto"
 // sin tener en cuenta los puntos acumulados de envites anteriores
-func (p *Partida) calcPtsContraFlorAlResto(ganadorDelEnvite Equipo) int {
+func (p *PartidaDT) calcPtsContraFlorAlResto(ganadorDelEnvite Equipo) int {
 	return p.calcPtsFaltaEnvido(ganadorDelEnvite)
 }
 
 // retorna la cantidad de puntos que corresponden al Falta-Envido
-func (p *Partida) calcPtsFaltaEnvido(ganadorDelEnvite Equipo) int {
+func (p *PartidaDT) calcPtsFaltaEnvido(ganadorDelEnvite Equipo) int {
 	// si el que va ganando:
 	// 		esta en Malas -> el ganador del envite (`ganadorDelEnvite`) gana el chico
 	// 		esta en Buenas -> el ganador del envite (`ganadorDelEnvite`) gana lo que le falta al maximo para ganar la ronda
@@ -137,14 +137,17 @@ func (p *Partida) calcPtsFaltaEnvido(ganadorDelEnvite Equipo) int {
 }
 
 // retorna true si termino la partida
-func (p *Partida) sumarPuntos(e Equipo, totalPts int) bool {
+func (p *PartidaDT) sumarPuntos(e Equipo, totalPts int) bool {
 	p.Puntajes[e] += totalPts
 	return p.Terminada()
 }
 
 // evalua todas las cartas y decide que equipo gano
 // de ese ganador se setea el siguiente turno
-func (p *Partida) evaluarMano() {
+func (p *PartidaDT) evaluarMano() (bool, []*Msg) {
+
+	msgs := make([]*Msg, 3)
+
 	// cual es la tirada-carta que gano la mano?
 	// ojo que puede salir parda
 	// para ello primero busco las maximas de cada equipo
@@ -201,11 +204,11 @@ func (p *Partida) evaluarMano() {
 		mano.Resultado = Empardada
 		mano.Ganador = nil
 
-		write(p.Stdout, &Msg{
+		msgs[0] = &Msg{
 			Dest: []string{"ALL"},
 			Tipo: "ok",
 			Cont: fmt.Sprintf("La Mano resulta parda"),
-		})
+		}
 		// no se cambia el turno
 
 	} else {
@@ -223,35 +226,37 @@ func (p *Partida) evaluarMano() {
 		// pero se setea despues de evaluar la ronda
 		mano.Ganador = tiradaGanadora.autor
 
-		write(p.Stdout, &Msg{
+		msgs[0] = &Msg{
 			Dest: []string{"ALL"},
 			Tipo: "ok",
 			Cont: fmt.Sprintf("La %s mano la gano el equipo %s gracia a %s",
 				strings.ToLower(p.Ronda.ManoEnJuego.String()),
 				mano.Ganador.Jugador.Equipo.String(),
 				mano.Ganador.Jugador.Nombre),
-		})
+		}
 
 	}
 
 	// se termino la ronda?
-	empiezaNuevaRonda := p.evaluarRonda()
+	empiezaNuevaRonda, msgs2 := p.evaluarRonda()
+
+	msgs = append(msgs, msgs2...)
 
 	// cuando termina la mano (y no se empieza una ronda) -> cambia de TRUNO
 	// cuando termina la ronda -> cambia de MANO
 	// para usar esto, antes se debe primero incrementar el turno
 	// incremento solo si no se empezo una nueva ronda
-	if !empiezaNuevaRonda {
-		p.Ronda.ManoEnJuego++
-		p.Ronda.setNextTurnoPosMano()
-	}
+
+	return empiezaNuevaRonda, msgs
 }
 
 // tener siempre en cuenta que evaluar la ronda es sinonimo de evaluar el truco
 // se acabo la ronda?
 // si se empieza una ronda nueva -> retorna true
 // si no se termino la ronda 	 -> retorna false
-func (p *Partida) evaluarRonda() bool {
+func (p *PartidaDT) evaluarRonda() (bool, []*Msg) {
+
+	msgs := make([]*Msg, 2)
 
 	/* A MENOS QUE SE HAYAN IDO TODOS EN LA PRIMERA MANO!!! */
 	hayJugadoresRojo := p.Ronda.CantJugadoresEnJuego[Rojo] > 0
@@ -260,7 +265,7 @@ func (p *Partida) evaluarRonda() bool {
 
 	imposibleQueSeHayaAcabado := (p.Ronda.ManoEnJuego == primera) && hayJugadoresEnAmbos
 	if imposibleQueSeHayaAcabado {
-		return false
+		return false, nil
 	}
 
 	// de aca en mas ya se que hay al menos 2 manos jugadas
@@ -284,7 +289,7 @@ func (p *Partida) evaluarRonda() bool {
 	noSeAcaboAun := seEstaJugandoLaSegunda && hayEmpate && hayJugadoresEnAmbos
 
 	if noSeAcaboAun {
-		return false
+		return false, nil
 	}
 
 	// hay ganador -> ya se que al final voy a retornar un true
@@ -352,12 +357,12 @@ func (p *Partida) evaluarRonda() bool {
 
 	/************************************************/
 
-	write(p.Stdout, &Msg{
+	msgs[0] = &Msg{
 		Dest: []string{"ALL"},
 		Tipo: "ok",
 		Cont: fmt.Sprintf("La ronda ha sido ganada por el equipo %s",
 			ganador.Jugador.Equipo),
-	})
+	}
 
 	// ya sabemos el ganador ahora es el
 	// momento de sumar los puntos del truco
@@ -390,61 +395,40 @@ func (p *Partida) evaluarRonda() bool {
 			p.Ronda.Truco.Estado.String())
 	}
 
-	write(p.Stdout, &Msg{
+	msgs[1] = &Msg{
 		Dest: []string{"ALL"},
 		Tipo: "ok",
 		Cont: msg,
-	})
-
-	terminoLaPartida := p.sumarPuntos(ganador.Jugador.Equipo, totalPts)
-
-	if !terminoLaPartida {
-		// ahora se deberia de incrementar el mano
-		// y ser el turno de este
-		sigMano := p.Ronda.getSigElMano()
-		p.nuevaRonda(sigMano)
-	} else {
-		p.byeBye()
 	}
 
-	return true // porque se empezo una nueva ronda
+	p.sumarPuntos(ganador.Jugador.Equipo, totalPts)
+
+	return true, msgs // porque se empezo una nueva ronda
 }
 
-func (p *Partida) nuevaRonda(elMano JugadorIdx) {
-	write(p.Stdout, &Msg{
-		Dest: []string{"ALL"},
-		Tipo: "ok",
-		Cont: fmt.Sprintf("Empieza una nueva ronda"),
-	})
-
+func (p *PartidaDT) nuevaRonda(elMano JugadorIdx) {
 	p.Ronda = nuevaRonda(p.jugadores, elMano)
-
-	write(p.Stdout, &Msg{
-		Dest: []string{"ALL"},
-		Tipo: "ok",
-		Cont: fmt.Sprintf("La mano y el turno es %s\n", p.Ronda.getElMano().Jugador.Nombre),
-	})
 }
 
 // ToString retorna su render
-func (p *Partida) ToString() string {
+func (p *PartidaDT) ToString() string {
 	render := renderizar(p)
 	return render
 }
 
 // Print imprime la partida
-func (p *Partida) Print() {
+func (p *PartidaDT) Print() {
 	fmt.Print(p.ToString())
 }
 
 // ToJSON retorna la partida en formato json
-func (p *Partida) ToJSON() string {
+func (p *PartidaDT) ToJSON() string {
 	pJSON, _ := json.Marshal(p)
 	return string(pJSON)
 }
 
 // FromJSON carga una partida en formato json
-func (p *Partida) FromJSON(partidaJSON string) error {
+func (p *PartidaDT) FromJSON(partidaJSON string) error {
 	err := json.Unmarshal([]byte(partidaJSON), &p)
 	if err != nil {
 		return err
@@ -453,7 +437,7 @@ func (p *Partida) FromJSON(partidaJSON string) error {
 	return nil
 }
 
-func cheepCopy(p *Partida) *Partida {
+func cheepCopy(p *PartidaDT) *PartidaDT {
 	copia := *p
 	copia.Ronda.Manojos = make([]Manojo, len(p.Ronda.Manojos))
 	copy(copia.Ronda.Manojos, p.Ronda.Manojos)
@@ -463,7 +447,7 @@ func cheepCopy(p *Partida) *Partida {
 
 // Perspectiva retorna una representacion en json de la perspectiva que tiene
 // el jugador `j` de la partida
-func (p *Partida) Perspectiva(j string) (*Partida, error) {
+func (p *PartidaDT) Perspectiva(j string) (*PartidaDT, error) {
 	copia := cheepCopy(p)
 
 	// primero encuentro el jugador

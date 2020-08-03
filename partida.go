@@ -240,5 +240,17 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	elMano := JugadorIdx(0)
 	p.nuevaRonda(elMano)
 
+	write(p.Stdout, &Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf("Empieza una nueva ronda"),
+	})
+
+	write(p.Stdout, &Msg{
+		Dest: []string{"ALL"},
+		Tipo: "ok",
+		Cont: fmt.Sprintf("La mano y el turno es %s\n", p.Ronda.getElMano().Jugador.Nombre),
+	})
+
 	return &p, nil
 }

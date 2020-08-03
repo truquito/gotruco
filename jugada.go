@@ -141,7 +141,54 @@ func (jugada tirarCarta) hacer(p *Partida) {
 	eraElUltimoEnTirar := p.Ronda.getSigHabilitado(*jugada.autor) == nil
 	if eraElUltimoEnTirar {
 		// de ser asi tengo que checkear el resultado de la mano
-		p.evaluarMano()
+		empiezaNuevaRonda, msgs := p.evaluarMano()
+
+		if msgs != nil {
+			for _, msg := range msgs {
+				if msg != nil {
+					write(p.Stdout, msg)
+				}
+			}
+		}
+
+		if !empiezaNuevaRonda {
+
+			p.Ronda.ManoEnJuego++
+			p.Ronda.setNextTurnoPosMano()
+
+		} else {
+
+			if !p.Terminada() {
+				// ahora se deberia de incrementar el mano
+				// y ser el turno de este
+				sigMano := p.Ronda.getSigElMano()
+				p.nuevaRonda(sigMano) // todo: el tema es que cuando llama aca
+				// no manda mensaje de que arranco nueva ronda
+				// falso: el padre que llama a .evaluarRonda tiene que fijarse si
+				// retorno true
+				// entonces debe crearla el
+				// no es responsabilidad de evaluarRonda arrancar una ronda nueva!!
+				// de hecho, si una ronda es terminable y se llama 2 veces consecutivas
+				// al mismo metodo booleano, en ambas oportunidades retorna diferente
+				// ridiculo
+				write(p.Stdout, &Msg{
+					Dest: []string{"ALL"},
+					Tipo: "ok",
+					Cont: fmt.Sprintf("Empieza una nueva ronda"),
+				})
+
+				write(p.Stdout, &Msg{
+					Dest: []string{"ALL"},
+					Tipo: "ok",
+					Cont: fmt.Sprintf("La mano y el turno es %s\n", p.Ronda.getElMano().Jugador.Nombre),
+				})
+
+			} else {
+				p.byeBye()
+			}
+
+		}
+
 		// el turno del siguiente queda dado por el ganador de esta
 	} else {
 		p.Ronda.setNextTurno()
@@ -1140,7 +1187,49 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 
 	} else if elTrucoEsRespondible {
 
-		p.evaluarRonda()
+		nuevaRonda, msgs := p.evaluarRonda()
+
+		if msgs != nil {
+			for _, msg := range msgs {
+				if msg != nil {
+					write(p.Stdout, msg)
+				}
+			}
+		}
+
+		if nuevaRonda {
+
+			if !p.Terminada() {
+				// ahora se deberia de incrementar el mano
+				// y ser el turno de este
+				sigMano := p.Ronda.getSigElMano()
+				p.nuevaRonda(sigMano) // todo: el tema es que cuando llama aca
+				// no manda mensaje de que arranco nueva ronda
+				// falso: el padre que llama a .evaluarRonda tiene que fijarse si
+				// retorno true
+				// entonces debe crearla el
+				// no es responsabilidad de evaluarRonda arrancar una ronda nueva!!
+				// de hecho, si una ronda es terminable y se llama 2 veces consecutivas
+				// al mismo metodo booleano, en ambas oportunidades retorna diferente
+				// ridiculo
+				write(p.Stdout, &Msg{
+					Dest: []string{"ALL"},
+					Tipo: "ok",
+					Cont: fmt.Sprintf("Empieza una nueva ronda"),
+				})
+
+				write(p.Stdout, &Msg{
+					Dest: []string{"ALL"},
+					Tipo: "ok",
+					Cont: fmt.Sprintf("La mano y el turno es %s\n", p.Ronda.getElMano().Jugador.Nombre),
+				})
+
+			} else {
+				p.byeBye()
+			}
+
+		}
+
 	}
 
 	return
@@ -1310,8 +1399,54 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 	hayQueEvaluarRonda := seFueronTodos || eraElUltimoEnTirar
 	if hayQueEvaluarRonda {
 		// de ser asi tengo que checkear el resultado de la mano
-		p.evaluarMano()
 		// el turno del siguiente queda dado por el ganador de esta
+		empiezaNuevaRonda, msgs := p.evaluarMano()
+
+		if msgs != nil {
+			for _, msg := range msgs {
+				if msg != nil {
+					write(p.Stdout, msg)
+				}
+			}
+		}
+
+		if !empiezaNuevaRonda {
+
+			p.Ronda.ManoEnJuego++
+			p.Ronda.setNextTurnoPosMano()
+
+		} else {
+
+			if !p.Terminada() {
+				// ahora se deberia de incrementar el mano
+				// y ser el turno de este
+				sigMano := p.Ronda.getSigElMano()
+				p.nuevaRonda(sigMano) // todo: el tema es que cuando llama aca
+				// no manda mensaje de que arranco nueva ronda
+				// falso: el padre que llama a .evaluarRonda tiene que fijarse si
+				// retorno true
+				// entonces debe crearla el
+				// no es responsabilidad de evaluarRonda arrancar una ronda nueva!!
+				// de hecho, si una ronda es terminable y se llama 2 veces consecutivas
+				// al mismo metodo booleano, en ambas oportunidades retorna diferente
+				// ridiculo
+				write(p.Stdout, &Msg{
+					Dest: []string{"ALL"},
+					Tipo: "ok",
+					Cont: fmt.Sprintf("Empieza una nueva ronda"),
+				})
+
+				write(p.Stdout, &Msg{
+					Dest: []string{"ALL"},
+					Tipo: "ok",
+					Cont: fmt.Sprintf("La mano y el turno es %s\n", p.Ronda.getElMano().Jugador.Nombre),
+				})
+
+			} else {
+				p.byeBye()
+			}
+
+		}
 	} else {
 		// cambio de turno solo si era su turno
 		eraSuTurno := p.Ronda.getElTurno() == jugada.autor

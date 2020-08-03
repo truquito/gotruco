@@ -28,13 +28,13 @@ const (
 // iPrinter Interface para las impresoras de 2, 4 y 6 jugadores
 type iPrinter interface {
 	dibujarMarco()
-	dibujarEstadisticas(p *Partida)
+	dibujarEstadisticas(p *PartidaDT)
 	dibujarMuestra(muestra Carta)
 	dibujarNombres(manojos []Manojo, muestra Carta)
 	dibujarTiradas(manojos []Manojo)
 	dibujarPosesiones(manojos []Manojo)
 	dibujarTooltips(r Ronda)
-	// Print(p *Partida)
+	// Print(p *PartidaDT)
 	render() string
 }
 
@@ -68,7 +68,7 @@ func (pr impresora) dibujarMarco() {
 	pr.canvas.DrawAt(pr.otrasAreas["exteriorMesa"].From, marco)
 }
 
-func (pr impresora) dibujarEstadisticas(p *Partida) {
+func (pr impresora) dibujarEstadisticas(p *PartidaDT) {
 	template := pr.templates.estadisticas()
 	pr.canvas.DrawAt(pr.otrasAreas["estadisticas"].From, template)
 
@@ -211,7 +211,7 @@ func (pr impresora) dibujarTooltips(r Ronda) {
 
 }
 
-func renderizar(p *Partida) string {
+func renderizar(p *PartidaDT) string {
 
 	// como tiene el parametro en Print
 	// basta con tener una sola instancia de impresora

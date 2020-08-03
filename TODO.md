@@ -1,6 +1,7 @@
 # BUGS
 
 # LIMPIEZA DE CODIGO
+- la struct truco esta con minuscula salame
 - Hay codigo repetido entre noQuiero y mazo cuando niega la flor (codigo copiado)
 - hay redundancia entre cantarFloresSiLasHay y cantarFlores
 - hay redundancia entre p.Ronda.getLaFlorMasAlta y 
