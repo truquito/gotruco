@@ -644,6 +644,41 @@ func (p *Partida) notify() {
 	p.ErrCh <- true
 }
 
+func cheepCopy(p *Partida) *Partida {
+	copia := *p
+	copia.Ronda.Manojos = make([]Manojo, len(p.Ronda.Manojos))
+	copy(copia.Ronda.Manojos, p.Ronda.Manojos)
+
+	return &copia
+}
+
+// Perspectiva retorna una representacion en json de la perspectiva que tiene
+// el jugador `j` de la partida
+func (p *Partida) Perspectiva(j string) (*Partida, error) {
+	copia := cheepCopy(p)
+
+	// primero encuentro el jugador
+	manojo, err := copia.Ronda.getManojoByStr(j)
+	if err != nil {
+		return nil, fmt.Errorf("Usuario %s no encontrado", j)
+	}
+
+	// oculto las caras no tiradas de los manojos que no son el
+	for i, m := range copia.Ronda.Manojos {
+		noEsSuManojo := m.Jugador.ID != manojo.Jugador.ID
+		if noEsSuManojo {
+			// oculto solo las cartas que no tiro
+			for j, noTirada := range m.CartasNoTiradas {
+				if noTirada {
+					copia.Ronda.Manojos[i].Cartas[j] = nil
+				}
+			}
+		}
+	}
+
+	return copia, nil
+}
+
 // NuevaPartida retorna n)ueva partida; error si hubo
 func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Partida, error) {
 
