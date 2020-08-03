@@ -25,17 +25,17 @@ func TestEnvidoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -71,17 +71,17 @@ func TestEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -123,17 +123,17 @@ func TestRealEnvidoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -169,17 +169,17 @@ func TestRealEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -215,17 +215,17 @@ func TestFaltaEnvidoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -261,17 +261,17 @@ func TestFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -307,17 +307,17 @@ func TestEnvidoEnvidoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -362,17 +362,17 @@ func TestEnvidoEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -409,17 +409,17 @@ func TestEnvidoRealEnvidoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -456,17 +456,17 @@ func TestEnvidoRealEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -503,17 +503,17 @@ func TestEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -550,17 +550,17 @@ func TestEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -597,17 +597,17 @@ func TestRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -644,17 +644,17 @@ func TestRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -691,17 +691,17 @@ func TestEnvidoEnvidoRealEnvidoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -739,17 +739,17 @@ func TestEnvidoEnvidoRealEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -787,17 +787,17 @@ func TestEnvidoEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -835,17 +835,17 @@ func TestEnvidoEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -883,17 +883,17 @@ func TestEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -931,17 +931,17 @@ func TestEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -979,17 +979,17 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -1028,17 +1028,17 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 13
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 13
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 		},
@@ -1079,45 +1079,45 @@ func TestCalcEnvido(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 26
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Oro, Valor: 12},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 26
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Oro, Valor: 12},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{ // envido: 20
-					Carta{Palo: Copa, Valor: 12},
-					Carta{Palo: Copa, Valor: 11},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{ // envido: 20
+					&Carta{Palo: Copa, Valor: 12},
+					&Carta{Palo: Copa, Valor: 11},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{ // envido: 28
-					Carta{Palo: Copa, Valor: 2},
-					Carta{Palo: Copa, Valor: 6},
-					Carta{Palo: Basto, Valor: 1},
+				Cartas: [3]*Carta{ // envido: 28
+					&Carta{Palo: Copa, Valor: 2},
+					&Carta{Palo: Copa, Valor: 6},
+					&Carta{Palo: Basto, Valor: 1},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{ // envido: 25
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Oro, Valor: 3},
-					Carta{Palo: Basto, Valor: 2},
+				Cartas: [3]*Carta{ // envido: 25
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Oro, Valor: 3},
+					&Carta{Palo: Basto, Valor: 2},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{ // envido: 33
-					Carta{Palo: Basto, Valor: 6},
-					Carta{Palo: Basto, Valor: 7},
-					Carta{Palo: Oro, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 33
+					&Carta{Palo: Basto, Valor: 6},
+					&Carta{Palo: Basto, Valor: 7},
+					&Carta{Palo: Oro, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{ // envido: 27
-					Carta{Palo: Copa, Valor: 3},
-					Carta{Palo: Copa, Valor: 4},
-					Carta{Palo: Oro, Valor: 4},
+				Cartas: [3]*Carta{ // envido: 27
+					&Carta{Palo: Copa, Valor: 3},
+					&Carta{Palo: Copa, Valor: 4},
+					&Carta{Palo: Oro, Valor: 4},
 				},
 			},
 		},
@@ -1156,45 +1156,45 @@ func TestCalcEnvido2(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{
-				Cartas: [3]Carta{ // envido: 21
-					Carta{Palo: Basto, Valor: 1},
-					Carta{Palo: Basto, Valor: 12},
-					Carta{Palo: Copa, Valor: 5},
+				Cartas: [3]*Carta{ // envido: 21
+					&Carta{Palo: Basto, Valor: 1},
+					&Carta{Palo: Basto, Valor: 12},
+					&Carta{Palo: Copa, Valor: 5},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{ // envido: 23
-					Carta{Palo: Oro, Valor: 12},
-					Carta{Palo: Oro, Valor: 3},
-					Carta{Palo: Basto, Valor: 4},
+				Cartas: [3]*Carta{ // envido: 23
+					&Carta{Palo: Oro, Valor: 12},
+					&Carta{Palo: Oro, Valor: 3},
+					&Carta{Palo: Basto, Valor: 4},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{ // envido: 23
-					Carta{Palo: Basto, Valor: 10},
-					Carta{Palo: Copa, Valor: 6},
-					Carta{Palo: Basto, Valor: 3},
+				Cartas: [3]*Carta{ // envido: 23
+					&Carta{Palo: Basto, Valor: 10},
+					&Carta{Palo: Copa, Valor: 6},
+					&Carta{Palo: Basto, Valor: 3},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{ // envido: 30
-					Carta{Palo: Oro, Valor: 6},
-					Carta{Palo: Oro, Valor: 4},
-					Carta{Palo: Copa, Valor: 1},
+				Cartas: [3]*Carta{ // envido: 30
+					&Carta{Palo: Oro, Valor: 6},
+					&Carta{Palo: Oro, Valor: 4},
+					&Carta{Palo: Copa, Valor: 1},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{ // envido: 30
-					Carta{Palo: Basto, Valor: 6},
-					Carta{Palo: Basto, Valor: 4},
-					Carta{Palo: Oro, Valor: 1},
+				Cartas: [3]*Carta{ // envido: 30
+					&Carta{Palo: Basto, Valor: 6},
+					&Carta{Palo: Basto, Valor: 4},
+					&Carta{Palo: Oro, Valor: 1},
 				},
 			},
 			Manojo{
-				Cartas: [3]Carta{ // envido: 31
-					Carta{Palo: Espada, Valor: 5},
-					Carta{Palo: Copa, Valor: 4},
-					Carta{Palo: Espada, Valor: 3},
+				Cartas: [3]*Carta{ // envido: 31
+					&Carta{Palo: Espada, Valor: 5},
+					&Carta{Palo: Copa, Valor: 4},
+					&Carta{Palo: Espada, Valor: 3},
 				},
 			},
 		},

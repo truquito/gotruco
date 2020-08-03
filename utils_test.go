@@ -38,10 +38,10 @@ func BenchmarkMaxNew(b *testing.B) {
 }
 
 func BenchmarkMaxOld(b *testing.B) {
-	cartas := [3]Carta{
-		Carta{Palo: Oro, Valor: 3},
-		Carta{Palo: Copa, Valor: 4},
-		Carta{Palo: Basto, Valor: 5},
+	cartas := [3]*Carta{
+		&Carta{Palo: Oro, Valor: 3},
+		&Carta{Palo: Copa, Valor: 4},
+		&Carta{Palo: Basto, Valor: 5},
 	}
 	// muestra := Carta{ Espada, 10}
 	for i := 0; i < b.N; i++ {

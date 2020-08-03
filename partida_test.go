@@ -10,17 +10,17 @@ func TestParseJugada(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{ // Alvaro tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 6},
-					Carta{Palo: Basto, Valor: 7},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 6},
+					&Carta{Palo: Basto, Valor: 7},
 				},
 			},
 			Manojo{ // Roro no tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Oro, Valor: 5},
-					Carta{Palo: Espada, Valor: 5},
-					Carta{Palo: Basto, Valor: 5},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Oro, Valor: 5},
+					&Carta{Palo: Espada, Valor: 5},
+					&Carta{Palo: Basto, Valor: 5},
 				},
 			},
 		},
@@ -95,45 +95,45 @@ func TestPartida1(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{ // Alvaro tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 6},
-					Carta{Palo: Basto, Valor: 7},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 6},
+					&Carta{Palo: Basto, Valor: 7},
 				},
 			},
 			Manojo{ // Roro no tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Oro, Valor: 5},
-					Carta{Palo: Espada, Valor: 5},
-					Carta{Palo: Basto, Valor: 5},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Oro, Valor: 5},
+					&Carta{Palo: Espada, Valor: 5},
+					&Carta{Palo: Basto, Valor: 5},
 				},
 			},
 			Manojo{ // Adolfo tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Copa, Valor: 2},
-					Carta{Palo: Copa, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Copa, Valor: 2},
+					&Carta{Palo: Copa, Valor: 3},
 				},
 			},
 			Manojo{ // Renzo tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Oro, Valor: 4},
-					Carta{Palo: Espada, Valor: 4},
-					Carta{Palo: Espada, Valor: 1},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Oro, Valor: 4},
+					&Carta{Palo: Espada, Valor: 4},
+					&Carta{Palo: Espada, Valor: 1},
 				},
 			},
 			Manojo{ // Andres no tiene  flor
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 10},
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Basto, Valor: 11},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 10},
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Basto, Valor: 11},
 				},
 			},
 			Manojo{ // Richard tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Oro, Valor: 10},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 1},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Oro, Valor: 10},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 1},
 				},
 			},
 		},
@@ -750,45 +750,45 @@ func TestTodoTienenFlor(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{ // Alvaro tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 6},
-					Carta{Palo: Basto, Valor: 7},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 6},
+					&Carta{Palo: Basto, Valor: 7},
 				},
 			},
 			Manojo{ // Roro no tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Oro, Valor: 5},
-					Carta{Palo: Espada, Valor: 5},
-					Carta{Palo: Basto, Valor: 5},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Oro, Valor: 5},
+					&Carta{Palo: Espada, Valor: 5},
+					&Carta{Palo: Basto, Valor: 5},
 				},
 			},
 			Manojo{ // Adolfo tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Copa, Valor: 2},
-					Carta{Palo: Copa, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Copa, Valor: 2},
+					&Carta{Palo: Copa, Valor: 3},
 				},
 			},
 			Manojo{ // Renzo no tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 10},
-					Carta{Palo: Oro, Valor: 7},
-					Carta{Palo: Basto, Valor: 11},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 10},
+					&Carta{Palo: Oro, Valor: 7},
+					&Carta{Palo: Basto, Valor: 11},
 				},
 			},
 			Manojo{ // Andres tiene  flor
-				Cartas: [3]Carta{
-					Carta{Palo: Oro, Valor: 4},
-					Carta{Palo: Espada, Valor: 4},
-					Carta{Palo: Espada, Valor: 1},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Oro, Valor: 4},
+					&Carta{Palo: Espada, Valor: 4},
+					&Carta{Palo: Espada, Valor: 1},
 				},
 			},
 			Manojo{ // Richard no tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 11},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 1},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 11},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 1},
 				},
 			},
 		},
@@ -894,17 +894,17 @@ func TestFlorBlucle(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{ // Alvaro tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 6},
-					Carta{Palo: Basto, Valor: 7},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 6},
+					&Carta{Palo: Basto, Valor: 7},
 				},
 			},
 			Manojo{ // Roro tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Oro, Valor: 5},
-					Carta{Palo: Espada, Valor: 5},
-					Carta{Palo: Espada, Valor: 5},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Oro, Valor: 5},
+					&Carta{Palo: Espada, Valor: 5},
+					&Carta{Palo: Espada, Valor: 5},
 				},
 			},
 		},
@@ -923,45 +923,45 @@ func TestQuieroContraflorDesdeMazo(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{ // Alvaro tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 6},
-					Carta{Palo: Basto, Valor: 7},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 6},
+					&Carta{Palo: Basto, Valor: 7},
 				},
 			},
 			Manojo{ // Roro no tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Oro, Valor: 5},
-					Carta{Palo: Espada, Valor: 5},
-					Carta{Palo: Basto, Valor: 5},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Oro, Valor: 5},
+					&Carta{Palo: Espada, Valor: 5},
+					&Carta{Palo: Basto, Valor: 5},
 				},
 			},
 			Manojo{ // Adolfo tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 1},
-					Carta{Palo: Copa, Valor: 2},
-					Carta{Palo: Copa, Valor: 3},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 1},
+					&Carta{Palo: Copa, Valor: 2},
+					&Carta{Palo: Copa, Valor: 3},
 				},
 			},
 			Manojo{ // Renzo no tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 10},
-					Carta{Palo: Copa, Valor: 4},
-					Carta{Palo: Copa, Valor: 11},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 10},
+					&Carta{Palo: Copa, Valor: 4},
+					&Carta{Palo: Copa, Valor: 11},
 				},
 			},
 			Manojo{ // Andres tiene  flor
-				Cartas: [3]Carta{
-					Carta{Palo: Oro, Valor: 4},
-					Carta{Palo: Espada, Valor: 4},
-					Carta{Palo: Espada, Valor: 1},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Oro, Valor: 4},
+					&Carta{Palo: Espada, Valor: 4},
+					&Carta{Palo: Espada, Valor: 1},
 				},
 			},
 			Manojo{ // Richard no tiene flor
-				Cartas: [3]Carta{
-					Carta{Palo: Copa, Valor: 12},
-					Carta{Palo: Oro, Valor: 2},
-					Carta{Palo: Basto, Valor: 1},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Copa, Valor: 12},
+					&Carta{Palo: Oro, Valor: 2},
+					&Carta{Palo: Basto, Valor: 1},
 				},
 			},
 		},
@@ -1014,17 +1014,17 @@ func TestMalaAsignacionPts(t *testing.T) {
 	p.Ronda.setManojos(
 		[]Manojo{
 			Manojo{ // Alvaro
-				Cartas: [3]Carta{
-					Carta{Palo: Oro, Valor: 10},
-					Carta{Palo: Oro, Valor: 12},
-					Carta{Palo: Espada, Valor: 5},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Oro, Valor: 10},
+					&Carta{Palo: Oro, Valor: 12},
+					&Carta{Palo: Espada, Valor: 5},
 				},
 			},
 			Manojo{ // Roro
-				Cartas: [3]Carta{
-					Carta{Palo: Oro, Valor: 1},
-					Carta{Palo: Espada, Valor: 1},
-					Carta{Palo: Espada, Valor: 11},
+				Cartas: [3]*Carta{
+					&Carta{Palo: Oro, Valor: 1},
+					&Carta{Palo: Espada, Valor: 1},
+					&Carta{Palo: Espada, Valor: 11},
 				},
 			},
 		},

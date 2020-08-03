@@ -11,8 +11,8 @@ const cantCartasManojo = 3
 
 // Manojo :
 type Manojo struct {
-	SeFueAlMazo bool                    `json:"seFueAlMazo"`
-	Cartas      [cantCartasManojo]Carta `json:"cartas"`
+	SeFueAlMazo bool                     `json:"seFueAlMazo"`
+	Cartas      [cantCartasManojo]*Carta `json:"cartas"`
 	// si true->la tiene; si false->ya la tiro
 	CartasNoTiradas [cantCartasManojo]bool `json:"cartasNoJugadas"`
 	UltimaTirada    int                    `json:"ultimaTirada"`
@@ -52,7 +52,7 @@ func (manojo Manojo) yaTiroCarta(mano NumMano) bool {
 func (manojo Manojo) getCartaIdx(carta Carta) (int, error) {
 	var idx int
 	for idx = 0; idx < cantCartasManojo; idx++ {
-		esEsa := manojo.Cartas[idx] == carta
+		esEsa := *manojo.Cartas[idx] == carta
 		if esEsa {
 			break
 		}
@@ -191,7 +191,7 @@ func (manojo Manojo) calcularEnvido(muestra Carta) (puntajeEnvido int) {
 		}
 	} else {
 		// si no: simplemente sumo las 2 de mayor valor
-		copia := make([]Carta, cantCartasManojo)
+		copia := make([]*Carta, cantCartasManojo)
 		copy(copia, manojo.Cartas[:])
 		// ordeno el array en forma desc de su puntaje
 		sort.Slice(copia, func(i, j int) bool {

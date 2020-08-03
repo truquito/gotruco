@@ -123,7 +123,7 @@ func mkCartaDobleVisible(valores, palos []string) string {
 	return cartaDobleSolapada
 }
 
-func (t templates) cartaDobleVisible(cartas []Carta) string {
+func (t templates) cartaDobleVisible(cartas []*Carta) string {
 
 	valor1, palo1 := cartas[0].Valor, cartas[0].Palo.String()
 	numStr1 := t.renderValorCarta(valor1)
@@ -161,7 +161,7 @@ func mkCartaTripleVisible(valores, palos []string) string {
 	return cartaDobleSolapada
 }
 
-func (t templates) cartaTripleVisible(cartas []Carta) string {
+func (t templates) cartaTripleVisible(cartas []*Carta) string {
 
 	valor1, palo1 := cartas[0].Valor, cartas[0].Palo.String()
 	numStr1 := t.renderValorCarta(valor1)

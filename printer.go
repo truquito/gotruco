@@ -139,11 +139,11 @@ func (pr impresora) dibujarTiradas(manojos []Manojo) {
 		var tiradas string
 		switch cantTiradas {
 		case 1:
-			tiradas = pr.templates.carta(carta)
+			tiradas = pr.templates.carta(*carta)
 		case 2:
-			tiradas = pr.templates.cartaDobleSolapada(carta)
+			tiradas = pr.templates.cartaDobleSolapada(*carta)
 		case 3:
-			tiradas = pr.templates.cartaTripleSolapada(carta)
+			tiradas = pr.templates.cartaTripleSolapada(*carta)
 		default:
 			tiradas = pr.templates.vacio()
 		}
@@ -158,7 +158,7 @@ func (pr impresora) dibujarPosesiones(manojos []Manojo) {
 		area = pr.areasJugadores["posesiones"][posicion(i)]
 		manojo := manojos[i]
 
-		var cartasEnPosesion []Carta
+		var cartasEnPosesion []*Carta
 		for j, c := range manojo.Cartas {
 			if manojo.CartasNoTiradas[j] {
 				cartasEnPosesion = append(cartasEnPosesion, c)
@@ -171,7 +171,7 @@ func (pr impresora) dibujarPosesiones(manojos []Manojo) {
 		var template string
 		switch cantPosesion {
 		case 1:
-			template = pr.templates.carta(cartasEnPosesion[0])
+			template = pr.templates.carta(*cartasEnPosesion[0])
 		case 2:
 			template = pr.templates.cartaDobleVisible(cartasEnPosesion)
 		case 3:

@@ -631,7 +631,7 @@ func (r *Ronda) dealCards() {
 		for idxCarta := 0; idxCarta < 3; idxCarta++ {
 			cartaID := CartaID(randomCards[3*idxJugador+idxCarta])
 			carta := nuevaCarta(cartaID)
-			r.Manojos[idxJugador].Cartas[idxCarta] = carta
+			r.Manojos[idxJugador].Cartas[idxCarta] = &carta
 			r.Manojos[idxJugador].CartasNoTiradas[idxCarta] = true
 		}
 	}

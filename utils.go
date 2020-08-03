@@ -36,7 +36,7 @@ func eliminar(manojos []*Manojo, manojo *Manojo) []*Manojo {
 	return manojos[:len(manojos)-1]      // Truncate slice.
 }
 
-func maxOf3(cartas [3]Carta) int {
+func maxOf3(cartas [3]*Carta) int {
 	max := 0
 	for _, carta := range cartas {
 		if carta.Valor > max {
