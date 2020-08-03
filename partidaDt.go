@@ -471,3 +471,40 @@ func (p *PartidaDT) Perspectiva(j string) (*PartidaDT, error) {
 
 	return copia, nil
 }
+
+// NuevaPartidaDt crea una nueva PartidaDT
+func NuevaPartidaDt(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*PartidaDT, error) {
+
+	mismaCantidadDeJugadores := len(equipoRojo) == len(equipoAzul)
+	cantJugadores := len(equipoRojo) + len(equipoAzul)
+	cantidadCorrecta := contains([]int{2, 4, 6}, cantJugadores) // puede ser 2, 4 o 6
+	ok := mismaCantidadDeJugadores && cantidadCorrecta
+
+	if !ok {
+		return nil, fmt.Errorf(`La cantidad de jugadores no es correcta`)
+	}
+	// paso a crear los jugadores; intercalados
+	var jugadores []Jugador
+	// para cada rjo que agrego; le agrego tambien su mano
+	for i := range equipoRojo {
+		// uso como id sus nombres
+		nuevoJugadorRojo := Jugador{equipoRojo[i], equipoRojo[i], Rojo}
+		nuevoJugadorAzul := Jugador{equipoAzul[i], equipoAzul[i], Azul}
+		jugadores = append(jugadores, nuevoJugadorAzul, nuevoJugadorRojo)
+	}
+
+	p := PartidaDT{
+		Puntuacion:    puntuacion,
+		CantJugadores: cantJugadores,
+		jugadores:     jugadores,
+	}
+
+	p.Puntajes = make(map[Equipo]int)
+	p.Puntajes[Rojo] = 0
+	p.Puntajes[Azul] = 0
+
+	elMano := JugadorIdx(0)
+	p.nuevaRonda(elMano)
+
+	return &p, nil
+}
