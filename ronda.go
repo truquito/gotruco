@@ -71,7 +71,8 @@ func (e *EstadoTruco) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
-type truco struct {
+// Truco :
+type Truco struct {
 	CantadoPor *Manojo     `json:"cantadoPor"`
 	Estado     EstadoTruco `json:"estado"`
 }
@@ -88,7 +89,7 @@ type Ronda struct {
 
 	/* toques, gritos y cantos */
 	Envite Envite `json:"envite"`
-	Truco  truco  `json:"truco"`
+	Truco  Truco  `json:"truco"`
 
 	/* cartas */
 	Manojos []Manojo `json:"manojos"`
@@ -656,7 +657,7 @@ func nuevaRonda(jugadores []Jugador, elMano JugadorIdx) Ronda {
 		ElMano:  elMano,
 		Turno:   elMano,
 		Envite:  Envite{Estado: NOCANTADOAUN, Puntaje: 0},
-		Truco:   truco{CantadoPor: nil, Estado: NOCANTADO},
+		Truco:   Truco{CantadoPor: nil, Estado: NOCANTADO},
 		Manojos: make([]Manojo, cantJugadores),
 		Manos:   make([]Mano, 3),
 	}
