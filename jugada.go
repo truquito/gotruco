@@ -98,7 +98,7 @@ func (jugada tirarCarta) hacer(p *Partida) {
 	// checkeo si tiene flor
 	florHabilitada := (p.Ronda.Envite.Estado >= NOCANTADOAUN && p.Ronda.Envite.Estado <= FLOR) && p.Ronda.ManoEnJuego == primera
 	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
-	noCantoFlorAun := contains(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.autor)
+	noCantoFlorAun := contains(p.Ronda.Envite.jugadoresConFlorQueNoCantaron, jugada.autor)
 	noPuedeTirar := florHabilitada && tieneFlor && noCantoFlorAun
 	if noPuedeTirar {
 
@@ -243,12 +243,12 @@ func (jugada tocarEnvido) hacer(p *Partida) {
 	})
 
 	// ahora checkeo si alguien tiene flor
-	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
+	hayFlor := len(p.Ronda.Envite.jugadoresConFlorQueNoCantaron) > 0
 	if hayFlor {
 		// todo: deberia ir al estado magico en el que espera
 		// solo por jugadas de tipo flor-related
 		// lo mismo para el real-envido; falta-envido
-		manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
+		manojosConFlor := p.Ronda.Envite.jugadoresConFlorQueNoCantaron
 		siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
 		siguienteJugada.hacer(p)
 
@@ -336,10 +336,10 @@ func (jugada tocarRealEnvido) hacer(p *Partida) {
 	p.Ronda.Envite.CantadoPor = jugada.autor
 
 	// ahora checkeo si alguien tiene flor
-	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
+	hayFlor := len(p.Ronda.Envite.jugadoresConFlorQueNoCantaron) > 0
 
 	if hayFlor {
-		manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
+		manojosConFlor := p.Ronda.Envite.jugadoresConFlorQueNoCantaron
 		siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
 		siguienteJugada.hacer(p)
 
@@ -404,10 +404,10 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) {
 	p.Ronda.Envite.CantadoPor = jugada.autor
 
 	// ahora checkeo si alguien tiene flor
-	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
+	hayFlor := len(p.Ronda.Envite.jugadoresConFlorQueNoCantaron) > 0
 	if hayFlor {
 		p.Ronda.Envite.Estado = DESHABILITADO
-		manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
+		manojosConFlor := p.Ronda.Envite.jugadoresConFlorQueNoCantaron
 		siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
 		siguienteJugada.hacer(p)
 	}
@@ -476,7 +476,7 @@ func (jugada cantarFlor) hacer(p *Partida) {
 	// es esto verdad?
 	florHabilitada := (p.Ronda.Envite.Estado >= NOCANTADOAUN && p.Ronda.Envite.Estado <= FLOR) && p.Ronda.ManoEnJuego == primera
 	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
-	noCantoFlorAun := contains(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.autor)
+	noCantoFlorAun := contains(p.Ronda.Envite.jugadoresConFlorQueNoCantaron, jugada.autor)
 	ok := florHabilitada && tieneFlor && noCantoFlorAun
 
 	if !ok {
@@ -498,7 +498,7 @@ func (jugada cantarFlor) hacer(p *Partida) {
 	})
 
 	// y me elimino de los que no-cantaron
-	p.Ronda.Envite.JugadoresConFlorQueNoCantaron = eliminar(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.autor)
+	p.Ronda.Envite.jugadoresConFlorQueNoCantaron = eliminar(p.Ronda.Envite.jugadoresConFlorQueNoCantaron, jugada.autor)
 
 	yaEstabamosEnFlor := p.Ronda.Envite.Estado == FLOR
 
@@ -521,7 +521,7 @@ func (jugada cantarFlor) hacer(p *Partida) {
 	// es el ultimo en cantar flor que faltaba?
 	// o simplemente es el unico que tiene flor (caso particular)
 
-	todosLosJugadoresConFlorCantaron := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) == 0
+	todosLosJugadoresConFlorCantaron := len(p.Ronda.Envite.jugadoresConFlorQueNoCantaron) == 0
 	if todosLosJugadoresConFlorCantaron {
 
 		evalFlor(p)
@@ -532,7 +532,7 @@ func (jugada cantarFlor) hacer(p *Partida) {
 		// solos los de su equipo tienen flor?
 		// si solos los de su equipo tienen flor (y los otros no) -> las canto todas
 		soloLosDeSuEquipoTienenFlor := true
-		for _, manojo := range p.Ronda.Envite.JugadoresConFlor {
+		for _, manojo := range p.Ronda.Envite.jugadoresConFlor {
 			if manojo.Jugador.Equipo != jugada.autor.Jugador.Equipo {
 				soloLosDeSuEquipoTienenFlor = false
 				break
@@ -543,7 +543,7 @@ func (jugada cantarFlor) hacer(p *Partida) {
 			// los quiero llamar a todos, pero no quiero hacer llamadas al pedo
 			// entonces: llamo al primero sin cantar, y que este llame al proximo
 			// y que el proximo llame al siguiente, y asi...
-			primero := p.Ronda.Envite.JugadoresConFlorQueNoCantaron[0]
+			primero := p.Ronda.Envite.jugadoresConFlorQueNoCantaron[0]
 			siguienteJugada := cantarFlor{Jugada{autor: primero}}
 			siguienteJugada.hacer(p)
 		}
@@ -555,7 +555,7 @@ func (jugada cantarFlor) hacer(p *Partida) {
 
 func evalFlor(p *Partida) {
 	florEnJuego := p.Ronda.Envite.Estado >= FLOR
-	todosLosJugadoresConFlorCantaron := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) == 0
+	todosLosJugadoresConFlorCantaron := len(p.Ronda.Envite.jugadoresConFlorQueNoCantaron) == 0
 	ok := todosLosJugadoresConFlorCantaron && florEnJuego
 	if !ok {
 		return
@@ -573,7 +573,7 @@ func evalFlor(p *Partida) {
 		// los acumulados del envite hasta ahora
 		puntosASumar := p.Ronda.Envite.Puntaje
 		p.sumarPuntos(equipoGanador, puntosASumar)
-		habiaSolo1JugadorConFlor := len(p.Ronda.Envite.JugadoresConFlor) == 1
+		habiaSolo1JugadorConFlor := len(p.Ronda.Envite.jugadoresConFlor) == 1
 		if habiaSolo1JugadorConFlor {
 
 			write(p.Stdout, &Msg{
@@ -610,7 +610,7 @@ func (jugada cantarContraFlor) hacer(p *Partida) {
 	contraFlorHabilitada := p.Ronda.Envite.Estado == FLOR && p.Ronda.ManoEnJuego == primera
 	esDelEquipoContrario := contraFlorHabilitada && p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.autor.Jugador.Equipo
 	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
-	noCantoFlorAun := contains(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.autor)
+	noCantoFlorAun := contains(p.Ronda.Envite.jugadoresConFlorQueNoCantaron, jugada.autor)
 	ok := contraFlorHabilitada && tieneFlor && esDelEquipoContrario && noCantoFlorAun
 	if !ok {
 
@@ -637,7 +637,7 @@ func (jugada cantarContraFlor) hacer(p *Partida) {
 	// y ahora tengo que esperar por la respuesta de la nueva
 	// propuesta de todos menos de el que canto la contraflor
 	// restauro la copia
-	p.Ronda.Envite.JugadoresConFlorQueNoCantaron = eliminar(p.Ronda.Envite.JugadoresConFlor, jugada.autor)
+	p.Ronda.Envite.jugadoresConFlorQueNoCantaron = eliminar(p.Ronda.Envite.jugadoresConFlor, jugada.autor)
 
 	return
 }
@@ -652,7 +652,7 @@ func (jugada cantarContraFlorAlResto) hacer(p *Partida) {
 	contraFlorHabilitada := (p.Ronda.Envite.Estado == FLOR || p.Ronda.Envite.Estado == CONTRAFLOR) && p.Ronda.ManoEnJuego == primera
 	esDelEquipoContrario := contraFlorHabilitada && p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.autor.Jugador.Equipo
 	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
-	noCantoFlorAun := contains(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.autor)
+	noCantoFlorAun := contains(p.Ronda.Envite.jugadoresConFlorQueNoCantaron, jugada.autor)
 	ok := contraFlorHabilitada && tieneFlor && esDelEquipoContrario && noCantoFlorAun
 	if !ok {
 
@@ -679,7 +679,7 @@ func (jugada cantarContraFlorAlResto) hacer(p *Partida) {
 	// y ahora tengo que esperar por la respuesta de la nueva
 	// propuesta de todos menos de el que canto la contraflor
 	// restauro la copia
-	p.Ronda.Envite.JugadoresConFlorQueNoCantaron = eliminar(p.Ronda.Envite.JugadoresConFlor, jugada.autor)
+	p.Ronda.Envite.jugadoresConFlorQueNoCantaron = eliminar(p.Ronda.Envite.jugadoresConFlor, jugada.autor)
 
 	return
 }
@@ -700,7 +700,7 @@ func (jugada gritarTruco) hacer(p *Partida) {
 	// checkeos:
 	noSeFueAlMazo := jugada.autor.SeFueAlMazo == false
 	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
-	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
+	hayFlor := len(p.Ronda.Envite.jugadoresConFlorQueNoCantaron) > 0
 	noSeCantoFlor := p.Ronda.Envite.Estado > DESHABILITADO && p.Ronda.Envite.Estado < FLOR
 	laFlorEstaPrimero := hayFlor && noSeCantoFlor
 	trucoNoSeJugoAun := p.Ronda.Truco.Estado == NOCANTADO
@@ -716,7 +716,7 @@ func (jugada gritarTruco) hacer(p *Partida) {
 		})
 
 		if laFlorEstaPrimero {
-			manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
+			manojosConFlor := p.Ronda.Envite.jugadoresConFlorQueNoCantaron
 			siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
 			siguienteJugada.hacer(p)
 		}
@@ -750,7 +750,7 @@ func (jugada gritarReTruco) hacer(p *Partida) {
 	// checkeos generales:
 	noSeFueAlMazo := jugada.autor.SeFueAlMazo == false
 	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
-	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
+	hayFlor := len(p.Ronda.Envite.jugadoresConFlorQueNoCantaron) > 0
 	noSeCantoFlor := p.Ronda.Envite.Estado > DESHABILITADO && p.Ronda.Envite.Estado < FLOR
 	laFlorEstaPrimero := hayFlor && noSeCantoFlor
 
@@ -776,7 +776,7 @@ func (jugada gritarReTruco) hacer(p *Partida) {
 	if !reTrucoHabilitado {
 
 		if laFlorEstaPrimero {
-			manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
+			manojosConFlor := p.Ronda.Envite.jugadoresConFlorQueNoCantaron
 			siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
 			siguienteJugada.hacer(p)
 		}
@@ -811,7 +811,7 @@ func (jugada gritarVale4) hacer(p *Partida) {
 	noSeFueAlMazo := jugada.autor.SeFueAlMazo == false
 
 	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
-	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
+	hayFlor := len(p.Ronda.Envite.jugadoresConFlorQueNoCantaron) > 0
 	noSeCantoFlor := p.Ronda.Envite.Estado > DESHABILITADO && p.Ronda.Envite.Estado < FLOR
 	laFlorEstaPrimero := hayFlor && noSeCantoFlor
 
@@ -838,7 +838,7 @@ func (jugada gritarVale4) hacer(p *Partida) {
 	if !vale4Habilitado {
 
 		if laFlorEstaPrimero {
-			manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
+			manojosConFlor := p.Ronda.Envite.jugadoresConFlorQueNoCantaron
 			siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
 			siguienteJugada.hacer(p)
 		}
@@ -1308,11 +1308,11 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 	// si tenia flor -> ya no lo tomo en cuenta
 	tieneFlor, _ := jugada.autor.tieneFlor(p.Ronda.Muestra)
 	if tieneFlor {
-		p.Ronda.Envite.JugadoresConFlor = eliminar(p.Ronda.Envite.JugadoresConFlor, jugada.autor)
-		p.Ronda.Envite.JugadoresConFlorQueNoCantaron = eliminar(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.autor)
+		p.Ronda.Envite.jugadoresConFlor = eliminar(p.Ronda.Envite.jugadoresConFlor, jugada.autor)
+		p.Ronda.Envite.jugadoresConFlorQueNoCantaron = eliminar(p.Ronda.Envite.jugadoresConFlorQueNoCantaron, jugada.autor)
 		// que pasa si era el ultimo que se esperaba que cantara flor?
 		// tengo que hacer el eval de la flor
-		todosLosJugadoresConFlorCantaron := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) == 0
+		todosLosJugadoresConFlorCantaron := len(p.Ronda.Envite.jugadoresConFlorQueNoCantaron) == 0
 		if todosLosJugadoresConFlorCantaron {
 			evalFlor(p)
 		}

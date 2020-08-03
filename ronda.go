@@ -608,8 +608,8 @@ func (r *Ronda) cachearFlores() {
 	_, jugadoresConFlor := r.getFlores()
 	jugadoresConFlorCopy := make([]*Manojo, len(jugadoresConFlor))
 	copy(jugadoresConFlorCopy, jugadoresConFlor)
-	r.Envite.JugadoresConFlor = jugadoresConFlor
-	r.Envite.JugadoresConFlorQueNoCantaron = jugadoresConFlorCopy
+	r.Envite.jugadoresConFlor = jugadoresConFlor
+	r.Envite.jugadoresConFlorQueNoCantaron = jugadoresConFlorCopy
 }
 
 func (r *Ronda) singleLinking(jugadores []Jugador) {

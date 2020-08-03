@@ -77,6 +77,6 @@ type Envite struct {
 	Estado                        EstadoEnvite `json:"estado"`
 	Puntaje                       int          `json:"puntaje"`
 	CantadoPor                    *Manojo      `json:"cantadoPor"`
-	JugadoresConFlor              []*Manojo    `json:"jugadoresConFlor"`
-	JugadoresConFlorQueNoCantaron []*Manojo    `json:"jugadoresConFlorQueNoCantaron"`
+	jugadoresConFlor              []*Manojo
+	jugadoresConFlorQueNoCantaron []*Manojo
 }
