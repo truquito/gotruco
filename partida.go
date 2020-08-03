@@ -114,14 +114,18 @@ func consume(buff *bytes.Buffer) {
 	}
 }
 
-// Partida :
-type Partida struct {
+// PartidaDT solo los datos de una partida
+type PartidaDT struct {
 	jugadores     []Jugador
 	CantJugadores int            `json:"cantJugadores"`
 	Puntuacion    Puntuacion     `json:"puntuacion"`
 	Puntajes      map[Equipo]int `json:"puntajes"`
 	Ronda         Ronda          `json:"ronda"`
+}
 
+// Partida :
+type Partida struct {
+	PartidaDT
 	Stdout *bytes.Buffer `json:"-"`
 	ErrCh  chan bool     `json:"-"`
 }
@@ -701,9 +705,11 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	}
 
 	p := Partida{
-		Puntuacion:    puntuacion,
-		CantJugadores: cantJugadores,
-		jugadores:     jugadores,
+		PartidaDT: PartidaDT{
+			Puntuacion:    puntuacion,
+			CantJugadores: cantJugadores,
+			jugadores:     jugadores,
+		},
 	}
 
 	p.Stdout = new(bytes.Buffer)
