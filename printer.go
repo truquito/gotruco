@@ -151,6 +151,18 @@ func (pr impresora) dibujarTiradas(manojos []Manojo) {
 	}
 }
 
+func lasConoce(cartas []*Carta) bool {
+	lasConoce := true
+	// si hay al menos una carta con nil -> no las conoce
+	for _, c := range cartas {
+		if c == nil {
+			lasConoce = false
+			break
+		}
+	}
+	return lasConoce
+}
+
 func (pr impresora) dibujarPosesiones(manojos []Manojo) {
 	var area canvas.Rectangle
 
@@ -169,15 +181,29 @@ func (pr impresora) dibujarPosesiones(manojos []Manojo) {
 		cantPosesion := 3 - cantTiradas
 
 		var template string
-		switch cantPosesion {
-		case 1:
-			template = pr.templates.carta(*cartasEnPosesion[0])
-		case 2:
-			template = pr.templates.cartaDobleVisible(cartasEnPosesion)
-		case 3:
-			template = pr.templates.cartaTripleVisible(cartasEnPosesion)
-		default:
-			template = pr.templates.vacio()
+
+		if lasConoce(cartasEnPosesion) {
+			switch cantPosesion {
+			case 1:
+				template = pr.templates.carta(*cartasEnPosesion[0])
+			case 2:
+				template = pr.templates.cartaDobleVisible(cartasEnPosesion)
+			case 3:
+				template = pr.templates.cartaTripleVisible(cartasEnPosesion)
+			default:
+				template = pr.templates.vacio()
+			}
+		} else {
+			switch cantPosesion {
+			case 1:
+				template = pr.templates.cartaOculta(*cartasEnPosesion[0])
+			case 2:
+				template = pr.templates.cartaDobleOculta(cartasEnPosesion)
+			case 3:
+				template = pr.templates.cartaTripleOculta(cartasEnPosesion)
+			default:
+				template = pr.templates.vacio()
+			}
 		}
 		pr.canvas.DrawAt(area.From, area.Center(template))
 	}
@@ -189,10 +215,16 @@ func (pr impresora) dibujarTooltips(r Ronda) {
 
 	for i, manojo := range r.Manojos {
 		tooltip := ""
-		tieneFlor, _ := manojo.tieneFlor(r.Muestra)
-		if tieneFlor {
-			tooltip += "❀"
+
+		// flor
+		if lasConoce(manojo.Cartas[:]) {
+			tieneFlor, _ := manojo.tieneFlor(r.Muestra)
+			if tieneFlor {
+				tooltip += "❀"
+			}
 		}
+
+		// el turno
 		esSuTurno := turno == i
 		if esSuTurno {
 			posicion := posicion(turno)
