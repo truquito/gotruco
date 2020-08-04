@@ -83,3 +83,8 @@
     * B dice contra flor, 
     * A dice quiero -> pero C nunca canto su flor
     la tiene en cuenta, a pesar de que nunca canto flor
+  - no es necesario esperar a que sea tu turno para cantar truco no?
+    antes en retruco:
+    `casoII := trucoYaQuerido && unoDeMiEquipoQuizo && esTurnoDeMiEquipo`
+    ahora
+    `casoII := trucoYaQuerido && unoDeMiEquipoQuizo`

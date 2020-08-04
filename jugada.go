@@ -791,8 +791,8 @@ func (jugada gritarTruco) hacer(p *Partida) {
 	noSeCantoFlor := p.Ronda.Envite.Estado > DESHABILITADO && p.Ronda.Envite.Estado < FLOR
 	laFlorEstaPrimero := hayFlor && noSeCantoFlor
 	trucoNoSeJugoAun := p.Ronda.Truco.Estado == NOCANTADO
-	esSuTurno := p.Ronda.getElTurno() == jugada.autor
-	trucoHabilitado := noSeFueAlMazo && trucoNoSeJugoAun && esSuTurno && noSeEstaJugandoElEnvite && !laFlorEstaPrimero
+	// esSuTurno := p.Ronda.getElTurno() == jugada.autor
+	trucoHabilitado := noSeFueAlMazo && trucoNoSeJugoAun && noSeEstaJugandoElEnvite && !laFlorEstaPrimero // && esSuTurno
 
 	if !trucoHabilitado {
 
@@ -859,8 +859,8 @@ func (jugada gritarReTruco) hacer(p *Partida) {
 	// CASO I:
 	trucoYaQuerido := p.Ronda.Truco.Estado == TRUCOQUERIDO
 	unoDeMiEquipoQuizo := trucoYaQuerido && p.Ronda.Truco.CantadoPor.Jugador.Equipo == jugada.autor.Jugador.Equipo
-	esTurnoDeMiEquipo := p.Ronda.getElTurno().Jugador.Equipo == jugada.autor.Jugador.Equipo
-	casoII := trucoYaQuerido && unoDeMiEquipoQuizo && esTurnoDeMiEquipo
+	// esTurnoDeMiEquipo := p.Ronda.getElTurno().Jugador.Equipo == jugada.autor.Jugador.Equipo
+	casoII := trucoYaQuerido && unoDeMiEquipoQuizo // && esTurnoDeMiEquipo
 
 	reTrucoHabilitado := noSeFueAlMazo && noSeEstaJugandoElEnvite && (casoI || casoII) && !laFlorEstaPrimero
 
