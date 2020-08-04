@@ -1429,13 +1429,13 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 
 	// if condicionDelBobo {
 
-	write(p.Stdout, &Pkt{
-		Dest: []string{jugada.autor.Jugador.Nombre},
-		Msg: Msg{
-			Tipo: "Error",
-			Nota: fmt.Sprintf("No es posible irse al mazo ahora porque hay propuestas de tu equipo sin responder"),
-		},
-	})
+	// write(p.Stdout, &Pkt{
+	// 	Dest: []string{jugada.autor.Jugador.Nombre},
+	// 	Msg: Msg{
+	// 		Tipo: "Error",
+	// 		Nota: fmt.Sprintf("No es posible irse al mazo ahora porque hay propuestas de tu equipo sin responder"),
+	// 	},
+	// })
 
 	// return
 
