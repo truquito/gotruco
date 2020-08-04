@@ -203,9 +203,7 @@ func (jugada tirarCarta) hacer(p *Partida) {
 					Dest: []string{"ALL"},
 					Msg: Msg{
 						Tipo: "Nueva-Ronda",
-						Cont: ContNuevaRonda{
-							Pers: "pers aqui",
-						},
+						Cont: nil,
 					},
 				})
 
@@ -272,7 +270,7 @@ func (jugada tocarEnvido) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Toca-Envido",
-			Cont: ContAutor{Autor: jugada.autor.Jugador.Nombre},
+			Cont: []byte(jugada.autor.Jugador.Nombre),
 		},
 	})
 
@@ -322,7 +320,7 @@ func (jugada tocarEnvido) eval(p *Partida) {
 			Cont: ContSumPts{
 				Pts:    p.Ronda.Envite.Puntaje,
 				Equipo: jug.Equipo.String(),
-			},
+			}.ToBytes(),
 		},
 	})
 
@@ -376,7 +374,7 @@ func (jugada tocarRealEnvido) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Toca-RealEnvido",
-			Cont: ContAutor{Autor: jugada.autor.Jugador.Nombre},
+			Cont: []byte(jugada.autor.Jugador.Nombre),
 		},
 	})
 
@@ -452,7 +450,7 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Toca-FaltaEnvido",
-			Cont: ContAutor{Autor: jugada.autor.Jugador.Nombre},
+			Cont: []byte(jugada.autor.Jugador.Nombre),
 		},
 	})
 
@@ -506,7 +504,7 @@ func (jugada tocarFaltaEnvido) eval(p *Partida) {
 			Cont: ContSumPts{
 				Pts:    p.Ronda.Envite.Puntaje,
 				Equipo: jug.Equipo.String(),
-			},
+			}.ToBytes(),
 		},
 	})
 
@@ -560,7 +558,7 @@ func (jugada cantarFlor) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Canta-Flor",
-			Cont: ContAutor{Autor: jugada.autor.Jugador.Nombre},
+			Cont: []byte(jugada.autor.Jugador.Nombre),
 		},
 	})
 
@@ -652,7 +650,7 @@ func evalFlor(p *Partida) {
 					Cont: ContSumPts{
 						Pts:    puntosASumar,
 						Equipo: equipoGanador.String(),
-					},
+					}.ToBytes(),
 				},
 			})
 
@@ -667,7 +665,7 @@ func evalFlor(p *Partida) {
 					Cont: ContSumPts{
 						Pts:    puntosASumar,
 						Equipo: equipoGanador.String(),
-					},
+					}.ToBytes(),
 				},
 			})
 
@@ -710,7 +708,7 @@ func (jugada cantarContraFlor) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Canta-ContraFlor",
-			Cont: ContAutor{Autor: jugada.autor.Jugador.Nombre},
+			Cont: []byte(jugada.autor.Jugador.Nombre),
 		},
 	})
 
@@ -757,7 +755,7 @@ func (jugada cantarContraFlorAlResto) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Canta-ContraFlorAlResto",
-			Cont: ContAutor{Autor: jugada.autor.Jugador.Nombre},
+			Cont: []byte(jugada.autor.Jugador.Nombre),
 		},
 	})
 
@@ -820,7 +818,7 @@ func (jugada gritarTruco) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Grita-Truco",
-			Cont: ContAutor{Autor: jugada.autor.Jugador.Nombre},
+			Cont: []byte(jugada.autor.Jugador.Nombre),
 		},
 	})
 
@@ -890,7 +888,7 @@ func (jugada gritarReTruco) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Grita-ReTruco",
-			Cont: ContAutor{Autor: jugada.autor.Jugador.Nombre},
+			Cont: []byte(jugada.autor.Jugador.Nombre),
 		},
 	})
 
@@ -957,7 +955,7 @@ func (jugada gritarVale4) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Grita-Vale4",
-			Cont: ContAutor{Autor: jugada.autor.Jugador.Nombre},
+			Cont: []byte(jugada.autor.Jugador.Nombre),
 		},
 	})
 
@@ -1051,7 +1049,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 			Dest: []string{"ALL"},
 			Msg: Msg{
 				Tipo: "Responde-Quiero",
-				Cont: ContAutor{Autor: jugada.autor.Jugador.Nombre},
+				Cont: []byte(jugada.autor.Jugador.Nombre),
 			},
 		})
 
@@ -1088,7 +1086,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 			Dest: []string{"ALL"},
 			Msg: Msg{
 				Tipo: "Responde-Quiero",
-				Cont: ContAutor{Autor: jugada.autor.Jugador.Nombre},
+				Cont: []byte(jugada.autor.Jugador.Nombre),
 			},
 		})
 
@@ -1109,7 +1107,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 					Cont: ContSumPts{
 						Pts:    puntosASumar,
 						Equipo: equipoGanador.String(),
-					},
+					}.ToBytes(),
 				},
 			})
 
@@ -1130,7 +1128,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 					Cont: ContSumPts{
 						Pts:    puntosASumar,
 						Equipo: equipoGanador.String(),
-					},
+					}.ToBytes(),
 				},
 			})
 
@@ -1144,7 +1142,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 			Dest: []string{"ALL"},
 			Msg: Msg{
 				Tipo: "Responde-Quiero",
-				Cont: ContAutor{Autor: jugada.autor.Jugador.Nombre},
+				Cont: []byte(jugada.autor.Jugador.Nombre),
 			},
 		})
 
@@ -1242,7 +1240,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 			Dest: []string{"ALL"},
 			Msg: Msg{
 				Tipo: "Responde-NoQuiero",
-				Cont: ContAutor{Autor: jugada.autor.Jugador.Nombre},
+				Cont: []byte(jugada.autor.Jugador.Nombre),
 			},
 		})
 
@@ -1271,7 +1269,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 				Cont: ContSumPts{
 					Pts:    totalPts,
 					Equipo: p.Ronda.Envite.CantadoPor.Jugador.Equipo.String(),
-				},
+				}.ToBytes(),
 			},
 		})
 
@@ -1303,7 +1301,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 			Dest: []string{"ALL"},
 			Msg: Msg{
 				Tipo: "Responde-ConFlorMeAchico",
-				Cont: ContAutor{Autor: jugada.autor.Jugador.Nombre},
+				Cont: []byte(jugada.autor.Jugador.Nombre),
 			},
 		})
 
@@ -1342,7 +1340,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 				Cont: ContSumPts{
 					Pts:    totalPts,
 					Equipo: p.Ronda.Envite.CantadoPor.Jugador.Equipo.String(),
-				},
+				}.ToBytes(),
 			},
 		})
 
@@ -1378,9 +1376,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 					Dest: []string{"ALL"},
 					Msg: Msg{
 						Tipo: "Nueva-Ronda",
-						Cont: ContNuevaRonda{
-							Pers: "pers aqui",
-						},
+						Cont: nil,
 					},
 				})
 
@@ -1467,7 +1463,7 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Mazo",
-			Cont: ContAutor{Autor: jugada.autor.Jugador.Nombre},
+			Cont: []byte(jugada.autor.Jugador.Nombre),
 		},
 	})
 
@@ -1524,7 +1520,7 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 					Cont: ContSumPts{
 						Pts:    totalPts,
 						Equipo: e.CantadoPor.Jugador.Equipo.String(),
-					},
+					}.ToBytes(),
 				},
 			})
 
@@ -1568,7 +1564,7 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 					Cont: ContSumPts{
 						Pts:    totalPts,
 						Equipo: p.Ronda.Envite.CantadoPor.Jugador.Equipo.String(),
-					},
+					}.ToBytes(),
 				},
 			})
 
@@ -1622,9 +1618,7 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 					Dest: []string{"ALL"},
 					Msg: Msg{
 						Tipo: "Nueva-Ronda",
-						Cont: ContNuevaRonda{
-							Pers: "pers aqui",
-						},
+						Cont: nil,
 					},
 				})
 

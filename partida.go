@@ -30,7 +30,8 @@ func write(buff *bytes.Buffer, d *Pkt) error {
 	return err
 }
 
-func read(buff *bytes.Buffer) (*Pkt, error) {
+// Read retorna el pkt mas antiguo sin leer
+func Read(buff *bytes.Buffer) (*Pkt, error) {
 	e := new(Pkt)
 	dec := gob.NewDecoder(buff)
 	err := dec.Decode(e)
@@ -43,7 +44,7 @@ func read(buff *bytes.Buffer) (*Pkt, error) {
 // Consume consume el buffer
 func Consume(buff *bytes.Buffer) {
 	for {
-		e, err := read(buff)
+		e, err := Read(buff)
 		if err == io.EOF {
 			break
 		} else if err != nil {
@@ -219,9 +220,7 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Nueva-Ronda",
-			Cont: ContNuevaRonda{
-				Pers: "pers aqui",
-			},
+			Cont: nil, // "pers aqui"
 		},
 	})
 

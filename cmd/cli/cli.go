@@ -11,15 +11,15 @@ import (
 
 var reader = bufio.NewReader(os.Stdin)
 
-func readLn() string {
-	fmt.Printf(">> ")
+func readLn(prefix string) string {
+	fmt.Printf(prefix)
 	cmd, _ := reader.ReadString('\n')
 	return strings.TrimSuffix(cmd, "\n")
 }
 
 func handleIO() {
 	for {
-		cmd := readLn()
+		cmd := readLn(">> ")
 		ioCh <- cmd
 	}
 }

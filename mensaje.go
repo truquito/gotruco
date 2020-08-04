@@ -3,6 +3,7 @@ package truco
 import (
 	"encoding/gob"
 	"encoding/json"
+	"fmt"
 )
 
 // Pkt ..
@@ -19,9 +20,9 @@ type IContenido interface {
 
 // Msg ..
 type Msg struct {
-	Tipo string     `json:"tipo"`
-	Nota string     `json:"nota,omitempty"`
-	Cont IContenido `json:"contenido,omitempty"`
+	Tipo string `json:"tipo"`
+	Nota string `json:"nota,omitempty"`
+	Cont json.RawMessage
 }
 
 // ToJSON ..
@@ -34,7 +35,7 @@ func (m *Msg) ToJSON() string {
 
 // ContNuevaRonda ..
 type ContNuevaRonda struct {
-	Pers string `json:"pers"` // perspectiva
+	Pers *PartidaDT `json:"pers"` // perspectiva
 }
 
 // ContSumPts ..
@@ -43,10 +44,20 @@ type ContSumPts struct {
 	Equipo string `json:"equipo"`
 }
 
+// ToBytes retorna la struct en bytes
+func (csp ContSumPts) ToBytes() []byte {
+	return []byte(fmt.Sprintf("%v", csp))
+}
+
 // ContTirarCarta ..
 type ContTirarCarta struct {
 	Autor string `json:"autor"` // perspectiva
 	Carta Carta  `json:"carta"` // perspectiva
+}
+
+// ToBytes retorna la struct en bytes
+func (ctc ContTirarCarta) ToBytes() []byte {
+	return []byte(fmt.Sprintf("%v", ctc))
 }
 
 // ContAutor ..
