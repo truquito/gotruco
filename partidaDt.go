@@ -144,9 +144,9 @@ func (p *PartidaDT) sumarPuntos(e Equipo, totalPts int) bool {
 
 // evalua todas las cartas y decide que equipo gano
 // de ese ganador se setea el siguiente turno
-func (p *PartidaDT) evaluarMano() (bool, []*Msg) {
+func (p *PartidaDT) evaluarMano() (bool, []*Pkt) {
 
-	msgs := make([]*Msg, 3)
+	pkts := make([]*Pkt, 3)
 
 	// cual es la tirada-carta que gano la mano?
 	// ojo que puede salir parda
@@ -204,10 +204,12 @@ func (p *PartidaDT) evaluarMano() (bool, []*Msg) {
 		mano.Resultado = Empardada
 		mano.Ganador = nil
 
-		msgs[0] = &Msg{
+		pkts[0] = &Pkt{
 			Dest: []string{"ALL"},
-			Tipo: "ok",
-			Cont: fmt.Sprintf("La Mano resulta parda"),
+			Msg: Msg{
+				Tipo: "Info",
+				Cont: "La Mano resulta parda",
+			},
 		}
 		// no se cambia el turno
 
@@ -226,37 +228,39 @@ func (p *PartidaDT) evaluarMano() (bool, []*Msg) {
 		// pero se setea despues de evaluar la ronda
 		mano.Ganador = tiradaGanadora.autor
 
-		msgs[0] = &Msg{
+		pkts[0] = &Pkt{
 			Dest: []string{"ALL"},
-			Tipo: "ok",
-			Cont: fmt.Sprintf("La %s mano la gano el equipo %s gracia a %s",
-				strings.ToLower(p.Ronda.ManoEnJuego.String()),
-				mano.Ganador.Jugador.Equipo.String(),
-				mano.Ganador.Jugador.Nombre),
+			Msg: Msg{
+				Tipo: "Info",
+				Cont: fmt.Sprintf("La %s mano la gano el equipo %s gracia a %s",
+					strings.ToLower(p.Ronda.ManoEnJuego.String()),
+					mano.Ganador.Jugador.Equipo.String(),
+					mano.Ganador.Jugador.Nombre),
+			},
 		}
 
 	}
 
 	// se termino la ronda?
-	empiezaNuevaRonda, msgs2 := p.evaluarRonda()
+	empiezaNuevaRonda, pkt2 := p.evaluarRonda()
 
-	msgs = append(msgs, msgs2...)
+	pkts = append(pkts, pkt2)
 
 	// cuando termina la mano (y no se empieza una ronda) -> cambia de TRUNO
 	// cuando termina la ronda -> cambia de MANO
 	// para usar esto, antes se debe primero incrementar el turno
 	// incremento solo si no se empezo una nueva ronda
 
-	return empiezaNuevaRonda, msgs
+	return empiezaNuevaRonda, pkts
 }
 
 // tener siempre en cuenta que evaluar la ronda es sinonimo de evaluar el truco
 // se acabo la ronda?
 // si se empieza una ronda nueva -> retorna true
 // si no se termino la ronda 	 -> retorna false
-func (p *PartidaDT) evaluarRonda() (bool, []*Msg) {
+func (p *PartidaDT) evaluarRonda() (bool, *Pkt) {
 
-	msgs := make([]*Msg, 2)
+	pkt := new(Pkt)
 
 	/* A MENOS QUE SE HAYAN IDO TODOS EN LA PRIMERA MANO!!! */
 	hayJugadoresRojo := p.Ronda.CantJugadoresEnJuego[Rojo] > 0
@@ -357,13 +361,6 @@ func (p *PartidaDT) evaluarRonda() (bool, []*Msg) {
 
 	/************************************************/
 
-	msgs[0] = &Msg{
-		Dest: []string{"ALL"},
-		Tipo: "ok",
-		Cont: fmt.Sprintf("La ronda ha sido ganada por el equipo %s",
-			ganador.Jugador.Equipo),
-	}
-
 	// ya sabemos el ganador ahora es el
 	// momento de sumar los puntos del truco
 	var totalPts int = 0
@@ -383,27 +380,35 @@ func (p *PartidaDT) evaluarRonda() (bool, []*Msg) {
 	elTrucoNoTuvoRespuesta := contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
 
 	if elTrucoNoTuvoRespuesta {
-		msg = fmt.Sprintf(`+%v puntos para el equipo %s por el %s no querido`,
+		msg = fmt.Sprintf(`La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s no querido`,
+			ganador.Jugador.Equipo,
 			totalPts,
 			ganador.Jugador.Equipo,
 			p.Ronda.Truco.Estado.String())
 
 	} else {
-		msg = fmt.Sprintf(`+%v puntos para el equipo %s por el %s ganado`,
+		msg = fmt.Sprintf(`La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado`,
+			ganador.Jugador.Equipo,
 			totalPts,
 			ganador.Jugador.Equipo,
 			p.Ronda.Truco.Estado.String())
 	}
 
-	msgs[1] = &Msg{
+	pkt = &Pkt{
 		Dest: []string{"ALL"},
-		Tipo: "ok",
-		Cont: msg,
+		Msg: Msg{
+			Tipo: "Sumar-Puntos",
+			Nota: msg,
+			Cont: ContSumPts{
+				Pts:    totalPts,
+				Equipo: ganador.Jugador.Equipo.String(),
+			},
+		},
 	}
 
 	p.sumarPuntos(ganador.Jugador.Equipo, totalPts)
 
-	return true, msgs // porque se empezo una nueva ronda
+	return true, pkt // porque se empezo una nueva ronda
 }
 
 func (p *PartidaDT) nuevaRonda(elMano JugadorIdx) {

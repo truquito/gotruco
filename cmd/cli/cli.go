@@ -2,10 +2,7 @@ package main
 
 import (
 	"bufio"
-	"bytes"
-	"encoding/gob"
 	"fmt"
-	"io"
 	"os"
 	"strings"
 
@@ -27,26 +24,6 @@ func handleIO() {
 	}
 }
 
-func read(buff *bytes.Buffer) (*truco.Msg, error) {
-	e := new(truco.Msg)
-	dec := gob.NewDecoder(buff)
-	err := dec.Decode(e)
-	if err != nil {
-		return nil, err
-	}
-	return e, nil
-}
-
-func consume(buff *bytes.Buffer) {
-	for {
-		e, err := read(buff)
-		if err == io.EOF {
-			break
-		}
-		fmt.Println(*e)
-	}
-}
-
 var ioCh chan string = make(chan string, 1)
 
 func main() {
@@ -58,7 +35,7 @@ func main() {
 	logfile.Write(p.ToJSON())
 
 	p.Print()
-	consume(p.Stdout)
+	truco.Consume(p.Stdout)
 
 	// hago una gorutine (y channel para avisar) para el io
 	go handleIO()
@@ -72,10 +49,10 @@ func main() {
 				fmt.Println("<< " + err.Error())
 			}
 			// consumo el channel de output
-			consume(p.Stdout)
+			truco.Consume(p.Stdout)
 			p.Print()
 		case <-p.ErrCh:
-			consume(p.Stdout)
+			truco.Consume(p.Stdout)
 			fmt.Printf(">> ")
 		}
 

@@ -21,25 +21,17 @@ var (
 	}
 )
 
-// Msg mensajes a la capa de presentacion
-type Msg struct {
-	Dest []string
-	Tipo string
-	Cont string
-}
+func write(buff *bytes.Buffer, d *Pkt) error {
+	// registros
+	gob.Register(ContSumPts{})
 
-func (msg Msg) String() string {
-	return fmt.Sprintf(`<< [%s] (%s) : %s`, msg.Tipo, strings.Join(msg.Dest, "/"), msg.Cont)
-}
-
-func write(buff *bytes.Buffer, d *Msg) error {
 	enc := gob.NewEncoder(buff)
 	err := enc.Encode(d)
 	return err
 }
 
-func read(buff *bytes.Buffer) (*Msg, error) {
-	e := new(Msg)
+func read(buff *bytes.Buffer) (*Pkt, error) {
+	e := new(Pkt)
 	dec := gob.NewDecoder(buff)
 	err := dec.Decode(e)
 	if err != nil {
@@ -48,11 +40,15 @@ func read(buff *bytes.Buffer) (*Msg, error) {
 	return e, nil
 }
 
-func consume(buff *bytes.Buffer) {
+// Consume consume el buffer
+func Consume(buff *bytes.Buffer) {
 	for {
 		e, err := read(buff)
 		if err == io.EOF {
 			break
+		} else if err != nil {
+			fmt.Println(err)
+			return
 		}
 		fmt.Println(*e)
 	}
@@ -154,17 +150,13 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 func (p *Partida) byeBye() {
 	if p.Terminada() {
 
-		write(p.Stdout, &Msg{
+		write(p.Stdout, &Pkt{
 			Dest: []string{"ALL"},
-			Tipo: "ok",
-			Cont: fmt.Sprintf("Se acabo la partida! el ganador fue el equipo %s",
-				p.elQueVaGanando().String()),
-		})
-
-		write(p.Stdout, &Msg{
-			Dest: []string{"ALL"},
-			Tipo: "ok",
-			Cont: fmt.Sprintf("BYE BYE!"),
+			Msg: Msg{
+				Tipo: "Fin-Partida",
+				Nota: fmt.Sprintf("Se acabo la partida! el ganador fue el equipo %s",
+					p.elQueVaGanando().String()),
+			},
 		})
 
 	}
@@ -197,7 +189,13 @@ func (p *Partida) Cmd(cmd string) error {
 
 func (p *Partida) notify() {
 	// ojo primero hay que grabar el buff, luego avisar
-	write(p.Stdout, &Msg{[]string{"ALL"}, "INT", "INTERRUMPING!!"})
+	write(p.Stdout, &Pkt{
+		Dest: []string{"ALL"},
+		Msg: Msg{
+			Tipo: "TimeOut",
+			Nota: "INTERRUMPING!! Roro tardo demasiado en jugar. Mano ganada por Rojo",
+		},
+	})
 	p.ErrCh <- true
 }
 
@@ -217,16 +215,14 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	p.Stdout = new(bytes.Buffer)
 	p.ErrCh = make(chan bool, 1)
 
-	write(p.Stdout, &Msg{
+	write(p.Stdout, &Pkt{
 		Dest: []string{"ALL"},
-		Tipo: "ok",
-		Cont: fmt.Sprintf("Empieza una nueva ronda"),
-	})
-
-	write(p.Stdout, &Msg{
-		Dest: []string{"ALL"},
-		Tipo: "ok",
-		Cont: fmt.Sprintf("La mano y el turno es %s\n", p.Ronda.getElMano().Jugador.Nombre),
+		Msg: Msg{
+			Tipo: "Nueva-Ronda",
+			Cont: ContNuevaRonda{
+				Pers: "pers aqui",
+			},
+		},
 	})
 
 	return &p, nil

@@ -1,13 +1,14 @@
 package truco
 
 import (
+	"encoding/gob"
 	"encoding/json"
 )
 
 // Pkt ..
 type Pkt struct {
 	Dest []string // eso no debe tener JSON porque no lo va a usar
-	Msg2
+	Msg
 }
 
 // IContenido ...
@@ -16,15 +17,15 @@ type IContenido interface {
 	// getAutor() *Manojo
 }
 
-// Msg2 ..
-type Msg2 struct {
+// Msg ..
+type Msg struct {
 	Tipo string     `json:"tipo"`
 	Nota string     `json:"nota,omitempty"`
 	Cont IContenido `json:"contenido,omitempty"`
 }
 
 // ToJSON ..
-func (m *Msg2) ToJSON() string {
+func (m *Msg) ToJSON() string {
 	mJSON, _ := json.Marshal(m)
 	return string(mJSON)
 }
@@ -51,4 +52,12 @@ type ContTirarCarta struct {
 // ContAutor ..
 type ContAutor struct {
 	Autor string `json:"autor"` // perspectiva
+}
+
+func init() {
+	// registrar las structs
+	gob.Register(ContNuevaRonda{})
+	gob.Register(ContSumPts{})
+	gob.Register(ContTirarCarta{})
+	gob.Register(ContAutor{})
 }

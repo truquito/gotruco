@@ -1,3 +1,6 @@
+# TODO
+- tabular los mensajes a lo minimo
+
 # BUGS
 
 # LIMPIEZA DE CODIGO
