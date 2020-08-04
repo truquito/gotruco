@@ -278,7 +278,7 @@ func (p *PartidaDT) evaluarRonda() (bool, *Pkt) {
 	// p.Ronda.manos[0] & p.Ronda.manos[1]
 
 	cantManosGanadas := map[Equipo]int{Rojo: 0, Azul: 0}
-	for i := 0; i < p.Ronda.ManoEnJuego.toInt(); i++ {
+	for i := 0; i <= p.Ronda.ManoEnJuego.toInt()-1; i++ {
 		mano := p.Ronda.Manos[i]
 		if mano.Resultado != Empardada {
 			cantManosGanadas[mano.Ganador.Jugador.Equipo]++

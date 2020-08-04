@@ -1133,3 +1133,41 @@ func TestFixDecirQuiero(t *testing.T) {
 	p.Print()
 
 }
+
+func TestFixPanicNoQuiero(t *testing.T) {
+	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	partidaJSON := `{"cantJugadores":6,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":3,"Rojo":3},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null},"truco":{"cantadoPor":null,"estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":1},{"palo":"Basto","valor":10},{"palo":"Basto","valor":4}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":4},{"palo":"Espada","valor":6},{"palo":"Basto","valor":6}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":2},{"palo":"Copa","valor":5},{"palo":"Basto","valor":3}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":4},{"palo":"Oro","valor":12},{"palo":"Oro","valor":7}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":7},{"palo":"Oro","valor":11},{"palo":"Oro","valor":3}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Andres","nombre":"Andres","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":10},{"palo":"Copa","valor":2},{"palo":"Basto","valor":12}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}],"muestra":{"palo":"Oro","valor":1},"manos":[{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null}]}}`
+	p.fromJSON(partidaJSON)
+	p.Print()
+
+	p.Cmd("alvaro flor")
+	p.Cmd("alvaro 1 basto")
+	p.Cmd("renzo flor")
+
+	p.Cmd("alvaro 1 basto")
+	p.Cmd("roro 4 copa")
+	p.Cmd("adolfo 2 espada")
+	p.Cmd("renzo 4 oro") // la primera mano la gana renzo
+	p.Cmd("andres 7 espada")
+	p.Cmd("richard 10 copa")
+
+	p.Cmd("renzo 12 oro")
+	p.Cmd("andres 11 oro") // la seguna mano la gana andres
+	p.Cmd("richard 2 copa")
+	p.Cmd("alvaro 10 basto")
+	p.Cmd("roro 6 espada")
+	p.Cmd("adolfo 5 copa")
+
+	p.Cmd("andres 3 oro")
+	p.Cmd("richard truco")
+	p.Cmd("richard mazo")
+	p.Cmd("alvaro quiero")
+	p.Cmd("alvaro re-truco")
+	p.Cmd("renzo quiero")
+	p.Cmd("roro vale-4")
+	p.Cmd("andres no-quiero")
+
+	Consume(p.Stdout)
+	p.Print()
+
+}
