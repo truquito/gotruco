@@ -173,7 +173,7 @@ func (jugada tirarCarta) hacer(p *Partida) {
 					// antes:
 					//write(p.Stdout, msg)
 					// ahora:
-					// write(p.Stdout, pkt)
+					write(p.Stdout, pkt)
 
 				}
 			}
@@ -1588,7 +1588,7 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 					// antes:
 					//write(p.Stdout, msg)
 					// ahora
-					// write(p.Stdout, pkt)
+					write(p.Stdout, pkt)
 
 				}
 			}
