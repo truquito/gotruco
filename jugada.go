@@ -457,7 +457,6 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) {
 	// ahora checkeo si alguien tiene flor
 	hayFlor := len(p.Ronda.Envite.jugadoresConFlorQueNoCantaron) > 0
 	if hayFlor {
-		p.Ronda.Envite.Estado = DESHABILITADO
 		manojosConFlor := p.Ronda.Envite.jugadoresConFlorQueNoCantaron
 		siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
 		siguienteJugada.hacer(p)

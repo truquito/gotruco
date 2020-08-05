@@ -182,6 +182,7 @@ func (p *PartidaDT) TocarFaltaEnvido(m *Manojo) {
 
 // CantarFlor ..
 func (p *PartidaDT) CantarFlor(m *Manojo) {
+	p.Ronda.Envite.Estado = FLOR
 	yaEstabamosEnFlor := p.Ronda.Envite.Estado == FLOR
 
 	if yaEstabamosEnFlor {
