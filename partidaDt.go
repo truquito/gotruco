@@ -402,7 +402,7 @@ func (p *PartidaDT) evaluarRonda() (bool, *Pkt) {
 			Cont: ContSumPts{
 				Pts:    totalPts,
 				Equipo: ganador.Jugador.Equipo.String(),
-			}.ToBytes(),
+			}.ToJSON(),
 		},
 	}
 
@@ -452,6 +452,11 @@ func (p *PartidaDT) fromJSON(partidaJSON string) error {
 	}
 	p.Ronda.cachearFlores()
 	return nil
+}
+
+// Force para hacer debugs
+func (p *PartidaDT) Force(partidaJSON string) error {
+	return p.fromJSON(partidaJSON)
 }
 
 func cheepCopy(p *PartidaDT) *PartidaDT {
