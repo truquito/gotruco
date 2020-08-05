@@ -1104,7 +1104,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 
 		}
 
-		p.Ronda.Envite.Estado = DESHABILITADO // <- esta al pedo porque si esta *respondiendo* la contra flor, ya hubo una propuesta de flor que lo deshabilito
+		p.Ronda.Envite.Estado = DESHABILITADO
 
 	} else if elTrucoEsRespondible {
 
