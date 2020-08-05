@@ -171,6 +171,7 @@ func (p *PartidaDT) TocarRealEnvido(m *Manojo) {
 	} else { // ya se habia cantado ENVIDO x cantidad de veces
 		p.Ronda.Envite.Puntaje += 3
 	}
+	p.Ronda.Envite.Estado = REALENVIDO
 }
 
 // TocarFaltaEnvido ..

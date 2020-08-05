@@ -396,8 +396,6 @@ func (jugada tocarRealEnvido) hacer(p *Partida) {
 		siguienteJugada := cantarFlor{Jugada{autor: manojosConFlor[0]}}
 		siguienteJugada.hacer(p)
 
-	} else {
-		p.PartidaDT.TocarRealEnvido(jugada.autor)
 	}
 
 	return
