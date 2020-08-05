@@ -480,17 +480,21 @@ func cheepCopy(p *PartidaDT) *PartidaDT {
 // Perspectiva retorna una representacion en json de la perspectiva que tiene
 // el jugador `j` de la partida
 func (p *PartidaDT) Perspectiva(j string) (*PartidaDT, error) {
-	copia := cheepCopy(p)
-
 	// primero encuentro el jugador
-	manojo, err := copia.Ronda.GetManojoByStr(j)
+	manojo, err := p.Ronda.GetManojoByStr(j)
 	if err != nil {
 		return nil, fmt.Errorf("Usuario %s no encontrado", j)
 	}
 
+	return p.perspectiva(manojo), nil
+}
+
+func (p *PartidaDT) perspectiva(m *Manojo) *PartidaDT {
+	copia := cheepCopy(p)
+
 	// oculto las caras no tiradas de los manojos que no son el
 	for i, m := range copia.Ronda.Manojos {
-		noEsSuManojo := m.Jugador.ID != manojo.Jugador.ID
+		noEsSuManojo := m.Jugador.ID != m.Jugador.ID
 		if noEsSuManojo {
 			// oculto solo las cartas que no tiro
 			for j, noTirada := range m.CartasNoTiradas {
@@ -501,7 +505,7 @@ func (p *PartidaDT) Perspectiva(j string) (*PartidaDT, error) {
 		}
 	}
 
-	return copia, nil
+	return copia
 }
 
 /* metodos de manipulacion */
