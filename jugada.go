@@ -209,13 +209,16 @@ func (jugada tirarCarta) hacer(p *Partida) {
 				// de hecho, si una ronda es terminable y se llama 2 veces consecutivas
 				// al mismo metodo booleano, en ambas oportunidades retorna diferente
 				// ridiculo
-				write(p.Stdout, &Pkt{
-					Dest: []string{"ALL"},
-					Msg: Msg{
-						Tipo: "Nueva-Ronda",
-						Cont: nil,
-					},
-				})
+
+				for _, m := range p.Ronda.Manojos {
+					write(p.Stdout, &Pkt{
+						Dest: []string{m.Jugador.ID},
+						Msg: Msg{
+							Tipo: "Nueva-Ronda",
+							Cont: p.PartidaDT.perspectiva(&m).ToJSON(),
+						},
+					})
+				}
 
 			} else {
 				p.byeBye()
@@ -1401,13 +1404,15 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 				// de hecho, si una ronda es terminable y se llama 2 veces consecutivas
 				// al mismo metodo booleano, en ambas oportunidades retorna diferente
 				// ridiculo
-				write(p.Stdout, &Pkt{
-					Dest: []string{"ALL"},
-					Msg: Msg{
-						Tipo: "Nueva-Ronda",
-						Cont: nil,
-					},
-				})
+				for _, m := range p.Ronda.Manojos {
+					write(p.Stdout, &Pkt{
+						Dest: []string{m.Jugador.ID},
+						Msg: Msg{
+							Tipo: "Nueva-Ronda",
+							Cont: p.PartidaDT.perspectiva(&m).ToJSON(),
+						},
+					})
+				}
 
 			} else {
 				p.byeBye()
@@ -1651,13 +1656,16 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 				// de hecho, si una ronda es terminable y se llama 2 veces consecutivas
 				// al mismo metodo booleano, en ambas oportunidades retorna diferente
 				// ridiculo
-				write(p.Stdout, &Pkt{
-					Dest: []string{"ALL"},
-					Msg: Msg{
-						Tipo: "Nueva-Ronda",
-						Cont: nil,
-					},
-				})
+
+				for _, m := range p.Ronda.Manojos {
+					write(p.Stdout, &Pkt{
+						Dest: []string{m.Jugador.ID},
+						Msg: Msg{
+							Tipo: "Nueva-Ronda",
+							Cont: p.PartidaDT.perspectiva(&m).ToJSON(),
+						},
+					})
+				}
 
 			} else {
 				p.byeBye()
