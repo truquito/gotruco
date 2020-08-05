@@ -1348,6 +1348,18 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 
 	} else if elTrucoEsRespondible {
 
+		write(p.Stdout, &Pkt{
+			Dest: []string{"ALL"},
+			Msg: Msg{
+				Tipo: "Responde-NoQuiero",
+				Cont: []byte(jugada.autor.Jugador.Nombre),
+			},
+		})
+
+		// pongo al equipo que propuso el truco como ganador de la mano actual
+		manoActual := p.Ronda.ManoEnJuego.toInt() - 1
+		p.Ronda.Manos[manoActual].Ganador = p.Ronda.Truco.CantadoPor
+
 		nuevaRonda, pkt := p.evaluarRonda()
 
 		if pkt != nil {
