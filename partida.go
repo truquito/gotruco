@@ -216,13 +216,13 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	p.Stdout = new(bytes.Buffer)
 	p.ErrCh = make(chan bool, 1)
 
-	write(p.Stdout, &Pkt{
-		Dest: []string{"ALL"},
-		Msg: Msg{
-			Tipo: "Nueva-Ronda",
-			Cont: nil, // "pers aqui"
-		},
-	})
+	// write(p.Stdout, &Pkt{
+	// 	Dest: []string{"ALL"},
+	// 	Msg: Msg{
+	// 		Tipo: "Nueva-Partida",
+	// 		Cont: nil, // "pers aqui"
+	// 	},
+	// })
 
 	return &p, nil
 }
