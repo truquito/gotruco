@@ -47,9 +47,10 @@ func (manojo Manojo) yaTiroCarta(mano NumMano) bool {
 	}
 }
 
+// GetCartaIdx ..
 // retorna el indice de la `carta`
 // error si ni siquiera tiene esa carta
-func (manojo Manojo) getCartaIdx(carta Carta) (int, error) {
+func (manojo Manojo) GetCartaIdx(carta Carta) (int, error) {
 	var idx int
 	for idx = 0; idx < cantCartasManojo; idx++ {
 		esEsa := *manojo.Cartas[idx] == carta

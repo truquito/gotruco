@@ -473,7 +473,7 @@ func (p *PartidaDT) Perspectiva(j string) (*PartidaDT, error) {
 	copia := cheepCopy(p)
 
 	// primero encuentro el jugador
-	manojo, err := copia.Ronda.getManojoByStr(j)
+	manojo, err := copia.Ronda.GetManojoByStr(j)
 	if err != nil {
 		return nil, fmt.Errorf("Usuario %s no encontrado", j)
 	}

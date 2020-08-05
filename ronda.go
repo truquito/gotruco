@@ -226,13 +226,14 @@ func (r *Ronda) getManojo(jIdx JugadorIdx) *Manojo {
 	return &r.Manojos[jIdx]
 }
 
+// GetManojoByStr ..
 // OJO QUE AHORA LAS COMPARACIONES SON CASE INSENSITIVE
 // ENTONCES SI EL IDENTIFICADOR Juan == jUaN
 // ojo con los kakeos
 // todo: esto es ineficiente
 // getManojo devuelve el puntero al manojo,
 // dado un string que identifique al jugador duenio de ese manojo
-func (r *Ronda) getManojoByStr(idJugador string) (*Manojo, error) {
+func (r *Ronda) GetManojoByStr(idJugador string) (*Manojo, error) {
 	idJugador = strings.ToLower(idJugador)
 	for i := range r.Manojos {
 		idActual := strings.ToLower(r.Manojos[i].Jugador.ID)

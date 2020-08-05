@@ -56,11 +56,18 @@ type Msg struct {
 	Cont json.RawMessage
 }
 
-// GetAutor dado un msg retorna su autor
+// GetAutor dado el contenido de un msg retorna su autor
 func GetAutor(cont json.RawMessage) string {
 	var autor string
 	json.Unmarshal(cont, &autor)
 	return autor
+}
+
+// GetConTirada dado el contenido de un msg retorna su autor
+func GetConTirada(cont json.RawMessage) ContTirarCarta {
+	var conTirada ContTirarCarta
+	json.Unmarshal(cont, &conTirada)
+	return conTirada
 }
 
 func (m Msg) String() string {

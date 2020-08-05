@@ -81,7 +81,7 @@ func (jugada tirarCarta) hacer(p *Partida) {
 	}
 
 	// primero que nada: tiene esa carta?
-	idx, err := jugada.autor.getCartaIdx(jugada.Carta)
+	idx, err := jugada.autor.GetCartaIdx(jugada.Carta)
 	if err != nil {
 
 		write(p.Stdout, &Pkt{
@@ -154,12 +154,14 @@ func (jugada tirarCarta) hacer(p *Partida) {
 			Tipo: "Tirar-Carta",
 			Nota: fmt.Sprintf("%s tira la carta %s",
 				jugada.autor.Jugador.Nombre, jugada.Carta.toString()),
+			Cont: ContTirarCarta{
+				Autor: jugada.autor.Jugador.Nombre,
+				Carta: jugada.Carta,
+			}.ToJSON(),
 		},
 	})
 
-	jugada.autor.CartasNoTiradas[idx] = false
-	jugada.autor.UltimaTirada = idx
-	p.Ronda.getManoActual().agregarTirada(jugada)
+	p.PartidaDT.TirarCarta(jugada.autor, idx)
 
 	// era el ultimo en tirar de esta mano?
 	eraElUltimoEnTirar := p.Ronda.getSigHabilitado(*jugada.autor) == nil
