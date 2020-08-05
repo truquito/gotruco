@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -136,8 +137,8 @@ func (p *PartidaDT) calcPtsFaltaEnvido(ganadorDelEnvite Equipo) int {
 
 }
 
-// retorna true si termino la partida
-func (p *PartidaDT) sumarPuntos(e Equipo, totalPts int) bool {
+// SumarPuntos retorna true si termino la partida
+func (p *PartidaDT) SumarPuntos(e Equipo, totalPts int) bool {
 	p.Puntajes[e] += totalPts
 	return p.Terminada()
 }
@@ -146,7 +147,7 @@ func (p *PartidaDT) sumarPuntos(e Equipo, totalPts int) bool {
 // de ese ganador se setea el siguiente turno
 func (p *PartidaDT) evaluarMano() (bool, []*Pkt) {
 
-	pkts := make([]*Pkt, 3)
+	var pkts []*Pkt
 
 	// cual es la tirada-carta que gano la mano?
 	// ojo que puede salir parda
@@ -204,13 +205,13 @@ func (p *PartidaDT) evaluarMano() (bool, []*Pkt) {
 		mano.Resultado = Empardada
 		mano.Ganador = nil
 
-		pkts[0] = &Pkt{
+		pkts = append(pkts, &Pkt{
 			Dest: []string{"ALL"},
 			Msg: Msg{
 				Tipo: "Info",
-				Cont: []byte("La Mano resulta parda"),
+				Cont: []byte(strconv.Quote("La Mano resulta parda")),
 			},
-		}
+		})
 		// no se cambia el turno
 
 	} else {
@@ -228,16 +229,18 @@ func (p *PartidaDT) evaluarMano() (bool, []*Pkt) {
 		// pero se setea despues de evaluar la ronda
 		mano.Ganador = tiradaGanadora.autor
 
-		pkts[0] = &Pkt{
+		pkts = append(pkts, &Pkt{
 			Dest: []string{"ALL"},
 			Msg: Msg{
 				Tipo: "Info",
-				Cont: []byte(fmt.Sprintf("La %s mano la gano el equipo %s gracia a %s",
-					strings.ToLower(p.Ronda.ManoEnJuego.String()),
-					mano.Ganador.Jugador.Equipo.String(),
-					mano.Ganador.Jugador.Nombre)),
+				Cont: []byte(
+					strconv.Quote(
+						fmt.Sprintf("La %s mano la gano el equipo %s gracia a %s",
+							strings.ToLower(p.Ronda.ManoEnJuego.String()),
+							mano.Ganador.Jugador.Equipo.String(),
+							mano.Ganador.Jugador.Nombre))),
 			},
-		}
+		})
 
 	}
 
@@ -406,7 +409,7 @@ func (p *PartidaDT) evaluarRonda() (bool, *Pkt) {
 		},
 	}
 
-	p.sumarPuntos(ganador.Jugador.Equipo, totalPts)
+	p.SumarPuntos(ganador.Jugador.Equipo, totalPts)
 
 	return true, pkt // porque se empezo una nueva ronda
 }

@@ -327,7 +327,7 @@ func (jugada tocarEnvido) eval(p *Partida) {
 		},
 	})
 
-	p.sumarPuntos(jug.Equipo, p.Ronda.Envite.Puntaje)
+	p.SumarPuntos(jug.Equipo, p.Ronda.Envite.Puntaje)
 
 }
 
@@ -511,7 +511,7 @@ func (jugada tocarFaltaEnvido) eval(p *Partida) {
 		},
 	})
 
-	p.sumarPuntos(jug.Equipo, p.Ronda.Envite.Puntaje)
+	p.SumarPuntos(jug.Equipo, p.Ronda.Envite.Puntaje)
 
 }
 
@@ -640,7 +640,7 @@ func evalFlor(p *Partida) {
 		// se le va a sumar a ese equipo:
 		// los acumulados del envite hasta ahora
 		puntosASumar := p.Ronda.Envite.Puntaje
-		p.sumarPuntos(equipoGanador, puntosASumar)
+		p.SumarPuntos(equipoGanador, puntosASumar)
 		habiaSolo1JugadorConFlor := len(p.Ronda.Envite.jugadoresConFlor) == 1
 		if habiaSolo1JugadorConFlor {
 
@@ -1099,7 +1099,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 
 		if p.Ronda.Envite.Estado == CONTRAFLOR {
 			puntosASumar := p.Ronda.Envite.Puntaje
-			p.sumarPuntos(equipoGanador, puntosASumar)
+			p.SumarPuntos(equipoGanador, puntosASumar)
 
 			write(p.Stdout, &Pkt{
 				Dest: []string{"ALL"},
@@ -1120,7 +1120,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 			// duda se cuentan las flores?
 			// puntosASumar := p.Ronda.Envite.Puntaje + p.calcPtsContraFlorAlResto(equipoGanador)
 			puntosASumar := p.calcPtsContraFlorAlResto(equipoGanador)
-			p.sumarPuntos(equipoGanador, puntosASumar)
+			p.SumarPuntos(equipoGanador, puntosASumar)
 
 			write(p.Stdout, &Pkt{
 				Dest: []string{"ALL"},
@@ -1276,7 +1276,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 			},
 		})
 
-		p.sumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
+		p.SumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
 
 	} else if laFlorEsRespondible {
 
@@ -1347,7 +1347,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 			},
 		})
 
-		p.sumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
+		p.SumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
 
 	} else if elTrucoEsRespondible {
 
@@ -1539,7 +1539,7 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 				},
 			})
 
-			p.sumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
+			p.SumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
 
 		}
 

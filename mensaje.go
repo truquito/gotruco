@@ -63,11 +63,18 @@ func GetAutor(cont json.RawMessage) string {
 	return autor
 }
 
-// GetConTirada dado el contenido de un msg retorna su autor
+// GetConTirada parsea cont a ConTirada
 func GetConTirada(cont json.RawMessage) ContTirarCarta {
 	var conTirada ContTirarCarta
 	json.Unmarshal(cont, &conTirada)
 	return conTirada
+}
+
+// GetContSumPts parsea cont a ConSumPts
+func GetContSumPts(cont json.RawMessage) ContSumPts {
+	var conSumPts ContSumPts
+	json.Unmarshal(cont, &conSumPts)
+	return conSumPts
 }
 
 func (m Msg) String() string {
