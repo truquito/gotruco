@@ -1,6 +1,7 @@
 # TODO
 - tabular los mensajes a lo minimo
 - si se va al mazo que no imprima nada
+- pasar todos los .ToJSON para que devuelvan json y no strings!!
 
 # BUGS
 
