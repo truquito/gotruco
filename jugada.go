@@ -2,6 +2,7 @@ package truco
 
 import (
 	"fmt"
+	"strconv"
 )
 
 // IJugada Interface para las jugadas
@@ -270,7 +271,7 @@ func (jugada tocarEnvido) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Toca-Envido",
-			Cont: []byte(jugada.autor.Jugador.Nombre),
+			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
 		},
 	})
 
@@ -320,7 +321,7 @@ func (jugada tocarEnvido) eval(p *Partida) {
 			Cont: ContSumPts{
 				Pts:    p.Ronda.Envite.Puntaje,
 				Equipo: jug.Equipo.String(),
-			}.ToBytes(),
+			}.ToJSON(),
 		},
 	})
 
@@ -374,7 +375,7 @@ func (jugada tocarRealEnvido) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Toca-RealEnvido",
-			Cont: []byte(jugada.autor.Jugador.Nombre),
+			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
 		},
 	})
 
@@ -450,7 +451,7 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Toca-FaltaEnvido",
-			Cont: []byte(jugada.autor.Jugador.Nombre),
+			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
 		},
 	})
 
@@ -504,7 +505,7 @@ func (jugada tocarFaltaEnvido) eval(p *Partida) {
 			Cont: ContSumPts{
 				Pts:    p.Ronda.Envite.Puntaje,
 				Equipo: jug.Equipo.String(),
-			}.ToBytes(),
+			}.ToJSON(),
 		},
 	})
 
@@ -558,7 +559,7 @@ func (jugada cantarFlor) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Canta-Flor",
-			Cont: []byte(jugada.autor.Jugador.Nombre),
+			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
 		},
 	})
 
@@ -650,7 +651,7 @@ func evalFlor(p *Partida) {
 					Cont: ContSumPts{
 						Pts:    puntosASumar,
 						Equipo: equipoGanador.String(),
-					}.ToBytes(),
+					}.ToJSON(),
 				},
 			})
 
@@ -665,7 +666,7 @@ func evalFlor(p *Partida) {
 					Cont: ContSumPts{
 						Pts:    puntosASumar,
 						Equipo: equipoGanador.String(),
-					}.ToBytes(),
+					}.ToJSON(),
 				},
 			})
 
@@ -708,7 +709,7 @@ func (jugada cantarContraFlor) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Canta-ContraFlor",
-			Cont: []byte(jugada.autor.Jugador.Nombre),
+			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
 		},
 	})
 
@@ -755,7 +756,7 @@ func (jugada cantarContraFlorAlResto) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Canta-ContraFlorAlResto",
-			Cont: []byte(jugada.autor.Jugador.Nombre),
+			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
 		},
 	})
 
@@ -818,7 +819,7 @@ func (jugada gritarTruco) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Grita-Truco",
-			Cont: []byte(jugada.autor.Jugador.Nombre),
+			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
 		},
 	})
 
@@ -888,7 +889,7 @@ func (jugada gritarReTruco) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Grita-ReTruco",
-			Cont: []byte(jugada.autor.Jugador.Nombre),
+			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
 		},
 	})
 
@@ -955,7 +956,7 @@ func (jugada gritarVale4) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Grita-Vale4",
-			Cont: []byte(jugada.autor.Jugador.Nombre),
+			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
 		},
 	})
 
@@ -1049,7 +1050,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 			Dest: []string{"ALL"},
 			Msg: Msg{
 				Tipo: "Responde-Quiero",
-				Cont: []byte(jugada.autor.Jugador.Nombre),
+				Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
 			},
 		})
 
@@ -1086,7 +1087,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 			Dest: []string{"ALL"},
 			Msg: Msg{
 				Tipo: "Responde-Quiero",
-				Cont: []byte(jugada.autor.Jugador.Nombre),
+				Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
 			},
 		})
 
@@ -1107,7 +1108,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 					Cont: ContSumPts{
 						Pts:    puntosASumar,
 						Equipo: equipoGanador.String(),
-					}.ToBytes(),
+					}.ToJSON(),
 				},
 			})
 
@@ -1128,7 +1129,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 					Cont: ContSumPts{
 						Pts:    puntosASumar,
 						Equipo: equipoGanador.String(),
-					}.ToBytes(),
+					}.ToJSON(),
 				},
 			})
 
@@ -1142,7 +1143,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 			Dest: []string{"ALL"},
 			Msg: Msg{
 				Tipo: "Responde-Quiero",
-				Cont: []byte(jugada.autor.Jugador.Nombre),
+				Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
 			},
 		})
 
@@ -1240,7 +1241,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 			Dest: []string{"ALL"},
 			Msg: Msg{
 				Tipo: "Responde-NoQuiero",
-				Cont: []byte(jugada.autor.Jugador.Nombre),
+				Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
 			},
 		})
 
@@ -1269,7 +1270,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 				Cont: ContSumPts{
 					Pts:    totalPts,
 					Equipo: p.Ronda.Envite.CantadoPor.Jugador.Equipo.String(),
-				}.ToBytes(),
+				}.ToJSON(),
 			},
 		})
 
@@ -1301,7 +1302,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 			Dest: []string{"ALL"},
 			Msg: Msg{
 				Tipo: "Responde-ConFlorMeAchico",
-				Cont: []byte(jugada.autor.Jugador.Nombre),
+				Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
 			},
 		})
 
@@ -1340,7 +1341,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 				Cont: ContSumPts{
 					Pts:    totalPts,
 					Equipo: p.Ronda.Envite.CantadoPor.Jugador.Equipo.String(),
-				}.ToBytes(),
+				}.ToJSON(),
 			},
 		})
 
@@ -1352,7 +1353,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 			Dest: []string{"ALL"},
 			Msg: Msg{
 				Tipo: "Responde-NoQuiero",
-				Cont: []byte(jugada.autor.Jugador.Nombre),
+				Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
 			},
 		})
 
@@ -1475,7 +1476,7 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 		Dest: []string{"ALL"},
 		Msg: Msg{
 			Tipo: "Mazo",
-			Cont: []byte(jugada.autor.Jugador.Nombre),
+			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
 		},
 	})
 
@@ -1532,7 +1533,7 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 					Cont: ContSumPts{
 						Pts:    totalPts,
 						Equipo: e.CantadoPor.Jugador.Equipo.String(),
-					}.ToBytes(),
+					}.ToJSON(),
 				},
 			})
 
@@ -1576,7 +1577,7 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 					Cont: ContSumPts{
 						Pts:    totalPts,
 						Equipo: p.Ronda.Envite.CantadoPor.Jugador.Equipo.String(),
-					}.ToBytes(),
+					}.ToJSON(),
 				},
 			})
 

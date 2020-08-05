@@ -31,7 +31,7 @@ func TestMsg(t *testing.T) {
 		Cont: ContSumPts{
 			Pts:    3,
 			Equipo: "Rojo",
-		}.ToBytes(),
+		}.ToJSON(),
 	}
 
 	m4 := Msg{
@@ -47,7 +47,7 @@ func TestMsg(t *testing.T) {
 				Palo:  Basto,
 				Valor: 6,
 			},
-		}.ToBytes(),
+		}.ToJSON(),
 	}
 
 	m6 := Msg{
@@ -117,6 +117,8 @@ func TestParseMsgPartidaDT(t *testing.T) {
 	}
 
 	mData := m.ToJSON()
+
+	fmt.Println(mData)
 
 	var mParsed Msg
 	if err := json.Unmarshal([]byte(mData), &mParsed); err != nil {
