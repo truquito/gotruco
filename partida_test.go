@@ -161,7 +161,7 @@ func TestPartidaComandosInvalidos(t *testing.T) {
 
 func TestPartidaJSON(t *testing.T) {
 	p, _ := NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
-	fmt.Printf(p.ToJSON())
+	fmt.Printf(string(p.ToJSON()))
 
 }
 

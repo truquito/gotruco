@@ -32,7 +32,7 @@ func main() {
 
 	// p, _ := truco.NuevaPartida(20, []string{"Alvaro"}, []string{"Roro"})
 	p, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
-	logfile.Write(p.ToJSON())
+	logfile.Write(string(p.ToJSON()))
 
 	p.Print()
 	truco.Consume(p.Stdout)

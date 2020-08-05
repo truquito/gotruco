@@ -437,9 +437,9 @@ func (p *PartidaDT) Print() {
 }
 
 // ToJSON retorna la partida en formato json
-func (p *PartidaDT) ToJSON() string {
+func (p *PartidaDT) ToJSON() json.RawMessage {
 	pJSON, _ := json.Marshal(p)
-	return string(pJSON)
+	return pJSON
 }
 
 // FromJSON carga una partida en formato json
@@ -489,12 +489,12 @@ func (p *PartidaDT) Perspectiva(j string) (*PartidaDT, error) {
 	return p.perspectiva(manojo), nil
 }
 
-func (p *PartidaDT) perspectiva(m *Manojo) *PartidaDT {
+func (p *PartidaDT) perspectiva(manojo *Manojo) *PartidaDT {
 	copia := cheepCopy(p)
 
 	// oculto las caras no tiradas de los manojos que no son el
 	for i, m := range copia.Ronda.Manojos {
-		noEsSuManojo := m.Jugador.ID != m.Jugador.ID
+		noEsSuManojo := m.Jugador.ID != manojo.Jugador.ID
 		if noEsSuManojo {
 			// oculto solo las cartas que no tiro
 			for j, noTirada := range m.CartasNoTiradas {
