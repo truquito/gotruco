@@ -305,19 +305,7 @@ func (jugada tocarEnvido) hacer(p *Partida) {
 		siguienteJugada.hacer(p)
 
 	} else {
-		// 2 opciones: o bien no se jugo aun
-		// o bien ya estabamos en envido
-		yaSeHabiaCantadoElEnvido := p.Ronda.Envite.Estado == ENVIDO
-		if yaSeHabiaCantadoElEnvido {
-			// se aumenta el puntaje del envido en +2
-			p.Ronda.Envite.Puntaje += 2
-			p.Ronda.Envite.CantadoPor = jugada.autor
-
-		} else { // no se habia jugado aun
-			p.Ronda.Envite.CantadoPor = jugada.autor
-			p.Ronda.Envite.Estado = ENVIDO
-			p.Ronda.Envite.Puntaje = 2
-		}
+		p.PartidaDT.TocarEnvido(jugada.autor)
 	}
 
 	return
@@ -398,8 +386,7 @@ func (jugada tocarRealEnvido) hacer(p *Partida) {
 		},
 	})
 
-	p.Ronda.Envite.Estado = REALENVIDO
-	p.Ronda.Envite.CantadoPor = jugada.autor
+	p.PartidaDT.TocarRealEnvido(jugada.autor)
 
 	// ahora checkeo si alguien tiene flor
 	hayFlor := len(p.Ronda.Envite.jugadoresConFlorQueNoCantaron) > 0
@@ -410,14 +397,7 @@ func (jugada tocarRealEnvido) hacer(p *Partida) {
 		siguienteJugada.hacer(p)
 
 	} else {
-		// 2 opciones:
-		// o bien el envido no se jugo aun,
-		// o bien ya estabamos en envido
-		if p.Ronda.Envite.Estado == NOCANTADOAUN { // no se habia jugado aun
-			p.Ronda.Envite.Puntaje = 3
-		} else { // ya se habia cantado ENVIDO x cantidad de veces
-			p.Ronda.Envite.Puntaje += 3
-		}
+		p.PartidaDT.TocarRealEnvido(jugada.autor)
 	}
 
 	return
@@ -474,8 +454,7 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) {
 		},
 	})
 
-	p.Ronda.Envite.Estado = FALTAENVIDO
-	p.Ronda.Envite.CantadoPor = jugada.autor
+	p.PartidaDT.TocarFaltaEnvido(jugada.autor)
 
 	// ahora checkeo si alguien tiene flor
 	hayFlor := len(p.Ronda.Envite.jugadoresConFlorQueNoCantaron) > 0
@@ -585,23 +564,7 @@ func (jugada cantarFlor) hacer(p *Partida) {
 	// y me elimino de los que no-cantaron
 	p.Ronda.Envite.jugadoresConFlorQueNoCantaron = eliminar(p.Ronda.Envite.jugadoresConFlorQueNoCantaron, jugada.autor)
 
-	yaEstabamosEnFlor := p.Ronda.Envite.Estado == FLOR
-
-	if yaEstabamosEnFlor {
-
-		p.Ronda.Envite.Puntaje += 3
-		p.Ronda.Envite.CantadoPor = jugada.autor
-
-	} else {
-
-		// se usa por si dicen "no quiero" -> se obtiene el equipo
-		// al que pertenece el que la canto en un principio para
-		// poder sumarle los puntos correspondientes
-		p.Ronda.Envite.Puntaje = 3
-		p.Ronda.Envite.CantadoPor = jugada.autor
-		p.Ronda.Envite.Estado = FLOR
-
-	}
+	p.PartidaDT.CantarFlor(jugada.autor)
 
 	// es el ultimo en cantar flor que faltaba?
 	// o simplemente es el unico que tiene flor (caso particular)
@@ -732,10 +695,7 @@ func (jugada cantarContraFlor) hacer(p *Partida) {
 		},
 	})
 
-	p.Ronda.Envite.Estado = CONTRAFLOR
-	p.Ronda.Envite.CantadoPor = jugada.autor
-	// ahora la flor pasa a jugarse por 4 puntos
-	p.Ronda.Envite.Puntaje = 4
+	p.PartidaDT.CantarContraFlor(jugada.autor)
 	// y ahora tengo que esperar por la respuesta de la nueva
 	// propuesta de todos menos de el que canto la contraflor
 	// restauro la copia
@@ -779,10 +739,7 @@ func (jugada cantarContraFlorAlResto) hacer(p *Partida) {
 		},
 	})
 
-	p.Ronda.Envite.Estado = CONTRAFLORALRESTO
-	p.Ronda.Envite.CantadoPor = jugada.autor
-	// ahora la flor pasa a jugarse por 4 puntos
-	p.Ronda.Envite.Puntaje = 4
+	p.PartidaDT.CantarContraFlorAlResto(jugada.autor)
 	// y ahora tengo que esperar por la respuesta de la nueva
 	// propuesta de todos menos de el que canto la contraflor
 	// restauro la copia
@@ -842,9 +799,7 @@ func (jugada gritarTruco) hacer(p *Partida) {
 		},
 	})
 
-	p.Ronda.Truco.CantadoPor = jugada.autor
-	p.Ronda.Truco.Estado = TRUCO
-	p.Ronda.Envite.Estado = DESHABILITADO
+	p.PartidaDT.GritarTruco(jugada.autor)
 
 	return
 }
@@ -912,8 +867,7 @@ func (jugada gritarReTruco) hacer(p *Partida) {
 		},
 	})
 
-	p.Ronda.Truco.CantadoPor = jugada.autor
-	p.Ronda.Truco.Estado = RETRUCO
+	p.PartidaDT.GritarReTruco(jugada.autor)
 
 	return
 }
@@ -979,8 +933,7 @@ func (jugada gritarVale4) hacer(p *Partida) {
 		},
 	})
 
-	p.Ronda.Truco.CantadoPor = jugada.autor
-	p.Ronda.Truco.Estado = VALE4
+	p.PartidaDT.GritarVale4(jugada.autor)
 
 	return
 }
@@ -1154,7 +1107,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 
 		}
 
-		p.Ronda.Envite.Estado = DESHABILITADO
+		p.Ronda.Envite.Estado = DESHABILITADO // <- esta al pedo porque si esta *respondiendo* la contra flor, ya hubo una propuesta de flor que lo deshabilito
 
 	} else if elTrucoEsRespondible {
 

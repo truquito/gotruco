@@ -3,8 +3,11 @@
 - si se va al mazo que no imprima nada
 - pasar todos los .ToJSON para que devuelvan json y no strings!!
 - nueva ronda esta pasando toda la partidaDt, solo con ronda basta, pulir eso
+- la suma de puntos por envido ganado -> deberia deshabilitar el envido en el cli
 
 # BUGS
+- gritar truco deshabilita el envido wtf? posible bug
+  se deberia de deshabilitar solo con aceptaciones de apuestas de truco
 
 # LIMPIEZA DE CODIGO
 - la struct truco esta con minuscula salame

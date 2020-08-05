@@ -143,6 +143,100 @@ func (p *PartidaDT) SumarPuntos(e Equipo, totalPts int) bool {
 	return p.Terminada()
 }
 
+// TocarEnvido ..
+func (p *PartidaDT) TocarEnvido(m *Manojo) {
+	// 2 opciones: o bien no se jugo aun
+	// o bien ya estabamos en envido
+	yaSeHabiaCantadoElEnvido := p.Ronda.Envite.Estado == ENVIDO
+	if yaSeHabiaCantadoElEnvido {
+		// se aumenta el puntaje del envido en +2
+		p.Ronda.Envite.Puntaje += 2
+		p.Ronda.Envite.CantadoPor = m
+
+	} else { // no se habia jugado aun
+		p.Ronda.Envite.CantadoPor = m
+		p.Ronda.Envite.Estado = ENVIDO
+		p.Ronda.Envite.Puntaje = 2
+	}
+}
+
+// TocarRealEnvido ..
+func (p *PartidaDT) TocarRealEnvido(m *Manojo) {
+	p.Ronda.Envite.CantadoPor = m
+	// 2 opciones:
+	// o bien el envido no se jugo aun,
+	// o bien ya estabamos en envido
+	if p.Ronda.Envite.Estado == NOCANTADOAUN { // no se habia jugado aun
+		p.Ronda.Envite.Puntaje = 3
+	} else { // ya se habia cantado ENVIDO x cantidad de veces
+		p.Ronda.Envite.Puntaje += 3
+	}
+}
+
+// TocarFaltaEnvido ..
+func (p *PartidaDT) TocarFaltaEnvido(m *Manojo) {
+	p.Ronda.Envite.Estado = FALTAENVIDO
+	p.Ronda.Envite.CantadoPor = m
+}
+
+// CantarFlor ..
+func (p *PartidaDT) CantarFlor(m *Manojo) {
+	yaEstabamosEnFlor := p.Ronda.Envite.Estado == FLOR
+
+	if yaEstabamosEnFlor {
+
+		p.Ronda.Envite.Puntaje += 3
+		p.Ronda.Envite.CantadoPor = m
+
+	} else {
+
+		// se usa por si dicen "no quiero" -> se obtiene el equipo
+		// al que pertenece el que la canto en un principio para
+		// poder sumarle los puntos correspondientes
+		p.Ronda.Envite.Puntaje = 3
+		p.Ronda.Envite.CantadoPor = m
+		p.Ronda.Envite.Estado = FLOR
+
+	}
+}
+
+// CantarContraFlor ..
+func (p *PartidaDT) CantarContraFlor(m *Manojo) {
+	p.Ronda.Envite.Estado = CONTRAFLOR
+	p.Ronda.Envite.CantadoPor = m
+	// ahora la flor pasa a jugarse por 4 puntos
+	p.Ronda.Envite.Puntaje = 4
+}
+
+// CantarContraFlorAlResto ..
+func (p *PartidaDT) CantarContraFlorAlResto(m *Manojo) {
+	p.Ronda.Envite.Estado = CONTRAFLORALRESTO
+	p.Ronda.Envite.CantadoPor = m
+	// ahora la flor pasa a jugarse por 4 puntos
+	p.Ronda.Envite.Puntaje = 4 // <- eso es al pedo, es independiente
+}
+
+// GritarTruco ..
+func (p *PartidaDT) GritarTruco(m *Manojo) {
+	p.Ronda.Truco.CantadoPor = m
+	p.Ronda.Truco.Estado = TRUCO
+	// p.Ronda.Envite.Estado = DESHABILITADO // <-- esto esta mal
+}
+
+// GritarReTruco ..
+func (p *PartidaDT) GritarReTruco(m *Manojo) {
+	p.Ronda.Truco.CantadoPor = m
+	p.Ronda.Truco.Estado = RETRUCO
+	// p.Ronda.Envite.Estado = DESHABILITADO // <-- esto esta mal
+}
+
+// GritarVale4 ..
+func (p *PartidaDT) GritarVale4(m *Manojo) {
+	p.Ronda.Truco.CantadoPor = m
+	p.Ronda.Truco.Estado = VALE4
+	// p.Ronda.Envite.Estado = DESHABILITADO // <-- esto esta mal
+}
+
 // IrAlMazo manda el manojo al mazo
 func (p *PartidaDT) IrAlMazo(manojo *Manojo) {
 	manojo.SeFueAlMazo = true
