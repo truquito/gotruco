@@ -494,6 +494,17 @@ func (p *PartidaDT) Perspectiva(j string) (*PartidaDT, error) {
 	return copia, nil
 }
 
+/* metodos de manipulacion */
+
+// TirarCarta tira una carta
+func (p *PartidaDT) TirarCarta(manojo *Manojo, idx int) {
+	manojo.CartasNoTiradas[idx] = false
+	manojo.UltimaTirada = idx
+	carta := manojo.Cartas[idx]
+	tirada := tirarCarta{Jugada{manojo}, *carta}
+	p.Ronda.getManoActual().agregarTirada(tirada)
+}
+
 // NuevaPartidaDt crea una nueva PartidaDT
 func NuevaPartidaDt(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*PartidaDT, error) {
 
