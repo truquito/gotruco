@@ -172,7 +172,6 @@ func TestFixNacho(t *testing.T) {
 	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
 	partidaJSON := `{"cantJugadores":6,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":3,"Rojo":3},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null,"jugadoresConFlor":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":6},{"palo":"Espada","valor":5},{"palo":"Espada","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}],"jugadoresConFlorQueNoCantaron":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":6},{"palo":"Espada","valor":5},{"palo":"Espada","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}]},"truco":{"cantadoPor":null,"estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":2},{"palo":"Copa","valor":7},{"palo":"Basto","valor":6}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":2},{"palo":"Copa","valor":6},{"palo":"Oro","valor":6}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":11},{"palo":"Espada","valor":1},{"palo":"Basto","valor":4}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":3},{"palo":"Basto","valor":7},{"palo":"Oro","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":5},{"palo":"Basto","valor":12},{"palo":"Espada","valor":10}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Andres","nombre":"Andres","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":6},{"palo":"Espada","valor":5},{"palo":"Espada","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}],"muestra":{"palo":"Espada","valor":3},"manos":[{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null}]}}`
 	p.fromJSON(partidaJSON)
-	p.Print()
 
 	p.Cmd("alvaro 6 basto")
 	p.Cmd("roro 2 basto")
@@ -181,10 +180,8 @@ func TestFixNacho(t *testing.T) {
 	p.Cmd("andres 10 espada")
 	p.Cmd("richard flor")
 	p.Cmd("richard 11 espada")
-
-	p.Cmd("richard truco") // el envido deberia pasar a inhabilitado
-
-	p.Cmd("roro quiero") // no deberia poder ya que es de su mismo equipo
+	p.Cmd("richard truco") // el envido deberia estar inhabilitado por la flor, no por esta accion
+	p.Cmd("roro quiero")   // no deberia poder ya que es de su mismo equipo
 	p.Cmd("adolfo quiero")
 	p.Cmd("richard 5 espada")
 	p.Cmd("alvaro mazo")
@@ -193,27 +190,21 @@ func TestFixNacho(t *testing.T) {
 	p.Cmd("roro re-truco")   // no debe permitir
 	p.Cmd("alvaro re-truco") // no deberia dejarlo porque se fue al mazo
 	p.Cmd("Adolfo re-truco") // ojo que nadie le acepto el re-truco
+	p.Cmd("renzo quiero")
 	p.Cmd("roro 6 copa")     // no deberia dejarlo porque ya paso su turno
-	p.Cmd("adolfo re-truco")
-
+	p.Cmd("adolfo re-truco") // no deberia dejarlo
 	p.Cmd("adolfo 1 espada")
-	p.Cmd("renzo retruco")
-	p.Cmd("renzo re-truco")
+	p.Cmd("renzo 3 oro") // no deberia de dejarlo porque el equipo contrario	// propuso un re-truco
 
-	p.Cmd("renzo 3 oro") // no deberia de dejarlo porque el equipo contrario
-	// propuso un re-truco
-
-	oops = !(p.Ronda.getElTurno().Jugador.Nombre == "Renzo")
+	oops = !(p.Ronda.getElTurno().Jugador.Nombre == "Andres")
 	if oops {
-		t.Error(`Deberia ser el turno de Renzo`)
+		t.Error(`Deberia ser el turno de Andres`)
 		return
 	}
 
-	p.Cmd("renzo mazo")
 	p.Cmd("andres mazo")
 
 	Consume(p.Stdout)
-
 	p.Print()
 
 }
@@ -1033,11 +1024,13 @@ func TestMalaAsignacionPts(t *testing.T) {
 	p.Print()
 
 	p.Cmd("alvaro vale-4")
-	p.Cmd("alvaro truco")
+	p.Cmd("alvaro truco") // vigente
 	p.Cmd("roro truco")
 	p.Cmd("alvaro re-truco")
 	p.Cmd("roro vale-4")
 	p.Cmd("alvaro quiero")
+
+	p.Cmd("roro quiero")
 	p.Cmd("roro 1 espada")
 	p.Cmd("alvaro 12 oro")
 	p.Cmd("roro 1 oro")
@@ -1046,7 +1039,7 @@ func TestMalaAsignacionPts(t *testing.T) {
 	Consume(p.Stdout)
 	p.Print()
 
-	oops = !(p.Puntajes[Rojo] == 7 && p.Puntajes[Azul] == 2)
+	oops = !(p.Puntajes[Rojo] == 5 && p.Puntajes[Azul] == 2)
 	if oops {
 		t.Error(`Asigno mal los puntos`)
 		return
