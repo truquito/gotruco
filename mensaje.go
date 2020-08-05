@@ -36,6 +36,8 @@ import (
  * |  17  | Grita-Truco				 |
  * |  18  | Grita-ReTruco			 |
  * |  19  | Grita-Vale4				 |
+ * |  20  | Sig-Turno				 |
+ * |  21  | Sig-Mano				 |
  * -----------------------------------
  */
 
@@ -157,6 +159,12 @@ func (m Msg) String() string {
 	case "Grita-Vale4":
 		autor := GetAutor(m.Cont)
 		return fmt.Sprintf("%s grita vale4", autor)
+
+	case "Sig-Turno":
+		return "siguiente turno"
+
+	case "Sig-Mano":
+		return "siguiente mano"
 
 	default:
 		return "???"

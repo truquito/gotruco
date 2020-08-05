@@ -143,6 +143,13 @@ func (p *PartidaDT) SumarPuntos(e Equipo, totalPts int) bool {
 	return p.Terminada()
 }
 
+// IrAlMazo manda el manojo al mazo
+func (p *PartidaDT) IrAlMazo(manojo *Manojo) {
+	manojo.SeFueAlMazo = true
+	equipoDelJugador := manojo.Jugador.Equipo
+	p.Ronda.CantJugadoresEnJuego[equipoDelJugador]--
+}
+
 // evalua todas las cartas y decide que equipo gano
 // de ese ganador se setea el siguiente turno
 func (p *PartidaDT) evaluarMano() (bool, []*Pkt) {

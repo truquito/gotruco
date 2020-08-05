@@ -259,8 +259,8 @@ func (r Ronda) leGanaDeMano(i, j JugadorIdx) bool {
 
 /* SETTERS */
 
-// este metodo es inseguro ya que manojoSigTurno puede ser nil
-func (r *Ronda) setNextTurno() {
+// SetNextTurno este metodo es inseguro ya que manojoSigTurno puede ser nil
+func (r *Ronda) SetNextTurno() {
 	manojoTurnoActual := r.Manojos[r.Turno]
 	manojoSigTurno := r.getSigHabilitado(manojoTurnoActual)
 	r.Turno = JugadorIdx(r.getIdx(*manojoSigTurno))
@@ -279,7 +279,8 @@ func (r *Ronda) setNextTurno() {
 // o bien: solo te podes ir al mazo cuando es tu turno
 // luego este metodo es correcto
 
-func (r *Ronda) setNextTurnoPosMano() {
+// SetNextTurnoPosMano ..
+func (r *Ronda) SetNextTurnoPosMano() {
 	// si es la primera mano que se juega
 	// entonces es el turno del mano
 	if r.ManoEnJuego == primera {

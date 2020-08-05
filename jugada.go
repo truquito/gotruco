@@ -185,7 +185,14 @@ func (jugada tirarCarta) hacer(p *Partida) {
 		if !empiezaNuevaRonda {
 
 			p.Ronda.ManoEnJuego++
-			p.Ronda.setNextTurnoPosMano()
+			p.Ronda.SetNextTurnoPosMano()
+
+			write(p.Stdout, &Pkt{
+				Dest: []string{"ALL"},
+				Msg: Msg{
+					Tipo: "Sig-Mano",
+				},
+			})
 
 		} else {
 
@@ -218,7 +225,14 @@ func (jugada tirarCarta) hacer(p *Partida) {
 
 		// el turno del siguiente queda dado por el ganador de esta
 	} else {
-		p.Ronda.setNextTurno()
+		p.Ronda.SetNextTurno()
+
+		write(p.Stdout, &Pkt{
+			Dest: []string{"ALL"},
+			Msg: Msg{
+				Tipo: "Sig-Turno",
+			},
+		})
 	}
 
 	return
@@ -1482,9 +1496,10 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 		},
 	})
 
-	jugada.autor.SeFueAlMazo = true
+	p.PartidaDT.IrAlMazo(jugada.autor)
+
 	equipoDelJugador := jugada.autor.Jugador.Equipo
-	p.Ronda.CantJugadoresEnJuego[equipoDelJugador]--
+
 	seFueronTodos := p.Ronda.CantJugadoresEnJuego[equipoDelJugador] == 0
 
 	// si tenia flor -> ya no lo tomo en cuenta
@@ -1612,7 +1627,14 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 		if !empiezaNuevaRonda {
 
 			p.Ronda.ManoEnJuego++
-			p.Ronda.setNextTurnoPosMano()
+			p.Ronda.SetNextTurnoPosMano()
+
+			write(p.Stdout, &Pkt{
+				Dest: []string{"ALL"},
+				Msg: Msg{
+					Tipo: "Sig-Mano",
+				},
+			})
 
 		} else {
 
@@ -1646,7 +1668,14 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 		// cambio de turno solo si era su turno
 		eraSuTurno := p.Ronda.getElTurno() == jugada.autor
 		if eraSuTurno {
-			p.Ronda.setNextTurno()
+			p.Ronda.SetNextTurno()
+
+			write(p.Stdout, &Pkt{
+				Dest: []string{"ALL"},
+				Msg: Msg{
+					Tipo: "Sig-Turno",
+				},
+			})
 		}
 	}
 
