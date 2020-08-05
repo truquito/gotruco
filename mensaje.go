@@ -3,6 +3,8 @@ package truco
 import (
 	"encoding/gob"
 	"encoding/json"
+	"fmt"
+	"strings"
 )
 
 /*
@@ -43,10 +45,8 @@ type Pkt struct {
 	Msg
 }
 
-// IContenido ...
-type IContenido interface {
-	// hacer(p *Partida)
-	// getAutor() *Manojo
+func (pkt *Pkt) String() string {
+	return fmt.Sprintf("[%v] %s", strings.Join(pkt.Dest, ":"), pkt.Msg.String())
 }
 
 // Msg ..
@@ -54,6 +54,99 @@ type Msg struct {
 	Tipo string `json:"tipo"`
 	Nota string `json:"nota,omitempty"`
 	Cont json.RawMessage
+}
+
+// GetAutor dado un msg retorna su autor
+func GetAutor(cont json.RawMessage) string {
+	var autor string
+	json.Unmarshal(cont, &autor)
+	return autor
+}
+
+func (m Msg) String() string {
+
+	switch m.Tipo {
+
+	case "Error":
+		return fmt.Sprintf("Error: %s", m.Nota)
+
+	case "Info":
+		return fmt.Sprintf("Info: %s", m.Nota)
+
+	case "Toca-Envido":
+		autor := GetAutor(m.Cont)
+		return fmt.Sprintf("%s toca envido", autor)
+
+	case "Toca-RealEnvido":
+		autor := GetAutor(m.Cont)
+		return fmt.Sprintf("%s toca envido", autor)
+
+	case "Toca-FaltaEnvido":
+		autor := GetAutor(m.Cont)
+		return fmt.Sprintf("%s toca envido", autor)
+
+	case "Canta-Flor":
+		autor := GetAutor(m.Cont)
+		return fmt.Sprintf("%s canta flor", autor)
+
+	case "Canta-ContraFlor":
+		autor := GetAutor(m.Cont)
+		return fmt.Sprintf("%s canta contra-flor", autor)
+
+	case "Canta-ContraFlorAlResto":
+		autor := GetAutor(m.Cont)
+		return fmt.Sprintf("%s canta contra-flor-al-resto", autor)
+
+	case "Responde-ConFlorMeAchico":
+		autor := GetAutor(m.Cont)
+		return fmt.Sprintf("%s dice con-flor-me-achico", autor)
+
+	case "Responde-Quiero":
+		autor := GetAutor(m.Cont)
+		return fmt.Sprintf("%s dice quiero", autor)
+
+	case "Responde-NoQuiero":
+		autor := GetAutor(m.Cont)
+		return fmt.Sprintf("%s dice no-quiero", autor)
+
+	case "Tirar-Carta":
+		// autor := GetAutor(m.Cont)
+		// carta := getCarta(m.Cont)
+		return fmt.Sprintf(m.Nota)
+
+	case "Sumar-Puntos":
+		// autor := GetAutor(m.Cont)
+		// carta := getCarta(m.Cont)
+		return fmt.Sprintf(m.Nota)
+
+	case "Mazo":
+		autor := GetAutor(m.Cont)
+		return fmt.Sprintf("%s se va al mazo", autor)
+
+	case "Nueva-Partida":
+		return fmt.Sprintf("arranca nueva partida")
+
+	case "Nueva-Ronda":
+		return fmt.Sprintf("arranca nueva ronda")
+
+	case "Fin-Partida":
+		return fmt.Sprintf(m.Nota)
+
+	case "Grita-Truco":
+		autor := GetAutor(m.Cont)
+		return fmt.Sprintf("%s grita truco", autor)
+
+	case "Grita-ReTruco":
+		autor := GetAutor(m.Cont)
+		return fmt.Sprintf("%s grita re-truco", autor)
+
+	case "Grita-Vale4":
+		autor := GetAutor(m.Cont)
+		return fmt.Sprintf("%s grita vale4", autor)
+
+	default:
+		return "???"
+	}
 }
 
 // ToJSON ..
@@ -93,15 +186,9 @@ func (ctc ContTirarCarta) ToJSON() json.RawMessage {
 	return ctcJSON
 }
 
-// ContAutor ..
-type ContAutor struct {
-	Autor string `json:"autor"` // perspectiva
-}
-
 func init() {
 	// registrar las structs
 	gob.Register(ContNuevaRonda{})
 	gob.Register(ContSumPts{})
 	gob.Register(ContTirarCarta{})
-	gob.Register(ContAutor{})
 }

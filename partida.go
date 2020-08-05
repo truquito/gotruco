@@ -51,7 +51,7 @@ func Consume(buff *bytes.Buffer) {
 			fmt.Println(err)
 			return
 		}
-		fmt.Println(*e)
+		fmt.Println(e.String())
 	}
 }
 
