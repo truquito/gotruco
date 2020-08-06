@@ -15,7 +15,7 @@
 - reducir/minimizar las notas de los mensajes -> el cli se tiene que encargar de
    eso pensar que es multilingue:: La "m.Nota:" del error debe ir en su contenido
 - en sumar-pts que envie el usuario ganador, no el equipo
-- 
+- constructor de mensajes con texto, pero luego lo sabula a [n]bytes
 
 
 
