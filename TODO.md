@@ -3,7 +3,21 @@
 - si se va al mazo que no imprima nada
 - pasar todos los .ToJSON para que devuelvan json y no strings!!
 - nueva ronda esta pasando toda la partidaDt, solo con ronda basta, pulir eso
-- la suma de puntos por envido ganado -> deberia deshabilitar el envido en el cli
+- la suma de puntos por envido ganado -> deberia deshabilitar el envido en el 
+  cli
+
+- jugada.getAutor esta al pedo
+- separar verificador semantico (jugada.go -> metodos de partida.go o bien un 
+   modulo "ejecutor") ejecutor (partida.dt)
+- pasar evaluarRonda y evaluarMano a ese verificador/jugada/partida
+
+- muchas jugadas no se las tiene que enviar a todos los n jugadores, sino a n-1
+- reducir/minimizar las notas de los mensajes -> el cli se tiene que encargar de
+   eso pensar que es multilingue:: La "m.Nota:" del error debe ir en su contenido
+- en sumar-pts que envie el usuario ganador, no el equipo
+- 
+
+
 
 # BUGS
 - gritar truco deshabilita el envido wtf? posible bug
@@ -93,3 +107,5 @@
     `casoII := trucoYaQuerido && unoDeMiEquipoQuizo && esTurnoDeMiEquipo`
     ahora
     `casoII := trucoYaQuerido && unoDeMiEquipoQuizo`
+
+- actualmente se le puede responder quiero a una contraflor??
