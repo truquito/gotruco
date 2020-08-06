@@ -4,6 +4,7 @@ import (
 	"encoding/gob"
 	"encoding/json"
 	"fmt"
+	"strconv"
 	"strings"
 )
 
@@ -37,7 +38,7 @@ import (
  * |  18  | Grita-ReTruco			 |
  * |  19  | Grita-Vale4				 |
  * |  20  | Sig-Turno				 |
- * |  21  | Sig-Mano				 |
+ * |  21  | Sig-Turno-Pos-Mano				 |
  * -----------------------------------
  */
 
@@ -63,6 +64,16 @@ func GetAutor(cont json.RawMessage) string {
 	var autor string
 	json.Unmarshal(cont, &autor)
 	return autor
+}
+
+// GetNum dado el contenido de un msg que contiene un int representado como un
+// string -> retorna su int
+// se representa como string porque pasar de int a byte no es performante
+func GetNum(cont json.RawMessage) int {
+	var numStr string
+	json.Unmarshal(cont, &numStr)
+	num, _ := strconv.Atoi(numStr)
+	return num
 }
 
 // GetConTirada parsea cont a ConTirada
@@ -163,7 +174,7 @@ func (m Msg) String() string {
 	case "Sig-Turno":
 		return "siguiente turno"
 
-	case "Sig-Mano":
+	case "Sig-Turno-Pos-Mano":
 		return "siguiente mano"
 
 	default:

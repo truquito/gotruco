@@ -312,7 +312,7 @@ func (p *PartidaDT) evaluarMano() (bool, []*Pkt) {
 			Dest: []string{"ALL"},
 			Msg: Msg{
 				Tipo: "Info",
-				Cont: []byte(strconv.Quote("La Mano resulta parda")),
+				Nota: strconv.Quote("La Mano resulta parda"),
 			},
 		})
 		// no se cambia el turno
@@ -336,12 +336,11 @@ func (p *PartidaDT) evaluarMano() (bool, []*Pkt) {
 			Dest: []string{"ALL"},
 			Msg: Msg{
 				Tipo: "Info",
-				Cont: []byte(
-					strconv.Quote(
-						fmt.Sprintf("La %s mano la gano el equipo %s gracia a %s",
-							strings.ToLower(p.Ronda.ManoEnJuego.String()),
-							mano.Ganador.Jugador.Equipo.String(),
-							mano.Ganador.Jugador.Nombre))),
+				Nota: strconv.Quote(
+					fmt.Sprintf("La %s mano la gano el equipo %s gracias a %s",
+						strings.ToLower(p.Ronda.ManoEnJuego.String()),
+						mano.Ganador.Jugador.Equipo.String(),
+						mano.Ganador.Jugador.Nombre)),
 			},
 		})
 

@@ -184,13 +184,15 @@ func (jugada tirarCarta) hacer(p *Partida) {
 
 		if !empiezaNuevaRonda {
 
+			// actualizo el mano
 			p.Ronda.ManoEnJuego++
 			p.Ronda.SetNextTurnoPosMano()
-
+			// lo envio
 			write(p.Stdout, &Pkt{
 				Dest: []string{"ALL"},
 				Msg: Msg{
-					Tipo: "Sig-Mano",
+					Tipo: "Sig-Turno-Pos-Mano",
+					Cont: []byte(strconv.Quote(strconv.Itoa(int(p.Ronda.Turno)))),
 				},
 			})
 
@@ -1581,13 +1583,15 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 
 		if !empiezaNuevaRonda {
 
+			// actualizo el mano
 			p.Ronda.ManoEnJuego++
 			p.Ronda.SetNextTurnoPosMano()
-
+			// lo envio
 			write(p.Stdout, &Pkt{
 				Dest: []string{"ALL"},
 				Msg: Msg{
-					Tipo: "Sig-Mano",
+					Tipo: "Sig-Turno-Pos-Mano",
+					Cont: []byte(strconv.Quote(strconv.Itoa(int(p.Ronda.Turno)))),
 				},
 			})
 
