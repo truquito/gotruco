@@ -225,6 +225,20 @@ func (p *PartidaDT) GritarTruco(m *Manojo) {
 	// p.Ronda.Envite.Estado = DESHABILITADO // <-- esto esta mal
 }
 
+// QuererTruco incrementa el estado del truco a querido segun corresponda
+// y setea a m como el que lo canto
+func (p *PartidaDT) QuererTruco(m *Manojo) {
+	p.Ronda.Truco.CantadoPor = m
+	switch p.Ronda.Truco.Estado {
+	case TRUCO:
+		p.Ronda.Truco.Estado = TRUCOQUERIDO
+	case RETRUCO:
+		p.Ronda.Truco.Estado = RETRUCOQUERIDO
+	case VALE4:
+		p.Ronda.Truco.Estado = VALE4QUERIDO
+	}
+}
+
 // GritarReTruco ..
 func (p *PartidaDT) GritarReTruco(m *Manojo) {
 	p.Ronda.Truco.CantadoPor = m
@@ -299,6 +313,8 @@ func (p *PartidaDT) evaluarMano() (bool, []*Pkt) {
 		} else {
 			mano.Ganador = &p.Ronda.Manojos[1]
 		}
+
+		// todo: MENSAJE ACAAAAAAA!!!
 
 		// fmt.Printf("La %s mano la gano el equipo %s\n",
 		// 	strings.ToLower(p.Ronda.ManoEnJuego.String()),

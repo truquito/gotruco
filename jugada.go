@@ -1118,15 +1118,7 @@ func (jugada responderQuiero) hacer(p *Partida) {
 			},
 		})
 
-		p.Ronda.Truco.CantadoPor = jugada.autor
-		switch p.Ronda.Truco.Estado {
-		case TRUCO:
-			p.Ronda.Truco.Estado = TRUCOQUERIDO
-		case RETRUCO:
-			p.Ronda.Truco.Estado = RETRUCOQUERIDO
-		case VALE4:
-			p.Ronda.Truco.Estado = VALE4QUERIDO
-		}
+		p.PartidaDT.QuererTruco(jugada.autor)
 	}
 
 	return

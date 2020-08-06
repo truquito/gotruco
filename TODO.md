@@ -16,12 +16,17 @@
    eso pensar que es multilingue:: La "m.Nota:" del error debe ir en su contenido
 - en sumar-pts que envie el usuario ganador, no el equipo
 - constructor de mensajes con texto, pero luego lo sabula a [n]bytes
+- no es necesario que evalmano y evalronda retornen los pkts,
+  el chiste del buffer es que lo pueden escribir desde cualquier lado
+- SetNextTurnoPosMano siempre se usa luego de un p.Ronda.ManoEnJuego++ ?
+  fusionarlo o bien hacer un r.incManoEnJuego
 
 
 
 # BUGS
 - gritar truco deshabilita el envido wtf? posible bug
   se deberia de deshabilitar solo con aceptaciones de apuestas de truco
+- contraflor y contraflor al resto no estan implementadas (lineas 655 y 656)
 
 # LIMPIEZA DE CODIGO
 - la struct truco esta con minuscula salame
