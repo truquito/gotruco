@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/jpfilevich/truco"
+	"github.com/jpfilevich/truco/out"
 )
 
 var reader = bufio.NewReader(os.Stdin)
@@ -19,12 +20,21 @@ func readLn(prefix string) string {
 
 func handleIO() {
 	for {
-		cmd := readLn(">> ")
+		cmd := readLn("")
 		ioCh <- cmd
 	}
 }
 
 var ioCh chan string = make(chan string, 1)
+
+// Print imprime los mensajes
+func Print(p *truco.Partida) out.Consumer {
+	return func(m *out.Packet) {
+		if s := Parse(p, m.Message); s != "" {
+			fmt.Println(s)
+		}
+	}
+}
 
 func main() {
 
@@ -32,10 +42,11 @@ func main() {
 
 	// p, _ := truco.NuevaPartida(20, []string{"Alvaro"}, []string{"Roro"})
 	p, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
-	logfile.Write(string(p.MarshalJSON()))
+	pJSON, _ := p.MarshalJSON()
+	logfile.Write(string(pJSON))
 
 	p.Print()
-	truco.out.Consume(p.Stdout, out.Print)
+	out.Consume(p.Stdout, out.Print)
 
 	// hago una gorutine (y channel para avisar) para el io
 	go handleIO()
@@ -49,10 +60,10 @@ func main() {
 				fmt.Println("<< " + err.Error())
 			}
 			// consumo el channel de output
-			// truco.out.Consume(p.Stdout, out.Print)
+			out.Consume(p.Stdout, Print(p))
 			p.Print()
 		case <-p.ErrCh:
-			truco.out.Consume(p.Stdout, out.Print)
+			out.Consume(p.Stdout, Print(p))
 			fmt.Printf(">> ")
 		}
 

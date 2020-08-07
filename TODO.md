@@ -1,4 +1,6 @@
 # TODO
+- out.TrucoQuerido -> out.TrucoQuerido, out.RetrucoQuerido, out.Vale4Querido
+- GetManojoByStr no deberia ser de PartidaDT en vez de Ronda ?
 - el exec del envido y flor lo esta imprimiendo en pantalla; eso es heredado de
   legacy
 - tabular los mensajes de info (e.g., "resulta parda" -> ManoParda)
@@ -30,6 +32,7 @@
 - gritar truco deshabilita el envido wtf? posible bug
   se deberia de deshabilitar solo con aceptaciones de apuestas de truco
 - contraflor y contraflor al resto no estan implementadas (lineas 655 y 656)
+
 
 # LIMPIEZA DE CODIGO
 - el ".ToJSON" deberia llamarse ".Marshall", el ".FromJSON" "UnMarshall" (y 

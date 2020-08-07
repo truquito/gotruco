@@ -112,6 +112,22 @@ func Dest(ds ...string) *[]string {
 	return &ds
 }
 
+// ParseStr dado un `Message` cuyo `Cont` es de tipo `string`
+// lo extrae y retorna
+func ParseStr(m *Message) string {
+	var str string
+	json.Unmarshal(m.Cont, &str)
+	return str
+}
+
+// ParseInt dado un `Message` cuyo `Cont` es de tipo `int`
+// lo extrae y retorna
+func ParseInt(m *Message) int {
+	var num int
+	json.Unmarshal(m.Cont, &num)
+	return num
+}
+
 // Msg .
 func Msg(t CodMsg, data ...interface{}) *Message {
 
@@ -134,7 +150,9 @@ func Msg(t CodMsg, data ...interface{}) *Message {
 		NoQuiero,
 		ConFlorMeAchico,
 		QuieroTruco,
-		QuieroEnvite:
+		QuieroEnvite,
+		Mazo,
+		Info:
 
 		bs, err := json.Marshal(data[0])
 

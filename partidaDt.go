@@ -95,6 +95,11 @@ func (p *PartidaDT) getPuntuacionMalas() int {
 	return p.Puntuacion.toInt() / 2
 }
 
+// EsManoAMano retorna true sii la partida consta de exactamente 2 jugadores
+func (p *PartidaDT) EsManoAMano() bool {
+	return p.CantJugadores == 2
+}
+
 // Terminada retorna true si la partida acabo
 func (p *PartidaDT) Terminada() bool {
 	return p.getMaxPuntaje() >= p.Puntuacion.toInt()
