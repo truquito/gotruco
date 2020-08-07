@@ -7,7 +7,8 @@ import (
 	"io"
 )
 
-func write(buff *bytes.Buffer, d *Pkt) error {
+// Write .
+func Write(buff *bytes.Buffer, d *Pkt) error {
 	enc := gob.NewEncoder(buff)
 	err := enc.Encode(d)
 	return err

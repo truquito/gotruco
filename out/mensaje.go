@@ -14,7 +14,7 @@ type Pkt struct {
 }
 
 func (pkt *Pkt) String() string {
-	return fmt.Sprintf("[%v] %s", strings.Join(*pkt.Dest, ":"), pkt.Msg.String())
+	return fmt.Sprintf("[%v] %v", strings.Join(*pkt.Dest, ":"), pkt.Msg.Cod)
 }
 
 // Msg .
@@ -23,16 +23,12 @@ type Msg struct {
 	Cont json.RawMessage
 }
 
-func (m Msg) String() string {
-	return "el mensaje aqui"
-}
+// CodMsg ..
+type CodMsg int
 
-// TipoMsg ..
-type TipoMsg int
-
-// asd
+// Tipos de Mensajes
 const (
-	Error TipoMsg = iota
+	Error CodMsg = iota
 	ByeBye
 	DiceSonBuenas
 	CantarFlor
@@ -62,7 +58,7 @@ const (
 // Razon ..
 type Razon int
 
-// asd
+// Razon por la que se suman puntos
 const (
 	EnvidoGanado Razon = iota
 	RealEnvidoGanado
@@ -112,7 +108,7 @@ func dest(ds ...string) *[]string {
 	return &ds
 }
 
-func msg(t TipoMsg, data ...interface{}) *Msg {
+func msg(t CodMsg, data ...interface{}) *Msg {
 
 	var cont json.RawMessage
 
