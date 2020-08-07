@@ -29,6 +29,8 @@
 - contraflor y contraflor al resto no estan implementadas (lineas 655 y 656)
 
 # LIMPIEZA DE CODIGO
+- el ".ToJSON" deberia llamarse ".Marshall", el ".FromJSON" "UnMarshall" (y 
+  tomar un puntero como param ? ) el ".ToString" ".String"
 - la struct truco esta con minuscula salame
 - Hay codigo repetido entre noQuiero y mazo cuando niega la flor (codigo copiado)
 - hay redundancia entre cantarFloresSiLasHay y cantarFlores

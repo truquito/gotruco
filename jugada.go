@@ -1547,6 +1547,8 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 				},
 			})
 
+			p.SumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
+
 		}
 	}
 
