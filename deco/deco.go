@@ -1,4 +1,4 @@
-package main
+package deco
 
 import (
 	"encoding/json"

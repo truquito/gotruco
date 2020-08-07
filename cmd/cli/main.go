@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/jpfilevich/truco"
+	"github.com/jpfilevich/truco/deco"
 	"github.com/jpfilevich/truco/out"
 )
 
@@ -30,7 +31,7 @@ var ioCh chan string = make(chan string, 1)
 // Print imprime los mensajes
 func Print(p *truco.Partida) out.Consumer {
 	return func(m *out.Packet) {
-		if s := Parse(p, m.Message); s != "" {
+		if s := deco.Parse(p, m.Message); s != "" {
 			fmt.Println(s)
 		}
 	}
