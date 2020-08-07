@@ -45,7 +45,7 @@ func TestCast(t *testing.T) {
 		Msg(GritarTruco, "Alvaro"),
 	))
 
-	Consume(buff)
+	Consume(buff, Print)
 }
 
 /*

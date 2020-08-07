@@ -35,7 +35,7 @@ func main() {
 	logfile.Write(string(p.MarshalJSON()))
 
 	p.Print()
-	truco.out.Consume(p.Stdout)
+	truco.out.Consume(p.Stdout, out.Print)
 
 	// hago una gorutine (y channel para avisar) para el io
 	go handleIO()
@@ -49,10 +49,10 @@ func main() {
 				fmt.Println("<< " + err.Error())
 			}
 			// consumo el channel de output
-			// truco.out.Consume(p.Stdout)
+			// truco.out.Consume(p.Stdout, out.Print)
 			p.Print()
 		case <-p.ErrCh:
-			truco.out.Consume(p.Stdout)
+			truco.out.Consume(p.Stdout, out.Print)
 			fmt.Printf(">> ")
 		}
 

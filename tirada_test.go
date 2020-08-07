@@ -74,7 +74,7 @@ func TestTirada1(t *testing.T) {
 	p.Cmd("Andres 10 Copa")
 	p.Cmd("Richard 10 Oro")
 
-	out.Consume(p.Stdout)
+	out.Consume(p.Stdout, out.Print)
 
 	// como la muestra es Palo: Oro, Valor: 3 -> gana alvaro
 	if !(len(p.Ronda.Manos[primera].CartasTiradas) == 6) {

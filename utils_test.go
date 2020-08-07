@@ -18,7 +18,7 @@ func maxGENERIC(foo func(x interface{}) int, nums ...(interface{})) {
 	}
 }
 
-var foo = func(x interface{}) int {
+var castAsPerson = func(x interface{}) int {
 	return x.(Person).Age
 }
 
@@ -33,7 +33,7 @@ func BenchmarkMaxNew(b *testing.B) {
 		for i, v := range persons {
 			adaptacion[i] = v
 		}
-		maxGENERIC(foo, adaptacion...)
+		maxGENERIC(castAsPerson, adaptacion...)
 	}
 }
 

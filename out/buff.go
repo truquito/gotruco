@@ -25,8 +25,16 @@ func Read(buff *bytes.Buffer) (*Packet, error) {
 	return e, nil
 }
 
+// Consumer el callback de `Consume`
+type Consumer func(*Packet)
+
+// Print imprime el packete
+func Print(pkt *Packet) {
+	fmt.Println(pkt.String())
+}
+
 // Consume consume el buffer
-func Consume(buff *bytes.Buffer) {
+func Consume(buff *bytes.Buffer, callback Consumer) {
 	for {
 		e, err := Read(buff)
 		if err == io.EOF {
@@ -35,6 +43,6 @@ func Consume(buff *bytes.Buffer) {
 			fmt.Println(err)
 			return
 		}
-		fmt.Println(e.String())
+		callback(e)
 	}
 }
