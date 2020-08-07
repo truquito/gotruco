@@ -5,33 +5,44 @@ import (
 	"testing"
 )
 
+// foo enum
+type foo int
+
+// 4 palos
+const (
+	_Basto  foo = 0 // [00..09]
+	_Copa   foo = 1 // [10..19]
+	_Espada foo = 2 // [20..29]
+	_Oro    foo = 3 // [30..39]
+)
+
 func TestCast(t *testing.T) {
 
 	var buff *bytes.Buffer = new(bytes.Buffer)
 
-	write(buff, pkt(
-		dest("Alvaro", "Roro"),
-		msg(TirarCarta, "Alvaro", 3, 6),
+	Write(buff, Pkt(
+		Dest("Alvaro", "Roro"),
+		Msg(TirarCarta, "Alvaro", int(_Basto), 6),
 	))
 
-	write(buff, pkt(
-		dest("ALL"),
-		msg(Error, "Se produjo un error"),
+	Write(buff, Pkt(
+		Dest("ALL"),
+		Msg(Error, "Se produjo un error"),
 	))
 
-	write(buff, pkt(
-		dest("ALL"),
-		msg(SumaPts, "Alvaro", EnvidoGanado, 3),
+	Write(buff, Pkt(
+		Dest("ALL"),
+		Msg(SumaPts, "Alvaro", EnvidoGanado, 3),
 	))
 
-	write(buff, pkt(
-		dest("ALL"),
-		msg(TimeOut, "Roro tardo demasiado en jugar. Mano ganada por Rojo"),
+	Write(buff, Pkt(
+		Dest("ALL"),
+		Msg(TimeOut, "Roro tardo demasiado en jugar. Mano ganada por Rojo"),
 	))
 
-	write(buff, pkt(
-		dest("ALL"),
-		msg(GritarTruco, "Alvaro"),
+	Write(buff, Pkt(
+		Dest("ALL"),
+		Msg(GritarTruco, "Alvaro"),
 	))
 
 	Consume(buff)
@@ -48,10 +59,10 @@ func TestMsgNuevaPartida(t *testing.T) {
 
 	msg := Msg{
 		Tipo: "Nueva-Partida",
-		Cont: []byte(per.ToJSON()),
+		Cont: []byte(per.MarshalJSON()),
 	}
 
-	fmt.Println(msg.ToJSON())
+	fmt.Println(msg.MarshalJSON())
 }
 
 func TestParseMsgPartidaDT(t *testing.T) {
@@ -62,10 +73,10 @@ func TestParseMsgPartidaDT(t *testing.T) {
 	m := Msg{
 		Tipo: "Nueva-Partida",
 		Nota: "nota aqui",
-		Cont: []byte(p.PartidaDT.ToJSON()),
+		Cont: []byte(p.PartidaDT.MarshalJSON()),
 	}
 
-	mData := m.ToJSON()
+	mData := m.MarshalJSON()
 
 	fmt.Println(mData)
 

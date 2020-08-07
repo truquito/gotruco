@@ -3,6 +3,8 @@ package truco
 import (
 	"encoding/json"
 	"testing"
+
+	"github.com/jpfilevich/truco/out"
 )
 
 func TestTirada1(t *testing.T) {
@@ -72,7 +74,7 @@ func TestTirada1(t *testing.T) {
 	p.Cmd("Andres 10 Copa")
 	p.Cmd("Richard 10 Oro")
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 
 	// como la muestra es Palo: Oro, Valor: 3 -> gana alvaro
 	if !(len(p.Ronda.Manos[primera].CartasTiradas) == 6) {

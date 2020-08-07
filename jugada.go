@@ -2,7 +2,8 @@ package truco
 
 import (
 	"fmt"
-	"strconv"
+
+	"github.com/jpfilevich/truco/out"
 )
 
 // IJugada Interface para las jugadas
@@ -34,13 +35,10 @@ func (jugada tirarCarta) hacer(p *Partida) {
 	ok := noSeFueAlMazo
 	if !ok {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf("No es posible tirar una carta porque ya te fuiste al mazo"),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, "No es posible tirar una carta porque ya te fuiste al mazo"),
+		))
 
 		return
 
@@ -52,13 +50,10 @@ func (jugada tirarCarta) hacer(p *Partida) {
 	yaTiroTodasSusCartas := jugada.autor.getCantCartasTiradas() == 3
 	if yaTiroTodasSusCartas {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf("No es posible tirar una carta porque ya las tiraste todas"),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, "No es posible tirar una carta porque ya las tiraste todas"),
+		))
 
 		return
 
@@ -68,13 +63,10 @@ func (jugada tirarCarta) hacer(p *Partida) {
 	enviteEnJuego := p.Ronda.Envite.Estado >= ENVIDO
 	if enviteEnJuego {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf("No es posible tirar una carta ahora porque el envite esta en juego"),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, "No es posible tirar una carta ahora porque el envite esta en juego"),
+		))
 
 		return
 
@@ -84,13 +76,10 @@ func (jugada tirarCarta) hacer(p *Partida) {
 	idx, err := jugada.autor.GetCartaIdx(jugada.Carta)
 	if err != nil {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: err.Error(),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, err.Error()),
+		))
 
 		return
 	}
@@ -99,13 +88,10 @@ func (jugada tirarCarta) hacer(p *Partida) {
 	eraSuTurno := p.Ronda.getElTurno() == jugada.autor
 	if !eraSuTurno {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf("No era su turno, no puede tirar la carta"),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, "No era su turno, no puede tirar la carta"),
+		))
 
 		return
 
@@ -118,13 +104,10 @@ func (jugada tirarCarta) hacer(p *Partida) {
 	noPuedeTirar := florHabilitada && tieneFlor && noCantoFlorAun
 	if noPuedeTirar {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf("No es posible tirar una carta sin antes cantar la flor"),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, "No es posible tirar una carta sin antes cantar la flor"),
+		))
 
 		return
 
@@ -135,31 +118,21 @@ func (jugada tirarCarta) hacer(p *Partida) {
 	elTrucoEsRespondible := trucoGritado && unoDelEquipoContrarioGritoTruco
 	if elTrucoEsRespondible {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf("No es posible tirar una carta porque tu equipo debe responder la propuesta del truco"),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, "No es posible tirar una carta porque tu equipo debe responder la propuesta del truco"),
+		))
 
 		return
 
 	}
 
 	// ok la tiene y era su turno -> la juega
-	write(p.Stdout, &Pkt{
-		Dest: []string{"ALL"},
-		Msg: Msg{
-			Tipo: "Tirar-Carta",
-			Nota: fmt.Sprintf("%s tira la carta %s",
-				jugada.autor.Jugador.Nombre, jugada.Carta.toString()),
-			Cont: ContTirarCarta{
-				Autor: jugada.autor.Jugador.Nombre,
-				Carta: jugada.Carta,
-			}.ToJSON(),
-		},
-	})
+	out.Write(p.Stdout, out.Pkt(
+		out.Dest("ALL"),
+		out.Msg(out.TirarCarta,
+			jugada.autor.Jugador.Nombre, int(jugada.Carta.Palo), jugada.Carta.Valor),
+	))
 
 	p.PartidaDT.TirarCarta(jugada.autor, idx)
 
@@ -176,7 +149,7 @@ func (jugada tirarCarta) hacer(p *Partida) {
 					// antes:
 					//write(p.Stdout, msg)
 					// ahora:
-					write(p.Stdout, pkt)
+					out.Write(p.Stdout, pkt)
 
 				}
 			}
@@ -188,13 +161,10 @@ func (jugada tirarCarta) hacer(p *Partida) {
 			p.Ronda.ManoEnJuego++
 			p.Ronda.SetNextTurnoPosMano()
 			// lo envio
-			write(p.Stdout, &Pkt{
-				Dest: []string{"ALL"},
-				Msg: Msg{
-					Tipo: "Sig-Turno-Pos-Mano",
-					Cont: []byte(strconv.Quote(strconv.Itoa(int(p.Ronda.Turno)))),
-				},
-			})
+			out.Write(p.Stdout, out.Pkt(
+				out.Dest("ALL"),
+				out.Msg(out.SigTurnoPosMano, int(p.Ronda.Turno)),
+			))
 
 		} else {
 
@@ -213,13 +183,11 @@ func (jugada tirarCarta) hacer(p *Partida) {
 				// ridiculo
 
 				for _, m := range p.Ronda.Manojos {
-					write(p.Stdout, &Pkt{
-						Dest: []string{m.Jugador.ID},
-						Msg: Msg{
-							Tipo: "Nueva-Ronda",
-							Cont: p.PartidaDT.perspectiva(&m).ToJSON(),
-						},
-					})
+					out.Write(p.Stdout, out.Pkt(
+						out.Dest(m.Jugador.ID),
+						out.Msg(out.NuevaRonda, p.PartidaDT.perspectiva(&m)),
+					))
+
 				}
 
 			} else {
@@ -232,12 +200,11 @@ func (jugada tirarCarta) hacer(p *Partida) {
 	} else {
 		p.Ronda.SetNextTurno()
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{"ALL"},
-			Msg: Msg{
-				Tipo: "Sig-Turno",
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest("ALL"),
+			out.Msg(out.SigTurno, int(p.Ronda.Turno)),
+		))
+
 	}
 
 	return
@@ -254,13 +221,10 @@ func (jugada tocarEnvido) hacer(p *Partida) {
 	florEnJuego := p.Ronda.Envite.Estado >= FLOR
 	if florEnJuego {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf("No es posible tocar el envido ahora porque la flor esta en juego"),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, "No es posible tocar el envido ahora porque la flor esta en juego"),
+		))
 
 		return
 
@@ -276,25 +240,19 @@ func (jugada tocarEnvido) hacer(p *Partida) {
 
 	if !ok {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf(`No es posible cantar 'Envido'`),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, `No es posible cantar 'Envido'`),
+		))
 
 		return
 
 	}
 
-	write(p.Stdout, &Pkt{
-		Dest: []string{"ALL"},
-		Msg: Msg{
-			Tipo: "Toca-Envido",
-			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
-		},
-	})
+	out.Write(p.Stdout, out.Pkt(
+		out.Dest("ALL"),
+		out.Msg(out.TocarEnvido, jugada.autor.Jugador.Nombre),
+	))
 
 	// ahora checkeo si alguien tiene flor
 	hayFlor := len(p.Ronda.Envite.jugadoresConFlorQueNoCantaron) > 0
@@ -316,23 +274,15 @@ func (jugada tocarEnvido) hacer(p *Partida) {
 // donde 'j' el jugador que dijo 'quiero' al 'envido'/'real envido'
 func (jugada tocarEnvido) eval(p *Partida) {
 	p.Ronda.Envite.Estado = DESHABILITADO
-	jIdx, max, out := p.Ronda.execElEnvido()
-	print(out)
+	jIdx, _, output := p.Ronda.execElEnvido()
+	print(output)
 
 	jug := &p.jugadores[jIdx]
 
-	write(p.Stdout, &Pkt{
-		Dest: []string{"ALL"},
-		Msg: Msg{
-			Tipo: "Sumar-Puntos",
-			Nota: fmt.Sprintf(`El envido lo gano %s con %v, +%v puntos para el equipo %s`,
-				jug.Nombre, max, p.Ronda.Envite.Puntaje, jug.Equipo),
-			Cont: ContSumPts{
-				Pts:    p.Ronda.Envite.Puntaje,
-				Equipo: jug.Equipo.String(),
-			}.ToJSON(),
-		},
-	})
+	out.Write(p.Stdout, out.Pkt(
+		out.Dest("ALL"),
+		out.Msg(out.SumaPts, jug.Nombre, out.EnvidoGanado, p.Ronda.Envite.Puntaje),
+	))
 
 	p.SumarPuntos(jug.Equipo, p.Ronda.Envite.Puntaje)
 
@@ -347,13 +297,10 @@ func (jugada tocarRealEnvido) hacer(p *Partida) {
 	florEnJuego := p.Ronda.Envite.Estado >= FLOR
 	if florEnJuego {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf("No es posible tocar real envido ahora porque la flor esta en juego"),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, "No es posible tocar real envido ahora porque la flor esta en juego"),
+		))
 
 		return
 
@@ -368,25 +315,19 @@ func (jugada tocarRealEnvido) hacer(p *Partida) {
 
 	if !ok {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf(`No es posible cantar 'Real Envido'`),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, `No es posible cantar 'Real Envido'`),
+		))
 
 		return
 
 	}
 
-	write(p.Stdout, &Pkt{
-		Dest: []string{"ALL"},
-		Msg: Msg{
-			Tipo: "Toca-RealEnvido",
-			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
-		},
-	})
+	out.Write(p.Stdout, out.Pkt(
+		out.Dest("ALL"),
+		out.Msg(out.TocarRealEnvido, jugada.autor.Jugador.Nombre),
+	))
 
 	p.PartidaDT.TocarRealEnvido(jugada.autor)
 
@@ -412,13 +353,10 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) {
 	florEnJuego := p.Ronda.Envite.Estado >= FLOR
 	if florEnJuego {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf("No es posible tocar falta envido ahora porque la flor esta en juego"),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, "No es posible tocar falta envido ahora porque la flor esta en juego"),
+		))
 
 		return
 
@@ -434,25 +372,19 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) {
 
 	if !ok {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf(`No es posible cantar 'Falta Envido'`),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, `No es posible cantar 'Falta Envido'`),
+		))
 
 		return
 
 	}
 
-	write(p.Stdout, &Pkt{
-		Dest: []string{"ALL"},
-		Msg: Msg{
-			Tipo: "Toca-FaltaEnvido",
-			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
-		},
-	})
+	out.Write(p.Stdout, out.Pkt(
+		out.Dest("ALL"),
+		out.Msg(out.TocarFaltaEnvido, jugada.autor.Jugador.Nombre),
+	))
 
 	p.PartidaDT.TocarFaltaEnvido(jugada.autor)
 
@@ -482,9 +414,9 @@ func (jugada tocarFaltaEnvido) eval(p *Partida) {
 	p.Ronda.Envite.Estado = DESHABILITADO
 
 	// computar envidos
-	jIdx, max, out := p.Ronda.execElEnvido()
+	jIdx, _, output := p.Ronda.execElEnvido()
 
-	print(out)
+	print(output)
 
 	// jug es el que gano el (falta) envido
 	jug := &p.jugadores[jIdx]
@@ -493,18 +425,10 @@ func (jugada tocarFaltaEnvido) eval(p *Partida) {
 
 	p.Ronda.Envite.Puntaje += pts
 
-	write(p.Stdout, &Pkt{
-		Dest: []string{"ALL"},
-		Msg: Msg{
-			Tipo: "Sumar-Puntos",
-			Nota: fmt.Sprintf(`La falta envido la gano %s con %v, +%v puntos para el equipo %s`,
-				jug.Nombre, max, p.Ronda.Envite.Puntaje, jug.Equipo),
-			Cont: ContSumPts{
-				Pts:    p.Ronda.Envite.Puntaje,
-				Equipo: jug.Equipo.String(),
-			}.ToJSON(),
-		},
-	})
+	out.Write(p.Stdout, out.Pkt(
+		out.Dest("ALL"),
+		out.Msg(out.SumaPts, jug.Nombre, out.FaltaEnvidoGanado, p.Ronda.Envite.Puntaje),
+	))
 
 	p.SumarPuntos(jug.Equipo, p.Ronda.Envite.Puntaje)
 
@@ -539,26 +463,20 @@ func (jugada cantarFlor) hacer(p *Partida) {
 
 	if !ok {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf(`No es posible cantar flor`),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, `No es posible cantar flor`),
+		))
 
 		return
 
 	}
 
 	// yo canto
-	write(p.Stdout, &Pkt{
-		Dest: []string{"ALL"},
-		Msg: Msg{
-			Tipo: "Canta-Flor",
-			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
-		},
-	})
+	out.Write(p.Stdout, out.Pkt(
+		out.Dest("ALL"),
+		out.Msg(out.CantarFlor, jugada.autor.Jugador.Nombre),
+	))
 
 	// y me elimino de los que no-cantaron
 	p.Ronda.Envite.jugadoresConFlorQueNoCantaron = eliminar(p.Ronda.Envite.jugadoresConFlorQueNoCantaron, jugada.autor)
@@ -609,7 +527,7 @@ func evalFlor(p *Partida) {
 	}
 
 	// cual es la flor ganadora?
-	manojoConLaFlorMasAlta, maxFlor := p.Ronda.getLaFlorMasAlta()
+	manojoConLaFlorMasAlta, _ := p.Ronda.getLaFlorMasAlta()
 	equipoGanador := manojoConLaFlorMasAlta.Jugador.Equipo
 
 	// que estaba en juego?
@@ -623,33 +541,22 @@ func evalFlor(p *Partida) {
 		habiaSolo1JugadorConFlor := len(p.Ronda.Envite.jugadoresConFlor) == 1
 		if habiaSolo1JugadorConFlor {
 
-			write(p.Stdout, &Pkt{
-				Dest: []string{"ALL"},
-				Msg: Msg{
-					Tipo: "Sumar-Puntos",
-					Nota: fmt.Sprintf(`+%v puntos para el equipo %s (por ser la unica flor de esta ronda)`,
-						puntosASumar, equipoGanador),
-					Cont: ContSumPts{
-						Pts:    puntosASumar,
-						Equipo: equipoGanador.String(),
-					}.ToJSON(),
-				},
-			})
+			out.Write(p.Stdout, out.Pkt(
+				out.Dest("ALL"),
+				out.Msg(out.SumaPts,
+					manojoConLaFlorMasAlta.Jugador.ID,
+					out.LaUnicaFlor, puntosASumar),
+			))
 
 		} else {
 
-			write(p.Stdout, &Pkt{
-				Dest: []string{"ALL"},
-				Msg: Msg{
-					Tipo: "Sumar-Puntos",
-					Nota: fmt.Sprintf(`La flor mas alta es la de %s con %v, +%v puntos para el equipo %s`,
-						manojoConLaFlorMasAlta.Jugador.Nombre, maxFlor, puntosASumar, equipoGanador),
-					Cont: ContSumPts{
-						Pts:    puntosASumar,
-						Equipo: equipoGanador.String(),
-					}.ToJSON(),
-				},
-			})
+			out.Write(p.Stdout, out.Pkt(
+				out.Dest("ALL"),
+				out.Msg(out.SumaPts,
+					manojoConLaFlorMasAlta.Jugador.Nombre,
+					out.LaFlorMasAlta,
+					puntosASumar),
+			))
 
 		}
 	case CONTRAFLOR:
@@ -673,26 +580,20 @@ func (jugada cantarContraFlor) hacer(p *Partida) {
 	ok := contraFlorHabilitada && tieneFlor && esDelEquipoContrario && noCantoFlorAun
 	if !ok {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf(`No es posible cantar contra flor`),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, `No es posible cantar contra flor`),
+		))
 
 		return
 
 	}
 
 	// la canta
-	write(p.Stdout, &Pkt{
-		Dest: []string{"ALL"},
-		Msg: Msg{
-			Tipo: "Canta-ContraFlor",
-			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
-		},
-	})
+	out.Write(p.Stdout, out.Pkt(
+		out.Dest("ALL"),
+		out.Msg(out.CantarContraFlor, jugada.autor.Jugador.ID),
+	))
 
 	p.PartidaDT.CantarContraFlor(jugada.autor)
 	// y ahora tengo que esperar por la respuesta de la nueva
@@ -717,26 +618,20 @@ func (jugada cantarContraFlorAlResto) hacer(p *Partida) {
 	ok := contraFlorHabilitada && tieneFlor && esDelEquipoContrario && noCantoFlorAun
 	if !ok {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf(`No es posible cantar contra flor al resto`),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, `No es posible cantar contra flor al resto`),
+		))
 
 		return
 
 	}
 
 	// la canta
-	write(p.Stdout, &Pkt{
-		Dest: []string{"ALL"},
-		Msg: Msg{
-			Tipo: "Canta-ContraFlorAlResto",
-			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
-		},
-	})
+	out.Write(p.Stdout, out.Pkt(
+		out.Dest("ALL"),
+		out.Msg(out.CantarContraFlorAlResto, jugada.autor.Jugador.ID),
+	))
 
 	p.PartidaDT.CantarContraFlorAlResto(jugada.autor)
 	// y ahora tengo que esperar por la respuesta de la nueva
@@ -772,13 +667,10 @@ func (jugada gritarTruco) hacer(p *Partida) {
 
 	if !trucoHabilitado {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf("No es posible cantar truco ahora"),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, "No es posible cantar truco ahora"),
+		))
 
 		if laFlorEstaPrimero {
 			manojosConFlor := p.Ronda.Envite.jugadoresConFlorQueNoCantaron
@@ -790,13 +682,10 @@ func (jugada gritarTruco) hacer(p *Partida) {
 
 	}
 
-	write(p.Stdout, &Pkt{
-		Dest: []string{"ALL"},
-		Msg: Msg{
-			Tipo: "Grita-Truco",
-			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
-		},
-	})
+	out.Write(p.Stdout, out.Pkt(
+		out.Dest("ALL"),
+		out.Msg(out.GritarTruco, jugada.autor.Jugador.ID),
+	))
 
 	p.PartidaDT.GritarTruco(jugada.autor)
 
@@ -846,25 +735,19 @@ func (jugada gritarReTruco) hacer(p *Partida) {
 			siguienteJugada.hacer(p)
 		}
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf("No es posible cantar re-truco ahora"),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, "No es posible cantar re-truco ahora"),
+		))
 
 		return
 
 	}
 
-	write(p.Stdout, &Pkt{
-		Dest: []string{"ALL"},
-		Msg: Msg{
-			Tipo: "Grita-ReTruco",
-			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
-		},
-	})
+	out.Write(p.Stdout, out.Pkt(
+		out.Dest("ALL"),
+		out.Msg(out.GritarReTruco, jugada.autor.Jugador.ID),
+	))
 
 	p.PartidaDT.GritarReTruco(jugada.autor)
 
@@ -912,25 +795,19 @@ func (jugada gritarVale4) hacer(p *Partida) {
 			siguienteJugada.hacer(p)
 		}
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf("No es posible cantar vale-4 ahora"),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, "No es posible cantar vale-4 ahora"),
+		))
 
 		return
 
 	}
 
-	write(p.Stdout, &Pkt{
-		Dest: []string{"ALL"},
-		Msg: Msg{
-			Tipo: "Grita-Vale4",
-			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
-		},
-	})
+	out.Write(p.Stdout, out.Pkt(
+		out.Dest("ALL"),
+		out.Msg(out.GritarVale4, jugada.autor.Jugador.ID),
+	))
 
 	p.PartidaDT.GritarVale4(jugada.autor)
 
@@ -945,13 +822,10 @@ func (jugada responderQuiero) hacer(p *Partida) {
 	seFueAlMazo := jugada.autor.SeFueAlMazo
 	if seFueAlMazo {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf("Te fuiste al mazo; no podes hacer esta jugada"),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, "Te fuiste al mazo; no podes hacer esta jugada"),
+		))
 
 		return
 
@@ -963,13 +837,10 @@ func (jugada responderQuiero) hacer(p *Partida) {
 	florEnJuego := p.Ronda.Envite.Estado == FLOR
 	if florEnJuego {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf("No es posible responder quiero ahora"),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, "No es posible responder quiero ahora"),
+		))
 
 		return
 
@@ -988,13 +859,10 @@ func (jugada responderQuiero) hacer(p *Partida) {
 	if !ok {
 		// si no, esta respondiendo al pedo
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf(`No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo`),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, `No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo`),
+		))
 
 		return
 
@@ -1005,25 +873,19 @@ func (jugada responderQuiero) hacer(p *Partida) {
 		esDelEquipoContrario := jugada.getAutor().Jugador.Equipo != p.Ronda.Envite.CantadoPor.Jugador.Equipo
 		if !esDelEquipoContrario {
 
-			write(p.Stdout, &Pkt{
-				Dest: []string{jugada.autor.Jugador.Nombre},
-				Msg: Msg{
-					Tipo: "Error",
-					Nota: fmt.Sprintf(`La jugada no es valida`),
-				},
-			})
+			out.Write(p.Stdout, out.Pkt(
+				out.Dest(jugada.autor.Jugador.Nombre),
+				out.Msg(out.Error, `La jugada no es valida`),
+			))
 
 			return
 
 		}
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{"ALL"},
-			Msg: Msg{
-				Tipo: "Responde-Quiero",
-				Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest("ALL"),
+			out.Msg(out.QuieroEnvite, jugada.autor.Jugador.ID),
+		))
 
 		if p.Ronda.Envite.Estado == FALTAENVIDO {
 			tocarFaltaEnvido{Jugada{autor: jugada.autor}}.eval(p)
@@ -1042,46 +904,35 @@ func (jugada responderQuiero) hacer(p *Partida) {
 
 		if !ok {
 
-			write(p.Stdout, &Pkt{
-				Dest: []string{jugada.autor.Jugador.Nombre},
-				Msg: Msg{
-					Tipo: "Error",
-					Nota: fmt.Sprintf(`La jugada no es valida`),
-				},
-			})
+			out.Write(p.Stdout, out.Pkt(
+				out.Dest(jugada.autor.Jugador.Nombre),
+				out.Msg(out.Error, `La jugada no es valida`),
+			))
 
 			return
 
 		}
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{"ALL"},
-			Msg: Msg{
-				Tipo: "Responde-Quiero",
-				Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest("ALL"),
+			out.Msg(out.QuieroEnvite, jugada.autor.Jugador.Nombre),
+		))
 
 		// empieza cantando el autor del envite no el que "quizo"
-		manojoConLaFlorMasAlta, maxFlor := p.Ronda.getLaFlorMasAlta()
+		manojoConLaFlorMasAlta, _ := p.Ronda.getLaFlorMasAlta()
 		equipoGanador := manojoConLaFlorMasAlta.Jugador.Equipo
 
 		if p.Ronda.Envite.Estado == CONTRAFLOR {
 			puntosASumar := p.Ronda.Envite.Puntaje
 			p.SumarPuntos(equipoGanador, puntosASumar)
 
-			write(p.Stdout, &Pkt{
-				Dest: []string{"ALL"},
-				Msg: Msg{
-					Tipo: "Sumar-Puntos",
-					Nota: fmt.Sprintf(`La contra-flor la gano %s con %v, +%v puntos para el equipo %s`,
-						manojoConLaFlorMasAlta.Jugador.Nombre, maxFlor, puntosASumar, equipoGanador),
-					Cont: ContSumPts{
-						Pts:    puntosASumar,
-						Equipo: equipoGanador.String(),
-					}.ToJSON(),
-				},
-			})
+			out.Write(p.Stdout, out.Pkt(
+				out.Dest("ALL"),
+				out.Msg(out.SumaPts,
+					manojoConLaFlorMasAlta.Jugador.ID,
+					out.ContraFlorGanada,
+					puntosASumar),
+			))
 
 		} else {
 			// el equipo del ganador de la contraflor al resto
@@ -1091,18 +942,13 @@ func (jugada responderQuiero) hacer(p *Partida) {
 			puntosASumar := p.calcPtsContraFlorAlResto(equipoGanador)
 			p.SumarPuntos(equipoGanador, puntosASumar)
 
-			write(p.Stdout, &Pkt{
-				Dest: []string{"ALL"},
-				Msg: Msg{
-					Tipo: "Sumar-Puntos",
-					Nota: fmt.Sprintf(`La contra-flor-al-resto la gano %s con %v, +%v puntos para el equipo %s`,
-						manojoConLaFlorMasAlta.Jugador.Nombre, maxFlor, puntosASumar, equipoGanador),
-					Cont: ContSumPts{
-						Pts:    puntosASumar,
-						Equipo: equipoGanador.String(),
-					}.ToJSON(),
-				},
-			})
+			out.Write(p.Stdout, out.Pkt(
+				out.Dest("ALL"),
+				out.Msg(out.SumaPts,
+					manojoConLaFlorMasAlta.Jugador.ID,
+					out.ContraFlorAlRestoGanada,
+					puntosASumar),
+			))
 
 		}
 
@@ -1110,13 +956,10 @@ func (jugada responderQuiero) hacer(p *Partida) {
 
 	} else if elTrucoEsRespondible {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{"ALL"},
-			Msg: Msg{
-				Tipo: "Responde-Quiero",
-				Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest("ALL"),
+			out.Msg(out.QuieroTruco, jugada.autor.Jugador.ID),
+		))
 
 		p.PartidaDT.QuererTruco(jugada.autor)
 	}
@@ -1134,13 +977,10 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 	seFueAlMazo := jugada.autor.SeFueAlMazo
 	if seFueAlMazo {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf("Te fuiste al mazo; no podes hacer esta jugada"),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, "Te fuiste al mazo; no podes hacer esta jugada"),
+		))
 
 		return
 	}
@@ -1171,13 +1011,10 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 	if !ok {
 		// si no, esta respondiendo al pedo
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf(`%s esta respondiendo al pedo; no hay nada respondible`, jugada.autor.Jugador.Nombre),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, fmt.Sprintf(`%s esta respondiendo al pedo; no hay nada respondible`, jugada.autor.Jugador.Nombre)),
+		))
 
 		return
 
@@ -1188,25 +1025,19 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 		esDelEquipoContrario := jugada.getAutor().Jugador.Equipo != p.Ronda.Envite.CantadoPor.Jugador.Equipo
 		if !esDelEquipoContrario {
 
-			write(p.Stdout, &Pkt{
-				Dest: []string{jugada.autor.Jugador.Nombre},
-				Msg: Msg{
-					Tipo: "Error",
-					Nota: fmt.Sprintf(`La jugada no es valida`),
-				},
-			})
+			out.Write(p.Stdout, out.Pkt(
+				out.Dest(jugada.autor.Jugador.Nombre),
+				out.Msg(out.Error, `La jugada no es valida`),
+			))
 
 			return
 
 		}
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{"ALL"},
-			Msg: Msg{
-				Tipo: "Responde-NoQuiero",
-				Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest("ALL"),
+			out.Msg(out.NoQuiero, jugada.autor.Jugador.Nombre),
+		))
 
 		//	no se toma en cuenta el puntaje total del ultimo toque
 
@@ -1224,18 +1055,13 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 		p.Ronda.Envite.Estado = DESHABILITADO
 		p.Ronda.Envite.Puntaje = totalPts
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{"ALL"},
-			Msg: Msg{
-				Tipo: "Sumar-Puntos",
-				Nota: fmt.Sprintf(`+%v puntos para el equipo %s`,
-					totalPts, p.Ronda.Envite.CantadoPor.Jugador.Equipo),
-				Cont: ContSumPts{
-					Pts:    totalPts,
-					Equipo: p.Ronda.Envite.CantadoPor.Jugador.Equipo.String(),
-				}.ToJSON(),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest("ALL"),
+			out.Msg(out.SumaPts,
+				p.Ronda.Envite.CantadoPor.Jugador.ID,
+				out.EnviteNoQuerido,
+				totalPts),
+		))
 
 		p.SumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
 
@@ -1248,26 +1074,20 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 
 		if !ok {
 
-			write(p.Stdout, &Pkt{
-				Dest: []string{jugada.autor.Jugador.Nombre},
-				Msg: Msg{
-					Tipo: "Error",
-					Nota: fmt.Sprintf(`La jugada no es valida`),
-				},
-			})
+			out.Write(p.Stdout, out.Pkt(
+				out.Dest(jugada.autor.Jugador.Nombre),
+				out.Msg(out.Error, `La jugada no es valida`),
+			))
 
 			return
 
 		}
 
 		// todo ok: tiene flor; se pasa a jugar:
-		write(p.Stdout, &Pkt{
-			Dest: []string{"ALL"},
-			Msg: Msg{
-				Tipo: "Responde-ConFlorMeAchico",
-				Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest("ALL"),
+			out.Msg(out.ConFlorMeAchico, jugada.autor.Jugador.ID),
+		))
 
 		// cuenta como un "no quiero" (codigo copiado)
 		// segun el estado de la apuesta actual:
@@ -1295,30 +1115,22 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 
 		p.Ronda.Envite.Estado = DESHABILITADO
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{"ALL"},
-			Msg: Msg{
-				Tipo: "Sumar-Puntos",
-				Nota: fmt.Sprintf(`+%v puntos para el equipo %s por las flores`,
-					totalPts, p.Ronda.Envite.CantadoPor.Jugador.Equipo),
-				Cont: ContSumPts{
-					Pts:    totalPts,
-					Equipo: p.Ronda.Envite.CantadoPor.Jugador.Equipo.String(),
-				}.ToJSON(),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest("ALL"),
+			out.Msg(out.SumaPts,
+				p.Ronda.Envite.CantadoPor.Jugador.ID,
+				out.FlorAchicada,
+				totalPts),
+		))
 
 		p.SumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
 
 	} else if elTrucoEsRespondible {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{"ALL"},
-			Msg: Msg{
-				Tipo: "Responde-NoQuiero",
-				Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest("ALL"),
+			out.Msg(out.NoQuiero, jugada.autor.Jugador.Nombre),
+		))
 
 		// pongo al equipo que propuso el truco como ganador de la mano actual
 		manoActual := p.Ronda.ManoEnJuego.toInt() - 1
@@ -1330,7 +1142,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 			// antes:
 			//write(p.Stdout, msg)
 			// ahora:
-			write(p.Stdout, pkt)
+			out.Write(p.Stdout, pkt)
 		}
 
 		if nuevaRonda {
@@ -1349,13 +1161,11 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 				// al mismo metodo booleano, en ambas oportunidades retorna diferente
 				// ridiculo
 				for _, m := range p.Ronda.Manojos {
-					write(p.Stdout, &Pkt{
-						Dest: []string{m.Jugador.ID},
-						Msg: Msg{
-							Tipo: "Nueva-Ronda",
-							Cont: p.PartidaDT.perspectiva(&m).ToJSON(),
-						},
-					})
+
+					out.Write(p.Stdout, out.Pkt(
+						out.Dest(m.Jugador.ID),
+						out.Msg(out.NuevaRonda, p.PartidaDT.perspectiva(&m)),
+					))
 				}
 
 			} else {
@@ -1379,13 +1189,10 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 	yaTiroTodasSusCartas := jugada.autor.getCantCartasTiradas() == 3
 	if yaSeFueAlMazo || yaTiroTodasSusCartas {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf("No es posible irse al mazo ahora"),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, "No es posible irse al mazo ahora"),
+		))
 
 		return
 
@@ -1407,13 +1214,10 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 
 	// if condicionDelBobo {
 
-	// write(p.Stdout, &Pkt{
-	// 	Dest: []string{jugada.autor.Jugador.Nombre},
-	// 	Msg: Msg{
-	// 		Tipo: "Error",
-	// 		Nota: fmt.Sprintf("No es posible irse al mazo ahora porque hay propuestas de tu equipo sin responder"),
-	// 	},
-	// })
+	// out.Write(p.Stdout, out.Pkt(
+	// 	out.Dest(jugada.autor.Jugador.Nombre),
+	// 	out.Msg(out.Error,  fmt.Sprintf("No es posible irse al mazo ahora porque hay propuestas de tu equipo sin responder")),
+	// ))
 
 	// return
 
@@ -1424,26 +1228,20 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 	noSePuedeIrPorElTruco := seEstabaJugandoElTruco && p.Ronda.Truco.CantadoPor == jugada.autor
 	if noSePuedeIrPorElEnvite || noSePuedeIrPorElTruco {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{jugada.autor.Jugador.Nombre},
-			Msg: Msg{
-				Tipo: "Error",
-				Nota: fmt.Sprintf("No es posible irse al mazo ahora"),
-			},
-		})
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.autor.Jugador.Nombre),
+			out.Msg(out.Error, "No es posible irse al mazo ahora"),
+		))
 
 		return
 
 	}
 
 	// ok -> se va al mazo:
-	write(p.Stdout, &Pkt{
-		Dest: []string{"ALL"},
-		Msg: Msg{
-			Tipo: "Mazo",
-			Cont: []byte(strconv.Quote(jugada.autor.Jugador.Nombre)),
-		},
-	})
+	out.Write(p.Stdout, out.Pkt(
+		out.Dest("ALL"),
+		out.Msg(out.Mazo, jugada.autor.Jugador.ID),
+	))
 
 	p.PartidaDT.IrAlMazo(jugada.autor)
 
@@ -1490,18 +1288,13 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 			e.Estado = DESHABILITADO
 			e.Puntaje = totalPts
 
-			write(p.Stdout, &Pkt{
-				Dest: []string{"ALL"},
-				Msg: Msg{
-					Tipo: "Sumar-Puntos",
-					Nota: fmt.Sprintf(`+%v puntos del envite para el equipo %s`,
-						totalPts, e.CantadoPor.Jugador.Equipo),
-					Cont: ContSumPts{
-						Pts:    totalPts,
-						Equipo: e.CantadoPor.Jugador.Equipo.String(),
-					}.ToJSON(),
-				},
-			})
+			out.Write(p.Stdout, out.Pkt(
+				out.Dest("ALL"),
+				out.Msg(out.SumaPts,
+					e.CantadoPor.Jugador.ID,
+					out.EnviteNoQuerido,
+					totalPts),
+			))
 
 			p.SumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
 
@@ -1534,18 +1327,13 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 
 			p.Ronda.Envite.Estado = DESHABILITADO
 
-			write(p.Stdout, &Pkt{
-				Dest: []string{"ALL"},
-				Msg: Msg{
-					Tipo: "Sumar-Puntos",
-					Nota: fmt.Sprintf(`+%v puntos para el equipo %s por las flores`,
-						totalPts, p.Ronda.Envite.CantadoPor.Jugador.Equipo),
-					Cont: ContSumPts{
-						Pts:    totalPts,
-						Equipo: p.Ronda.Envite.CantadoPor.Jugador.Equipo.String(),
-					}.ToJSON(),
-				},
-			})
+			out.Write(p.Stdout, out.Pkt(
+				out.Dest("ALL"),
+				out.Msg(out.SumaPts,
+					p.Ronda.Envite.CantadoPor.Jugador.ID,
+					out.FlorAchicada,
+					totalPts),
+			))
 
 			p.SumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
 
@@ -1569,7 +1357,7 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 					// antes:
 					//write(p.Stdout, msg)
 					// ahora
-					write(p.Stdout, pkt)
+					out.Write(p.Stdout, pkt)
 
 				}
 			}
@@ -1581,13 +1369,10 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 			p.Ronda.ManoEnJuego++
 			p.Ronda.SetNextTurnoPosMano()
 			// lo envio
-			write(p.Stdout, &Pkt{
-				Dest: []string{"ALL"},
-				Msg: Msg{
-					Tipo: "Sig-Turno-Pos-Mano",
-					Cont: []byte(strconv.Quote(strconv.Itoa(int(p.Ronda.Turno)))),
-				},
-			})
+			out.Write(p.Stdout, out.Pkt(
+				out.Dest("ALL"),
+				out.Msg(out.SigTurnoPosMano, int(p.Ronda.Turno)),
+			))
 
 		} else {
 
@@ -1606,13 +1391,11 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 				// ridiculo
 
 				for _, m := range p.Ronda.Manojos {
-					write(p.Stdout, &Pkt{
-						Dest: []string{m.Jugador.ID},
-						Msg: Msg{
-							Tipo: "Nueva-Ronda",
-							Cont: p.PartidaDT.perspectiva(&m).ToJSON(),
-						},
-					})
+
+					out.Write(p.Stdout, out.Pkt(
+						out.Dest(m.Jugador.ID),
+						out.Msg(out.NuevaRonda, p.PartidaDT.perspectiva(&m)),
+					))
 				}
 
 			} else {
@@ -1626,12 +1409,11 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 		if eraSuTurno {
 			p.Ronda.SetNextTurno()
 
-			write(p.Stdout, &Pkt{
-				Dest: []string{"ALL"},
-				Msg: Msg{
-					Tipo: "Sig-Turno",
-				},
-			})
+			out.Write(p.Stdout, out.Pkt(
+				out.Dest("ALL"),
+				out.Msg(out.SigTurno, int(p.Ronda.Turno)),
+			))
+
 		}
 	}
 

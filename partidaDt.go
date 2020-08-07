@@ -4,8 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"strconv"
 	"strings"
+
+	"github.com/jpfilevich/truco/out"
 )
 
 // Puntuacion : Enum para el puntaje maximo de la partida
@@ -262,9 +263,9 @@ func (p *PartidaDT) IrAlMazo(manojo *Manojo) {
 
 // evalua todas las cartas y decide que equipo gano
 // de ese ganador se setea el siguiente turno
-func (p *PartidaDT) evaluarMano() (bool, []*Pkt) {
+func (p *PartidaDT) evaluarMano() (bool, []*out.Packet) {
 
-	var pkts []*Pkt
+	var pkts []*out.Packet
 
 	// cual es la tirada-carta que gano la mano?
 	// ojo que puede salir parda
@@ -324,13 +325,11 @@ func (p *PartidaDT) evaluarMano() (bool, []*Pkt) {
 		mano.Resultado = Empardada
 		mano.Ganador = nil
 
-		pkts = append(pkts, &Pkt{
-			Dest: []string{"ALL"},
-			Msg: Msg{
-				Tipo: "Info",
-				Nota: strconv.Quote("La Mano resulta parda"),
-			},
-		})
+		pkts = append(pkts, out.Pkt(
+			out.Dest("ALL"),
+			out.Msg(out.Info, "La Mano resulta parda"),
+		))
+
 		// no se cambia el turno
 
 	} else {
@@ -348,17 +347,15 @@ func (p *PartidaDT) evaluarMano() (bool, []*Pkt) {
 		// pero se setea despues de evaluar la ronda
 		mano.Ganador = tiradaGanadora.autor
 
-		pkts = append(pkts, &Pkt{
-			Dest: []string{"ALL"},
-			Msg: Msg{
-				Tipo: "Info",
-				Nota: strconv.Quote(
-					fmt.Sprintf("La %s mano la gano el equipo %s gracias a %s",
-						strings.ToLower(p.Ronda.ManoEnJuego.String()),
-						mano.Ganador.Jugador.Equipo.String(),
-						mano.Ganador.Jugador.Nombre)),
-			},
-		})
+		pkts = append(pkts, out.Pkt(
+			out.Dest("ALL"),
+			out.Msg(out.Info,
+				fmt.Sprintf("La %s mano la gano el equipo %s gracias a %s",
+					strings.ToLower(p.Ronda.ManoEnJuego.String()),
+					mano.Ganador.Jugador.Equipo.String(),
+					mano.Ganador.Jugador.Nombre),
+			),
+		))
 
 	}
 
@@ -379,9 +376,9 @@ func (p *PartidaDT) evaluarMano() (bool, []*Pkt) {
 // se acabo la ronda?
 // si se empieza una ronda nueva -> retorna true
 // si no se termino la ronda 	 -> retorna false
-func (p *PartidaDT) evaluarRonda() (bool, *Pkt) {
+func (p *PartidaDT) evaluarRonda() (bool, *out.Packet) {
 
-	pkt := new(Pkt)
+	pkt := new(out.Packet)
 
 	/* A MENOS QUE SE HAYAN IDO TODOS EN LA PRIMERA MANO!!! */
 	hayJugadoresRojo := p.Ronda.CantJugadoresEnJuego[Rojo] > 0
@@ -515,17 +512,12 @@ func (p *PartidaDT) evaluarRonda() (bool, *Pkt) {
 			p.Ronda.Truco.Estado.String())
 	}
 
-	pkt = &Pkt{
-		Dest: []string{"ALL"},
-		Msg: Msg{
-			Tipo: "Sumar-Puntos",
-			Nota: msg,
-			Cont: ContSumPts{
-				Pts:    totalPts,
-				Equipo: ganador.Jugador.Equipo.String(),
-			}.ToJSON(),
-		},
-	}
+	fmt.Println(msg)
+
+	pkt = out.Pkt(
+		out.Dest("ALL"),
+		out.Msg(out.SumaPts, ganador.Jugador.ID, out.TrucoQuerido, totalPts),
+	)
 
 	p.SumarPuntos(ganador.Jugador.Equipo, totalPts)
 
@@ -547,10 +539,11 @@ func (p *PartidaDT) Print() {
 	fmt.Print(p.ToString())
 }
 
-// ToJSON retorna la partida en formato json
-func (p *PartidaDT) ToJSON() json.RawMessage {
-	pJSON, _ := json.Marshal(p)
-	return pJSON
+// MarshalJSON retorna la partida en formato json
+func (p *PartidaDT) MarshalJSON() ([]byte, error) {
+	// return json.Marshal(p)
+	// return []byte("hola"), nil
+	return json.Marshal(*p)
 }
 
 // FromJSON carga una partida en formato json

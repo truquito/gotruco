@@ -3,6 +3,8 @@ package truco
 import (
 	"fmt"
 	"testing"
+
+	"github.com/jpfilevich/truco/out"
 )
 
 func TestParseJugada(t *testing.T) {
@@ -161,8 +163,11 @@ func TestPartidaComandosInvalidos(t *testing.T) {
 
 func TestPartidaJSON(t *testing.T) {
 	p, _ := NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
-	fmt.Printf(string(p.ToJSON()))
-
+	pJSON, err := p.MarshalJSON()
+	if err != nil {
+		t.Fatal(err)
+	}
+	fmt.Printf(string(pJSON))
 }
 
 // - 11 le gana a 10 (de la muestra) no de sparda
@@ -204,7 +209,7 @@ func TestFixNacho(t *testing.T) {
 
 	p.Cmd("andres mazo")
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 
 }
@@ -271,7 +276,7 @@ func TestFixNoFlor(t *testing.T) {
 	p.Cmd("adolfo re-truco")
 	// << Adolfo grita re-truco
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 
 	p.Cmd("richard quiero")
@@ -692,7 +697,7 @@ func TestFixPierdeTurno(t *testing.T) {
 	p.Cmd("alvaro 5 espada")
 	p.Cmd("adolfo mazo")
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 
 	oops = !(p.Ronda.getElTurno().Jugador.Nombre == "Roro")
@@ -731,7 +736,7 @@ func Test2FloresSeVaAlMazo(t *testing.T) {
 	p.Cmd("alvaro flor")
 	p.Cmd("richard mazo") // lo deja que se vaya
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 }
 
@@ -790,7 +795,7 @@ func TestTodoTienenFlor(t *testing.T) {
 	p.Cmd("Roro Mazo") // no estoy recibiendo output
 	p.Cmd("Adolfo Flor")
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 }
 
@@ -817,7 +822,7 @@ func TestFixTopeEnvido(t *testing.T) {
 
 	p.Cmd("Roro quiero")
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 }
 
@@ -838,7 +843,7 @@ func TestAutoQuererse(t *testing.T) {
 	p.Cmd("Renzo Quiero")    // no lo deberia dejar
 	p.Cmd("Renzo no-quiero") // no lo deberia dejar
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 }
 
@@ -860,7 +865,7 @@ func TestFixEnvidoManoEsElUltimo(t *testing.T) {
 	p.Cmd("andres Envido")
 	p.Cmd("richard quiero")
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 }
 
@@ -875,7 +880,7 @@ func TestEnvidoManoSeFue(t *testing.T) {
 	p.Cmd("richard mazo")
 	p.Cmd("renzo quiero")
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 }
 
@@ -904,7 +909,7 @@ func TestFlorBlucle(t *testing.T) {
 	p.Cmd("alvaro flor")
 	p.Cmd("roro flor")
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 }
 
@@ -963,7 +968,7 @@ func TestQuieroContraflorDesdeMazo(t *testing.T) {
 	p.Cmd("renzo contra-flor")
 	p.Cmd("andres quiero")
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 }
 
@@ -976,7 +981,7 @@ func TestFixSeVaAlMazoYTeniaFlor(t *testing.T) {
 	p.Cmd("alvaro mazo")
 	p.Cmd("roro truco")
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 }
 
@@ -990,7 +995,7 @@ func TestFixDesconcertante(t *testing.T) {
 	p.Cmd("alvaro mazo")
 	p.Cmd("roro truco")
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 }
 
@@ -1036,7 +1041,7 @@ func TestMalaAsignacionPts(t *testing.T) {
 	p.Cmd("roro 1 oro")
 	p.Cmd("alvaro 5 espada")
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 
 	oops = !(p.Puntajes[Rojo] == 5 && p.Puntajes[Azul] == 2)
@@ -1073,7 +1078,7 @@ func TestFixRondaNueva(t *testing.T) {
 	p.Cmd("renzo 4 oro")
 	p.Cmd("andres 5 espada")
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 }
 
@@ -1102,7 +1107,7 @@ func TestFixIrseAlMazo2(t *testing.T) {
 	p.Cmd("alvaro quiero")
 	p.Cmd("roro mazo")
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 
 	p.Print()
 
@@ -1122,7 +1127,7 @@ func TestFixDecirQuiero(t *testing.T) {
 	p.Cmd("alvaro quiero")
 	p.Cmd("renzo re-truco")
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 
 }
@@ -1160,7 +1165,7 @@ func TestFixPanicNoQuiero(t *testing.T) {
 	p.Cmd("roro vale-4")
 	p.Cmd("andres no-quiero")
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 
 }
@@ -1190,7 +1195,7 @@ func TestFixOutput(t *testing.T) {
 	// p.Cmd("roro 12 oro")
 	// p.Cmd("adolfo 4 espada")
 
-	Consume(p.Stdout)
+	out.Consume(p.Stdout)
 	p.Print()
 
 }

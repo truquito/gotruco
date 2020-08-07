@@ -1,4 +1,7 @@
 # TODO
+- el exec del envido y flor lo esta imprimiendo en pantalla; eso es heredado de
+  legacy
+- tabular los mensajes de info (e.g., "resulta parda" -> ManoParda)
 - tabular los mensajes a lo minimo
 - si se va al mazo que no imprima nada
 - pasar todos los .ToJSON para que devuelvan json y no strings!!
@@ -42,6 +45,7 @@
     directamente ahi
 
 # SEGURIDAD
+- que en los writes se use el id no el nombre ni el nick etc...
 - que pasa si uno me manda un mensaje de terminar al canal <-- tokens
 - agregar el control de que los len(nombres de los jguadores) tienen que ser > 0
 - agregarle un ID a jugador y que las busquedas las haga por este campo

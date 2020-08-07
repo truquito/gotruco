@@ -13,9 +13,9 @@ func TestCopy(t *testing.T) {
 	// copia := cheepCopy(p.Perspectiva)
 	// copia.Ronda.Manojos[0].Cartas[0] = nil
 
-	// fmt.Println(copia.ToJSON())
+	// fmt.Println(copia.MarshalJSON())
 	// fmt.Println()
-	// fmt.Println(p.ToJSON())
+	// fmt.Println(p.MarshalJSON())
 }
 
 func TestPerspectiva(t *testing.T) {
@@ -24,7 +24,7 @@ func TestPerspectiva(t *testing.T) {
 	p.fromJSON(partidaJSON)
 
 	per, _ := p.Perspectiva("Alvaro")
-	fmt.Println(per.ToJSON())
+	fmt.Println(per.MarshalJSON())
 }
 
 // borrar este test al pedo

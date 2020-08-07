@@ -8,15 +8,15 @@ import (
 )
 
 // Write .
-func Write(buff *bytes.Buffer, d *Pkt) error {
+func Write(buff *bytes.Buffer, d *Packet) error {
 	enc := gob.NewEncoder(buff)
 	err := enc.Encode(d)
 	return err
 }
 
 // Read retorna el pkt mas antiguo sin leer
-func Read(buff *bytes.Buffer) (*Pkt, error) {
-	e := new(Pkt)
+func Read(buff *bytes.Buffer) (*Packet, error) {
+	e := new(Packet)
 	dec := gob.NewDecoder(buff)
 	err := dec.Decode(e)
 	if err != nil {

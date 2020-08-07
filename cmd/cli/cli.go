@@ -32,10 +32,10 @@ func main() {
 
 	// p, _ := truco.NuevaPartida(20, []string{"Alvaro"}, []string{"Roro"})
 	p, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
-	logfile.Write(string(p.ToJSON()))
+	logfile.Write(string(p.MarshalJSON()))
 
 	p.Print()
-	truco.Consume(p.Stdout)
+	truco.out.Consume(p.Stdout)
 
 	// hago una gorutine (y channel para avisar) para el io
 	go handleIO()
@@ -49,10 +49,10 @@ func main() {
 				fmt.Println("<< " + err.Error())
 			}
 			// consumo el channel de output
-			truco.Consume(p.Stdout)
+			// truco.out.Consume(p.Stdout)
 			p.Print()
 		case <-p.ErrCh:
-			truco.Consume(p.Stdout)
+			truco.out.Consume(p.Stdout)
 			fmt.Printf(">> ")
 		}
 

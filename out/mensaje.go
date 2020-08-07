@@ -7,18 +7,18 @@ import (
 	"strings"
 )
 
-// Pkt ..
-type Pkt struct {
-	Dest *[]string
-	*Msg
+// Packet ..
+type Packet struct {
+	Destination *[]string
+	*Message
 }
 
-func (pkt *Pkt) String() string {
-	return fmt.Sprintf("[%v] %v", strings.Join(*pkt.Dest, ":"), pkt.Msg.Cod)
+func (pkt *Packet) String() string {
+	return fmt.Sprintf("[%v] %v", strings.Join(*pkt.Destination, ":"), pkt.Message.Cod)
 }
 
-// Msg .
-type Msg struct {
+// Message .
+type Message struct {
 	Cod  int `json:"cod"`
 	Cont json.RawMessage
 }
@@ -52,7 +52,9 @@ const (
 	NuevaRonda
 	TirarCarta
 	SumaPts
+	Mazo
 	TimeOut
+	Info
 )
 
 // Razon ..
@@ -97,18 +99,21 @@ type Tipo3 struct {
 	Puntos int    `json:"puntos"`
 }
 
-func pkt(dest *[]string, m *Msg) *Pkt {
-	return &Pkt{
-		Dest: dest,
-		Msg:  m,
+// Pkt .
+func Pkt(dest *[]string, m *Message) *Packet {
+	return &Packet{
+		Destination: dest,
+		Message:     m,
 	}
 }
 
-func dest(ds ...string) *[]string {
+// Dest .
+func Dest(ds ...string) *[]string {
 	return &ds
 }
 
-func msg(t CodMsg, data ...interface{}) *Msg {
+// Msg .
+func Msg(t CodMsg, data ...interface{}) *Message {
 
 	var cont json.RawMessage
 
@@ -196,7 +201,7 @@ func msg(t CodMsg, data ...interface{}) *Msg {
 
 	}
 
-	return &Msg{
+	return &Message{
 		Cod:  int(t),
 		Cont: cont,
 	}

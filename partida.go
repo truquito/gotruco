@@ -2,11 +2,11 @@ package truco
 
 import (
 	"bytes"
-	"encoding/gob"
 	"fmt"
-	"io"
 	"regexp"
 	"strings"
+
+	"github.com/jpfilevich/truco/out"
 )
 
 // el envido, la primera o la mentira
@@ -20,40 +20,6 @@ var (
 		"jugadaTirada": regexp.MustCompile(`(?i)^([a-zA-Z0-9_-]+) (1|2|3|4|5|6|7|10|11|12) (oro|copa|basto|espada)$`),
 	}
 )
-
-func write(buff *bytes.Buffer, d *Pkt) error {
-	// registros
-	gob.Register(ContSumPts{})
-
-	enc := gob.NewEncoder(buff)
-	err := enc.Encode(d)
-	return err
-}
-
-// Read retorna el pkt mas antiguo sin leer
-func Read(buff *bytes.Buffer) (*Pkt, error) {
-	e := new(Pkt)
-	dec := gob.NewDecoder(buff)
-	err := dec.Decode(e)
-	if err != nil {
-		return nil, err
-	}
-	return e, nil
-}
-
-// Consume consume el buffer
-func Consume(buff *bytes.Buffer) {
-	for {
-		e, err := Read(buff)
-		if err == io.EOF {
-			break
-		} else if err != nil {
-			fmt.Println(err)
-			return
-		}
-		fmt.Println(e.String())
-	}
-}
 
 // Partida :
 type Partida struct {
@@ -151,15 +117,10 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 func (p *Partida) byeBye() {
 	if p.Terminada() {
 
-		write(p.Stdout, &Pkt{
-			Dest: []string{"ALL"},
-			Msg: Msg{
-				Tipo: "Fin-Partida",
-				Nota: fmt.Sprintf("Se acabo la partida! el ganador fue el equipo %s",
-					p.elQueVaGanando().String()),
-			},
-		})
-
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest("ALL"),
+			out.Msg(out.ByeBye, string(p.elQueVaGanando())),
+		))
 	}
 }
 
@@ -189,14 +150,13 @@ func (p *Partida) Cmd(cmd string) error {
 }
 
 func (p *Partida) notify() {
+
 	// ojo primero hay que grabar el buff, luego avisar
-	write(p.Stdout, &Pkt{
-		Dest: []string{"ALL"},
-		Msg: Msg{
-			Tipo: "TimeOut",
-			Nota: "INTERRUMPING!! Roro tardo demasiado en jugar. Mano ganada por Rojo",
-		},
-	})
+	out.Write(p.Stdout, out.Pkt(
+		out.Dest("ALL"),
+		out.Msg(out.TimeOut, "INTERRUMPING!! Roro tardo demasiado en jugar. Mano ganada por Rojo"),
+	))
+
 	p.ErrCh <- true
 }
 
