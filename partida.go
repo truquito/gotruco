@@ -51,41 +51,41 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 		switch jugadaStr {
 		// toques
 		case "envido":
-			jugada = tocarEnvido{Jugada{autor: manojo}}
+			jugada = tocarEnvido{manojo}
 		case "real-envido":
-			jugada = tocarRealEnvido{Jugada{autor: manojo}}
+			jugada = tocarRealEnvido{manojo}
 		case "falta-envido":
-			jugada = tocarFaltaEnvido{Jugada{autor: manojo}}
+			jugada = tocarFaltaEnvido{manojo}
 
 		// cantos
 		case "flor":
-			jugada = cantarFlor{Jugada{autor: manojo}}
+			jugada = cantarFlor{manojo}
 		case "contra-flor":
-			jugada = cantarContraFlor{Jugada{autor: manojo}}
+			jugada = cantarContraFlor{manojo}
 		case "contra-flor-al-resto":
-			jugada = cantarContraFlorAlResto{Jugada{autor: manojo}}
+			jugada = cantarContraFlorAlResto{manojo}
 
 		// gritos
 		case "truco":
-			jugada = gritarTruco{Jugada{autor: manojo}}
+			jugada = gritarTruco{manojo}
 		case "re-truco":
-			jugada = gritarReTruco{Jugada{autor: manojo}}
+			jugada = gritarReTruco{manojo}
 		case "vale-4":
-			jugada = gritarVale4{Jugada{autor: manojo}}
+			jugada = gritarVale4{manojo}
 
 		// respuestas
 		case "quiero":
-			jugada = responderQuiero{Jugada{autor: manojo}}
+			jugada = responderQuiero{manojo}
 		case "no-quiero":
-			jugada = responderNoQuiero{Jugada{autor: manojo}}
+			jugada = responderNoQuiero{manojo}
 		// case "tiene":
-		// 	jugada = responderNoQuiero{Jugada{autor: manojo}}
+		// 	jugada = responderNoQuiero{manojo}
 
 		// acciones
 		case "mazo":
-			jugada = irseAlMazo{Jugada{autor: manojo}}
+			jugada = irseAlMazo{manojo}
 		case "tirar":
-			jugada = irseAlMazo{Jugada{autor: manojo}}
+			jugada = irseAlMazo{manojo}
 		default:
 			return nil, fmt.Errorf("No existe esa jugada")
 		}
@@ -108,7 +108,7 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 		}
 
 		jugada = tirarCarta{
-			Jugada{autor: manojo},
+			manojo,
 			*carta,
 		}
 	}

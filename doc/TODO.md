@@ -12,8 +12,6 @@
 - nueva ronda esta pasando toda la partidaDt, solo con ronda basta, pulir eso
 - la suma de puntos por envido ganado -> deberia deshabilitar el envido en el 
   cli
-- hacer que Jugada sea un simple alias de *Manojo
-- [relacionado ^] jugada.getAutor esta al pedo
 - separar verificador semantico (jugada.go -> metodos de partida.go o bien un 
    modulo "ejecutor") ejecutor (partida.dt)
 - pasar EvaluarRonda y EvaluarMano a ese verificador/jugada/partida
