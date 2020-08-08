@@ -152,8 +152,8 @@ func (p *Partida) Cmd(cmd string) error {
 }
 
 // Print imprime la partida
-func (p *PartidaDT) Print() {
-	fmt.Print(ptr.Renderizar(p))
+func (p *Partida) Print() {
+	fmt.Print(ptr.Renderizar(&p.PartidaDT))
 }
 
 func (p *Partida) notify() {
