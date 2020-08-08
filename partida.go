@@ -119,9 +119,18 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 func (p *Partida) byeBye() {
 	if p.Terminada() {
 
+		var s string
+		if p.PartidaDT.EsManoAMano() { // retorna jugador
+			if p.Jugadores[0].Equipo == p.ElQueVaGanando() {
+				s = p.Jugadores[0].Nombre
+			} else {
+				s = p.Jugadores[1].Nombre
+			}
+		}
+
 		out.Write(p.Stdout, out.Pkt(
 			out.Dest("ALL"),
-			out.Msg(out.ByeBye, string(p.ElQueVaGanando())),
+			out.Msg(out.ByeBye, s),
 		))
 	}
 }

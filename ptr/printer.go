@@ -197,11 +197,11 @@ func (pr impresora) dibujarPosesiones(manojos []pdt.Manojo) {
 		} else {
 			switch cantPosesion {
 			case 1:
-				template = pr.templates.cartaOculta(*cartasEnPosesion[0])
+				template = pr.templates.cartaOculta()
 			case 2:
-				template = pr.templates.cartaDobleOculta(cartasEnPosesion)
+				template = pr.templates.cartaDobleOculta()
 			case 3:
-				template = pr.templates.cartaTripleOculta(cartasEnPosesion)
+				template = pr.templates.cartaTripleOculta()
 			default:
 				template = pr.templates.vacio()
 			}
@@ -276,11 +276,16 @@ func (pr impresora2) dibujarTooltips(r pdt.Ronda) {
 	turno := int(r.Turno)
 
 	for i, manojo := range r.Manojos {
+
 		tooltip := ""
-		tieneFlor, _ := manojo.TieneFlor(r.Muestra)
-		if tieneFlor {
-			tooltip += "❀"
+
+		if lasConoce(manojo.Cartas[:]) {
+			tieneFlor, _ := manojo.TieneFlor(r.Muestra)
+			if tieneFlor {
+				tooltip += "❀"
+			}
 		}
+
 		esSuTurno := turno == i
 		if esSuTurno {
 			tooltip += " ⭣"

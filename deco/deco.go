@@ -120,11 +120,17 @@ func Parse(p *pdt.PartidaDT, m *out.Message) string {
 		decoded = fmt.Sprintf(`%s se fue al mazo`, Autor(p, m).Jugador.Nombre)
 
 	case out.ByeBye:
-		template := "gano el equipo %s"
+		var template, s string
+
 		if p.EsManoAMano() {
 			template = "el ganador fue %s"
+			s = Autor(p, m).Jugador.Nombre
+		} else {
+			template = "gano el equipo %s"
+			s = Autor(p, m).Jugador.Equipo.String()
 		}
-		decoded = fmt.Sprintf("C'est fini! "+template, Str(m))
+
+		decoded = fmt.Sprintf("C'est fini! "+template, s)
 
 	case out.DiceSonBuenas:
 		decoded = fmt.Sprintf(`%s: "son buenas"`, Autor(p, m).Jugador.Nombre)

@@ -74,7 +74,7 @@ func (t templates) carta(carta pdt.Carta) string {
 	return mkCarta(numStr, palo[:2])
 }
 
-func (t templates) cartaOculta(carta pdt.Carta) string {
+func (t templates) cartaOculta() string {
 	return mkCarta("──", "//")
 }
 
@@ -138,7 +138,7 @@ func (t templates) cartaDobleVisible(cartas []*pdt.Carta) string {
 	return mkCartaDobleVisible(valores, palos)
 }
 
-func (t templates) cartaDobleOculta(cartas []*pdt.Carta) string {
+func (t templates) cartaDobleOculta() string {
 	valores := []string{"──", "──"}
 	palos := []string{"//", "//"}
 	return mkCartaDobleVisible(valores, palos)
@@ -179,7 +179,7 @@ func (t templates) cartaTripleVisible(cartas []*pdt.Carta) string {
 	return mkCartaTripleVisible(valores, palos)
 }
 
-func (t templates) cartaTripleOculta(cartas []*pdt.Carta) string {
+func (t templates) cartaTripleOculta() string {
 
 	valores := []string{"──", "──", "──"}
 	palos := []string{"//", "//", "//"}
