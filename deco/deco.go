@@ -31,6 +31,13 @@ func Str(m *out.Message) string {
 	return str
 }
 
+// Int .
+func Int(m *out.Message) int {
+	var num int
+	json.Unmarshal(m.Cont, &num)
+	return num
+}
+
 // Autor .
 func Autor(p *pdt.PartidaDT, m *out.Message) *pdt.Manojo {
 	id := out.ParseStr(m)
