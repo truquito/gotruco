@@ -158,7 +158,7 @@ func (manojo *Manojo) calcFlor(muestra Carta) (int, error) {
 // Print imprime la info del manojo
 func (manojo Manojo) Print() {
 	for i := range manojo.Cartas {
-		fmt.Printf("    - %s\n", manojo.Cartas[i].toString())
+		fmt.Printf("    - %s\n", manojo.Cartas[i].String())
 	}
 }
 

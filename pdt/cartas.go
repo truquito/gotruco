@@ -241,7 +241,8 @@ func (c Carta) comparar(c2, muestra Carta) comparacion {
 	return mayor
 }
 
-func (c Carta) toString() string {
+// String .
+func (c Carta) String() string {
 	return strconv.Itoa(c.Valor) + " de " + c.Palo.String()
 }
 

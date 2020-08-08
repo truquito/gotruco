@@ -1,4 +1,5 @@
 # TODO
+- los mensajes de info en realidad actualizan el resultado de la mano
 - habria que pulir lo de fromJSON FromJSON y Force <-- mucho bolonqui
 - jugadores con flor cache deberia ser una variable de partida y no de partidadt
 - out.TrucoQuerido -> out.TrucoQuerido, out.RetrucoQuerido, out.Vale4Querido
