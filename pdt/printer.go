@@ -1,4 +1,4 @@
-package truco
+package pdt
 
 import (
 	"strconv"
@@ -77,12 +77,12 @@ func (pr impresora) dibujarEstadisticas(p *PartidaDT) {
 	pr.canvas.DrawAt(pr.otrasAreas["#Mano"].From, numMano)
 
 	// Mano
-	mano := p.Ronda.getElMano().Jugador.Nombre
+	mano := p.Ronda.GetElMano().Jugador.Nombre
 	mano = chop(mano, 8)
 	pr.canvas.DrawAt(pr.otrasAreas["Mano"].From, mano)
 
 	// Turno
-	turno := p.Ronda.getElTurno().Jugador.Nombre
+	turno := p.Ronda.GetElTurno().Jugador.Nombre
 	turno = chop(turno, 8)
 	pr.canvas.DrawAt(pr.otrasAreas["Turno"].From, turno)
 
@@ -134,7 +134,7 @@ func (pr impresora) dibujarTiradas(manojos []Manojo) {
 		area = pr.areasJugadores["tiradas"][posicion(i)]
 		// necesito saber cuantas tiro
 		manojo := manojos[i]
-		cantTiradas := manojo.getCantCartasTiradas()
+		cantTiradas := manojo.GetCantCartasTiradas()
 		carta := manojo.Cartas[manojo.UltimaTirada]
 		var tiradas string
 		switch cantTiradas {
@@ -177,7 +177,7 @@ func (pr impresora) dibujarPosesiones(manojos []Manojo) {
 			}
 		}
 
-		cantTiradas := manojo.getCantCartasTiradas()
+		cantTiradas := manojo.GetCantCartasTiradas()
 		cantPosesion := 3 - cantTiradas
 
 		var template string
@@ -218,7 +218,7 @@ func (pr impresora) dibujarTooltips(r Ronda) {
 
 		// flor
 		if lasConoce(manojo.Cartas[:]) {
-			tieneFlor, _ := manojo.tieneFlor(r.Muestra)
+			tieneFlor, _ := manojo.TieneFlor(r.Muestra)
 			if tieneFlor {
 				tooltip += "❀"
 			}
@@ -275,7 +275,7 @@ func (pr impresora2) dibujarTooltips(r Ronda) {
 
 	for i, manojo := range r.Manojos {
 		tooltip := ""
-		tieneFlor, _ := manojo.tieneFlor(r.Muestra)
+		tieneFlor, _ := manojo.TieneFlor(r.Muestra)
 		if tieneFlor {
 			tooltip += "❀"
 		}

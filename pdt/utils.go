@@ -1,10 +1,11 @@
-package truco
+package pdt
 
 import (
 	"reflect"
 )
 
-func contains(slice interface{}, item interface{}) bool {
+// Contains .
+func Contains(slice interface{}, item interface{}) bool {
 	s := reflect.ValueOf(slice)
 
 	if s.Kind() != reflect.Slice {
@@ -20,7 +21,8 @@ func contains(slice interface{}, item interface{}) bool {
 	return false
 }
 
-func eliminar(manojos []*Manojo, manojo *Manojo) []*Manojo {
+// Eliminar .
+func Eliminar(manojos []*Manojo, manojo *Manojo) []*Manojo {
 	var i int
 	// primero encuentro el elemento
 	for i = 0; i <= len(manojos); i++ {

@@ -1,4 +1,4 @@
-package truco
+package pdt
 
 import (
 	"bytes"
@@ -60,18 +60,19 @@ func (r *Resultado) UnmarshalJSON(b []byte) error {
 // NumMano : Enum para el numero de la mano en juego
 type NumMano int
 
-// 3 opciones: Primera, seguna o tercera mano
+// 3 opciones: Primera, seguna o Tercera mano
 const (
-	primera NumMano = iota
-	segunda
-	tercera
+	Primera NumMano = iota
+	Segunda
+	Tercera
 )
 
-func (n NumMano) toInt() int {
+// ToInt .
+func (n NumMano) ToInt() int {
 	switch n {
-	case primera:
+	case Primera:
 		return 1
-	case segunda:
+	case Segunda:
 		return 2
 	default:
 		return 3
@@ -92,6 +93,11 @@ func (n NumMano) String() string {
 	}
 
 	return manos[n]
+}
+
+type tirarCarta struct {
+	autor *Manojo
+	Carta
 }
 
 // Mano :

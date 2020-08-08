@@ -1,4 +1,4 @@
-package truco
+package pdt
 
 import (
 	"strconv"

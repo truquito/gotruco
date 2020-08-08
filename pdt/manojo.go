@@ -1,4 +1,4 @@
-package truco
+package pdt
 
 import (
 	"fmt"
@@ -19,8 +19,8 @@ type Manojo struct {
 	Jugador         *Jugador               `json:"jugador"`
 }
 
-// retorna la cantidad de cartas que ya tiro
-func (manojo Manojo) getCantCartasTiradas() int {
+// GetCantCartasTiradas retorna la cantidad de cartas que ya tiro
+func (manojo Manojo) GetCantCartasTiradas() int {
 	totalTiradas := 0
 	for _, noTirada := range manojo.CartasNoTiradas {
 		if noTirada == false {
@@ -36,13 +36,13 @@ func (manojo Manojo) yaTiroCarta(mano NumMano) bool {
 	// si se esta jugando la 1era mano -> debe haber tirado exactamente 1 carta
 	// si se esta jugando la 2da mano -> debe haber tirado exactamente 2 cartas
 	// si se esta jugando la 3era mano -> debe haber tirado exactamente 3 carta
-	cantCartasTiradas := manojo.getCantCartasTiradas()
+	cantCartasTiradas := manojo.GetCantCartasTiradas()
 	switch mano {
-	case primera:
+	case Primera:
 		return cantCartasTiradas == 1
-	case segunda:
+	case Segunda:
 		return cantCartasTiradas == 2
-	default: // tercera
+	default: // Tercera
 		return cantCartasTiradas == 3
 	}
 }
@@ -76,6 +76,7 @@ func (manojo Manojo) GetCartaIdx(carta Carta) (int, error) {
 // 	return manojo.cartasNoJugadas[idx], nil
 // }
 
+// TieneFlor .
 // tieneFlor devuelve true si el jugador tiene flor
 // Y ademas, si tiene devuelve que tipo de flor: I, II o III
 //
@@ -84,8 +85,7 @@ func (manojo Manojo) GetCartaIdx(carta Carta) (int, error) {
 // CASO I		~ al menos dos piezas,
 // CASO II  ~	tres cartas del mismo palo,
 // CASO III ~ una pieza y dos cartas del mismo palo.
-
-func (manojo Manojo) tieneFlor(muestra Carta) (res bool, CASO int) {
+func (manojo Manojo) TieneFlor(muestra Carta) (res bool, CASO int) {
 	// CASO I: (al menos) dos piezas
 	numPiezas := 0
 	// en caso de que tenga al menos una pieza,
@@ -126,7 +126,7 @@ func (manojo Manojo) tieneFlor(muestra Carta) (res bool, CASO int) {
 func (manojo *Manojo) calcFlor(muestra Carta) (int, error) {
 	var (
 		puntajeFlor         int
-		tieneFlor, tipoFlor = manojo.tieneFlor(muestra)
+		tieneFlor, tipoFlor = manojo.TieneFlor(muestra)
 	)
 
 	if !tieneFlor {
@@ -177,9 +177,9 @@ func (manojo Manojo) tiene2DelMismoPalo() (bool, []int) {
 	return false, nil
 }
 
-// calcularEnvido devuelve el puntaje correspondiente al envido del manojo
+// CalcularEnvido devuelve el puntaje correspondiente al envido del manojo
 // PRE: no tiene flor
-func (manojo Manojo) calcularEnvido(muestra Carta) (puntajeEnvido int) {
+func (manojo Manojo) CalcularEnvido(muestra Carta) (puntajeEnvido int) {
 	tiene2DelMismoPalo, idxs := manojo.tiene2DelMismoPalo()
 	if tiene2DelMismoPalo {
 		x := manojo.Cartas[idxs[0]].calcPuntaje(muestra)

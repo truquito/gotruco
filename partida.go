@@ -7,11 +7,12 @@ import (
 	"strings"
 
 	"github.com/jpfilevich/truco/out"
+	"github.com/jpfilevich/truco/pdt"
 )
 
-// el envido, la primera o la mentira
-// el envido, la primera o la mentira
-// el truco, la segunda o el rabón
+// el envido, la Primera o la mentira
+// el envido, la Primera o la mentira
+// el truco, la Segunda o el rabón
 
 // regexps
 var (
@@ -23,7 +24,7 @@ var (
 
 // Partida :
 type Partida struct {
-	PartidaDT
+	pdt.PartidaDT
 	Stdout *bytes.Buffer `json:"-"`
 	ErrCh  chan bool     `json:"-"`
 }
@@ -100,7 +101,7 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 			return nil, fmt.Errorf("Usuario %s no encontrado", jugadorStr)
 		}
 
-		carta, err := parseCarta(valorStr, paloStr)
+		carta, err := pdt.ParseCarta(valorStr, paloStr)
 		if err != nil {
 			return nil, err
 		}
@@ -119,7 +120,7 @@ func (p *Partida) byeBye() {
 
 		out.Write(p.Stdout, out.Pkt(
 			out.Dest("ALL"),
-			out.Msg(out.ByeBye, string(p.elQueVaGanando())),
+			out.Msg(out.ByeBye, string(p.ElQueVaGanando())),
 		))
 	}
 }
@@ -161,9 +162,9 @@ func (p *Partida) notify() {
 }
 
 // NuevaPartida retorna n)ueva partida; error si hubo
-func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Partida, error) {
+func NuevaPartida(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*Partida, error) {
 
-	partidaDt, err := NuevaPartidaDt(puntuacion, equipoAzul, equipoRojo)
+	partidaDt, err := pdt.NuevaPartidaDt(puntuacion, equipoAzul, equipoRojo)
 
 	if err != nil {
 		return nil, err
