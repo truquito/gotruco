@@ -1,10 +1,11 @@
-package pdt
+package ptr
 
 import (
 	"strconv"
 	"strings"
 
 	"github.com/jpfilevich/canvas"
+	"github.com/jpfilevich/truco/pdt"
 )
 
 func chop(str string, l int) string {
@@ -28,13 +29,13 @@ const (
 // iPrinter Interface para las impresoras de 2, 4 y 6 jugadores
 type iPrinter interface {
 	dibujarMarco()
-	dibujarEstadisticas(p *PartidaDT)
-	dibujarMuestra(muestra Carta)
-	dibujarNombres(manojos []Manojo, muestra Carta)
-	dibujarTiradas(manojos []Manojo)
-	dibujarPosesiones(manojos []Manojo)
-	dibujarTooltips(r Ronda)
-	// Print(p *PartidaDT)
+	dibujarEstadisticas(p *pdt.PartidaDT)
+	dibujarMuestra(muestra pdt.Carta)
+	dibujarNombres(manojos []pdt.Manojo, muestra pdt.Carta)
+	dibujarTiradas(manojos []pdt.Manojo)
+	dibujarPosesiones(manojos []pdt.Manojo)
+	dibujarTooltips(r pdt.Ronda)
+	// Print(p *pdt.PartidaDT)
 	render() string
 }
 
@@ -68,7 +69,7 @@ func (pr impresora) dibujarMarco() {
 	pr.canvas.DrawAt(pr.otrasAreas["exteriorMesa"].From, marco)
 }
 
-func (pr impresora) dibujarEstadisticas(p *PartidaDT) {
+func (pr impresora) dibujarEstadisticas(p *pdt.PartidaDT) {
 	template := pr.templates.estadisticas()
 	pr.canvas.DrawAt(pr.otrasAreas["estadisticas"].From, template)
 
@@ -91,20 +92,20 @@ func (pr impresora) dibujarEstadisticas(p *PartidaDT) {
 	pr.canvas.DrawAt(pr.otrasAreas["Puntuacion"].From, puntuacion)
 
 	// ROJO
-	ptjRojo := strconv.Itoa((int(p.Puntajes[Rojo])))
+	ptjRojo := strconv.Itoa((int(p.Puntajes[pdt.Rojo])))
 	pr.canvas.DrawAt(pr.otrasAreas["puntajeRojo"].From, ptjRojo)
 
 	// AZUL
-	ptjAzul := strconv.Itoa((int(p.Puntajes[Azul])))
+	ptjAzul := strconv.Itoa((int(p.Puntajes[pdt.Azul])))
 	pr.canvas.DrawAt(pr.otrasAreas["puntajeAzul"].From, ptjAzul)
 }
 
-func (pr impresora) dibujarMuestra(muestra Carta) {
+func (pr impresora) dibujarMuestra(muestra pdt.Carta) {
 	carta := pr.templates.carta(muestra)
 	pr.canvas.DrawAt(pr.otrasAreas["muestra"].From, carta)
 }
 
-func (pr impresora) dibujarNombres(manojos []Manojo, muestra Carta) {
+func (pr impresora) dibujarNombres(manojos []pdt.Manojo, muestra pdt.Carta) {
 	for i, manojo := range manojos {
 		nombre := manojo.Jugador.Nombre
 		// tieneFlor, _ := manojo.tieneFlor(muestra)
@@ -127,7 +128,7 @@ func (pr impresora) dibujarNombres(manojos []Manojo, muestra Carta) {
 	}
 }
 
-func (pr impresora) dibujarTiradas(manojos []Manojo) {
+func (pr impresora) dibujarTiradas(manojos []pdt.Manojo) {
 	var area canvas.Rectangle
 
 	for i := range manojos {
@@ -151,7 +152,7 @@ func (pr impresora) dibujarTiradas(manojos []Manojo) {
 	}
 }
 
-func lasConoce(cartas []*Carta) bool {
+func lasConoce(cartas []*pdt.Carta) bool {
 	lasConoce := true
 	// si hay al menos una carta con nil -> no las conoce
 	for _, c := range cartas {
@@ -163,14 +164,14 @@ func lasConoce(cartas []*Carta) bool {
 	return lasConoce
 }
 
-func (pr impresora) dibujarPosesiones(manojos []Manojo) {
+func (pr impresora) dibujarPosesiones(manojos []pdt.Manojo) {
 	var area canvas.Rectangle
 
 	for i := range manojos {
 		area = pr.areasJugadores["posesiones"][posicion(i)]
 		manojo := manojos[i]
 
-		var cartasEnPosesion []*Carta
+		var cartasEnPosesion []*pdt.Carta
 		for j, c := range manojo.Cartas {
 			if manojo.CartasNoTiradas[j] {
 				cartasEnPosesion = append(cartasEnPosesion, c)
@@ -210,7 +211,7 @@ func (pr impresora) dibujarPosesiones(manojos []Manojo) {
 }
 
 // dibuja: turno y flor
-func (pr impresora) dibujarTooltips(r Ronda) {
+func (pr impresora) dibujarTooltips(r pdt.Ronda) {
 	turno := int(r.Turno)
 
 	for i, manojo := range r.Manojos {
@@ -243,7 +244,8 @@ func (pr impresora) dibujarTooltips(r Ronda) {
 
 }
 
-func renderizar(p *PartidaDT) string {
+// Renderizar .
+func Renderizar(p *pdt.PartidaDT) string {
 
 	// como tiene el parametro en Print
 	// basta con tener una sola instancia de impresora
@@ -270,7 +272,7 @@ func renderizar(p *PartidaDT) string {
 }
 
 /* overrides */
-func (pr impresora2) dibujarTooltips(r Ronda) {
+func (pr impresora2) dibujarTooltips(r pdt.Ronda) {
 	turno := int(r.Turno)
 
 	for i, manojo := range r.Manojos {

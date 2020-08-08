@@ -1,9 +1,10 @@
-package pdt
+package ptr
 
 import (
 	"strconv"
 
 	"github.com/jpfilevich/canvas"
+	"github.com/jpfilevich/truco/pdt"
 )
 
 type templates struct{}
@@ -67,17 +68,17 @@ func mkCarta(valor, palo string) string {
 	return template
 }
 
-func (t templates) carta(carta Carta) string {
+func (t templates) carta(carta pdt.Carta) string {
 	valor, palo := carta.Valor, carta.Palo.String()
 	numStr := t.renderValorCarta(valor)
 	return mkCarta(numStr, palo[:2])
 }
 
-func (t templates) cartaOculta(carta Carta) string {
+func (t templates) cartaOculta(carta pdt.Carta) string {
 	return mkCarta("──", "//")
 }
 
-func (t templates) cartaDobleSolapada(carta Carta) string {
+func (t templates) cartaDobleSolapada(carta pdt.Carta) string {
 	valor, palo := carta.Valor, carta.Palo.String()
 	cartaDobleSolapada := canvas.Raw(`
 ┌xx┐┐
@@ -92,7 +93,7 @@ func (t templates) cartaDobleSolapada(carta Carta) string {
 	return cartaDobleSolapada
 }
 
-func (t templates) cartaTripleSolapada(carta Carta) string {
+func (t templates) cartaTripleSolapada(carta pdt.Carta) string {
 	valor, palo := carta.Valor, carta.Palo.String()
 	cartaTripleSolapada := canvas.Raw(`
 ┌xx┐┐┐
@@ -123,7 +124,7 @@ func mkCartaDobleVisible(valores, palos []string) string {
 	return cartaDobleSolapada
 }
 
-func (t templates) cartaDobleVisible(cartas []*Carta) string {
+func (t templates) cartaDobleVisible(cartas []*pdt.Carta) string {
 
 	valor1, palo1 := cartas[0].Valor, cartas[0].Palo.String()
 	numStr1 := t.renderValorCarta(valor1)
@@ -137,7 +138,7 @@ func (t templates) cartaDobleVisible(cartas []*Carta) string {
 	return mkCartaDobleVisible(valores, palos)
 }
 
-func (t templates) cartaDobleOculta(cartas []*Carta) string {
+func (t templates) cartaDobleOculta(cartas []*pdt.Carta) string {
 	valores := []string{"──", "──"}
 	palos := []string{"//", "//"}
 	return mkCartaDobleVisible(valores, palos)
@@ -161,7 +162,7 @@ func mkCartaTripleVisible(valores, palos []string) string {
 	return cartaDobleSolapada
 }
 
-func (t templates) cartaTripleVisible(cartas []*Carta) string {
+func (t templates) cartaTripleVisible(cartas []*pdt.Carta) string {
 
 	valor1, palo1 := cartas[0].Valor, cartas[0].Palo.String()
 	numStr1 := t.renderValorCarta(valor1)
@@ -178,7 +179,7 @@ func (t templates) cartaTripleVisible(cartas []*Carta) string {
 	return mkCartaTripleVisible(valores, palos)
 }
 
-func (t templates) cartaTripleOculta(cartas []*Carta) string {
+func (t templates) cartaTripleOculta(cartas []*pdt.Carta) string {
 
 	valores := []string{"──", "──", "──"}
 	palos := []string{"//", "//", "//"}

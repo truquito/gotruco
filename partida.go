@@ -8,6 +8,7 @@ import (
 
 	"github.com/jpfilevich/truco/out"
 	"github.com/jpfilevich/truco/pdt"
+	"github.com/jpfilevich/truco/ptr"
 )
 
 // el envido, la Primera o la mentira
@@ -148,6 +149,11 @@ func (p *Partida) Cmd(cmd string) error {
 	jugada.hacer(p)
 
 	return nil
+}
+
+// Print imprime la partida
+func (p *PartidaDT) Print() {
+	fmt.Print(ptr.Renderizar(p))
 }
 
 func (p *Partida) notify() {
