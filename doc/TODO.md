@@ -1,4 +1,9 @@
 # TODO
+- mini commandos: t -> truco, e -> envido fe -> falta envido
+- ^ que el input tambien este tabulado
+- URGENTE: LOS CONTAINS USAN REFLECT, SUPER ANTI PERFORMANTE!!
+- corrector ortografico (?)
+
 - out.TrucoQuerido -> out.TrucoQuerido, out.RetrucoQuerido, out.Vale4Querido
 - GetManojoByStr no deberia ser de PartidaDT en vez de Ronda ?
 - el exec del envido y flor lo esta imprimiendo en pantalla; eso es heredado de
