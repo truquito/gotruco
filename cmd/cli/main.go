@@ -30,7 +30,7 @@ var ioCh chan string = make(chan string, 1)
 
 func main() {
 
-	logfile := newLogFile("/home/juan/Workspace/_tmp/truco_logs/")
+	logfile := newLogFile("/home/jp/Workspace/_tmp/truco_logs/")
 
 	// p, _ := truco.NuevaPartida(20, []string{"Alvaro"}, []string{"Roro"})
 	p, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
