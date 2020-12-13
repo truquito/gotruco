@@ -5,13 +5,22 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/jpfilevich/truco"
 	"github.com/jpfilevich/truco/out"
+	"github.com/jpfilevich/truco/pdt"
 )
 
+// Print imprime los mensajes
+func Print(p *pdt.PartidaDT) out.Consumer {
+	return func(m *out.Packet) {
+		if s := Parse(p, m.Message); s != "" {
+			fmt.Println(s)
+		}
+	}
+}
+
 // Manojo .
-func Manojo(p *truco.Partida, id string) *truco.Manojo {
-	manojo, _ := p.PartidaDT.Ronda.GetManojoByStr(id)
+func Manojo(p *pdt.PartidaDT, id string) *pdt.Manojo {
+	manojo, _ := p.Ronda.GetManojoByStr(id)
 	return manojo
 }
 
@@ -22,29 +31,36 @@ func Str(m *out.Message) string {
 	return str
 }
 
+// Int .
+func Int(m *out.Message) int {
+	var num int
+	json.Unmarshal(m.Cont, &num)
+	return num
+}
+
 // Autor .
-func Autor(p *truco.Partida, m *out.Message) *truco.Manojo {
+func Autor(p *pdt.PartidaDT, m *out.Message) *pdt.Manojo {
 	id := out.ParseStr(m)
 	return Manojo(p, id)
 }
 
 // Tipo1 .
-func Tipo1(p *truco.Partida, m *out.Message) (*truco.Manojo, int) {
+func Tipo1(p *pdt.PartidaDT, m *out.Message) (*pdt.Manojo, int) {
 	var t1 out.Tipo1
 	json.Unmarshal(m.Cont, &t1)
 	return Manojo(p, t1.Autor), t1.Valor
 }
 
 // Tipo2 .
-func Tipo2(p *truco.Partida, m *out.Message) (*truco.Manojo, truco.Palo, int) {
+func Tipo2(p *pdt.PartidaDT, m *out.Message) (*pdt.Manojo, pdt.Palo, int) {
 	var t2 out.Tipo2
 	json.Unmarshal(m.Cont, &t2)
-	palo := truco.Palo(t2.Palo)
+	palo := pdt.Palo(t2.Palo)
 	return Manojo(p, t2.Autor), palo, t2.Valor
 }
 
 // Tipo3 .
-func Tipo3(p *truco.Partida, m *out.Message) (*truco.Manojo, int, int) {
+func Tipo3(p *pdt.PartidaDT, m *out.Message) (*pdt.Manojo, int, int) {
 	var t3 out.Tipo3
 	json.Unmarshal(m.Cont, &t3)
 	return Manojo(p, t3.Autor), t3.Razon, t3.Puntos
@@ -83,7 +99,7 @@ func Razon2str(r int) string {
 }
 
 // Parse parsea un mensaje de salida y retorna su string correspondiente
-func Parse(p *truco.Partida, m *out.Message) string {
+func Parse(p *pdt.PartidaDT, m *out.Message) string {
 
 	var decoded string
 
@@ -104,11 +120,17 @@ func Parse(p *truco.Partida, m *out.Message) string {
 		decoded = fmt.Sprintf(`%s se fue al mazo`, Autor(p, m).Jugador.Nombre)
 
 	case out.ByeBye:
-		template := "gano el equipo %s"
+		var template, s string
+
 		if p.EsManoAMano() {
 			template = "el ganador fue %s"
+			s = Autor(p, m).Jugador.Nombre
+		} else {
+			template = "gano el equipo %s"
+			s = Autor(p, m).Jugador.Equipo.String()
 		}
-		decoded = fmt.Sprintf("C'est fini! "+template, Str(m))
+
+		decoded = fmt.Sprintf("C'est fini! "+template, s)
 
 	case out.DiceSonBuenas:
 		decoded = fmt.Sprintf(`%s: "son buenas"`, Autor(p, m).Jugador.Nombre)

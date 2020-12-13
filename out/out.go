@@ -14,7 +14,7 @@ type Packet struct {
 }
 
 func (pkt *Packet) String() string {
-	return fmt.Sprintf("[%v] %v", strings.Join(*pkt.Destination, ":"), pkt.Message.Cod)
+	return fmt.Sprintf("[%v] ", strings.Join(*pkt.Destination, ":"))
 }
 
 // Message .

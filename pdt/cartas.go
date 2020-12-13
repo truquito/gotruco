@@ -1,4 +1,4 @@
-package truco
+package pdt
 
 import (
 	"bytes"
@@ -105,7 +105,7 @@ func (c Carta) esPieza(muestra Carta) bool {
 	// CASO II: es 12 de la muestra & la muestra es (2|4|5|10|11)
 
 	// CASO I:
-	esNumericamentePieza := contains([]int{2, 4, 5, 10, 11}, c.Valor)
+	esNumericamentePieza := Contains([]int{2, 4, 5, 10, 11}, c.Valor)
 	esDeLaMuestra := c.Palo == muestra.Palo
 	esPiezaCasoI := esNumericamentePieza && esDeLaMuestra
 
@@ -241,7 +241,8 @@ func (c Carta) comparar(c2, muestra Carta) comparacion {
 	return mayor
 }
 
-func (c Carta) toString() string {
+// String .
+func (c Carta) String() string {
 	return strconv.Itoa(c.Valor) + " de " + c.Palo.String()
 }
 
@@ -297,8 +298,8 @@ func nuevaCarta(i CartaID) Carta {
 	}
 }
 
-// hace todos los checkeos necesarios
-func parseCarta(valorStr, paloStr string) (*Carta, error) {
+// ParseCarta hace todos los checkeos necesarios
+func ParseCarta(valorStr, paloStr string) (*Carta, error) {
 	var (
 		valor int
 		palo  Palo
@@ -307,7 +308,7 @@ func parseCarta(valorStr, paloStr string) (*Carta, error) {
 	if err != nil {
 		return nil, fmt.Errorf("No se pudo reconocer el valor de la carta")
 	}
-	ok := contains([]int{1, 2, 3, 4, 5, 6, 7, 10, 11, 12}, valor)
+	ok := Contains([]int{1, 2, 3, 4, 5, 6, 7, 10, 11, 12}, valor)
 	if !ok {
 		return nil, fmt.Errorf("El valor de esa carta es incorrecto")
 	}

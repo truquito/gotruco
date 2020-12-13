@@ -1,4 +1,4 @@
-package truco
+package pdt
 
 import (
 	"bytes"
@@ -77,6 +77,6 @@ type Envite struct {
 	Estado                        EstadoEnvite `json:"estado"`
 	Puntaje                       int          `json:"puntaje"`
 	CantadoPor                    *Manojo      `json:"cantadoPor"`
-	jugadoresConFlor              []*Manojo
-	jugadoresConFlorQueNoCantaron []*Manojo
+	JugadoresConFlor              []*Manojo    `json:"-"`
+	JugadoresConFlorQueNoCantaron []*Manojo    `json:"-"`
 }

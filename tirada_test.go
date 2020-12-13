@@ -5,53 +5,54 @@ import (
 	"testing"
 
 	"github.com/jpfilevich/truco/out"
+	"github.com/jpfilevich/truco/pdt"
 )
 
 func TestTirada1(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
-	p.Ronda.setMuestra(Carta{Palo: Oro, Valor: 3})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{ // Alvaro tiene flor
-				Cartas: [3]*Carta{
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 6},
-					&Carta{Palo: Basto, Valor: 7},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Oro, Valor: 3})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{ // Alvaro tiene flor
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 6},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 7},
 				},
 			},
-			Manojo{ // Roro no tiene flor
-				Cartas: [3]*Carta{
-					&Carta{Palo: Oro, Valor: 5},
-					&Carta{Palo: Espada, Valor: 5},
-					&Carta{Palo: Basto, Valor: 5},
+			pdt.Manojo{ // Roro no tiene flor
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Oro, Valor: 5},
+					&pdt.Carta{Palo: pdt.Espada, Valor: 5},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 5},
 				},
 			},
-			Manojo{ // Adolfo tiene flor
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Copa, Valor: 2},
-					&Carta{Palo: Copa, Valor: 3},
+			pdt.Manojo{ // Adolfo tiene flor
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 2},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 3},
 				},
 			},
-			Manojo{ // Renzo tiene flor
-				Cartas: [3]*Carta{
-					&Carta{Palo: Oro, Valor: 4},
-					&Carta{Palo: Espada, Valor: 4},
-					&Carta{Palo: Espada, Valor: 1},
+			pdt.Manojo{ // Renzo tiene flor
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Oro, Valor: 4},
+					&pdt.Carta{Palo: pdt.Espada, Valor: 4},
+					&pdt.Carta{Palo: pdt.Espada, Valor: 1},
 				},
 			},
-			Manojo{ // Andres no tiene  flor
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 10},
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Basto, Valor: 11},
+			pdt.Manojo{ // Andres no tiene  flor
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 10},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 11},
 				},
 			},
-			Manojo{ // Richard tiene flor
-				Cartas: [3]*Carta{
-					&Carta{Palo: Oro, Valor: 10},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 1},
+			pdt.Manojo{ // Richard tiene flor
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Oro, Valor: 10},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 1},
 				},
 			},
 		},
@@ -76,16 +77,16 @@ func TestTirada1(t *testing.T) {
 
 	out.Consume(p.Stdout, out.Print)
 
-	// como la muestra es Palo: Oro, Valor: 3 -> gana alvaro
-	if !(len(p.Ronda.Manos[primera].CartasTiradas) == 6) {
+	// como la muestra es Palo: pdt.Oro, Valor: 3 -> gana alvaro
+	if !(len(p.Ronda.Manos[pdt.Primera].CartasTiradas) == 6) {
 		t.Error("La cantidad de cartas tiradas deberia ser 6")
 		return
 
-	} else if !(p.Ronda.Manos[primera].Ganador.Jugador.Nombre == "Alvaro") {
+	} else if !(p.Ronda.Manos[pdt.Primera].Ganador.Jugador.Nombre == "Alvaro") {
 		t.Error("El ganador de la priemra mano deberia ser Alvaro")
 		return
 
-	} else if !(p.Ronda.Manos[primera].Resultado == GanoAzul) {
+	} else if !(p.Ronda.Manos[pdt.Primera].Resultado == pdt.GanoAzul) {
 		t.Error("El equipo ganador de la priemra mano deberia ser Azul")
 		return
 	}
@@ -98,30 +99,30 @@ func TestTirada1(t *testing.T) {
 	p.Cmd("Andres 7 Oro")
 	p.Cmd("Richard 2 Oro")
 
-	// como la muestra es Palo: Oro, Valor: 3 -> gana richard
-	if !(len(p.Ronda.Manos[segunda].CartasTiradas) == 6) {
+	// como la muestra es Palo: pdt.Oro, Valor: 3 -> gana richard
+	if !(len(p.Ronda.Manos[pdt.Segunda].CartasTiradas) == 6) {
 		t.Error("La cantidad de cartas tiradas deberia ser 6")
 		return
 
-	} else if !(p.Ronda.Manos[segunda].Ganador.Jugador.Nombre == "Richard") {
+	} else if !(p.Ronda.Manos[pdt.Segunda].Ganador.Jugador.Nombre == "Richard") {
 		t.Error("El ganador de la priemra mano deberia ser Richard")
 		return
 
-	} else if !(p.Ronda.Manos[segunda].Resultado == GanoRojo) {
-		t.Error("El equipo ganador de la priemra mano deberia ser Rojo")
+	} else if !(p.Ronda.Manos[pdt.Segunda].Resultado == pdt.GanoRojo) {
+		t.Error("El equipo ganador de la priemra mano deberia ser pdt.Rojo")
 		return
 	}
 
-	// vuelvo a checkear que el estado de la primera nos se haya editado
-	if !(len(p.Ronda.Manos[primera].CartasTiradas) == 6) {
+	// vuelvo a checkear que el estado de la pdt.Primera nos se haya editado
+	if !(len(p.Ronda.Manos[pdt.Primera].CartasTiradas) == 6) {
 		t.Error("La cantidad de cartas tiradas deberia ser 6")
 		return
 
-	} else if !(p.Ronda.Manos[primera].Ganador.Jugador.Nombre == "Alvaro") {
+	} else if !(p.Ronda.Manos[pdt.Primera].Ganador.Jugador.Nombre == "Alvaro") {
 		t.Error("El ganador de la priemra mano deberia ser Alvaro")
 		return
 
-	} else if !(p.Ronda.Manos[primera].Resultado == GanoAzul) {
+	} else if !(p.Ronda.Manos[pdt.Primera].Resultado == pdt.GanoAzul) {
 		t.Error("El equipo ganador de la priemra mano deberia ser Azul")
 		return
 	}
@@ -135,10 +136,10 @@ func TestTirada1(t *testing.T) {
 	p.Cmd("Andres 11 Basto")
 
 	// para este momento ya cambio a una nueva ronda
-	// como la muestra es Palo: Oro, Valor: 3 -> gana Renzo con el 1 de espada
+	// como la muestra es Palo: pdt.Oro, Valor: 3 -> gana Renzo con el 1 de espada
 	// 1 mano ganada por azul; 2 por rojo -> ronda ganada por rojo
-	if !(p.Puntajes[Rojo] == 1) {
-		t.Error("El puntaje del equipo Rojo deberia ser 1 porque gano la ronda")
+	if !(p.Puntajes[pdt.Rojo] == 1) {
+		t.Error("El puntaje del equipo pdt.Rojo deberia ser 1 porque gano la ronda")
 		return
 
 	}
@@ -150,7 +151,7 @@ func TestTirada1(t *testing.T) {
 // y ademas el turno ahora deberia ser de el siguiente habilitado
 func TestFixIrseAlMazo(t *testing.T) {
 	partidaJSON := `{"cantJugadores":6,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":3,"Rojo":3},"elMano":0,"turno":0,"pies":[0,0],"envido":{"puntaje":0,"cantadoPor":null,"estado":"noCantadoAun"},"flor":1,"truco":{"cantadoPor":null,"estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":7},{"palo":"Oro","valor":6},{"palo":"Copa","valor":1}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":10},{"palo":"Copa","valor":10},{"palo":"Copa","valor":12}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":11},{"palo":"Copa","valor":7},{"palo":"Oro","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":4},{"palo":"Oro","valor":5},{"palo":"Basto","valor":7}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":3},{"palo":"Espada","valor":5},{"palo":"Espada","valor":1}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Andres","nombre":"Andres","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":4},{"palo":"Basto","valor":3},{"palo":"Basto","valor":2}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}],"muestra":{"palo":"Espada","valor":12},"manos":[{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null}]}}`
-	p, _ := NuevaPartida(a20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
 	json.Unmarshal([]byte(partidaJSON), &p)
 	p.Print()
 

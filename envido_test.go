@@ -2,6 +2,8 @@ package truco
 
 import (
 	"testing"
+
+	"github.com/jpfilevich/truco/pdt"
 )
 
 var oops = false
@@ -20,22 +22,22 @@ var oops = false
 // Envido + envido + real envido + falta envido	 2+2+3+x/2+2+3+1
 
 func TestEnvidoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -44,7 +46,7 @@ func TestEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Envido")
 	p.Cmd("Roro Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue aceptado por Roro`)
@@ -57,7 +59,7 @@ func TestEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 2 && p.Puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[pdt.Azul] == 2 && p.Puntajes[pdt.Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 2`)
 		return
@@ -66,22 +68,22 @@ func TestEnvidoQuiero(t *testing.T) {
 }
 
 func TestEnvidoNoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -90,7 +92,7 @@ func TestEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Envido")
 	p.Cmd("Roro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue rechazado por Roro`)
@@ -103,13 +105,13 @@ func TestEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 1)
+	oops = !(p.Puntajes[pdt.Azul] == 1)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[pdt.Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo rojo deberia de ser 0`)
 		return
@@ -118,22 +120,22 @@ func TestEnvidoNoQuiero(t *testing.T) {
 }
 
 func TestRealEnvidoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -142,7 +144,7 @@ func TestRealEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Real-Envido")
 	p.Cmd("Roro Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue aceptado por Roro`)
@@ -155,7 +157,7 @@ func TestRealEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 3 && p.Puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[pdt.Azul] == 3 && p.Puntajes[pdt.Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -164,22 +166,22 @@ func TestRealEnvidoQuiero(t *testing.T) {
 }
 
 func TestRealEnvidoNoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -188,7 +190,7 @@ func TestRealEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Real-Envido")
 	p.Cmd("Roro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue aceptado por Roro`)
@@ -201,7 +203,7 @@ func TestRealEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 1 && p.Puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[pdt.Azul] == 1 && p.Puntajes[pdt.Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 1`)
 		return
@@ -210,22 +212,22 @@ func TestRealEnvidoNoQuiero(t *testing.T) {
 }
 
 func TestFaltaEnvidoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -234,7 +236,7 @@ func TestFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue aceptado por Roro`)
@@ -247,7 +249,7 @@ func TestFaltaEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 10 && p.Puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[pdt.Azul] == 10 && p.Puntajes[pdt.Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 10`)
 		return
@@ -256,22 +258,22 @@ func TestFaltaEnvidoQuiero(t *testing.T) {
 }
 
 func TestFaltaEnvidoNoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -280,7 +282,7 @@ func TestFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
@@ -293,7 +295,7 @@ func TestFaltaEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 1 && p.Puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[pdt.Azul] == 1 && p.Puntajes[pdt.Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 1`)
 		return
@@ -302,22 +304,22 @@ func TestFaltaEnvidoNoQuiero(t *testing.T) {
 }
 
 func TestEnvidoEnvidoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -325,7 +327,7 @@ func TestEnvidoEnvidoQuiero(t *testing.T) {
 
 	p.Cmd("Alvaro Envido")
 
-	oops = p.Ronda.Envite.Estado != ENVIDO
+	oops = p.Ronda.Envite.Estado != pdt.ENVIDO
 	if oops {
 		t.Error("El estado del envido deberia de ser `envido`")
 		return
@@ -339,7 +341,7 @@ func TestEnvidoEnvidoQuiero(t *testing.T) {
 
 	p.Cmd("Roro Envido")
 
-	oops = p.Ronda.Envite.Estado != ENVIDO
+	oops = p.Ronda.Envite.Estado != pdt.ENVIDO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'envido', incluso luego de que
 		ambos Alvaro y Roro lo hayan tocando`)
@@ -357,22 +359,22 @@ func TestEnvidoEnvidoQuiero(t *testing.T) {
 }
 
 func TestEnvidoEnvidoNoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -382,7 +384,7 @@ func TestEnvidoEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Roro Envido")
 	p.Cmd("Alvaro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
@@ -395,7 +397,7 @@ func TestEnvidoEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 0 && p.Puntajes[Rojo] == 2+1)
+	oops = !(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+1)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 0`)
 		return
@@ -404,22 +406,22 @@ func TestEnvidoEnvidoNoQuiero(t *testing.T) {
 }
 
 func TestEnvidoRealEnvidoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -429,7 +431,7 @@ func TestEnvidoRealEnvidoQuiero(t *testing.T) {
 	p.Cmd("Roro Real-Envido")
 	p.Cmd("Alvaro Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
@@ -442,7 +444,7 @@ func TestEnvidoRealEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 2+3 && p.Puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[pdt.Azul] == 2+3 && p.Puntajes[pdt.Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 5`)
 		return
@@ -451,22 +453,22 @@ func TestEnvidoRealEnvidoQuiero(t *testing.T) {
 }
 
 func TestEnvidoRealEnvidoNoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -476,7 +478,7 @@ func TestEnvidoRealEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Roro Real-Envido")
 	p.Cmd("Alvaro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
@@ -489,7 +491,7 @@ func TestEnvidoRealEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 0 && p.Puntajes[Rojo] == 2+1)
+	oops = !(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+1)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -498,22 +500,22 @@ func TestEnvidoRealEnvidoNoQuiero(t *testing.T) {
 }
 
 func TestEnvidoFaltaEnvidoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -523,7 +525,7 @@ func TestEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
@@ -536,7 +538,7 @@ func TestEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 2+10 && p.Puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[pdt.Azul] == 2+10 && p.Puntajes[pdt.Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -545,22 +547,22 @@ func TestEnvidoFaltaEnvidoQuiero(t *testing.T) {
 }
 
 func TestEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -570,7 +572,7 @@ func TestEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
@@ -583,7 +585,7 @@ func TestEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 0 && p.Puntajes[Rojo] == 2+1)
+	oops = !(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+1)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -592,22 +594,22 @@ func TestEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 }
 
 func TestRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -617,7 +619,7 @@ func TestRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
@@ -630,7 +632,7 @@ func TestRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 3+10 && p.Puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[pdt.Azul] == 3+10 && p.Puntajes[pdt.Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -639,22 +641,22 @@ func TestRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 }
 
 func TestRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -664,7 +666,7 @@ func TestRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
@@ -677,7 +679,7 @@ func TestRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 0 && p.Puntajes[Rojo] == 3+1)
+	oops = !(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 3+1)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -686,22 +688,22 @@ func TestRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 }
 
 func TestEnvidoEnvidoRealEnvidoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -712,7 +714,7 @@ func TestEnvidoEnvidoRealEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Real-Envido")
 	p.Cmd("Roro Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
@@ -725,7 +727,7 @@ func TestEnvidoEnvidoRealEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 2+2+3 && p.Puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[pdt.Azul] == 2+2+3 && p.Puntajes[pdt.Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -734,22 +736,22 @@ func TestEnvidoEnvidoRealEnvidoQuiero(t *testing.T) {
 }
 
 func TestEnvidoEnvidoRealEnvidoNoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -760,7 +762,7 @@ func TestEnvidoEnvidoRealEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Real-Envido")
 	p.Cmd("Roro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
@@ -773,7 +775,7 @@ func TestEnvidoEnvidoRealEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 2+2+1 && p.Puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[pdt.Azul] == 2+2+1 && p.Puntajes[pdt.Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -782,22 +784,22 @@ func TestEnvidoEnvidoRealEnvidoNoQuiero(t *testing.T) {
 }
 
 func TestEnvidoEnvidoFaltaEnvidoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -808,7 +810,7 @@ func TestEnvidoEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
@@ -821,7 +823,7 @@ func TestEnvidoEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 2+2+10 && p.Puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[pdt.Azul] == 2+2+10 && p.Puntajes[pdt.Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -830,22 +832,22 @@ func TestEnvidoEnvidoFaltaEnvidoQuiero(t *testing.T) {
 }
 
 func TestEnvidoEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -856,7 +858,7 @@ func TestEnvidoEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
@@ -869,7 +871,7 @@ func TestEnvidoEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 2+2+1 && p.Puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[pdt.Azul] == 2+2+1 && p.Puntajes[pdt.Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -878,22 +880,22 @@ func TestEnvidoEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 }
 
 func TestEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -904,7 +906,7 @@ func TestEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
@@ -917,7 +919,7 @@ func TestEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 2+3+10 && p.Puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[pdt.Azul] == 2+3+10 && p.Puntajes[pdt.Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -926,22 +928,22 @@ func TestEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 }
 
 func TestEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -952,7 +954,7 @@ func TestEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
@@ -965,7 +967,7 @@ func TestEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 2+3+1 && p.Puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[pdt.Azul] == 2+3+1 && p.Puntajes[pdt.Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -974,22 +976,22 @@ func TestEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 }
 
 func TestEnvidoEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -1001,7 +1003,7 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
@@ -1014,7 +1016,7 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 2+2+3+10 && p.Puntajes[Rojo] == 0)
+	oops = !(p.Puntajes[pdt.Azul] == 2+2+3+10 && p.Puntajes[pdt.Rojo] == 0)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -1023,22 +1025,22 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 }
 
 func TestEnvidoEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"Alvaro"}, []string{"Roro"})
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 13
-					&Carta{Palo: Oro, Valor: 7},
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro"}, []string{"Roro"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 13
+					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{
-					&Carta{Palo: Copa, Valor: 1},
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -1050,7 +1052,7 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != DESHABILITADO
+	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
 	if oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
@@ -1063,7 +1065,7 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 		return
 	}
 
-	oops = !(p.Puntajes[Azul] == 0 && p.Puntajes[Rojo] == 2+2+3+1)
+	oops = !(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+2+3+1)
 	if oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
@@ -1072,52 +1074,52 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 
 /* Tests de calculos */
 func TestCalcEnvido(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"A", "C", "E"}, []string{"B", "D", "F"})
-	p.Puntajes[Azul] = 4
-	p.Puntajes[Rojo] = 3
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 26
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Oro, Valor: 12},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"A", "C", "E"}, []string{"B", "D", "F"})
+	p.Puntajes[pdt.Azul] = 4
+	p.Puntajes[pdt.Rojo] = 3
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 26
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 12},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 20
-					&Carta{Palo: Copa, Valor: 12},
-					&Carta{Palo: Copa, Valor: 11},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 20
+					&pdt.Carta{Palo: pdt.Copa, Valor: 12},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 11},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 28
-					&Carta{Palo: Copa, Valor: 2},
-					&Carta{Palo: Copa, Valor: 6},
-					&Carta{Palo: Basto, Valor: 1},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 28
+					&pdt.Carta{Palo: pdt.Copa, Valor: 2},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 6},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 1},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 25
-					&Carta{Palo: Oro, Valor: 2},
-					&Carta{Palo: Oro, Valor: 3},
-					&Carta{Palo: Basto, Valor: 2},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 25
+					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 3},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 2},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 33
-					&Carta{Palo: Basto, Valor: 6},
-					&Carta{Palo: Basto, Valor: 7},
-					&Carta{Palo: Oro, Valor: 5},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 33
+					&pdt.Carta{Palo: pdt.Basto, Valor: 6},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 7},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 27
-					&Carta{Palo: Copa, Valor: 3},
-					&Carta{Palo: Copa, Valor: 4},
-					&Carta{Palo: Oro, Valor: 4},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 27
+					&pdt.Carta{Palo: pdt.Copa, Valor: 3},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 4},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 4},
 				},
 			},
 		},
@@ -1125,7 +1127,7 @@ func TestCalcEnvido(t *testing.T) {
 
 	expected := []int{26, 20, 28, 25, 33, 27}
 	for i, manojo := range p.Ronda.Manojos {
-		got := manojo.calcularEnvido(p.Ronda.Muestra)
+		got := manojo.CalcularEnvido(p.Ronda.Muestra)
 		oops = expected[i] != got
 		if oops {
 			t.Errorf(
@@ -1140,7 +1142,7 @@ func TestCalcEnvido(t *testing.T) {
 	p.Cmd("D Envido")
 	p.Cmd("C Quiero")
 
-	oops = !(p.Puntajes[Azul] == 4+2)
+	oops = !(p.Puntajes[pdt.Azul] == 4+2)
 	if oops {
 		t.Error("El resultado es incorrecto")
 		return
@@ -1149,52 +1151,52 @@ func TestCalcEnvido(t *testing.T) {
 }
 
 func TestCalcEnvido2(t *testing.T) {
-	p, _ := NuevaPartida(a20, []string{"A", "C", "E"}, []string{"B", "D", "F"})
-	p.Puntajes[Azul] = 4
-	p.Puntajes[Rojo] = 3
-	p.Ronda.setMuestra(Carta{Palo: Espada, Valor: 1})
-	p.Ronda.setManojos(
-		[]Manojo{
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 21
-					&Carta{Palo: Basto, Valor: 1},
-					&Carta{Palo: Basto, Valor: 12},
-					&Carta{Palo: Copa, Valor: 5},
+	p, _ := NuevaPartida(pdt.A20, []string{"A", "C", "E"}, []string{"B", "D", "F"})
+	p.Puntajes[pdt.Azul] = 4
+	p.Puntajes[pdt.Rojo] = 3
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 21
+					&pdt.Carta{Palo: pdt.Basto, Valor: 1},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 12},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 23
-					&Carta{Palo: Oro, Valor: 12},
-					&Carta{Palo: Oro, Valor: 3},
-					&Carta{Palo: Basto, Valor: 4},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 23
+					&pdt.Carta{Palo: pdt.Oro, Valor: 12},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 3},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 4},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 23
-					&Carta{Palo: Basto, Valor: 10},
-					&Carta{Palo: Copa, Valor: 6},
-					&Carta{Palo: Basto, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 23
+					&pdt.Carta{Palo: pdt.Basto, Valor: 10},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 6},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 30
-					&Carta{Palo: Oro, Valor: 6},
-					&Carta{Palo: Oro, Valor: 4},
-					&Carta{Palo: Copa, Valor: 1},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 30
+					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 4},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 30
-					&Carta{Palo: Basto, Valor: 6},
-					&Carta{Palo: Basto, Valor: 4},
-					&Carta{Palo: Oro, Valor: 1},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 30
+					&pdt.Carta{Palo: pdt.Basto, Valor: 6},
+					&pdt.Carta{Palo: pdt.Basto, Valor: 4},
+					&pdt.Carta{Palo: pdt.Oro, Valor: 1},
 				},
 			},
-			Manojo{
-				Cartas: [3]*Carta{ // envido: 31
-					&Carta{Palo: Espada, Valor: 5},
-					&Carta{Palo: Copa, Valor: 4},
-					&Carta{Palo: Espada, Valor: 3},
+			pdt.Manojo{
+				Cartas: [3]*pdt.Carta{ // envido: 31
+					&pdt.Carta{Palo: pdt.Espada, Valor: 5},
+					&pdt.Carta{Palo: pdt.Copa, Valor: 4},
+					&pdt.Carta{Palo: pdt.Espada, Valor: 3},
 				},
 			},
 		},
@@ -1202,7 +1204,7 @@ func TestCalcEnvido2(t *testing.T) {
 
 	expected := []int{21, 23, 23, 30, 30, 31}
 	for i, manojo := range p.Ronda.Manojos {
-		got := manojo.calcularEnvido(p.Ronda.Muestra)
+		got := manojo.CalcularEnvido(p.Ronda.Muestra)
 		oops = expected[i] != got
 		if oops {
 			t.Errorf(
@@ -1218,7 +1220,7 @@ func TestCalcEnvido2(t *testing.T) {
 	p.Cmd("D Envido")
 	p.Cmd("C Quiero")
 
-	oops = !(p.Puntajes[Rojo] == 3+2)
+	oops = !(p.Puntajes[pdt.Rojo] == 3+2)
 	if oops {
 		t.Error("El resultado es incorrecto")
 		return

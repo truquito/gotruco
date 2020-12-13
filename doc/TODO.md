@@ -4,6 +4,9 @@
 - URGENTE: LOS CONTAINS USAN REFLECT, SUPER ANTI PERFORMANTE!!
 - corrector ortografico (?)
 
+- los mensajes de info en realidad actualizan el resultado de la mano
+- habria que pulir lo de fromJSON FromJSON y Force <-- mucho bolonqui
+- jugadores con flor cache deberia ser una variable de partida y no de partidadt
 - out.TrucoQuerido -> out.TrucoQuerido, out.RetrucoQuerido, out.Vale4Querido
 - GetManojoByStr no deberia ser de PartidaDT en vez de Ronda ?
 - el exec del envido y flor lo esta imprimiendo en pantalla; eso es heredado de
@@ -15,11 +18,9 @@
 - nueva ronda esta pasando toda la partidaDt, solo con ronda basta, pulir eso
 - la suma de puntos por envido ganado -> deberia deshabilitar el envido en el 
   cli
-
-- jugada.getAutor esta al pedo
 - separar verificador semantico (jugada.go -> metodos de partida.go o bien un 
    modulo "ejecutor") ejecutor (partida.dt)
-- pasar evaluarRonda y evaluarMano a ese verificador/jugada/partida
+- pasar EvaluarRonda y EvaluarMano a ese verificador/jugada/partida
 
 - muchas jugadas no se las tiene que enviar a todos los n jugadores, sino a n-1
 - reducir/minimizar las notas de los mensajes -> el cli se tiene que encargar de
@@ -45,11 +46,11 @@
 - la struct truco esta con minuscula salame
 - Hay codigo repetido entre noQuiero y mazo cuando niega la flor (codigo copiado)
 - hay redundancia entre cantarFloresSiLasHay y cantarFlores
-- hay redundancia entre p.Ronda.getLaFlorMasAlta y 
+- hay redundancia entre p.Ronda.GetLaFlorMasAlta y 
     manojoConLaFlorGanadora, _, _ := p.Ronda.execCantarFlores(aPartirDe)
 - ??? esta duplicado el codigo de irse al mazo con el de "no quiero"
 - [ESTO PUEDE SER VIEJO(?)] hacer getElEnvido() con indices
-- ??? - eliminar los metodos .eval() que se usan en los .quiero() y ponerlos 
+- ??? - Eliminar los metodos .eval() que se usan en los .quiero() y ponerlos 
     directamente ahi
 
 # SEGURIDAD
@@ -69,7 +70,7 @@
     metodo que checkeo eso:
 
 # PERFORMANCE
-- lo mas eficiente al momento de hacer las perspectivas es usar la misma struct
+- lo mas eficiente al momento de hacer las PerspectivaCacheFlors es usar la misma struct
   y temporalmente setear algunas cartas a null (hacer benchmark comparando ambas)
 - que es mas rapido para saber si un jugador tiene flor:
     * jugada.autor.tieneFlor(p.Ronda.Muestra)
@@ -81,7 +82,7 @@
     mano 2?
 - no necesariamente tiene que ser RETRUCOQUERIDO el estado del truco para recien
      ahi gritar vale4, podes ir de 1???
-- en el test TestFixNacho la primera mano queda empardad:
+- en el test TestFixNacho la Primera mano queda empardad:
     a quien le toca el sig turno? a richard o a andres?
 - es necesario que sea su turno para cantar retruco o el turno de uno de los de 
     mi equipo?

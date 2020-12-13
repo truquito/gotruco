@@ -7,11 +7,13 @@ import (
 	"strings"
 
 	"github.com/jpfilevich/truco/out"
+	"github.com/jpfilevich/truco/pdt"
+	"github.com/jpfilevich/truco/ptr"
 )
 
-// el envido, la primera o la mentira
-// el envido, la primera o la mentira
-// el truco, la segunda o el rabón
+// el envido, la Primera o la mentira
+// el envido, la Primera o la mentira
+// el truco, la Segunda o el rabón
 
 // regexps
 var (
@@ -23,7 +25,7 @@ var (
 
 // Partida :
 type Partida struct {
-	PartidaDT
+	pdt.PartidaDT
 	Stdout *bytes.Buffer `json:"-"`
 	ErrCh  chan bool     `json:"-"`
 }
@@ -49,41 +51,41 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 		switch jugadaStr {
 		// toques
 		case "envido":
-			jugada = tocarEnvido{Jugada{autor: manojo}}
+			jugada = tocarEnvido{manojo}
 		case "real-envido":
-			jugada = tocarRealEnvido{Jugada{autor: manojo}}
+			jugada = tocarRealEnvido{manojo}
 		case "falta-envido":
-			jugada = tocarFaltaEnvido{Jugada{autor: manojo}}
+			jugada = tocarFaltaEnvido{manojo}
 
 		// cantos
 		case "flor":
-			jugada = cantarFlor{Jugada{autor: manojo}}
+			jugada = cantarFlor{manojo}
 		case "contra-flor":
-			jugada = cantarContraFlor{Jugada{autor: manojo}}
+			jugada = cantarContraFlor{manojo}
 		case "contra-flor-al-resto":
-			jugada = cantarContraFlorAlResto{Jugada{autor: manojo}}
+			jugada = cantarContraFlorAlResto{manojo}
 
 		// gritos
 		case "truco":
-			jugada = gritarTruco{Jugada{autor: manojo}}
+			jugada = gritarTruco{manojo}
 		case "re-truco":
-			jugada = gritarReTruco{Jugada{autor: manojo}}
+			jugada = gritarReTruco{manojo}
 		case "vale-4":
-			jugada = gritarVale4{Jugada{autor: manojo}}
+			jugada = gritarVale4{manojo}
 
 		// respuestas
 		case "quiero":
-			jugada = responderQuiero{Jugada{autor: manojo}}
+			jugada = responderQuiero{manojo}
 		case "no-quiero":
-			jugada = responderNoQuiero{Jugada{autor: manojo}}
+			jugada = responderNoQuiero{manojo}
 		// case "tiene":
-		// 	jugada = responderNoQuiero{Jugada{autor: manojo}}
+		// 	jugada = responderNoQuiero{manojo}
 
 		// acciones
 		case "mazo":
-			jugada = irseAlMazo{Jugada{autor: manojo}}
+			jugada = irseAlMazo{manojo}
 		case "tirar":
-			jugada = irseAlMazo{Jugada{autor: manojo}}
+			jugada = irseAlMazo{manojo}
 		default:
 			return nil, fmt.Errorf("No existe esa jugada")
 		}
@@ -100,13 +102,13 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 			return nil, fmt.Errorf("Usuario %s no encontrado", jugadorStr)
 		}
 
-		carta, err := parseCarta(valorStr, paloStr)
+		carta, err := pdt.ParseCarta(valorStr, paloStr)
 		if err != nil {
 			return nil, err
 		}
 
 		jugada = tirarCarta{
-			Jugada{autor: manojo},
+			manojo,
 			*carta,
 		}
 	}
@@ -117,9 +119,18 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 func (p *Partida) byeBye() {
 	if p.Terminada() {
 
+		var s string
+		if p.PartidaDT.EsManoAMano() { // retorna jugador
+			if p.Jugadores[0].Equipo == p.ElQueVaGanando() {
+				s = p.Jugadores[0].Nombre
+			} else {
+				s = p.Jugadores[1].Nombre
+			}
+		}
+
 		out.Write(p.Stdout, out.Pkt(
 			out.Dest("ALL"),
-			out.Msg(out.ByeBye, string(p.elQueVaGanando())),
+			out.Msg(out.ByeBye, s),
 		))
 	}
 }
@@ -149,6 +160,11 @@ func (p *Partida) Cmd(cmd string) error {
 	return nil
 }
 
+// Print imprime la partida
+func (p *Partida) Print() {
+	fmt.Print(ptr.Renderizar(&p.PartidaDT))
+}
+
 func (p *Partida) notify() {
 
 	// ojo primero hay que grabar el buff, luego avisar
@@ -161,9 +177,9 @@ func (p *Partida) notify() {
 }
 
 // NuevaPartida retorna n)ueva partida; error si hubo
-func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Partida, error) {
+func NuevaPartida(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*Partida, error) {
 
-	partidaDt, err := NuevaPartidaDt(puntuacion, equipoAzul, equipoRojo)
+	partidaDt, err := pdt.NuevaPartidaDt(puntuacion, equipoAzul, equipoRojo)
 
 	if err != nil {
 		return nil, err
