@@ -3,8 +3,8 @@ package ptr
 import (
 	"strconv"
 
-	"github.com/jpfilevich/canvas"
-	"github.com/jpfilevich/truco/pdt"
+	"github.com/filevich/canvas"
+	"github.com/filevich/truco/pdt"
 )
 
 type templates struct{}

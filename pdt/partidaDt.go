@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/jpfilevich/truco/out"
+	"github.com/filevich/truco/out"
 )
 
 // Puntuacion : Enum para el puntaje maximo de la partida

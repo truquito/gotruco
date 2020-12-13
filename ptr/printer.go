@@ -4,8 +4,8 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/jpfilevich/canvas"
-	"github.com/jpfilevich/truco/pdt"
+	"github.com/filevich/canvas"
+	"github.com/filevich/truco/pdt"
 )
 
 func chop(str string, l int) string {

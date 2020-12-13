@@ -4,10 +4,10 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/jpfilevich/truco/deco"
+	"github.com/filevich/truco/deco"
 
-	"github.com/jpfilevich/truco/out"
-	"github.com/jpfilevich/truco/pdt"
+	"github.com/filevich/truco/out"
+	"github.com/filevich/truco/pdt"
 )
 
 func TestParseJugada(t *testing.T) {

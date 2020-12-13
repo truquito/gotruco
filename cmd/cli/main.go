@@ -6,9 +6,9 @@ import (
 	"os"
 	"strings"
 
-	"github.com/jpfilevich/truco"
-	"github.com/jpfilevich/truco/deco"
-	"github.com/jpfilevich/truco/out"
+	"github.com/filevich/truco"
+	"github.com/filevich/truco/deco"
+	"github.com/filevich/truco/out"
 )
 
 var reader = bufio.NewReader(os.Stdin)

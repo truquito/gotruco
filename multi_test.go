@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"testing"
 
-	"github.com/jpfilevich/truco/ptr"
+	"github.com/filevich/truco/ptr"
 
-	"github.com/jpfilevich/truco/pdt"
+	"github.com/filevich/truco/pdt"
 )
 
 func TestCopy(t *testing.T) {

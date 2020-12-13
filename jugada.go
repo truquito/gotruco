@@ -3,8 +3,8 @@ package truco
 import (
 	"fmt"
 
-	"github.com/jpfilevich/truco/out"
-	"github.com/jpfilevich/truco/pdt"
+	"github.com/filevich/truco/out"
+	"github.com/filevich/truco/pdt"
 )
 
 // IJugada Interface para las jugadas

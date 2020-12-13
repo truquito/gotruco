@@ -3,7 +3,7 @@ package truco
 import (
 	"testing"
 
-	"github.com/jpfilevich/truco/pdt"
+	"github.com/filevich/truco/pdt"
 )
 
 var oops = false

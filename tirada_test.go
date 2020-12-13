@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"testing"
 
-	"github.com/jpfilevich/truco/out"
-	"github.com/jpfilevich/truco/pdt"
+	"github.com/filevich/truco/out"
+	"github.com/filevich/truco/pdt"
 )
 
 func TestTirada1(t *testing.T) {
