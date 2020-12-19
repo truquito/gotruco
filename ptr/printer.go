@@ -231,9 +231,9 @@ func (pr impresora) dibujarTooltips(r pdt.Ronda) {
 			posicion := posicion(turno)
 			switch posicion {
 			case a, b:
-				tooltip += " ⭡"
+				tooltip += " ↑"
 			default:
-				tooltip += " ⭣"
+				tooltip += " ↓"
 			}
 
 		}
@@ -288,7 +288,7 @@ func (pr impresora2) dibujarTooltips(r pdt.Ronda) {
 
 		esSuTurno := turno == i
 		if esSuTurno {
-			tooltip += " ⭣"
+			tooltip += " ↓"
 		}
 		tooltip = strings.Trim(tooltip, " ")
 		area := pr.areasJugadores["tooltips"][posicion(i)]
