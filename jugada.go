@@ -75,6 +75,18 @@ func (jugada tirarCarta) hacer(p *Partida) {
 		return
 	}
 
+	// ya jugo esa carta?
+	todaviaNoLaTiro := jugada.Manojo.CartasNoTiradas[idx]
+	if !todaviaNoLaTiro {
+
+		out.Write(p.Stdout, out.Pkt(
+			out.Dest(jugada.Manojo.Jugador.Nombre),
+			out.Msg(out.Error, "Ya tiraste esa carta"),
+		))
+
+		return
+	}
+
 	// luego, era su turno?
 	eraSuTurno := p.Ronda.GetElTurno() == jugada.Manojo
 	if !eraSuTurno {
