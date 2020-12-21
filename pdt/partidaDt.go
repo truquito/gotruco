@@ -392,13 +392,16 @@ func (p *PartidaDT) EvaluarRonda() (bool, *out.Packet) {
 	hayJugadoresRojo := p.Ronda.CantJugadoresEnJuego[Rojo] > 0
 	hayJugadoresAzul := p.Ronda.CantJugadoresEnJuego[Azul] > 0
 	hayJugadoresEnAmbos := hayJugadoresRojo && hayJugadoresAzul
+	primeraMano := p.Ronda.ManoEnJuego == Primera
 
 	// o bien que en la primera mano hayan cantado truco y uno no lo quizo
 	manoActual := p.Ronda.ManoEnJuego.ToInt() - 1
-	nadieGanoElTruco := p.Ronda.Manos[manoActual].Ganador == nil
+	elTrucoNoTuvoRespuesta := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
+	estaManoYaTieneGanador := p.Ronda.Manos[manoActual].Ganador != nil
+	elTrucoFueNoQuerido := elTrucoNoTuvoRespuesta && estaManoYaTieneGanador
 
-	imposibleQueSeHayaAcabado := (p.Ronda.ManoEnJuego == Primera) && hayJugadoresEnAmbos && nadieGanoElTruco
-	if imposibleQueSeHayaAcabado {
+	noSeAcabo := (primeraMano && hayJugadoresEnAmbos && !elTrucoFueNoQuerido)
+	if noSeAcabo {
 		return false, nil
 	}
 
@@ -506,8 +509,6 @@ func (p *PartidaDT) EvaluarRonda() (bool, *out.Packet) {
 	case VALE4QUERIDO:
 		totalPts = 4
 	}
-
-	elTrucoNoTuvoRespuesta := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
 
 	if elTrucoNoTuvoRespuesta {
 		ganador = p.Ronda.Truco.CantadoPor
