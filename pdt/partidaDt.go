@@ -393,7 +393,11 @@ func (p *PartidaDT) EvaluarRonda() (bool, *out.Packet) {
 	hayJugadoresAzul := p.Ronda.CantJugadoresEnJuego[Azul] > 0
 	hayJugadoresEnAmbos := hayJugadoresRojo && hayJugadoresAzul
 
-	imposibleQueSeHayaAcabado := (p.Ronda.ManoEnJuego == Primera) && hayJugadoresEnAmbos
+	// o bien que en la primera mano hayan cantado truco y uno no lo quizo
+	manoActual := p.Ronda.ManoEnJuego.ToInt() - 1
+	nadieGanoElTruco := p.Ronda.Manos[manoActual].Ganador == nil
+
+	imposibleQueSeHayaAcabado := (p.Ronda.ManoEnJuego == Primera) && hayJugadoresEnAmbos && nadieGanoElTruco
 	if imposibleQueSeHayaAcabado {
 		return false, nil
 	}
@@ -506,6 +510,7 @@ func (p *PartidaDT) EvaluarRonda() (bool, *out.Packet) {
 	elTrucoNoTuvoRespuesta := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
 
 	if elTrucoNoTuvoRespuesta {
+		ganador = p.Ronda.Truco.CantadoPor
 		msg = fmt.Sprintf(`La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s no querido`,
 			ganador.Jugador.Equipo,
 			totalPts,

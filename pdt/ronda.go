@@ -302,7 +302,7 @@ func (r *Ronda) SetNextTurnoPosMano() {
 	}
 }
 
-// SetManojos
+// SetManojos .
 func (r *Ronda) SetManojos(manojos []Manojo) {
 	for m, manojo := range manojos {
 		for c, carta := range manojo.Cartas {
