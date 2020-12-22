@@ -1,4 +1,6 @@
 # TODO
+- agregar un metodo de .Abandono(fulano) para dar por ganador al equipo contrario a fulano
+- arreglar tests para hacer regresion & que los tests no usen fmt tal que `go test` los corra de modo silencioso y solo activando la flag se muestre el output
 - mini commandos: t -> truco, e -> envido fe -> falta envido
 - ^ que el input tambien este tabulado
 - URGENTE: LOS CONTAINS USAN REFLECT, SUPER ANTI PERFORMANTE!!
@@ -37,7 +39,7 @@
 # BUGS
 - gritar truco deshabilita el envido wtf? posible bug
   se deberia de deshabilitar solo con aceptaciones de apuestas de truco
-- contraflor y contraflor al resto no estan implementadas (lineas 655 y 656)
+- [echo?] contraflor y contraflor al resto no estan implementadas (lineas 655 y 656)
 
 
 # LIMPIEZA DE CODIGO

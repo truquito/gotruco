@@ -369,7 +369,7 @@ func (p *PartidaDT) EvaluarMano() (bool, []*out.Packet) {
 	// se termino la ronda?
 	empiezaNuevaRonda, pkt2 := p.EvaluarRonda()
 
-	pkts = append(pkts, pkt2)
+	pkts = append(pkts, pkt2...)
 
 	// cuando termina la mano (y no se empieza una ronda) -> cambia de TRUNO
 	// cuando termina la ronda -> cambia de MANO
@@ -384,9 +384,9 @@ func (p *PartidaDT) EvaluarMano() (bool, []*out.Packet) {
 // se acabo la ronda?
 // si se empieza una ronda nueva -> retorna true
 // si no se termino la ronda 	 -> retorna false
-func (p *PartidaDT) EvaluarRonda() (bool, *out.Packet) {
+func (p *PartidaDT) EvaluarRonda() (bool, []*out.Packet) {
 
-	pkt := new(out.Packet)
+	var pkts []*out.Packet
 
 	/* A MENOS QUE SE HAYAN IDO TODOS EN LA PRIMERA MANO!!! */
 	hayJugadoresRojo := p.Ronda.CantJugadoresEnJuego[Rojo] > 0
@@ -526,16 +526,19 @@ func (p *PartidaDT) EvaluarRonda() (bool, *out.Packet) {
 			p.Ronda.Truco.Estado.String())
 	}
 
-	fmt.Println(msg)
+	pkts = append(pkts, out.Pkt(
+		out.Dest("ALL"),
+		out.Msg(out.Info, msg),
+	))
 
-	pkt = out.Pkt(
+	pkts = append(pkts, out.Pkt(
 		out.Dest("ALL"),
 		out.Msg(out.SumaPts, ganador.Jugador.ID, out.TrucoQuerido, totalPts),
-	)
+	))
 
 	p.SumarPuntos(ganador.Jugador.Equipo, totalPts)
 
-	return true, pkt // porque se empezo una nueva ronda
+	return true, pkts // porque se empezo una nueva ronda
 }
 
 // NuevaRonda .

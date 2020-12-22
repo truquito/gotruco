@@ -1144,13 +1144,14 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 		}
 		p.Ronda.Manos[manoActual].Resultado = equipoGanador
 
-		NuevaRonda, pkt := p.EvaluarRonda()
+		NuevaRonda, pkts := p.EvaluarRonda()
 
-		if pkt != nil {
-			// antes:
-			//write(p.Stdout, msg)
-			// ahora:
-			out.Write(p.Stdout, pkt)
+		if pkts != nil {
+			for _, pkt := range pkts {
+				if pkt != nil {
+					out.Write(p.Stdout, pkt)
+				}
+			}
 		}
 
 		if NuevaRonda {
