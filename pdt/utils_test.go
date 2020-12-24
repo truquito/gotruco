@@ -22,8 +22,8 @@ var castAsPerson = func(x interface{}) int {
 
 func BenchmarkMaxNew(b *testing.B) {
 	persons := []Person{
-		Person{"Joan", 32},
-		Person{"Marie", 29},
+		{"Joan", 32},
+		{"Marie", 29},
 	}
 	for i := 0; i < b.N; i++ {
 		// adaptacion
@@ -37,9 +37,9 @@ func BenchmarkMaxNew(b *testing.B) {
 
 func BenchmarkMaxOld(b *testing.B) {
 	cartas := [3]*Carta{
-		&Carta{Palo: Oro, Valor: 3},
-		&Carta{Palo: Copa, Valor: 4},
-		&Carta{Palo: Basto, Valor: 5},
+		{Palo: Oro, Valor: 3},
+		{Palo: Copa, Valor: 4},
+		{Palo: Basto, Valor: 5},
 	}
 	// muestra := Carta{ Espada, 10}
 	for i := 0; i < b.N; i++ {
