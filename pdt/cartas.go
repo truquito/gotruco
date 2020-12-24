@@ -111,7 +111,8 @@ func (c Carta) esPieza(muestra Carta) bool {
 
 	// CASO II:
 	esDoce := c.Valor == 12
-	esPiezaCasoII := esDoce && esDeLaMuestra
+	muestraEsNumericamentePieza := Contains([]int{2, 4, 5, 10, 11}, muestra.Valor)
+	esPiezaCasoII := esDoce && esDeLaMuestra && muestraEsNumericamentePieza
 
 	return esPiezaCasoI || esPiezaCasoII
 }
