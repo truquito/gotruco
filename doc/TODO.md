@@ -80,12 +80,10 @@
     * un mapa de booleanos o similar
 
 # DUDAS
-- caso en TestFixPanic: no deberia ganar la mano? a quien le toca ser pie en la 
-    mano 2?
+
+**indeps**:
 - no necesariamente tiene que ser RETRUCOQUERIDO el estado del truco para recien
      ahi gritar vale4, podes ir de 1???
-- en el test TestFixNacho la Primera mano queda empardad:
-    a quien le toca el sig turno? a richard o a andres?
 - es necesario que sea su turno para cantar retruco o el turno de uno de los de 
     mi equipo?
     OJO: Acutalmente en el re-truco: turno del equipo, en el truco: turno mio
@@ -101,14 +99,18 @@
     volver a cantarlo?
 - tiene sentido que alguien cante envido incluso cuando ya tiro todas sus cartas?
     checkear la cond. yaTiroTodasSusCartas en casos envido/truco
+  solo lo puede cantar en la primera mano no?
+  tiene que ser necesariamente antes de tirar SU primera carta?
 - se esta jugando de a 2 (o mas) uno tiene flor, pero el otro se va al 
     mazo deberia de sumar los puntos de la flor a pesar de que no fue cantada
 - no es necesario cantar los puntajes de las flores si todos los que 
     tienen flores son del mismo equipo. Es necesario cantar los puntajes?
     TestTodoTienenFlor
 - es necesario que sea tu turno para cantar la flor? o es tipo irse al mazo????
+
+[resuelto? necesariamente deben cantar flor si es que tienen]
 - todos los escenarios posibles de flor de TestTirada1.
-  obs: ahora si todos cantan flor de una (como esta) entonces se fuega simplemente
+  obs: ahora si todos cantan flor de una (como esta) entonces se juega simplemente
   "la flor"
   si uno dice no quiero ~ con flor me achico -> acarrea a todo el equipo
   deberia ser asi?
@@ -131,3 +133,16 @@
     `casoII := trucoYaQuerido && unoDeMiEquipoQuizo`
 
 - actualmente se le puede responder quiero a una contraflor??
+
+
+**simulacion**:
+- caso en TestFixPanic: no deberia ganar la mano? a quien le toca ser pie en la 
+    mano 2?
+- en el test TestFixNacho la Primera mano queda empardad:
+    a quien le toca el sig turno? a richard o a andres?
+
+
+
+
+
+
