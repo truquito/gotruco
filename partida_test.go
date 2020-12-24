@@ -14,18 +14,18 @@ func TestParseJugada(t *testing.T) {
 	p, _ := NuevaPartida(20, []string{"Alvaro"}, []string{"Roro"})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{ // Alvaro tiene flor
+			{ // Alvaro tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 6},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 7},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 6},
+					{Palo: pdt.Basto, Valor: 7},
 				},
 			},
-			pdt.Manojo{ // Roro no tiene flor
+			{ // Roro no tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 5},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 5},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 5},
+					{Palo: pdt.Oro, Valor: 5},
+					{Palo: pdt.Espada, Valor: 5},
+					{Palo: pdt.Basto, Valor: 5},
 				},
 			},
 		},
@@ -99,46 +99,46 @@ func TestPartida1(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Oro, Valor: 3})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{ // Alvaro tiene flor
+			{ // Alvaro tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 6},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 7},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 6},
+					{Palo: pdt.Basto, Valor: 7},
 				},
 			},
-			pdt.Manojo{ // Roro no tiene flor
+			{ // Roro no tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 5},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 5},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 5},
+					{Palo: pdt.Oro, Valor: 5},
+					{Palo: pdt.Espada, Valor: 5},
+					{Palo: pdt.Basto, Valor: 5},
 				},
 			},
-			pdt.Manojo{ // Adolfo tiene flor
+			{ // Adolfo tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 2},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Copa, Valor: 2},
+					{Palo: pdt.Copa, Valor: 3},
 				},
 			},
-			pdt.Manojo{ // Renzo tiene flor
+			{ // Renzo tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 4},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 4},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 1},
+					{Palo: pdt.Oro, Valor: 4},
+					{Palo: pdt.Espada, Valor: 4},
+					{Palo: pdt.Espada, Valor: 1},
 				},
 			},
-			pdt.Manojo{ // Andres no tiene  flor
+			{ // Andres no tiene  flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 10},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 11},
+					{Palo: pdt.Copa, Valor: 10},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Basto, Valor: 11},
 				},
 			},
-			pdt.Manojo{ // Richard tiene flor
+			{ // Richard tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 10},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 1},
+					{Palo: pdt.Oro, Valor: 10},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 1},
 				},
 			},
 		},
@@ -748,46 +748,46 @@ func TestTodoTienenFlor(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Oro, Valor: 3})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{ // Alvaro tiene flor
+			{ // Alvaro tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 6},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 7},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 6},
+					{Palo: pdt.Basto, Valor: 7},
 				},
 			},
-			pdt.Manojo{ // Roro no tiene flor
+			{ // Roro no tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 5},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 5},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 5},
+					{Palo: pdt.Oro, Valor: 5},
+					{Palo: pdt.Espada, Valor: 5},
+					{Palo: pdt.Basto, Valor: 5},
 				},
 			},
-			pdt.Manojo{ // Adolfo tiene flor
+			{ // Adolfo tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 2},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Copa, Valor: 2},
+					{Palo: pdt.Copa, Valor: 3},
 				},
 			},
-			pdt.Manojo{ // Renzo no tiene flor
+			{ // Renzo no tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 10},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 11},
+					{Palo: pdt.Copa, Valor: 10},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Basto, Valor: 11},
 				},
 			},
-			pdt.Manojo{ // Andres tiene  flor
+			{ // Andres tiene  flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 4},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 4},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 1},
+					{Palo: pdt.Oro, Valor: 4},
+					{Palo: pdt.Espada, Valor: 4},
+					{Palo: pdt.Espada, Valor: 1},
 				},
 			},
-			pdt.Manojo{ // Richard no tiene flor
+			{ // Richard no tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 11},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 1},
+					{Palo: pdt.Copa, Valor: 11},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 1},
 				},
 			},
 		},
@@ -892,18 +892,18 @@ func TestFlorBlucle(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Oro, Valor: 3})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{ // Alvaro tiene flor
+			{ // Alvaro tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 6},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 7},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 6},
+					{Palo: pdt.Basto, Valor: 7},
 				},
 			},
-			pdt.Manojo{ // Roro tiene flor
+			{ // Roro tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 5},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 5},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 5},
+					{Palo: pdt.Oro, Valor: 5},
+					{Palo: pdt.Espada, Valor: 5},
+					{Palo: pdt.Espada, Valor: 5},
 				},
 			},
 		},
@@ -921,46 +921,46 @@ func TestQuieroContraflorDesdeMazo(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Oro, Valor: 3})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{ // Alvaro tiene flor
+			{ // Alvaro tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 6},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 7},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 6},
+					{Palo: pdt.Basto, Valor: 7},
 				},
 			},
-			pdt.Manojo{ // Roro no tiene flor
+			{ // Roro no tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 5},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 5},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 5},
+					{Palo: pdt.Oro, Valor: 5},
+					{Palo: pdt.Espada, Valor: 5},
+					{Palo: pdt.Basto, Valor: 5},
 				},
 			},
-			pdt.Manojo{ // Adolfo tiene flor
+			{ // Adolfo tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 2},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Copa, Valor: 2},
+					{Palo: pdt.Copa, Valor: 3},
 				},
 			},
-			pdt.Manojo{ // Renzo no tiene flor
+			{ // Renzo no tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 10},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 4},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 11},
+					{Palo: pdt.Copa, Valor: 10},
+					{Palo: pdt.Copa, Valor: 4},
+					{Palo: pdt.Copa, Valor: 11},
 				},
 			},
-			pdt.Manojo{ // Andres tiene  flor
+			{ // Andres tiene  flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 4},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 4},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 1},
+					{Palo: pdt.Oro, Valor: 4},
+					{Palo: pdt.Espada, Valor: 4},
+					{Palo: pdt.Espada, Valor: 1},
 				},
 			},
-			pdt.Manojo{ // Richard no tiene flor
+			{ // Richard no tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 12},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 1},
+					{Palo: pdt.Copa, Valor: 12},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 1},
 				},
 			},
 		},
@@ -1012,18 +1012,18 @@ func TestMalaAsignacionPts(t *testing.T) {
 	p.Ronda.ElMano = 1
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{ // Alvaro
+			{ // Alvaro
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 10},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 12},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 5},
+					{Palo: pdt.Oro, Valor: 10},
+					{Palo: pdt.Oro, Valor: 12},
+					{Palo: pdt.Espada, Valor: 5},
 				},
 			},
-			pdt.Manojo{ // Roro
+			{ // Roro
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 1},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 1},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 11},
+					{Palo: pdt.Oro, Valor: 1},
+					{Palo: pdt.Espada, Valor: 1},
+					{Palo: pdt.Espada, Valor: 11},
 				},
 			},
 		},

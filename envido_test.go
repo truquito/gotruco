@@ -26,18 +26,18 @@ func TestEnvidoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -72,18 +72,18 @@ func TestEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -124,18 +124,18 @@ func TestRealEnvidoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -170,18 +170,18 @@ func TestRealEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -216,18 +216,18 @@ func TestFaltaEnvidoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -262,18 +262,18 @@ func TestFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -308,18 +308,18 @@ func TestEnvidoEnvidoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -363,18 +363,18 @@ func TestEnvidoEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -410,18 +410,18 @@ func TestEnvidoRealEnvidoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -457,18 +457,18 @@ func TestEnvidoRealEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -504,18 +504,18 @@ func TestEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -551,18 +551,18 @@ func TestEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -598,18 +598,18 @@ func TestRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -645,18 +645,18 @@ func TestRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -692,18 +692,18 @@ func TestEnvidoEnvidoRealEnvidoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -740,18 +740,18 @@ func TestEnvidoEnvidoRealEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -788,18 +788,18 @@ func TestEnvidoEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -836,18 +836,18 @@ func TestEnvidoEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -884,18 +884,18 @@ func TestEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -932,18 +932,18 @@ func TestEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -980,18 +980,18 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -1029,18 +1029,18 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 13
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
 		},
@@ -1080,46 +1080,46 @@ func TestCalcEnvido(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 26
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 12},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Oro, Valor: 12},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 20
-					&pdt.Carta{Palo: pdt.Copa, Valor: 12},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 11},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Copa, Valor: 12},
+					{Palo: pdt.Copa, Valor: 11},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 28
-					&pdt.Carta{Palo: pdt.Copa, Valor: 2},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 6},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 1},
+					{Palo: pdt.Copa, Valor: 2},
+					{Palo: pdt.Copa, Valor: 6},
+					{Palo: pdt.Basto, Valor: 1},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 25
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 3},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 2},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Oro, Valor: 3},
+					{Palo: pdt.Basto, Valor: 2},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 33
-					&pdt.Carta{Palo: pdt.Basto, Valor: 6},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 7},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 5},
+					{Palo: pdt.Basto, Valor: 6},
+					{Palo: pdt.Basto, Valor: 7},
+					{Palo: pdt.Oro, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 27
-					&pdt.Carta{Palo: pdt.Copa, Valor: 3},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 4},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 4},
+					{Palo: pdt.Copa, Valor: 3},
+					{Palo: pdt.Copa, Valor: 4},
+					{Palo: pdt.Oro, Valor: 4},
 				},
 			},
 		},
@@ -1157,46 +1157,46 @@ func TestCalcEnvido2(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 21
-					&pdt.Carta{Palo: pdt.Basto, Valor: 1},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 12},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 5},
+					{Palo: pdt.Basto, Valor: 1},
+					{Palo: pdt.Basto, Valor: 12},
+					{Palo: pdt.Copa, Valor: 5},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 23
-					&pdt.Carta{Palo: pdt.Oro, Valor: 12},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 3},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 4},
+					{Palo: pdt.Oro, Valor: 12},
+					{Palo: pdt.Oro, Valor: 3},
+					{Palo: pdt.Basto, Valor: 4},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 23
-					&pdt.Carta{Palo: pdt.Basto, Valor: 10},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 6},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Basto, Valor: 10},
+					{Palo: pdt.Copa, Valor: 6},
+					{Palo: pdt.Basto, Valor: 3},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 30
-					&pdt.Carta{Palo: pdt.Oro, Valor: 6},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 4},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Oro, Valor: 6},
+					{Palo: pdt.Oro, Valor: 4},
+					{Palo: pdt.Copa, Valor: 1},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 30
-					&pdt.Carta{Palo: pdt.Basto, Valor: 6},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 4},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 1},
+					{Palo: pdt.Basto, Valor: 6},
+					{Palo: pdt.Basto, Valor: 4},
+					{Palo: pdt.Oro, Valor: 1},
 				},
 			},
-			pdt.Manojo{
+			{
 				Cartas: [3]*pdt.Carta{ // envido: 31
-					&pdt.Carta{Palo: pdt.Espada, Valor: 5},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 4},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 3},
+					{Palo: pdt.Espada, Valor: 5},
+					{Palo: pdt.Copa, Valor: 4},
+					{Palo: pdt.Espada, Valor: 3},
 				},
 			},
 		},

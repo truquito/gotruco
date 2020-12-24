@@ -13,46 +13,46 @@ func TestTirada1(t *testing.T) {
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Oro, Valor: 3})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
-			pdt.Manojo{ // Alvaro tiene flor
+			{ // Alvaro tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 6},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 7},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 6},
+					{Palo: pdt.Basto, Valor: 7},
 				},
 			},
-			pdt.Manojo{ // Roro no tiene flor
+			{ // Roro no tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 5},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 5},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 5},
+					{Palo: pdt.Oro, Valor: 5},
+					{Palo: pdt.Espada, Valor: 5},
+					{Palo: pdt.Basto, Valor: 5},
 				},
 			},
-			pdt.Manojo{ // Adolfo tiene flor
+			{ // Adolfo tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 1},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 2},
-					&pdt.Carta{Palo: pdt.Copa, Valor: 3},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Copa, Valor: 2},
+					{Palo: pdt.Copa, Valor: 3},
 				},
 			},
-			pdt.Manojo{ // Renzo tiene flor
+			{ // Renzo tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 4},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 4},
-					&pdt.Carta{Palo: pdt.Espada, Valor: 1},
+					{Palo: pdt.Oro, Valor: 4},
+					{Palo: pdt.Espada, Valor: 4},
+					{Palo: pdt.Espada, Valor: 1},
 				},
 			},
-			pdt.Manojo{ // Andres no tiene  flor
+			{ // Andres no tiene  flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Copa, Valor: 10},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 7},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 11},
+					{Palo: pdt.Copa, Valor: 10},
+					{Palo: pdt.Oro, Valor: 7},
+					{Palo: pdt.Basto, Valor: 11},
 				},
 			},
-			pdt.Manojo{ // Richard tiene flor
+			{ // Richard tiene flor
 				Cartas: [3]*pdt.Carta{
-					&pdt.Carta{Palo: pdt.Oro, Valor: 10},
-					&pdt.Carta{Palo: pdt.Oro, Valor: 2},
-					&pdt.Carta{Palo: pdt.Basto, Valor: 1},
+					{Palo: pdt.Oro, Valor: 10},
+					{Palo: pdt.Oro, Valor: 2},
+					{Palo: pdt.Basto, Valor: 1},
 				},
 			},
 		},
