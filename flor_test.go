@@ -3,6 +3,7 @@ package truco
 import (
 	"testing"
 
+	"github.com/filevich/truco/out"
 	"github.com/filevich/truco/pdt"
 )
 
@@ -231,9 +232,13 @@ func TestFixFlor(t *testing.T) {
 	p.Cmd("alvaro 12 basto")
 	p.Cmd("roro 10 basto")
 
-	if !(p.Puntajes[pdt.Rojo] == 3) {
+	oops = !(p.Puntajes[pdt.Rojo] == 3)
+	if oops {
 		t.Error(`El puntaje del equipo rojo deberia ser 3 por la flor de richard`)
-	} else if !(p.Puntajes[pdt.Azul] == 1) {
+	}
+
+	oops = !(p.Puntajes[pdt.Azul] == 1)
+	if oops {
 		t.Error(`El puntaje del equipo azul deberia ser 1 por la ronda ganada`)
 	}
 
@@ -251,7 +256,9 @@ func TestFixFlorBucle(t *testing.T) {
 	p.Cmd("roro flor")
 	p.Cmd("richard flor")
 
-	if !(p.Puntajes[pdt.Rojo] == 6) {
+	oops = !(p.Puntajes[pdt.Rojo] == 6)
+
+	if oops {
 		t.Error(`El puntaje del equipo rojo deberia ser 6 por las 2 flores`)
 	}
 
@@ -265,19 +272,73 @@ func TestFixContraFlor(t *testing.T) {
 	p.Force(partidaJSON)
 	p.Print()
 
+	/*
+					┌4─┐1─┐3─┐    ┌12┐3─┐6─┐
+					│Es│Or│Or│    │Ba│Es│Es│
+					└──┘──┘──┘    └──┘──┘──┘                  ╔════════════════╗
+										❀                       │ #Mano: Primera │
+						Andres        Renzo                     ╠────────────────╣
+				╔══════════════════════════════╗              │ Mano: Alvaro   │
+				║                              ║              ╠────────────────╣
+				║                              ║              │ Turno: Alvaro  │
+				║             ┌4─┐             ║     ❀        ╠────────────────╣
+		Richard   ║             │Ba│             ║   Adolfo     │ Puntuacion: 20 │
+		┌6─┐6─┐11┐ ║             └──┘             ║ ┌11┐11┐5─┐   ╚════════════════╝
+		│Or│Co│Es│ ║                              ║ │Ba│Co│Co│    ╔──────┬──────╗
+		└──┘──┘──┘ ║                              ║ └──┘──┘──┘    │ ROJO │ AZUL │
+				╚══════════════════════════════╝               ├──────┼──────┤
+						Alvaro         Roro                      │  0   │  0   │
+						↑                                      ╚──────┴──────╝
+					┌1─┐1─┐7─┐    ┌4─┐7─┐5─┐
+					│Ba│Es│Es│    │Or│Co│Or│
+					└──┘──┘──┘    └──┘──┘──┘
+	*/
+
 	p.Cmd("alvaro 1 basto")
 	p.Cmd("roro 4 oro")
 	p.Cmd("adolfo flor")
+
+	// no deberia dejarlo tirar xq el envite esta en juego
+	// tampoco debio de haber pasado su turno
 	p.Cmd("adolfo 11 basto")
+
+	oops = !(p.Ronda.GetElTurno().GetCantCartasTiradas() == 0)
+	if oops {
+		t.Error(`El puntaje del equipo rojo deberia ser 3 por la flor de richard`)
+	}
+
+	oops = !(p.Ronda.GetElTurno().Jugador.Nombre == "Adolfo")
+	if oops {
+		t.Error(`No debio de haber pasado su turno`)
+	}
+
+	// no deberia dejarlo tirar xq el envite esta en juego
 	p.Cmd("renzo 12 basto")
+
+	oops = !(p.Ronda.Manojos[2].GetCantCartasTiradas() == 0)
+	if oops {
+		t.Error(`No deberia dejarlo tirar porque nunca llego a ser su turno`)
+	}
+
+	// no hay nada que querer
 	p.Cmd("renzo quiero")
+
+	oops = !(p.Ronda.Envite.Estado == pdt.FLOR)
+	if oops {
+		t.Error(`El estado del envite no debio de haber cambiado`)
+	}
+
 	p.Cmd("renzo contra-flor")
 	p.Cmd("adolfo quiero")
 
-	// if !(p.Puntajes[pdt.Rojo] == 3) {
-	// 	t.Error(`El puntaje del equipo rojo deberia ser 3 por la flor de richard`)
-	// } else if !(p.Puntajes[pdt.Azul] == 1) {
-	// 	t.Error(`El puntaje del equipo azul deberia ser 1 por la ronda ganada`)
-	// }
+	// renzo tiene 35 vs los 32 de adolfo
+	// deberia ganar las 2 flores + x pts
 
+	p.Print()
+	out.Consume(p.Stdout, out.Print)
+
+	oops = !(p.Puntajes[pdt.Rojo] > p.Puntajes[pdt.Azul])
+	if oops {
+		t.Error(`El equipo rojo deberia de tener mas pts que el azul`)
+	}
 }

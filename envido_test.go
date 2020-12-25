@@ -1205,7 +1205,7 @@ func TestCalcEnvido2(t *testing.T) {
 	expected := []int{21, 23, 23, 30, 30, 31}
 	for i, manojo := range p.Ronda.Manojos {
 		got := manojo.CalcularEnvido(p.Ronda.Muestra)
-		oops = expected[i] != got
+		oops = !(expected[i] == got)
 		if oops {
 			t.Errorf(
 				`El resultado del envido del jugador %s es incorrecto.

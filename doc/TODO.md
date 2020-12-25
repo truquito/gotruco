@@ -140,6 +140,13 @@
     mano 2?
 - en el test TestFixNacho la Primera mano queda empardad:
     a quien le toca el sig turno? a richard o a andres?
+- @ flor_test.TestFixContraFlor:
+      flor -> flor -> 3 + 3 = 6 pts en total
+      pero,
+      flor -> contraflor -> quiero -> 1 + 3 = 4 pts en total MENOS QUE FLOR COMUN, WTF?
+    no deberia ser 3 + 3 + x ?
+- @ partida_test.TestPartida1 que pasa con richard que tiene flor y no la canta?
+  que deberia pasar en esos casos?
 
 
 
