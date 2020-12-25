@@ -277,8 +277,15 @@ func (jugada tocarEnvido) hacer(p *Partida) {
 // donde 'j' el jugador que dijo 'quiero' al 'envido'/'real envido'
 func (jugada tocarEnvido) eval(p *Partida) {
 	p.Ronda.Envite.Estado = pdt.DESHABILITADO
-	jIdx, _, output := p.Ronda.ExecElEnvido()
-	print(output)
+	jIdx, _, pkts := p.Ronda.ExecElEnvido()
+
+	if pkts != nil {
+		for _, pkt := range pkts {
+			if pkt != nil {
+				out.Write(p.Stdout, pkt)
+			}
+		}
+	}
 
 	jug := &p.Jugadores[jIdx]
 
@@ -417,9 +424,15 @@ func (jugada tocarFaltaEnvido) eval(p *Partida) {
 	p.Ronda.Envite.Estado = pdt.DESHABILITADO
 
 	// computar envidos
-	jIdx, _, output := p.Ronda.ExecElEnvido()
+	jIdx, _, pkts := p.Ronda.ExecElEnvido()
 
-	print(output)
+	if pkts != nil {
+		for _, pkt := range pkts {
+			if pkt != nil {
+				out.Write(p.Stdout, pkt)
+			}
+		}
+	}
 
 	// jug es el que gano el (falta) envido
 	jug := &p.Jugadores[jIdx]

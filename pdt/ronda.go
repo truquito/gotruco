@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+
+	"github.com/filevich/truco/out"
 )
 
 // EstadoTruco : enum
@@ -344,7 +346,11 @@ func (r *Ronda) SetMuestra(muestra Carta) {
 * ambos con un parametro-flag que decida:
 * si el juego esta en "modo json" o "modo consola"
  */
-func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, stdOut []string) {
+func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*out.Packet) {
+
+	// var pkts []*out.Packet
+
+	var stdOut []string
 
 	cantJugadores := len(r.Manojos)
 
@@ -379,9 +385,15 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, stdOut []string) {
 	}
 
 	yaDijeron[jIdx] = true
-	out := fmt.Sprintf(`   %s dice: "tengo %v"`, r.Manojos[jIdx].Jugador.Nombre,
+
+	salida := fmt.Sprintf(`   %s dice: "tengo %v"`, r.Manojos[jIdx].Jugador.Nombre,
 		envidos[jIdx])
-	stdOut = append(stdOut, out)
+	stdOut = append(stdOut, salida)
+
+	pkts = append(pkts, out.Pkt(
+		out.Dest("ALL"),
+		out.Msg(out.DiceTengo, r.Manojos[jIdx].Jugador.Nombre, envidos[jIdx]),
+	))
 
 	// `todaviaNoDijeronSonMejores` se usa para
 	// no andar repitiendo "son bueanas" "son buenas"
@@ -416,9 +428,16 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, stdOut []string) {
 
 			if sonMejores {
 				if esDeEquipoContrario {
-					out := fmt.Sprintf(`   %s dice: "%v son mejores!"`,
+
+					salida := fmt.Sprintf(`   %s dice: "%v son mejores!"`,
 						r.Manojos[i].Jugador.Nombre, envidos[i])
-					stdOut = append(stdOut, out)
+					stdOut = append(stdOut, salida)
+
+					pkts = append(pkts, out.Pkt(
+						out.Dest("ALL"),
+						out.Msg(out.DiceSonMejores, r.Manojos[i].Jugador.Nombre, envidos[i]),
+					))
+
 					jIdx = i
 					yaDijeron[i] = true
 					todaviaNoDijeronSonMejores = false
@@ -435,9 +454,17 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, stdOut []string) {
 			} else /* tiene el envido mas chico */ {
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
-						out := fmt.Sprintf(`   %s dice: "son buenas" (tenia %v)`,
+
+						salida := fmt.Sprintf(`   %s dice: "son buenas" (tenia %v)`,
 							r.Manojos[i].Jugador.Nombre, envidos[i])
-						stdOut = append(stdOut, out)
+						stdOut = append(stdOut, salida)
+
+						pkts = append(pkts, out.Pkt(
+							out.Dest("ALL"),
+							out.Msg(out.DiceSonBuenas, r.Manojos[i].Jugador.Nombre),
+							// valor de su envido es `envidos[i]` pero no corresponde decirlo
+						))
+
 						yaDijeron[i] = true
 						// pasa al siguiente
 					}
@@ -460,7 +487,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, stdOut []string) {
 
 	max = envidos[jIdx]
 
-	return jIdx, max, stdOut
+	return jIdx, max, pkts
 }
 
 /**
@@ -516,9 +543,9 @@ func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, stdO
 	// empieza el del parametro
 	if flores[aPartirDe] > 0 {
 		yaDijeron[aPartirDe] = true
-		out := fmt.Sprintf(`   %s dice: "tengo %v"`, r.Manojos[aPartirDe].Jugador.Nombre,
+		salida := fmt.Sprintf(`   %s dice: "tengo %v"`, r.Manojos[aPartirDe].Jugador.Nombre,
 			flores[aPartirDe])
-		stdOut = append(stdOut, out)
+		stdOut = append(stdOut, salida)
 	}
 
 	// `todaviaNoDijeronSonMejores` se usa para
@@ -547,9 +574,9 @@ func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, stdO
 
 			if sonMejores {
 				if esDeEquipoContrario {
-					out := fmt.Sprintf(`   %s dice: "%v son mejores!"`,
+					salida := fmt.Sprintf(`   %s dice: "%v son mejores!"`,
 						r.Manojos[i].Jugador.Nombre, flores[i])
-					stdOut = append(stdOut, out)
+					stdOut = append(stdOut, salida)
 					jIdx = i
 					yaDijeron[i] = true
 					todaviaNoDijeronSonMejores = false
@@ -566,9 +593,9 @@ func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, stdO
 			} else /* tiene el envido mas chico */ {
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
-						out := fmt.Sprintf(`   %s dice: "son buenas" (tenia %v)`,
+						salida := fmt.Sprintf(`   %s dice: "son buenas" (tenia %v)`,
 							r.Manojos[i].Jugador.Nombre, flores[i])
-						stdOut = append(stdOut, out)
+						stdOut = append(stdOut, salida)
 						yaDijeron[i] = true
 						// pasa al siguiente
 					}
