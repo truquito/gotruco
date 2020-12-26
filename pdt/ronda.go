@@ -297,9 +297,35 @@ func (r *Ronda) SetNextTurnoPosMano() {
 		// la mano anterior
 	} else {
 		// solo si la mano anterior no fue parda
-		// si fue parda el truno se mantiene
+		// si fue parda busco la que empardo mas cercano al mano
 		if r.GetManoAnterior().Resultado != Empardada {
 			r.Turno = JugadorIdx(r.GetIdx(*r.GetManoAnterior().Ganador))
+		} else {
+			// 1. obtengo la carta de maximo valor de la mano anterior
+			// 2. busco a partir de la mano quien es el primero en tener
+			//    esa carta y que no se haya ido al mazo aun
+			// 3. si todos los que empardaron ya se fueron, entonces hago la
+			//    vieja confiable (302)
+			max := -1
+			for _, tirada := range r.GetManoAnterior().CartasTiradas {
+				poder := tirada.Carta.calcPoder(r.Muestra)
+				if poder > max {
+					max = poder
+				}
+			}
+			for _, tirada := range r.GetManoAnterior().CartasTiradas {
+				poder := tirada.Carta.calcPoder(r.Muestra)
+				if poder == max {
+					if !tirada.autor.SeFueAlMazo {
+						r.Turno = JugadorIdx(r.GetIdx(*tirada.autor))
+						return
+					}
+				}
+			}
+			// si llegue aca es porque los vejigas que empardaron se fueron
+			// entonces agarro al primero a partir del mano que aun
+			// no se haya ido
+			r.Turno = JugadorIdx(r.GetIdx(*r.GetSigHabilitado(*r.GetElMano())))
 		}
 	}
 }

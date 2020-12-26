@@ -3526,7 +3526,7 @@ func TestPardaSigTurno1(t *testing.T) {
 		[]pdt.Manojo{
 			{
 				Cartas: [3]*pdt.Carta{ // envido: 26
-					{Palo: pdt.Oro, Valor: 5},
+					{Palo: pdt.Copa, Valor: 7},
 					{Palo: pdt.Oro, Valor: 12},
 					{Palo: pdt.Copa, Valor: 5},
 				},
@@ -3569,24 +3569,176 @@ func TestPardaSigTurno1(t *testing.T) {
 		},
 	)
 
-	p.Print()
-
-	p.Cmd("Alvaro 5 Oro")
-	p.Cmd("Roro 3 Copa")
+	p.Cmd("Alvaro 5 Copa")
+	p.Cmd("Roro 4 Copa")
 	// los siguientes 4: todos tiran 6 -> resulta mano parda
-	p.Cmd("Adolfo 6 Basto")
-	p.Cmd("Renzo 6 Copa")
-	p.Cmd("Andres 6 Espada")
-	p.Cmd("Richard 6 Oro")
+	p.Cmd("Adolfo 6 Espada")
+	p.Cmd("Renzo 6 Oro")
+	p.Cmd("Andres 6 Copa")
+	p.Cmd("Richard 6 Basto")
+
+	p.Print()
 
 	oops = !(p.Ronda.Manos[0].Resultado == pdt.Empardada)
 	if oops {
-		t.Log(`La mano debio ser parda`)
+		t.Error(`La mano debio ser parda`)
 	}
 
 	oops = !(p.Ronda.GetElTurno().Jugador.Nombre == "Adolfo")
 	if oops {
-		t.Log(`Deberia ser turno de Roro, debido a que es el mas cercano del mano y qu empardo`)
+		t.Error(`Deberia ser turno de Adolfo, debido a que es el mas cercano del mano y qu empardo`)
+	}
+}
+
+func TestPardaSigTurno2(t *testing.T) {
+	// igual que el anterior pero ahora adolfo se va al mazo
+	// si va parda, el siguiente turno deberia ser del mano
+	// o del mas cercano a este
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			{
+				Cartas: [3]*pdt.Carta{ // envido: 26
+					{Palo: pdt.Copa, Valor: 7},
+					{Palo: pdt.Oro, Valor: 12},
+					{Palo: pdt.Copa, Valor: 5},
+				},
+			},
+			{
+				Cartas: [3]*pdt.Carta{ // envido: 27
+					{Palo: pdt.Copa, Valor: 3},
+					{Palo: pdt.Copa, Valor: 4},
+					{Palo: pdt.Oro, Valor: 4},
+				},
+			},
+			{
+				Cartas: [3]*pdt.Carta{ // envido: 28
+					{Palo: pdt.Copa, Valor: 2},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Espada, Valor: 6}, // <-- parda primera mano
+				},
+			},
+			{
+				Cartas: [3]*pdt.Carta{ // envido: 25
+					{Palo: pdt.Basto, Valor: 2},
+					{Palo: pdt.Oro, Valor: 3},
+					{Palo: pdt.Oro, Valor: 6}, // <-- parda primera mano
+				},
+			},
+			{
+				Cartas: [3]*pdt.Carta{ // envido: 33
+					{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Basto, Valor: 7},
+					{Palo: pdt.Copa, Valor: 6}, // <-- parda primera mano
+				},
+			},
+			{
+				Cartas: [3]*pdt.Carta{ // envido: 20
+					{Palo: pdt.Copa, Valor: 12},
+					{Palo: pdt.Copa, Valor: 11},
+					{Palo: pdt.Basto, Valor: 6}, // <-- parda primera mano
+				},
+			},
+		},
+	)
+
+	p.Cmd("Alvaro 5 Copa")
+	p.Cmd("Roro 4 Copa")
+	// los siguientes 4: todos tiran 6 -> resulta mano parda
+	p.Cmd("Adolfo 6 Espada")
+	p.Cmd("Adolfo mazo")
+	p.Cmd("Renzo 6 Oro")
+	p.Cmd("Andres 6 Copa")
+	p.Cmd("Richard 6 Basto")
+
+	p.Print()
+
+	oops = !(p.Ronda.Manos[0].Resultado == pdt.Empardada)
+	if oops {
+		t.Error(`La mano debio ser parda`)
 	}
 
+	oops = !(p.Ronda.GetElTurno().Jugador.Nombre == "Renzo")
+	if oops {
+		t.Error(`Deberia ser turno de Renzo, debido a que es el mas cercano del mano y qu empardo`)
+	}
+}
+
+func TestPardaSigTurno3(t *testing.T) {
+	// igual que el anterior pero ahora todos los que empardaron se van al mazo
+	// si va parda, el siguiente turno deberia ser del mano
+	// o del mas cercano a este
+	p, _ := NuevaPartida(pdt.A20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]pdt.Manojo{
+			{
+				Cartas: [3]*pdt.Carta{ // envido: 26
+					{Palo: pdt.Copa, Valor: 7},
+					{Palo: pdt.Oro, Valor: 12},
+					{Palo: pdt.Copa, Valor: 5},
+				},
+			},
+			{
+				Cartas: [3]*pdt.Carta{ // envido: 27
+					{Palo: pdt.Copa, Valor: 3},
+					{Palo: pdt.Copa, Valor: 4},
+					{Palo: pdt.Oro, Valor: 4},
+				},
+			},
+			{
+				Cartas: [3]*pdt.Carta{ // envido: 28
+					{Palo: pdt.Copa, Valor: 2},
+					{Palo: pdt.Copa, Valor: 1},
+					{Palo: pdt.Espada, Valor: 6}, // <-- parda primera mano
+				},
+			},
+			{
+				Cartas: [3]*pdt.Carta{ // envido: 25
+					{Palo: pdt.Basto, Valor: 2},
+					{Palo: pdt.Oro, Valor: 3},
+					{Palo: pdt.Oro, Valor: 6}, // <-- parda primera mano
+				},
+			},
+			{
+				Cartas: [3]*pdt.Carta{ // envido: 33
+					{Palo: pdt.Basto, Valor: 3},
+					{Palo: pdt.Basto, Valor: 7},
+					{Palo: pdt.Copa, Valor: 6}, // <-- parda primera mano
+				},
+			},
+			{
+				Cartas: [3]*pdt.Carta{ // envido: 20
+					{Palo: pdt.Basto, Valor: 4},
+					{Palo: pdt.Copa, Valor: 11},
+					{Palo: pdt.Basto, Valor: 6}, // <-- parda primera mano
+				},
+			},
+		},
+	)
+
+	p.Cmd("Alvaro 5 Copa")
+	p.Cmd("Roro 4 Copa")
+	// los siguientes 4: todos tiran 6 -> resulta mano parda
+	p.Cmd("Adolfo 6 Espada")
+	p.Cmd("Adolfo mazo")
+	p.Cmd("Renzo 6 Oro")
+	p.Cmd("Renzo mazo")
+	p.Cmd("Andres 6 Copa")
+	p.Cmd("Andres mazo")
+	p.Cmd("Richard 4 Basto")
+	p.Cmd("Richard mazo")
+
+	p.Print()
+
+	oops = !(p.Ronda.Manos[0].Resultado == pdt.Empardada)
+	if oops {
+		t.Error(`La mano debio ser parda`)
+	}
+
+	oops = !(p.Ronda.GetElTurno().Jugador.Nombre == "Roro")
+	if oops {
+		t.Error(`Deberia ser turno de Roro, debido a que es el mas cercano del mano y qu empardo`)
+	}
 }

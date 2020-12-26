@@ -133,6 +133,10 @@
     `casoII := trucoYaQuerido && unoDeMiEquipoQuizo`
 
 - actualmente se le puede responder quiero a una contraflor??
+- que pasa si en una mano, 2 de equipo contrario tiran cartas que empardan
+  pero ambos se van al mazo antes de que termine la mano.
+  de quien es el siguiente turno?
+- que pasa si el que gana la mano se fue al mazo antes?
 
 
 **simulacion**:

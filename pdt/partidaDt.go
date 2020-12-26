@@ -397,7 +397,8 @@ func (p *PartidaDT) EvaluarRonda() (bool, []*out.Packet) {
 	// o bien que en la primera mano hayan cantado truco y uno no lo quizo
 	manoActual := p.Ronda.ManoEnJuego.ToInt() - 1
 	elTrucoNoTuvoRespuesta := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
-	estaManoYaTieneGanador := p.Ronda.Manos[manoActual].Ganador != nil
+	noFueParda := p.Ronda.Manos[manoActual].Resultado != Empardada
+	estaManoYaTieneGanador := noFueParda && p.Ronda.Manos[manoActual].Ganador != nil
 	elTrucoFueNoQuerido := elTrucoNoTuvoRespuesta && estaManoYaTieneGanador
 
 	noSeAcabo := (primeraMano && hayJugadoresEnAmbos && !elTrucoFueNoQuerido)
