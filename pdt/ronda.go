@@ -374,8 +374,6 @@ func (r *Ronda) SetMuestra(muestra Carta) {
  */
 func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*out.Packet) {
 
-	// var pkts []*out.Packet
-
 	var stdOut []string
 
 	cantJugadores := len(r.Manojos)
@@ -533,7 +531,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*out.Packet) {
 * NOTA: todo: Eventualmente se cambiaria []string por algo
 * "mas serializable" para usar con el front-end
  */
-func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, stdOut []string) {
+func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts []*out.Packet) {
 
 	cantJugadores := len(r.Manojos)
 
@@ -569,9 +567,11 @@ func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, stdO
 	// empieza el del parametro
 	if flores[aPartirDe] > 0 {
 		yaDijeron[aPartirDe] = true
-		salida := fmt.Sprintf(`   %s dice: "tengo %v"`, r.Manojos[aPartirDe].Jugador.Nombre,
-			flores[aPartirDe])
-		stdOut = append(stdOut, salida)
+
+		pkts = append(pkts, out.Pkt(
+			out.Dest("ALL"),
+			out.Msg(out.DiceTengo, r.Manojos[aPartirDe].Jugador.Nombre, flores[aPartirDe]),
+		))
 	}
 
 	// `todaviaNoDijeronSonMejores` se usa para
@@ -600,9 +600,12 @@ func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, stdO
 
 			if sonMejores {
 				if esDeEquipoContrario {
-					salida := fmt.Sprintf(`   %s dice: "%v son mejores!"`,
-						r.Manojos[i].Jugador.Nombre, flores[i])
-					stdOut = append(stdOut, salida)
+
+					pkts = append(pkts, out.Pkt(
+						out.Dest("ALL"),
+						out.Msg(out.DiceSonMejores, r.Manojos[i].Jugador.Nombre, flores[i]),
+					))
+
 					jIdx = i
 					yaDijeron[i] = true
 					todaviaNoDijeronSonMejores = false
@@ -619,9 +622,13 @@ func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, stdO
 			} else /* tiene el envido mas chico */ {
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
-						salida := fmt.Sprintf(`   %s dice: "son buenas" (tenia %v)`,
-							r.Manojos[i].Jugador.Nombre, flores[i])
-						stdOut = append(stdOut, salida)
+
+						pkts = append(pkts, out.Pkt(
+							out.Dest("ALL"),
+							out.Msg(out.DiceSonBuenas, r.Manojos[i].Jugador.Nombre),
+							// valor de su envido es `flores[i]` pero no corresponde decirlo
+						))
+
 						yaDijeron[i] = true
 						// pasa al siguiente
 					}
@@ -644,7 +651,7 @@ func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, stdO
 
 	max = flores[jIdx]
 
-	return r.getManojo(jIdx), max, stdOut
+	return r.getManojo(jIdx), max, pkts
 }
 
 // los anteriores a `aPartirDe` (incluido este) no
