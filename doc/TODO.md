@@ -1,13 +1,8 @@
 # TODO
 - agregar un metodo de .Abandono(fulano) para dar por ganador al equipo contrario a fulano
 - arreglar tests para hacer regresion & que los tests no usen fmt tal que `go test` los corra de modo silencioso y solo activando la flag se muestre el output
-- mini commandos: t -> truco, e -> envido fe -> falta envido
 - ^ que el input tambien este tabulado
 - URGENTE: LOS CONTAINS USAN REFLECT, SUPER ANTI PERFORMANTE!!
-- corrector ortografico (?)
-
-- los mensajes de info en realidad actualizan el resultado de la mano
-- habria que pulir lo de fromJSON FromJSON y Force <-- mucho bolonqui
 - jugadores con flor cache deberia ser una variable de partida y no de partidadt
 - out.TrucoQuerido -> out.TrucoQuerido, out.RetrucoQuerido, out.Vale4Querido
 - GetManojoByStr no deberia ser de PartidaDT en vez de Ronda ?
@@ -34,6 +29,9 @@
 - SetNextTurnoPosMano siempre se usa luego de un p.Ronda.ManoEnJuego++ ?
   fusionarlo o bien hacer un r.incManoEnJuego
 
+  **cli CMD**
+    - cli: mini commandos con menu: t -> truco, e -> envido fe -> falta envido
+    - los mensajes de info en realidad actualizan el resultado de la mano
 
 
 # BUGS
@@ -43,6 +41,7 @@
 
 
 # LIMPIEZA DE CODIGO
+- habria que pulir lo de fromJSON FromJSON y Force <-- mucho bolonqui
 - el ".ToJSON" deberia llamarse ".Marshall", el ".FromJSON" "UnMarshall" (y 
   tomar un puntero como param ? ) el ".ToString" ".String"
 - la struct truco esta con minuscula salame

@@ -356,25 +356,17 @@ func (r *Ronda) SetMuestra(muestra Carta) {
 * @return `jIdx JugadorIdx` Es el indice del jugador con
 * el envido mas alto (i.e., ganador)
 * @return `max int` Es el valor numerico del maximo envido
-* @return `stdOut []string` Es conjunto ordenado de todos
+* @return `pkts []*Packet` Es conjunto ordenado de todos
 * los mensajes que normalmente se escucharian en una ronda
 * de envido en la vida real.
 * e.g.:
-* 	`stdOut[0] = Jacinto dice: "tengo 9"`
-*   `stdOut[1] = Patricio dice: "son buenas" (tenia 3)`
-*   `stdOut[2] = Pedro dice: "30 son mejores!"`
-*		`stdOut[3] = Juan dice: "33 son mejores!"`
+* 	`pkts[0] = Jacinto dice: "tengo 9"`
+*   `pkts[1] = Patricio dice: "son buenas" (tenia 3)`
+*   `pkts[2] = Pedro dice: "30 son mejores!"`
+*		`pkts[3] = Juan dice: "33 son mejores!"`
 *
-* NOTA: todo: Eventualmente se cambiaria []string por algo
-* "mas serializable" para usar con el front-end
-* e.g., []{JugadorIdx, string} donde `string` no deberia de
-* contener cosas como "tenia 3". O tal vez un hibrido de
-* ambos con un parametro-flag que decida:
-* si el juego esta en "modo json" o "modo consola"
  */
 func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*out.Packet) {
-
-	var stdOut []string
 
 	cantJugadores := len(r.Manojos)
 
@@ -409,10 +401,6 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*out.Packet) {
 	}
 
 	yaDijeron[jIdx] = true
-
-	salida := fmt.Sprintf(`   %s dice: "tengo %v"`, r.Manojos[jIdx].Jugador.Nombre,
-		envidos[jIdx])
-	stdOut = append(stdOut, salida)
 
 	pkts = append(pkts, out.Pkt(
 		out.Dest("ALL"),
@@ -453,10 +441,6 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*out.Packet) {
 			if sonMejores {
 				if esDeEquipoContrario {
 
-					salida := fmt.Sprintf(`   %s dice: "%v son mejores!"`,
-						r.Manojos[i].Jugador.Nombre, envidos[i])
-					stdOut = append(stdOut, salida)
-
 					pkts = append(pkts, out.Pkt(
 						out.Dest("ALL"),
 						out.Msg(out.DiceSonMejores, r.Manojos[i].Jugador.Nombre, envidos[i]),
@@ -478,10 +462,6 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*out.Packet) {
 			} else /* tiene el envido mas chico */ {
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
-
-						salida := fmt.Sprintf(`   %s dice: "son buenas" (tenia %v)`,
-							r.Manojos[i].Jugador.Nombre, envidos[i])
-						stdOut = append(stdOut, salida)
 
 						pkts = append(pkts, out.Pkt(
 							out.Dest("ALL"),
@@ -519,17 +499,15 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*out.Packet) {
 * @return `j *Manojo` Es el ptr al manojo con
 * la flor mas alta (i.e., ganador)
 * @return `max int` Es el valor numerico de la flor mas alta
-* @return `stdOut []string` Es conjunto ordenado de todos
+* @return `pkts []*Packet` Es conjunto ordenado de todos
 * los mensajes que normalmente se escucharian en una ronda
 * de flor en la vida real empezando desde jIdx
 * e.g.:
-* 	`stdOut[0] = Jacinto dice: "tengo 9"`
-*   `stdOut[1] = Patricio dice: "son buenas" (tenia 3)`
-*   `stdOut[2] = Pedro dice: "30 son mejores!"`
-*		`stdOut[3] = Juan dice: "33 son mejores!"`
+* 	`pkts[0] = Jacinto dice: "tengo 9"`
+*   `pkts[1] = Patricio dice: "son buenas" (tenia 3)`
+*   `pkts[2] = Pedro dice: "30 son mejores!"`
+*	`pkts[3] = Juan dice: "33 son mejores!"`
 *
-* NOTA: todo: Eventualmente se cambiaria []string por algo
-* "mas serializable" para usar con el front-end
  */
 func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts []*out.Packet) {
 
