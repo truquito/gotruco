@@ -165,11 +165,6 @@ func (p *Partida) String() string {
 	return ptr.Renderizar(&p.PartidaDT)
 }
 
-// Print imprime la partida
-func (p *Partida) Print() {
-	fmt.Print(ptr.Renderizar(&p.PartidaDT))
-}
-
 func (p *Partida) notify() {
 
 	// ojo primero hay que grabar el buff, luego avisar
