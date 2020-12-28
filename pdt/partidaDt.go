@@ -554,31 +554,14 @@ func (p *PartidaDT) MarshalJSON() ([]byte, error) {
 	return json.Marshal(*p)
 }
 
-// FromJSON carga una partida en formato json
-// ojo que este es PUBLICO!!! no cachea flores
-func (p *PartidaDT) FromJSON(partidaJSON string) error {
-	err := json.Unmarshal([]byte(partidaJSON), &p)
-	if err != nil {
-		return err
-	}
-	return nil
-}
-
-// FromJSON carga una partida en formato json
-// ojo que este es PRIVADO!!!
-// el metodo privado cachea las flores
-func (p *PartidaDT) fromJSON(partidaJSON string) error {
-	err := json.Unmarshal([]byte(partidaJSON), &p)
+// UnmarshalJSON .
+func (p *PartidaDT) FromJSON(data []byte) error {
+	err := json.Unmarshal(data, p)
 	if err != nil {
 		return err
 	}
 	p.Ronda.cachearFlores()
 	return nil
-}
-
-// Force para hacer debugs
-func (p *PartidaDT) Force(partidaJSON string) error {
-	return p.fromJSON(partidaJSON)
 }
 
 func cheepCopy(p *PartidaDT) *PartidaDT {
