@@ -1814,7 +1814,7 @@ func TestFixNacho(t *testing.T) {
 	p.Cmd("alvaro 6 basto")
 	p.Cmd("roro 2 basto")
 
-	roro, _ := p.Ronda.GetManojoByStr("Roro")
+	roro, _ := p.GetManojoByStr("Roro")
 	cantTiradasRoro := roro.GetCantCartasTiradas()
 
 	assert(cantTiradasRoro == 1, func() {

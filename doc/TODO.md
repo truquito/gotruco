@@ -4,7 +4,6 @@
 - agregar un metodo de .Abandono(fulano) para dar por ganador al equipo contrario a fulano
 - URGENTE: LOS CONTAINS USAN REFLECT, SUPER ANTI PERFORMANTE!!
 - enco.TrucoQuerido -> enco.TrucoQuerido, enco.RetrucoQuerido, enco.Vale4Querido
-- GetManojoByStr no deberia ser de PartidaDT en vez de Ronda ?
 - tabular los mensajes de info enco.Info ->:
     "La Mano resulta parda"
     "La %s mano la gano el equipo %s gracias a %s"

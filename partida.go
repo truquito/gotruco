@@ -42,7 +42,7 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 	if match != nil {
 		jugadorStr, jugadaStr := match[0][1], match[0][2]
 
-		manojo, err := p.Ronda.GetManojoByStr(jugadorStr)
+		manojo, err := p.GetManojoByStr(jugadorStr)
 		if err != nil {
 			return nil, fmt.Errorf("Usuario %s no encontrado", jugadorStr)
 		}
@@ -98,7 +98,7 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 		jugadorStr := match[0][1]
 		valorStr, paloStr := match[0][2], match[0][3]
 
-		manojo, err := p.Ronda.GetManojoByStr(jugadorStr)
+		manojo, err := p.GetManojoByStr(jugadorStr)
 		if err != nil {
 			return nil, fmt.Errorf("Usuario %s no encontrado", jugadorStr)
 		}

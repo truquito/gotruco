@@ -11,7 +11,7 @@ import (
 
 // Manojo .
 func Manojo(p *pdt.PartidaDT, id string) *pdt.Manojo {
-	manojo, _ := p.Ronda.GetManojoByStr(id)
+	manojo, _ := p.GetManojoByStr(id)
 	return manojo
 }
 

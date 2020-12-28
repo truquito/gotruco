@@ -547,6 +547,25 @@ func (p *PartidaDT) NuevaRonda(elMano JugadorIdx) {
 	p.Ronda = NuevaRonda(p.Jugadores, elMano)
 }
 
+// GetManojoByStr ..
+// OJO QUE AHORA LAS COMPARACIONES SON CASE INSENSITIVE
+// ENTONCES SI EL IDENTIFICADOR Juan == jUaN
+// ojo con los kakeos
+// todo: esto es ineficiente
+// getManojo devuelve el puntero al manojo,
+// dado un string que identifique al jugador duenio de ese manojo
+func (p *PartidaDT) GetManojoByStr(idJugador string) (*Manojo, error) {
+	idJugador = strings.ToLower(idJugador)
+	for i := range p.Ronda.Manojos {
+		idActual := strings.ToLower(p.Ronda.Manojos[i].Jugador.ID)
+		esEse := idActual == idJugador
+		if esEse {
+			return &p.Ronda.Manojos[i], nil
+		}
+	}
+	return nil, fmt.Errorf("Jugador `%s` no encontrado", idJugador)
+}
+
 // MarshalJSON retorna la partida en formato json
 func (p *PartidaDT) MarshalJSON() ([]byte, error) {
 	// return json.Marshal(p)
@@ -554,7 +573,7 @@ func (p *PartidaDT) MarshalJSON() ([]byte, error) {
 	return json.Marshal(*p)
 }
 
-// UnmarshalJSON .
+// FromJSON no se pudo implementar con UnmarshalJSON (entraba en loop)
 func (p *PartidaDT) FromJSON(data []byte) error {
 	err := json.Unmarshal(data, p)
 	if err != nil {
@@ -576,7 +595,7 @@ func cheepCopy(p *PartidaDT) *PartidaDT {
 // el jugador `j` de la partida
 func (p *PartidaDT) Perspectiva(j string) (*PartidaDT, error) {
 	// primero encuentro el jugador
-	manojo, err := p.Ronda.GetManojoByStr(j)
+	manojo, err := p.GetManojoByStr(j)
 	if err != nil {
 		return nil, fmt.Errorf("Usuario %s no encontrado", j)
 	}
