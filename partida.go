@@ -194,13 +194,5 @@ func NuevaPartida(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*
 	p.out = buff
 	p.ErrCh = make(chan bool, 1)
 
-	// write(p.Stdout, &Pkt{
-	// 	Dest: []string{"ALL"},
-	// 	Msg: Msg{
-	// 		Tipo: "Nueva-Partida",
-	// 		Cont: nil, // "pers aqui"
-	// 	},
-	// })
-
 	return &p, buff, nil
 }
