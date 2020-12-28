@@ -151,6 +151,9 @@ func Parse(p *pdt.PartidaDT, m *enco.Message) string {
 	case enco.TocarFaltaEnvido:
 		decoded = fmt.Sprintf(`%s toca falta envido`, Autor(p, m).Jugador.Nombre)
 
+	case enco.ElEnvidoEstaPrimero:
+		decoded = fmt.Sprintf(`%s "el envido esta primero!"`, Autor(p, m).Jugador.Nombre)
+
 	case enco.GritarTruco:
 		decoded = fmt.Sprintf(`%s grita truco`, Autor(p, m).Jugador.Nombre)
 

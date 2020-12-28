@@ -232,7 +232,8 @@ func (jugada tocarEnvido) hacer(p *Partida) {
 	envidoHabilitado := (p.Ronda.Envite.Estado == pdt.NOCANTADOAUN || p.Ronda.Envite.Estado == pdt.ENVIDO)
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == pdt.ENVIDO
 	apuestaSaturada := p.Ronda.Envite.Puntaje >= p.CalcPtsFalta()
-	ok := (envidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario) && (esSuTurno || yaEstabamosEnEnvido) && !apuestaSaturada
+	elEnvidoEstaPrimero := p.Ronda.Truco.Estado == pdt.TRUCO && !yaEstabamosEnEnvido && esPrimeraMano
+	ok := (envidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario) && (esSuTurno || yaEstabamosEnEnvido || elEnvidoEstaPrimero) && !apuestaSaturada
 
 	if !ok {
 
@@ -242,6 +243,18 @@ func (jugada tocarEnvido) hacer(p *Partida) {
 		))
 
 		return
+
+	}
+
+	if elEnvidoEstaPrimero {
+		// deshabilito el truco
+		p.Ronda.Truco.Estado = pdt.NOCANTADO
+		p.Ronda.Truco.CantadoPor = nil
+
+		enco.Write(p.out, enco.Pkt(
+			enco.Dest("ALL"),
+			enco.Msg(enco.ElEnvidoEstaPrimero, jugada.Manojo.Jugador.Nombre),
+		))
 
 	}
 
@@ -312,7 +325,8 @@ func (jugada tocarRealEnvido) hacer(p *Partida) {
 	realEnvidoHabilitado := (p.Ronda.Envite.Estado == pdt.NOCANTADOAUN || p.Ronda.Envite.Estado == pdt.ENVIDO)
 	esDelEquipoContrario := p.Ronda.Envite.Estado == pdt.NOCANTADOAUN || p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == pdt.ENVIDO
-	ok := realEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario && (esSuTurno || yaEstabamosEnEnvido)
+	elEnvidoEstaPrimero := p.Ronda.Truco.Estado == pdt.TRUCO && !yaEstabamosEnEnvido && esPrimeraMano
+	ok := realEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario && (esSuTurno || yaEstabamosEnEnvido || elEnvidoEstaPrimero)
 
 	if !ok {
 
@@ -322,6 +336,18 @@ func (jugada tocarRealEnvido) hacer(p *Partida) {
 		))
 
 		return
+
+	}
+
+	if elEnvidoEstaPrimero {
+		// deshabilito el truco
+		p.Ronda.Truco.Estado = pdt.NOCANTADO
+		p.Ronda.Truco.CantadoPor = nil
+
+		enco.Write(p.out, enco.Pkt(
+			enco.Dest("ALL"),
+			enco.Msg(enco.ElEnvidoEstaPrimero, jugada.Manojo.Jugador.Nombre),
+		))
 
 	}
 
@@ -369,7 +395,8 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) {
 	faltaEnvidoHabilitado := p.Ronda.Envite.Estado >= pdt.NOCANTADOAUN && p.Ronda.Envite.Estado < pdt.FALTAENVIDO
 	esDelEquipoContrario := p.Ronda.Envite.Estado == pdt.NOCANTADOAUN || p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == pdt.ENVIDO || p.Ronda.Envite.Estado == pdt.REALENVIDO
-	ok := faltaEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario && (esSuTurno || yaEstabamosEnEnvido)
+	elEnvidoEstaPrimero := p.Ronda.Truco.Estado == pdt.TRUCO && !yaEstabamosEnEnvido && esPrimeraMano
+	ok := faltaEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario && (esSuTurno || yaEstabamosEnEnvido || elEnvidoEstaPrimero)
 
 	if !ok {
 
@@ -379,6 +406,18 @@ func (jugada tocarFaltaEnvido) hacer(p *Partida) {
 		))
 
 		return
+
+	}
+
+	if elEnvidoEstaPrimero {
+		// deshabilito el truco
+		p.Ronda.Truco.Estado = pdt.NOCANTADO
+		p.Ronda.Truco.CantadoPor = nil
+
+		enco.Write(p.out, enco.Pkt(
+			enco.Dest("ALL"),
+			enco.Msg(enco.ElEnvidoEstaPrimero, jugada.Manojo.Jugador.Nombre),
+		))
 
 	}
 

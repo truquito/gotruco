@@ -54,7 +54,8 @@ const (
 	SumaPts
 	Mazo
 	TimeOut
-	Info
+	Info // <- se debe ir
+	ElEnvidoEstaPrimero
 )
 
 // Razon ..
@@ -152,7 +153,8 @@ func Msg(t CodMsg, data ...interface{}) *Message {
 		QuieroTruco,
 		QuieroEnvite,
 		Mazo,
-		Info:
+		Info,
+		ElEnvidoEstaPrimero:
 
 		bs, err := json.Marshal(data[0])
 

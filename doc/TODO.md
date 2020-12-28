@@ -20,13 +20,10 @@
 
 
 # BUGS
-- gritar truco deshabilita el envido wtf? posible bug
-  se deberia de deshabilitar solo con aceptaciones de apuestas de truco
 - [echo?] contraflor y contraflor al resto no estan implementadas (lineas 655 y 656)
 
 
 # LIMPIEZA DE CODIGO
-- habria que pulir lo de fromJSON FromJSON y Force <-- mucho bolonqui
 - Hay codigo repetido entre noQuiero y mazo cuando niega la flor (codigo copiado)
 - hay redundancia entre cantarFloresSiLasHay y cantarFlores
 - hay redundancia entre p.Ronda.GetLaFlorMasAlta y 
