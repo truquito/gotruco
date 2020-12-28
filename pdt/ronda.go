@@ -33,7 +33,6 @@ var toEstadoTruco = map[string]EstadoTruco{
 	"vale4Querido":   VALE4QUERIDO,
 }
 
-// toString
 func (e EstadoTruco) String() string {
 	estados := []string{
 		"noCantado",

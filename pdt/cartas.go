@@ -52,7 +52,6 @@ var toPalo = map[string]Palo{
 	"Oro":    Oro,
 }
 
-// toString
 func (p Palo) String() string {
 	palos := []string{
 		"Basto",

@@ -547,17 +547,6 @@ func (p *PartidaDT) NuevaRonda(elMano JugadorIdx) {
 	p.Ronda = NuevaRonda(p.Jugadores, elMano)
 }
 
-// ToString retorna su render
-// func (p *PartidaDT) ToString() string {
-// 	render := ptr.Renderizar(p)
-// 	return render
-// }
-
-// Print imprime la partida
-// func (p *PartidaDT) Print() {
-// 	fmt.Print(p.ToString())
-// }
-
 // MarshalJSON retorna la partida en formato json
 func (p *PartidaDT) MarshalJSON() ([]byte, error) {
 	// return json.Marshal(p)

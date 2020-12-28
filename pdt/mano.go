@@ -21,7 +21,6 @@ var toResultado = map[string]Resultado{
 	"empardada": Empardada,
 }
 
-// toString
 func (r Resultado) String() string {
 	resultados := []string{
 		"ganoRojo",
@@ -79,7 +78,6 @@ func (n NumMano) ToInt() int {
 	}
 }
 
-// toString
 func (n NumMano) String() string {
 	manos := []string{
 		"Primera",

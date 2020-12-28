@@ -31,7 +31,6 @@ var toEstadoEnvite = map[string]EstadoEnvite{
 	"contraFlorAlResto": CONTRAFLORALRESTO,
 }
 
-// toString
 func (e EstadoEnvite) String() string {
 	estados := []string{
 		"deshabilitado",
