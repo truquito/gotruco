@@ -2,7 +2,6 @@ package out
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 	"testing"
 )
@@ -52,10 +51,10 @@ func TestCast(t *testing.T) {
 		if err == io.EOF {
 			break
 		} else if err != nil {
-			fmt.Println(err)
+			t.Error(err)
 			return
 		}
-		Print(e)
+		t.Log(e)
 	}
 }
 

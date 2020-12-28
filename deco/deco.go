@@ -89,15 +89,11 @@ func Razon2str(r int) string {
 	return str
 }
 
-// Printer alto orden
-func Printer(p *pdt.PartidaDT) func(*out.Packet) {
-	return func(pkt *out.Packet) {
-		s := Parse(p, pkt.Message)
-		s = strings.Replace(s, `"`, `'`, -1)
-		if s != "" {
-			fmt.Println(s)
-		}
-	}
+// Stringify parsea un pkt
+// de momento solo su contenido (el msg)
+func Stringify(pkt *out.Packet, p *pdt.PartidaDT) string {
+	s := Parse(p, pkt.Message)
+	return strings.Replace(s, `"`, `'`, -1)
 }
 
 // Parse parsea un mensaje de salida y retorna su string correspondiente

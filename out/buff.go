@@ -25,11 +25,6 @@ func Read(buff *bytes.Buffer) (*Packet, error) {
 	return e, nil
 }
 
-// Print imprime el packete
-func Print(pkt *Packet) {
-	fmt.Println(pkt.String())
-}
-
 // Consume consume el buffer
 func Consume(buff *bytes.Buffer, callback func(*Packet)) {
 	for {

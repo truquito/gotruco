@@ -16,9 +16,9 @@ func assert(should bool, callback func()) {
 	}
 }
 
-// Contains dado un buffer se fija si contiene un mensaje
+// contains dado un buffer se fija si contiene un mensaje
 // con ese codigo (y string de ser no-nulo)
-func Contains(pkts []*out.Packet, cod out.CodMsg) bool {
+func contains(pkts []*out.Packet, cod out.CodMsg) bool {
 	for _, pkt := range pkts {
 		if pkt.Message.Cod == int(cod) {
 			return true
@@ -1418,7 +1418,10 @@ func TestFixContraFlor(t *testing.T) {
 	// deberia ganar las 2 flores + x pts
 
 	t.Log(p)
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 
 	assert(p.Puntajes[pdt.Rojo] > p.Puntajes[pdt.Azul], func() {
 		t.Error(`El equipo rojo deberia de tener mas pts que el azul`)
@@ -1492,7 +1495,9 @@ func TestTirada1(t *testing.T) {
 	p.Cmd("Andres 10 Copa")
 	p.Cmd("Richard 10 Oro")
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 
 	// como la muestra es Palo: pdt.Oro, Valor: 3 -> gana alvaro
 	if !(len(p.Ronda.Manos[pdt.Primera].CartasTiradas) == 6) {
@@ -1893,7 +1898,9 @@ func TestFixNacho(t *testing.T) {
 
 	p.Cmd("andres mazo")
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 
 }
@@ -1959,7 +1966,9 @@ func TestFixNoFlor(t *testing.T) {
 	p.Cmd("adolfo re-truco")
 	// << Adolfo grita re-truco
 
-	out.Consume(p.Stdout, deco.Printer(&p.PartidaDT))
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 
 	p.Cmd("richard quiero")
@@ -2416,7 +2425,9 @@ func TestFixPierdeTurno(t *testing.T) {
 	p.Cmd("alvaro 5 espada")
 	p.Cmd("adolfo mazo")
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 
 	assert(p.Ronda.GetElTurno().Jugador.Nombre == "Roro", func() {
@@ -2455,7 +2466,9 @@ func Test2FloresSeVaAlMazo(t *testing.T) {
 		t.Error(`deberia dejarlo irse al mazo`)
 	})
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 }
 
@@ -2519,7 +2532,9 @@ func TestTodoTienenFlor(t *testing.T) {
 	p.Cmd("Roro Mazo")
 	p.Cmd("Adolfo Flor")
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 }
 
@@ -2552,7 +2567,9 @@ func TestFixTopeEnvido(t *testing.T) {
 
 	p.Cmd("Roro quiero")
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 }
 
@@ -2592,7 +2609,9 @@ func TestAutoQuererse(t *testing.T) {
 		t.Error(`no lo deberia dejar porque el envite lo propuso el equipo rojo`)
 	})
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 }
 
@@ -2622,7 +2641,9 @@ func TestFixEnvidoManoEsElUltimo(t *testing.T) {
 		t.Error(`la sequencia de toques era valida`)
 	})
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 }
 
@@ -2641,7 +2662,9 @@ func TestEnvidoManoSeFue(t *testing.T) {
 		t.Error(`la sequencia de toques era valida`)
 	})
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 }
 
@@ -2674,7 +2697,9 @@ func TestFlorBlucle(t *testing.T) {
 		t.Error(`la flor se debio de haber jugado`)
 	})
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 }
 
@@ -2748,7 +2773,9 @@ func TestQuieroContraflorDesdeMazo(t *testing.T) {
 		t.Error(`El estado del envite no debio de haber sido modificado`)
 	})
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 }
 
@@ -2776,7 +2803,9 @@ func TestFixSeVaAlMazoYTeniaFlor(t *testing.T) {
 		t.Error(`Deberia dejarlo cantar truco`)
 	})
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 }
 
@@ -2794,7 +2823,9 @@ func TestFixDesconcertante(t *testing.T) {
 	})
 	p.Cmd("roro truco")
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 }
 
@@ -2840,7 +2871,9 @@ func TestMalaAsignacionPts(t *testing.T) {
 	p.Cmd("roro 1 oro")
 	p.Cmd("alvaro 5 espada")
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 
 	assert(p.Puntajes[pdt.Rojo] == 5 && p.Puntajes[pdt.Azul] == 2, func() {
@@ -3010,7 +3043,9 @@ func TestFixRondaNueva(t *testing.T) {
 		t.Error(`el puntaje para el equipo azul deberia ser 0 porque no ganaron nada`)
 	})
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 }
 
@@ -3088,7 +3123,9 @@ func TestFixIrseAlMazo2(t *testing.T) {
 		t.Error(`deberia dejarlo irse al mazo`)
 	})
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 
 	t.Log(p)
 
@@ -3150,7 +3187,9 @@ func TestFixDecirQuiero(t *testing.T) {
 		t.Error(`El equpo azul deberia de seguir manteniendo la potestad`)
 	})
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 
 }
@@ -3202,7 +3241,9 @@ func TestFixPanicNoQuiero(t *testing.T) {
 		t.Error(`Deberian gana 3 puntines por el vale-4 no querido`)
 	})
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 
 }
@@ -3226,7 +3267,9 @@ func TestFixCartaYaJugada(t *testing.T) {
 		t.Error(`Deberia ser el turno de Richard`)
 	})
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 	t.Log(p)
 
 }
@@ -3244,7 +3287,10 @@ func TestFixTrucoNoQuiero(t *testing.T) {
 		t.Error(`La ronda deberia de haber sido ganado por Azul`)
 	})
 
-	out.Consume(p.Stdout, func(pkt *out.Packet) { t.Log(pkt) })
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
+	t.Log(out.Collect(p.Stdout))
 	t.Log(p)
 
 }
@@ -3456,6 +3502,11 @@ func TestPardaSigTurno3(t *testing.T) {
 	)
 
 	p.Cmd("Alvaro 5 Copa")
+
+	assert(contains(out.Collect(p.Stdout), out.TirarCarta), func() {
+		t.Error("debio de haber tirado carta")
+	})
+
 	p.Cmd("Roro 4 Copa")
 	// los siguientes 4: todos tiran 6 -> resulta mano parda
 	p.Cmd("Adolfo 6 Espada")
@@ -3467,12 +3518,14 @@ func TestPardaSigTurno3(t *testing.T) {
 	p.Cmd("Richard 4 Basto")
 	p.Cmd("Richard mazo")
 
-	assert(Contains(out.Collect(p.Stdout), out.TirarCarta), func() {
-		t.Error("debio de haber tirado carta")
-	})
-
 	// ojo no imprime nada porque la aterior ya consumio el buff
-	out.Consume(p.Stdout, deco.Printer(&p.PartidaDT))
+	// out.Consume(p.Stdout, func(pkt *out.Packet) {
+	// 	t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	// })
+
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		t.Log(deco.Stringify(pkt, &p.PartidaDT))
+	})
 
 	t.Log(p)
 

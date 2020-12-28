@@ -41,7 +41,9 @@ func main() {
 	// p.FromJSON(partidaJSON)
 
 	fmt.Println(p)
-	out.Consume(p.Stdout, out.Print)
+	out.Consume(p.Stdout, func(pkt *out.Packet) {
+		fmt.Print(deco.Stringify(pkt, &p.PartidaDT))
+	})
 
 	// hago una gorutine (y channel para avisar) para el io
 	go handleIO()
@@ -54,10 +56,14 @@ func main() {
 			if err != nil {
 				fmt.Println("<< " + err.Error())
 			}
-			out.Consume(p.Stdout, deco.Printer(&p.PartidaDT))
+			out.Consume(p.Stdout, func(pkt *out.Packet) {
+				fmt.Print(deco.Stringify(pkt, &p.PartidaDT))
+			})
 			fmt.Println(p)
 		case <-p.ErrCh:
-			out.Consume(p.Stdout, deco.Printer(&p.PartidaDT))
+			out.Consume(p.Stdout, func(pkt *out.Packet) {
+				fmt.Print(deco.Stringify(pkt, &p.PartidaDT))
+			})
 			fmt.Printf(">> ")
 		}
 

@@ -1,4 +1,7 @@
 # TODO
+- en vez de usar buffer usar iowriter y hacerle un metodo .String, de ultima
+  una struct personalizada tal que se pueda hacer algo lindo tipo
+  t.Log(p.Out) o bien t.Log(p.Out.Pop())
 - eliminar partida.Print() -> String() o por lo menos de los tests
 - agregar un metodo de .Abandono(fulano) para dar por ganador al equipo contrario a fulano
 - arreglar tests para hacer regresion & que los tests no usen fmt tal que `go test` los corra de modo silencioso y solo activando la flag se muestre el output
