@@ -26,7 +26,7 @@ var (
 
 // Partida :
 type Partida struct {
-	pdt.PartidaDT
+	*pdt.PartidaDT
 	out   io.Writer `json:"-"`
 	ErrCh chan bool `json:"-"`
 }
@@ -163,7 +163,7 @@ func (p *Partida) Cmd(cmd string) error {
 
 // String retorna una representacion en formato de string
 func (p *Partida) String() string {
-	return ptr.Renderizar(&p.PartidaDT)
+	return ptr.Renderizar(p.PartidaDT)
 }
 
 func (p *Partida) notify() {
@@ -187,7 +187,7 @@ func NuevaPartida(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*
 	}
 
 	p := Partida{
-		PartidaDT: *partidaDt,
+		PartidaDT: partidaDt,
 	}
 
 	buff := new(bytes.Buffer)

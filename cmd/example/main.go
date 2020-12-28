@@ -38,7 +38,7 @@ func main() {
 
 	fmt.Println(p)
 	enco.Consume(out, func(pkt *enco.Packet) {
-		fmt.Print(deco.Stringify(pkt, &p.PartidaDT))
+		fmt.Print(deco.Stringify(pkt, p.PartidaDT))
 	})
 
 	// hago una gorutine (y channel para avisar) para el io
@@ -53,12 +53,12 @@ func main() {
 				fmt.Println("<< " + err.Error())
 			}
 			enco.Consume(out, func(pkt *enco.Packet) {
-				fmt.Print(deco.Stringify(pkt, &p.PartidaDT))
+				fmt.Print(deco.Stringify(pkt, p.PartidaDT))
 			})
 			fmt.Println(p)
 		case <-p.ErrCh:
 			enco.Consume(out, func(pkt *enco.Packet) {
-				fmt.Print(deco.Stringify(pkt, &p.PartidaDT))
+				fmt.Print(deco.Stringify(pkt, p.PartidaDT))
 			})
 			fmt.Printf(">> ")
 		}
