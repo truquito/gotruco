@@ -1,4 +1,5 @@
 # TODO
+- eliminar partida.Print() -> String() o por lo menos de los tests
 - agregar un metodo de .Abandono(fulano) para dar por ganador al equipo contrario a fulano
 - arreglar tests para hacer regresion & que los tests no usen fmt tal que `go test` los corra de modo silencioso y solo activando la flag se muestre el output
 - ^ que el input tambien este tabulado
@@ -6,25 +7,19 @@
 - jugadores con flor cache deberia ser una variable de partida y no de partidadt
 - out.TrucoQuerido -> out.TrucoQuerido, out.RetrucoQuerido, out.Vale4Querido
 - GetManojoByStr no deberia ser de PartidaDT en vez de Ronda ?
-- el exec del envido y flor lo esta imprimiendo en pantalla; eso es heredado de
-  legacy
 - tabular los mensajes de info (e.g., "resulta parda" -> ManoParda)
+- [^] reducir/minimizar las notas de los mensajes -> el cli se tiene que encargar de
+   eso pensar que es multilingue:: La "m.Nota:" del error debe ir en su contenido
 - tabular los mensajes a lo minimo
-- si se va al mazo que no imprima nada
 - pasar todos los .ToJSON para que devuelvan json y no strings!!
 - nueva ronda esta pasando toda la partidaDt, solo con ronda basta, pulir eso
-- la suma de puntos por envido ganado -> deberia deshabilitar el envido en el 
-  cli
 - separar verificador semantico (jugada.go -> metodos de partida.go o bien un 
    modulo "ejecutor") ejecutor (partida.dt)
 - pasar EvaluarRonda y EvaluarMano a ese verificador/jugada/partida
-
 - muchas jugadas no se las tiene que enviar a todos los n jugadores, sino a n-1
-- reducir/minimizar las notas de los mensajes -> el cli se tiene que encargar de
-   eso pensar que es multilingue:: La "m.Nota:" del error debe ir en su contenido
 - en sumar-pts que envie el usuario ganador, no el equipo
-- constructor de mensajes con texto, pero luego lo sabula a [n]bytes
-- no es necesario que evalmano y evalronda retornen los pkts,
+- constructor de mensajes con texto, pero luego lo tabula a [n]bytes
+- [bueno] no es necesario que evalmano y evalronda retornen los pkts,
   el chiste del buffer es que lo pueden escribir desde cualquier lado
 - SetNextTurnoPosMano siempre se usa luego de un p.Ronda.ManoEnJuego++ ?
   fusionarlo o bien hacer un r.incManoEnJuego
@@ -32,6 +27,8 @@
   **cli CMD**
     - cli: mini commandos con menu: t -> truco, e -> envido fe -> falta envido
     - los mensajes de info en realidad actualizan el resultado de la mano
+    - la suma de puntos por envido ganado -> deberia deshabilitar el envido en 
+      el cli
 
 
 # BUGS
@@ -44,7 +41,6 @@
 - habria que pulir lo de fromJSON FromJSON y Force <-- mucho bolonqui
 - el ".ToJSON" deberia llamarse ".Marshall", el ".FromJSON" "UnMarshall" (y 
   tomar un puntero como param ? ) el ".ToString" ".String"
-- la struct truco esta con minuscula salame
 - Hay codigo repetido entre noQuiero y mazo cuando niega la flor (codigo copiado)
 - hay redundancia entre cantarFloresSiLasHay y cantarFlores
 - hay redundancia entre p.Ronda.GetLaFlorMasAlta y 
