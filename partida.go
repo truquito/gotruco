@@ -160,6 +160,11 @@ func (p *Partida) Cmd(cmd string) error {
 	return nil
 }
 
+// String retorna una representacion en formato de string
+func (p *Partida) String() string {
+	return ptr.Renderizar(&p.PartidaDT)
+}
+
 // Print imprime la partida
 func (p *Partida) Print() {
 	fmt.Print(ptr.Renderizar(&p.PartidaDT))
