@@ -1,14 +1,15 @@
 # TODO
+- hay 2 metodos de evaluacion de flores; uno usa pkts otro no
 - usar mapas para mapear str a manojos
 - agregar un metodo de .Abandono(fulano) para dar por ganador al equipo contrario a fulano
 - URGENTE: LOS CONTAINS USAN REFLECT, SUPER ANTI PERFORMANTE!!
 - enco.TrucoQuerido -> enco.TrucoQuerido, enco.RetrucoQuerido, enco.Vale4Querido
 - GetManojoByStr no deberia ser de PartidaDT en vez de Ronda ?
-- tabular los mensajes de info (e.g., "resulta parda" -> ManoParda)
-- nueva ronda esta pasando toda la partidaDt, solo con ronda basta, pulir eso
-- muchas jugadas no se las tiene que enviar a todos los n jugadores, sino a n-1
-- en sumar-pts que envie el usuario ganador, no el equipo
-- constructor de mensajes con texto, pero luego lo tabula a [n]bytes
+- tabular los mensajes de info enco.Info ->:
+    "La Mano resulta parda"
+    "La %s mano la gano el equipo %s gracias a %s"
+    "La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s no querido"
+    "La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado"
 - SetNextTurnoPosMano siempre se usa luego de un p.Ronda.ManoEnJuego++ ?
   fusionarlo o bien hacer un r.incManoEnJuego
 
@@ -20,7 +21,6 @@
 
 
 # BUGS
-- [echo?] contraflor y contraflor al resto no estan implementadas (lineas 655 y 656)
 
 
 # LIMPIEZA DE CODIGO
