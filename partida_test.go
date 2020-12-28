@@ -11,6 +11,17 @@ import (
 	"github.com/filevich/truco/pdt"
 )
 
+// Contains dado un buffer se fija si contiene un mensaje
+// con ese codigo (y string de ser no-nulo)
+func Contains(pkts []*out.Packet, cod out.CodMsg) bool {
+	for _, pkt := range pkts {
+		if pkt.Message.Cod == int(cod) {
+			return true
+		}
+	}
+	return false
+}
+
 // Tests:
 // Envido	2/1
 // Real envido	 3/1
@@ -3535,7 +3546,7 @@ func TestPardaSigTurno3(t *testing.T) {
 	p.Cmd("Richard 4 Basto")
 	p.Cmd("Richard mazo")
 
-	if oops := !out.Contains(p.Stdout, out.TirarCarta); oops {
+	if oops := !Contains(out.Collect(p.Stdout), out.TirarCarta); oops {
 		t.Error("debio de haber tirado carta")
 	}
 

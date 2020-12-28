@@ -58,15 +58,3 @@ func Collect(buff *bytes.Buffer) (res []*Packet) {
 	}
 	return res
 }
-
-// Contains dado un buffer se fija si contiene un mensaje
-// con ese codigo (y string de ser no-nulo)
-func Contains(buff *bytes.Buffer, cod CodMsg) bool {
-	pkts := Collect(buff)
-	for _, pkt := range pkts {
-		if pkt.Message.Cod == int(cod) {
-			return true
-		}
-	}
-	return false
-}
