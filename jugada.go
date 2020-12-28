@@ -147,14 +147,7 @@ func (jugada tirarCarta) hacer(p *Partida) {
 
 		if pkts != nil {
 			for _, pkt := range pkts {
-				if pkt != nil {
-
-					// antes:
-					//write(p.Stdout, msg)
-					// ahora:
-					enco.Write(p.out, pkt)
-
-				}
+				enco.Write(p.out, pkt)
 			}
 		}
 
@@ -281,9 +274,7 @@ func (jugada tocarEnvido) eval(p *Partida) {
 
 	if pkts != nil {
 		for _, pkt := range pkts {
-			if pkt != nil {
-				enco.Write(p.out, pkt)
-			}
+			enco.Write(p.out, pkt)
 		}
 	}
 
@@ -428,9 +419,7 @@ func (jugada tocarFaltaEnvido) eval(p *Partida) {
 
 	if pkts != nil {
 		for _, pkt := range pkts {
-			if pkt != nil {
-				enco.Write(p.out, pkt)
-			}
+			enco.Write(p.out, pkt)
 		}
 	}
 
@@ -1161,9 +1150,7 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 
 		if pkts != nil {
 			for _, pkt := range pkts {
-				if pkt != nil {
-					enco.Write(p.out, pkt)
-				}
+				enco.Write(p.out, pkt)
 			}
 		}
 
@@ -1374,14 +1361,7 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 
 		if pkts != nil {
 			for _, pkt := range pkts {
-				if pkt != nil {
-
-					// antes:
-					//write(p.Stdout, msg)
-					// ahora
-					enco.Write(p.out, pkt)
-
-				}
+				enco.Write(p.out, pkt)
 			}
 		}
 
