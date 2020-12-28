@@ -2122,7 +2122,7 @@ func TestFixNoFlor(t *testing.T) {
 	p.Cmd("adolfo re-truco")
 	// << Adolfo grita re-truco
 
-	out.Consume(p.Stdout, deco.Print(&p.PartidaDT))
+	out.Consume(p.Stdout, deco.Printer(&p.PartidaDT))
 	p.Print()
 
 	p.Cmd("richard quiero")
@@ -3729,6 +3729,13 @@ func TestPardaSigTurno3(t *testing.T) {
 	p.Cmd("Andres mazo")
 	p.Cmd("Richard 4 Basto")
 	p.Cmd("Richard mazo")
+
+	if oops := !out.Contains(p.Stdout, out.TirarCarta); oops {
+		t.Error("debio de haber tirado carta")
+	}
+
+	// ojo no imprime nada porque la aterior ya consumio el buff
+	out.Consume(p.Stdout, deco.Printer(&p.PartidaDT))
 
 	p.Print()
 

@@ -25,16 +25,13 @@ func Read(buff *bytes.Buffer) (*Packet, error) {
 	return e, nil
 }
 
-// Consumer el callback de `Consume`
-type Consumer func(*Packet)
-
 // Print imprime el packete
 func Print(pkt *Packet) {
 	fmt.Println(pkt.String())
 }
 
 // Consume consume el buffer
-func Consume(buff *bytes.Buffer, callback Consumer) {
+func Consume(buff *bytes.Buffer, callback func(*Packet)) {
 	for {
 		e, err := Read(buff)
 		if err == io.EOF {
@@ -45,4 +42,31 @@ func Consume(buff *bytes.Buffer, callback Consumer) {
 		}
 		callback(e)
 	}
+}
+
+// Collect pasa de buffer a slice
+func Collect(buff *bytes.Buffer) (res []*Packet) {
+	for {
+		e, err := Read(buff)
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			fmt.Println(err)
+			return
+		}
+		res = append(res, e)
+	}
+	return res
+}
+
+// Contains dado un buffer se fija si contiene un mensaje
+// con ese codigo (y string de ser no-nulo)
+func Contains(buff *bytes.Buffer, cod CodMsg) bool {
+	pkts := Collect(buff)
+	for _, pkt := range pkts {
+		if pkt.Message.Cod == int(cod) {
+			return true
+		}
+	}
+	return false
 }

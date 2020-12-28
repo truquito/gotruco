@@ -54,10 +54,10 @@ func main() {
 			if err != nil {
 				fmt.Println("<< " + err.Error())
 			}
-			out.Consume(p.Stdout, deco.Print(&p.PartidaDT))
+			out.Consume(p.Stdout, deco.Printer(&p.PartidaDT))
 			p.Print()
 		case <-p.ErrCh:
-			out.Consume(p.Stdout, deco.Print(&p.PartidaDT))
+			out.Consume(p.Stdout, deco.Printer(&p.PartidaDT))
 			fmt.Printf(">> ")
 		}
 

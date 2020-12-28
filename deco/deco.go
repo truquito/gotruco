@@ -9,15 +9,6 @@ import (
 	"github.com/filevich/truco/pdt"
 )
 
-// Print imprime los mensajes
-func Print(p *pdt.PartidaDT) out.Consumer {
-	return func(m *out.Packet) {
-		if s := Parse(p, m.Message); s != "" {
-			fmt.Println(s)
-		}
-	}
-}
-
 // Manojo .
 func Manojo(p *pdt.PartidaDT, id string) *pdt.Manojo {
 	manojo, _ := p.Ronda.GetManojoByStr(id)
@@ -96,6 +87,17 @@ func Razon2str(r int) string {
 		str = "el truco ganado"
 	}
 	return str
+}
+
+// Printer alto orden
+func Printer(p *pdt.PartidaDT) func(*out.Packet) {
+	return func(pkt *out.Packet) {
+		s := Parse(p, pkt.Message)
+		s = strings.Replace(s, `"`, `'`, -1)
+		if s != "" {
+			fmt.Println(s)
+		}
+	}
 }
 
 // Parse parsea un mensaje de salida y retorna su string correspondiente
@@ -199,6 +201,9 @@ func Parse(p *pdt.PartidaDT, m *out.Message) string {
 
 	// (string, palo, valor)
 	case out.TirarCarta:
+		// autor, palo, valor := Tipo2(p, m)
+		// fmt.Printf("detectado codigo %d\n", out.CodMsg(m.Cod))
+		// decoded = fmt.Sprintf(`%s tira %d de %s`, autor.Jugador.Nombre, valor, palo.String())
 		decoded = ""
 
 	// (string, string, int)

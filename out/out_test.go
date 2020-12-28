@@ -2,6 +2,8 @@ package out
 
 import (
 	"bytes"
+	"fmt"
+	"io"
 	"testing"
 )
 
@@ -45,7 +47,16 @@ func TestCast(t *testing.T) {
 		Msg(GritarTruco, "Alvaro"),
 	))
 
-	Consume(buff, Print)
+	for {
+		e, err := Read(buff)
+		if err == io.EOF {
+			break
+		} else if err != nil {
+			fmt.Println(err)
+			return
+		}
+		Print(e)
+	}
 }
 
 /*
