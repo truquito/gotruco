@@ -11,8 +11,6 @@ import (
 	"github.com/filevich/truco/pdt"
 )
 
-var oops = false
-
 // Tests:
 // Envido	2/1
 // Real envido	 3/1
