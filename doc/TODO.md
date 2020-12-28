@@ -1,14 +1,14 @@
 # TODO
 - en vez de usar buffer usar iowriter y hacerle un metodo .String, de ultima
   una struct personalizada tal que se pueda hacer algo lindo tipo
-  t.Log(p.Out) o bien t.Log(p.Out.Pop())
+  t.Log(p.Out) o bien t.Log(p.enco.Pop())
 - eliminar partida.Print() -> String() o por lo menos de los tests
 - agregar un metodo de .Abandono(fulano) para dar por ganador al equipo contrario a fulano
 - arreglar tests para hacer regresion & que los tests no usen fmt tal que `go test` los corra de modo silencioso y solo activando la flag se muestre el output
 - ^ que el input tambien este tabulado
 - URGENTE: LOS CONTAINS USAN REFLECT, SUPER ANTI PERFORMANTE!!
 - jugadores con flor cache deberia ser una variable de partida y no de partidadt
-- out.TrucoQuerido -> out.TrucoQuerido, out.RetrucoQuerido, out.Vale4Querido
+- enco.TrucoQuerido -> enco.TrucoQuerido, enco.RetrucoQuerido, enco.Vale4Querido
 - GetManojoByStr no deberia ser de PartidaDT en vez de Ronda ?
 - tabular los mensajes de info (e.g., "resulta parda" -> ManoParda)
 - [^] reducir/minimizar las notas de los mensajes -> el cli se tiene que encargar de

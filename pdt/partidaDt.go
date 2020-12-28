@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/filevich/truco/out"
+	"github.com/filevich/truco/enco"
 )
 
 // Puntuacion : Enum para el puntaje maximo de la partida
@@ -270,9 +270,9 @@ func (p *PartidaDT) IrAlMazo(manojo *Manojo) {
 
 // EvaluarMano evalua todas las cartas y decide que equipo gano
 // de ese ganador se setea el siguiente turno
-func (p *PartidaDT) EvaluarMano() (bool, []*out.Packet) {
+func (p *PartidaDT) EvaluarMano() (bool, []*enco.Packet) {
 
-	var pkts []*out.Packet
+	var pkts []*enco.Packet
 
 	// cual es la tirada-carta que gano la mano?
 	// ojo que puede salir parda
@@ -332,9 +332,9 @@ func (p *PartidaDT) EvaluarMano() (bool, []*out.Packet) {
 		mano.Resultado = Empardada
 		mano.Ganador = nil
 
-		pkts = append(pkts, out.Pkt(
-			out.Dest("ALL"),
-			out.Msg(out.Info, "La Mano resulta parda"),
+		pkts = append(pkts, enco.Pkt(
+			enco.Dest("ALL"),
+			enco.Msg(enco.Info, "La Mano resulta parda"),
 		))
 
 		// no se cambia el turno
@@ -354,9 +354,9 @@ func (p *PartidaDT) EvaluarMano() (bool, []*out.Packet) {
 		// pero se setea despues de evaluar la ronda
 		mano.Ganador = tiradaGanadora.autor
 
-		pkts = append(pkts, out.Pkt(
-			out.Dest("ALL"),
-			out.Msg(out.Info,
+		pkts = append(pkts, enco.Pkt(
+			enco.Dest("ALL"),
+			enco.Msg(enco.Info,
 				fmt.Sprintf("La %s mano la gano el equipo %s gracias a %s",
 					strings.ToLower(p.Ronda.ManoEnJuego.String()),
 					mano.Ganador.Jugador.Equipo.String(),
@@ -384,9 +384,9 @@ func (p *PartidaDT) EvaluarMano() (bool, []*out.Packet) {
 // se acabo la ronda?
 // si se empieza una ronda nueva -> retorna true
 // si no se termino la ronda 	 -> retorna false
-func (p *PartidaDT) EvaluarRonda() (bool, []*out.Packet) {
+func (p *PartidaDT) EvaluarRonda() (bool, []*enco.Packet) {
 
-	var pkts []*out.Packet
+	var pkts []*enco.Packet
 
 	/* A MENOS QUE SE HAYAN IDO TODOS EN LA PRIMERA MANO!!! */
 	hayJugadoresRojo := p.Ronda.CantJugadoresEnJuego[Rojo] > 0
@@ -527,14 +527,14 @@ func (p *PartidaDT) EvaluarRonda() (bool, []*out.Packet) {
 			p.Ronda.Truco.Estado.String())
 	}
 
-	pkts = append(pkts, out.Pkt(
-		out.Dest("ALL"),
-		out.Msg(out.Info, msg),
+	pkts = append(pkts, enco.Pkt(
+		enco.Dest("ALL"),
+		enco.Msg(enco.Info, msg),
 	))
 
-	pkts = append(pkts, out.Pkt(
-		out.Dest("ALL"),
-		out.Msg(out.SumaPts, ganador.Jugador.ID, out.TrucoQuerido, totalPts),
+	pkts = append(pkts, enco.Pkt(
+		enco.Dest("ALL"),
+		enco.Msg(enco.SumaPts, ganador.Jugador.ID, enco.TrucoQuerido, totalPts),
 	))
 
 	p.SumarPuntos(ganador.Jugador.Equipo, totalPts)

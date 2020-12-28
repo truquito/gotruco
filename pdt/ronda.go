@@ -6,7 +6,7 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/filevich/truco/out"
+	"github.com/filevich/truco/enco"
 )
 
 // EstadoTruco : enum
@@ -366,7 +366,7 @@ func (r *Ronda) SetMuestra(muestra Carta) {
 *		`pkts[3] = Juan dice: "33 son mejores!"`
 *
  */
-func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*out.Packet) {
+func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*enco.Packet) {
 
 	cantJugadores := len(r.Manojos)
 
@@ -402,9 +402,9 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*out.Packet) {
 
 	yaDijeron[jIdx] = true
 
-	pkts = append(pkts, out.Pkt(
-		out.Dest("ALL"),
-		out.Msg(out.DiceTengo, r.Manojos[jIdx].Jugador.Nombre, envidos[jIdx]),
+	pkts = append(pkts, enco.Pkt(
+		enco.Dest("ALL"),
+		enco.Msg(enco.DiceTengo, r.Manojos[jIdx].Jugador.Nombre, envidos[jIdx]),
 	))
 
 	// `todaviaNoDijeronSonMejores` se usa para
@@ -441,9 +441,9 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*out.Packet) {
 			if sonMejores {
 				if esDeEquipoContrario {
 
-					pkts = append(pkts, out.Pkt(
-						out.Dest("ALL"),
-						out.Msg(out.DiceSonMejores, r.Manojos[i].Jugador.Nombre, envidos[i]),
+					pkts = append(pkts, enco.Pkt(
+						enco.Dest("ALL"),
+						enco.Msg(enco.DiceSonMejores, r.Manojos[i].Jugador.Nombre, envidos[i]),
 					))
 
 					jIdx = i
@@ -463,9 +463,9 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*out.Packet) {
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
 
-						pkts = append(pkts, out.Pkt(
-							out.Dest("ALL"),
-							out.Msg(out.DiceSonBuenas, r.Manojos[i].Jugador.Nombre),
+						pkts = append(pkts, enco.Pkt(
+							enco.Dest("ALL"),
+							enco.Msg(enco.DiceSonBuenas, r.Manojos[i].Jugador.Nombre),
 							// valor de su envido es `envidos[i]` pero no corresponde decirlo
 						))
 
@@ -509,7 +509,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*out.Packet) {
 *	`pkts[3] = Juan dice: "33 son mejores!"`
 *
  */
-func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts []*out.Packet) {
+func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts []*enco.Packet) {
 
 	cantJugadores := len(r.Manojos)
 
@@ -546,9 +546,9 @@ func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts
 	if flores[aPartirDe] > 0 {
 		yaDijeron[aPartirDe] = true
 
-		pkts = append(pkts, out.Pkt(
-			out.Dest("ALL"),
-			out.Msg(out.DiceTengo, r.Manojos[aPartirDe].Jugador.Nombre, flores[aPartirDe]),
+		pkts = append(pkts, enco.Pkt(
+			enco.Dest("ALL"),
+			enco.Msg(enco.DiceTengo, r.Manojos[aPartirDe].Jugador.Nombre, flores[aPartirDe]),
 		))
 	}
 
@@ -579,9 +579,9 @@ func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts
 			if sonMejores {
 				if esDeEquipoContrario {
 
-					pkts = append(pkts, out.Pkt(
-						out.Dest("ALL"),
-						out.Msg(out.DiceSonMejores, r.Manojos[i].Jugador.Nombre, flores[i]),
+					pkts = append(pkts, enco.Pkt(
+						enco.Dest("ALL"),
+						enco.Msg(enco.DiceSonMejores, r.Manojos[i].Jugador.Nombre, flores[i]),
 					))
 
 					jIdx = i
@@ -601,9 +601,9 @@ func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
 
-						pkts = append(pkts, out.Pkt(
-							out.Dest("ALL"),
-							out.Msg(out.DiceSonBuenas, r.Manojos[i].Jugador.Nombre),
+						pkts = append(pkts, enco.Pkt(
+							enco.Dest("ALL"),
+							enco.Msg(enco.DiceSonBuenas, r.Manojos[i].Jugador.Nombre),
 							// valor de su envido es `flores[i]` pero no corresponde decirlo
 						))
 

@@ -1,23 +1,22 @@
-package out
+package enco
 
 import (
-	"bytes"
 	"encoding/gob"
 	"fmt"
 	"io"
 )
 
 // Write .
-func Write(buff *bytes.Buffer, d *Packet) error {
-	enc := gob.NewEncoder(buff)
+func Write(w io.Writer, d *Packet) error {
+	enc := gob.NewEncoder(w)
 	err := enc.Encode(d)
 	return err
 }
 
 // Read retorna el pkt mas antiguo sin leer
-func Read(buff *bytes.Buffer) (*Packet, error) {
+func Read(r io.Reader) (*Packet, error) {
 	e := new(Packet)
-	dec := gob.NewDecoder(buff)
+	dec := gob.NewDecoder(r)
 	err := dec.Decode(e)
 	if err != nil {
 		return nil, err
@@ -26,9 +25,9 @@ func Read(buff *bytes.Buffer) (*Packet, error) {
 }
 
 // Consume consume el buffer
-func Consume(buff *bytes.Buffer, callback func(*Packet)) {
+func Consume(r io.Reader, callback func(*Packet)) {
 	for {
-		e, err := Read(buff)
+		e, err := Read(r)
 		if err == io.EOF {
 			break
 		} else if err != nil {
@@ -40,9 +39,9 @@ func Consume(buff *bytes.Buffer, callback func(*Packet)) {
 }
 
 // Collect pasa de buffer a slice
-func Collect(buff *bytes.Buffer) (res []*Packet) {
+func Collect(r io.Reader) (res []*Packet) {
 	for {
-		e, err := Read(buff)
+		e, err := Read(r)
 		if err == io.EOF {
 			break
 		} else if err != nil {

@@ -3,10 +3,11 @@ package truco
 import (
 	"bytes"
 	"fmt"
+	"io"
 	"regexp"
 	"strings"
 
-	"github.com/filevich/truco/out"
+	"github.com/filevich/truco/enco"
 	"github.com/filevich/truco/pdt"
 	"github.com/filevich/truco/ptr"
 )
@@ -26,8 +27,8 @@ var (
 // Partida :
 type Partida struct {
 	pdt.PartidaDT
-	Stdout *bytes.Buffer `json:"-"`
-	ErrCh  chan bool     `json:"-"`
+	out   io.Writer `json:"-"`
+	ErrCh chan bool `json:"-"`
 }
 
 func (p *Partida) parseJugada(cmd string) (IJugada, error) {
@@ -128,9 +129,9 @@ func (p *Partida) byeBye() {
 			}
 		}
 
-		out.Write(p.Stdout, out.Pkt(
-			out.Dest("ALL"),
-			out.Msg(out.ByeBye, s),
+		enco.Write(p.out, enco.Pkt(
+			enco.Dest("ALL"),
+			enco.Msg(enco.ByeBye, s),
 		))
 	}
 }
@@ -168,28 +169,29 @@ func (p *Partida) String() string {
 func (p *Partida) notify() {
 
 	// ojo primero hay que grabar el buff, luego avisar
-	out.Write(p.Stdout, out.Pkt(
-		out.Dest("ALL"),
-		out.Msg(out.TimeOut, "INTERRUMPING!! Roro tardo demasiado en jugar. Mano ganada por Rojo"),
+	enco.Write(p.out, enco.Pkt(
+		enco.Dest("ALL"),
+		enco.Msg(enco.TimeOut, "INTERRUMPING!! Roro tardo demasiado en jugar. Mano ganada por Rojo"),
 	))
 
 	p.ErrCh <- true
 }
 
-// NuevaPartida retorna n)ueva partida; error si hubo
-func NuevaPartida(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*Partida, error) {
+// NuevaPartida retorna nueva partida; error si hubo
+func NuevaPartida(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*Partida, io.Reader, error) {
 
 	partidaDt, err := pdt.NuevaPartidaDt(puntuacion, equipoAzul, equipoRojo)
 
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	p := Partida{
 		PartidaDT: *partidaDt,
 	}
 
-	p.Stdout = new(bytes.Buffer)
+	buff := new(bytes.Buffer)
+	p.out = buff
 	p.ErrCh = make(chan bool, 1)
 
 	// write(p.Stdout, &Pkt{
@@ -200,5 +202,5 @@ func NuevaPartida(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*
 	// 	},
 	// })
 
-	return &p, nil
+	return &p, buff, nil
 }

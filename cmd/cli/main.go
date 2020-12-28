@@ -8,7 +8,7 @@ import (
 
 	"github.com/filevich/truco"
 	"github.com/filevich/truco/deco"
-	"github.com/filevich/truco/out"
+	"github.com/filevich/truco/enco"
 )
 
 var reader = bufio.NewReader(os.Stdin)
@@ -33,7 +33,7 @@ func main() {
 	logfile := newLogFile("/home/jp/Workspace/_tmp/truco_logs/")
 
 	// p, _ := truco.NuevaPartida(20, []string{"Alvaro"}, []string{"Roro"})
-	p, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	p, buff, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
 	pJSON, _ := p.MarshalJSON()
 	logfile.Write(string(pJSON))
 
@@ -41,7 +41,7 @@ func main() {
 	// p.FromJSON(partidaJSON)
 
 	fmt.Println(p)
-	out.Consume(p.Stdout, func(pkt *out.Packet) {
+	enco.Consume(buff, func(pkt *enco.Packet) {
 		fmt.Print(deco.Stringify(pkt, &p.PartidaDT))
 	})
 
@@ -56,12 +56,12 @@ func main() {
 			if err != nil {
 				fmt.Println("<< " + err.Error())
 			}
-			out.Consume(p.Stdout, func(pkt *out.Packet) {
+			enco.Consume(buff, func(pkt *enco.Packet) {
 				fmt.Print(deco.Stringify(pkt, &p.PartidaDT))
 			})
 			fmt.Println(p)
 		case <-p.ErrCh:
-			out.Consume(p.Stdout, func(pkt *out.Packet) {
+			enco.Consume(buff, func(pkt *enco.Packet) {
 				fmt.Print(deco.Stringify(pkt, &p.PartidaDT))
 			})
 			fmt.Printf(">> ")
