@@ -10,7 +10,8 @@ type Jugador struct {
 	Equipo Equipo `json:"equipo"`
 }
 
-func (j Jugador) getEquipoContrario() Equipo {
+// GetEquipoContrario retorna el equipo contrario
+func (j Jugador) GetEquipoContrario() Equipo {
 	if j.Equipo == Rojo {
 		return Azul
 	}

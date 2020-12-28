@@ -177,6 +177,26 @@ func (p *Partida) notify() {
 	p.ErrCh <- true
 }
 
+// Abandono da por ganada la partida al equipo contario
+func (p *Partida) Abandono(jugador string) error {
+	// encuentra al jugador
+	manojo, err := p.GetManojoByStr(jugador)
+	if err != nil {
+		return fmt.Errorf("Usuario %s no encontrado", jugador)
+	}
+	// doy por ganador al equipo contrario
+	equipoContrario := manojo.Jugador.GetEquipoContrario()
+	ptsFaltantes := int(p.Puntuacion) - p.Puntajes[equipoContrario]
+	p.SumarPuntos(equipoContrario, ptsFaltantes)
+
+	enco.Write(p.out, enco.Pkt(
+		enco.Dest("ALL"),
+		enco.Msg(enco.Abandono, manojo.Jugador.ID),
+	))
+
+	return nil
+}
+
 // NuevaPartida retorna nueva partida; error si hubo
 func NuevaPartida(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*Partida, io.Reader, error) {
 

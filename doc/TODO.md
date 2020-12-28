@@ -1,9 +1,9 @@
 # TODO
 - hay 2 metodos de evaluacion de flores; uno usa pkts otro no
-- usar mapas para mapear str a manojos
-- agregar un metodo de .Abandono(fulano) para dar por ganador al equipo contrario a fulano
+- usar mapas para mapear str a manojos <- na xq primero tengo que verificar que 
+  esta la key: eos es o(n) -> igual q como esta ahora.
 - URGENTE: LOS CONTAINS USAN REFLECT, SUPER ANTI PERFORMANTE!!
-- enco.TrucoQuerido -> enco.TrucoQuerido, enco.RetrucoQuerido, enco.Vale4Querido
+- [?] enco.TrucoQuerido -> enco.TrucoQuerido, enco.RetrucoQuerido, enco.Vale4Querido
 - tabular los mensajes de info enco.Info ->:
     "La Mano resulta parda"
     "La %s mano la gano el equipo %s gracias a %s"

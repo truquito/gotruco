@@ -56,6 +56,7 @@ const (
 	TimeOut
 	Info // <- se debe ir
 	ElEnvidoEstaPrimero
+	Abandono
 )
 
 // Razon ..
@@ -154,7 +155,8 @@ func Msg(t CodMsg, data ...interface{}) *Message {
 		QuieroEnvite,
 		Mazo,
 		Info,
-		ElEnvidoEstaPrimero:
+		ElEnvidoEstaPrimero,
+		Abandono:
 
 		bs, err := json.Marshal(data[0])
 

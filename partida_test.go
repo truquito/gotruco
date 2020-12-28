@@ -3566,3 +3566,33 @@ func TestFixTrucoDeshabilitaEnvido(t *testing.T) {
 	})
 
 }
+
+func TestAbandono(t *testing.T) {
+	// simulacro de un jugador abandonando
+	p, out, _ := NuevaPartida(pdt.A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	partidaJSON := `{"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":2,"Rojo":3},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null},"truco":{"cantadoPor":null,"estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":5},{"palo":"Copa","valor":4},{"palo":"Copa","valor":6}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":6},{"palo":"Basto","valor":7},{"palo":"Espada","valor":1}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":2},{"palo":"Espada","valor":7},{"palo":"Oro","valor":11}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":2},{"palo":"Oro","valor":2},{"palo":"Espada","valor":12}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Basto","valor":11},"manos":[{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null}]}}`
+	p.PartidaDT.FromJSON([]byte(partidaJSON))
+	t.Log(p)
+
+	p.Cmd("Alvaro truco")
+
+	assert(p.Ronda.Truco.Estado == pdt.TRUCO, func() {
+		t.Error(`Deberia dejarlo gritar truco`)
+	})
+
+	// el envido esta primero!!
+	p.Abandono("Adolfo")
+
+	assert(p.Terminada(), func() {
+		t.Error(`Deberia haber acabado la partida`)
+	})
+
+	assert(p.Puntajes[pdt.Rojo] == int(p.Puntuacion), func() {
+		t.Error(`El equipo rojo debio de haber completado los pts`)
+	})
+
+	enco.Consume(out, func(pkt *enco.Packet) {
+		t.Log(deco.Stringify(pkt, p.PartidaDT))
+	})
+
+}

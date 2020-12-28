@@ -133,6 +133,11 @@ func Parse(p *pdt.PartidaDT, m *enco.Message) string {
 	case enco.DiceSonBuenas:
 		decoded = fmt.Sprintf(`%s: "son buenas"`, Autor(p, m).Jugador.Nombre)
 
+	case enco.Abandono:
+		autor := Autor(p, m)
+		decoded = fmt.Sprintf(`%s abandono la partida. Gano el equipo %s`,
+			autor.Jugador.Nombre, autor.Jugador.GetEquipoContrario())
+
 	case enco.CantarFlor:
 		decoded = fmt.Sprintf(`%s canta flor`, Autor(p, m).Jugador.Nombre)
 
