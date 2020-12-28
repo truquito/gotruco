@@ -51,21 +51,18 @@ func TestEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Envido")
 	p.Cmd("Roro Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue aceptado por Roro`)
 		return
 	}
 
-	oops = p.Ronda.Envite.Puntaje != 2
-	if oops {
+	if oops := p.Ronda.Envite.Puntaje != 2; oops {
 		t.Error(`El puntaje del envido deberia de ser 2`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 2 && p.Puntajes[pdt.Rojo] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 2 && p.Puntajes[pdt.Rojo] == 0); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 2`)
 		return
 	}
@@ -97,27 +94,23 @@ func TestEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Envido")
 	p.Cmd("Roro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue rechazado por Roro`)
 		return
 	}
 
-	oops = p.Ronda.Envite.Puntaje != 1
-	if oops {
+	if oops := p.Ronda.Envite.Puntaje != 1; oops {
 		t.Error(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 1)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 1); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Rojo] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Rojo] == 0); oops {
 		t.Error(`El puntaje del equipo rojo deberia de ser 0`)
 		return
 	}
@@ -149,21 +142,18 @@ func TestRealEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Real-Envido")
 	p.Cmd("Roro Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue aceptado por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 3)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 3); oops {
 		t.Error(`El puntaje del envido deberia de ser 3`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 3 && p.Puntajes[pdt.Rojo] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 3 && p.Puntajes[pdt.Rojo] == 0); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
@@ -195,21 +185,18 @@ func TestRealEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Real-Envido")
 	p.Cmd("Roro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue aceptado por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 1)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 1); oops {
 		t.Error(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 1 && p.Puntajes[pdt.Rojo] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 1 && p.Puntajes[pdt.Rojo] == 0); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 1`)
 		return
 	}
@@ -241,21 +228,18 @@ func TestFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue aceptado por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 10)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 10); oops {
 		t.Errorf(`El puntaje del envido deberia de ser 10`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 10 && p.Puntajes[pdt.Rojo] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 10 && p.Puntajes[pdt.Rojo] == 0); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 10`)
 		return
 	}
@@ -287,21 +271,18 @@ func TestFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 1)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 1); oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 1 && p.Puntajes[pdt.Rojo] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 1 && p.Puntajes[pdt.Rojo] == 0); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 1`)
 		return
 	}
@@ -332,29 +313,25 @@ func TestEnvidoEnvidoQuiero(t *testing.T) {
 
 	p.Cmd("Alvaro Envido")
 
-	oops = p.Ronda.Envite.Estado != pdt.ENVIDO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.ENVIDO; oops {
 		t.Error("El estado del envido deberia de ser `envido`")
 		return
 	}
 
-	oops = p.Ronda.Envite.Puntaje != 2
-	if oops {
+	if oops := p.Ronda.Envite.Puntaje != 2; oops {
 		t.Error("El `puntaje` del envido deberia de ser 2")
 		return
 	}
 
 	p.Cmd("Roro Envido")
 
-	oops = p.Ronda.Envite.Estado != pdt.ENVIDO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.ENVIDO; oops {
 		t.Error(`El estado del envido deberia de ser 'envido', incluso luego de que
 		ambos Alvaro y Roro lo hayan tocando`)
 		return
 	}
 
-	oops = p.Ronda.Envite.Puntaje != 4
-	if oops {
+	if oops := p.Ronda.Envite.Puntaje != 4; oops {
 		t.Error(`El puntaje del envido deberia ahora de ser '2 + 2 = 4'`)
 		return
 	}
@@ -389,21 +366,18 @@ func TestEnvidoEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Roro Envido")
 	p.Cmd("Alvaro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 2+1)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 2+1); oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+1)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+1); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 0`)
 		return
 	}
@@ -436,21 +410,18 @@ func TestEnvidoRealEnvidoQuiero(t *testing.T) {
 	p.Cmd("Roro Real-Envido")
 	p.Cmd("Alvaro Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 2+3)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 2+3); oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 2+3 && p.Puntajes[pdt.Rojo] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 2+3 && p.Puntajes[pdt.Rojo] == 0); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 5`)
 		return
 	}
@@ -483,21 +454,18 @@ func TestEnvidoRealEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Roro Real-Envido")
 	p.Cmd("Alvaro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 2+1)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 2+1); oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+1)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+1); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
@@ -530,21 +498,18 @@ func TestEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 2+10)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 2+10); oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 2+10 && p.Puntajes[pdt.Rojo] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 2+10 && p.Puntajes[pdt.Rojo] == 0); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
@@ -577,21 +542,18 @@ func TestEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 2+1)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 2+1); oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+1)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+1); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
@@ -624,21 +586,18 @@ func TestRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 3+10)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 3+10); oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 3+10 && p.Puntajes[pdt.Rojo] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 3+10 && p.Puntajes[pdt.Rojo] == 0); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
@@ -671,21 +630,18 @@ func TestRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 3+1)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 3+1); oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 3+1)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 3+1); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
@@ -719,21 +675,18 @@ func TestEnvidoEnvidoRealEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Real-Envido")
 	p.Cmd("Roro Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 2+2+3)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 2+2+3); oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 2+2+3 && p.Puntajes[pdt.Rojo] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 2+2+3 && p.Puntajes[pdt.Rojo] == 0); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
@@ -767,21 +720,18 @@ func TestEnvidoEnvidoRealEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Real-Envido")
 	p.Cmd("Roro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 2+2+1)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 2+2+1); oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 2+2+1 && p.Puntajes[pdt.Rojo] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 2+2+1 && p.Puntajes[pdt.Rojo] == 0); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
@@ -815,21 +765,18 @@ func TestEnvidoEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 2+2+10)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 2+2+10); oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 2+2+10 && p.Puntajes[pdt.Rojo] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 2+2+10 && p.Puntajes[pdt.Rojo] == 0); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
@@ -863,21 +810,18 @@ func TestEnvidoEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 2+2+1)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 2+2+1); oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 2+2+1 && p.Puntajes[pdt.Rojo] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 2+2+1 && p.Puntajes[pdt.Rojo] == 0); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
@@ -911,21 +855,18 @@ func TestEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 2+3+10)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 2+3+10); oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 2+3+10 && p.Puntajes[pdt.Rojo] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 2+3+10 && p.Puntajes[pdt.Rojo] == 0); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
@@ -959,21 +900,18 @@ func TestEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 2+3+1)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 2+3+1); oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 2+3+1 && p.Puntajes[pdt.Rojo] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 2+3+1 && p.Puntajes[pdt.Rojo] == 0); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
@@ -1008,21 +946,18 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 2+2+3+10)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 2+2+3+10); oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 2+2+3+10 && p.Puntajes[pdt.Rojo] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 2+2+3+10 && p.Puntajes[pdt.Rojo] == 0); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
@@ -1057,21 +992,18 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro No-Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 		return
 	}
 
-	oops = !(p.Ronda.Envite.Puntaje == 2+2+3+1)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == 2+2+3+1); oops {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 		return
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+2+3+1)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+2+3+1); oops {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 		return
 	}
@@ -1133,8 +1065,8 @@ func TestCalcEnvido(t *testing.T) {
 	expected := []int{26, 20, 28, 25, 33, 27}
 	for i, manojo := range p.Ronda.Manojos {
 		got := manojo.CalcularEnvido(p.Ronda.Muestra)
-		oops = expected[i] != got
-		if oops {
+
+		if oops := expected[i] != got; oops {
 			t.Errorf(
 				`El resultado del envido del jugador %s es incorrecto.
 				\nEXPECTED: %v
@@ -1147,8 +1079,7 @@ func TestCalcEnvido(t *testing.T) {
 	p.Cmd("D Envido")
 	p.Cmd("C Quiero")
 
-	oops = !(p.Puntajes[pdt.Azul] == 4+2)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 4+2); oops {
 		t.Error("El resultado es incorrecto")
 		return
 	}
@@ -1210,8 +1141,8 @@ func TestCalcEnvido2(t *testing.T) {
 	expected := []int{21, 23, 23, 30, 30, 31}
 	for i, manojo := range p.Ronda.Manojos {
 		got := manojo.CalcularEnvido(p.Ronda.Muestra)
-		oops = !(expected[i] == got)
-		if oops {
+
+		if oops := !(expected[i] == got); oops {
 			t.Errorf(
 				`El resultado del envido del jugador %s es incorrecto.
 				\nEXPECTED: %v
@@ -1225,8 +1156,7 @@ func TestCalcEnvido2(t *testing.T) {
 	p.Cmd("D Envido")
 	p.Cmd("C Quiero")
 
-	oops = !(p.Puntajes[pdt.Rojo] == 3+2)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Rojo] == 3+2); oops {
 		t.Error("El resultado es incorrecto")
 		return
 	}
@@ -1258,15 +1188,15 @@ func TestNoDeberianTenerFlor(t *testing.T) {
 	)
 
 	tieneFlor, _ := p.Ronda.Manojos[0].TieneFlor(p.Ronda.Muestra)
-	oops = tieneFlor == true
-	if oops {
+
+	if oops := tieneFlor == true; oops {
 		t.Error(`Alvaro' NO deberia de tener 'flor'`)
 		return
 	}
 
 	tieneFlor, _ = p.Ronda.Manojos[1].TieneFlor(p.Ronda.Muestra)
-	oops = tieneFlor == true
-	if oops {
+
+	if oops := tieneFlor == true; oops {
 		t.Error(`Roro' NO deberia de tener 'flor'`)
 		return
 	}
@@ -1297,8 +1227,8 @@ func TestNoDeberianTenerFlor2(t *testing.T) {
 	)
 
 	tieneFlor, _ := p.Ronda.Manojos[0].TieneFlor(p.Ronda.Muestra)
-	oops = tieneFlor == true
-	if oops {
+
+	if oops := tieneFlor == true; oops {
 		t.Error(`Alvaro' NO deberia de tener 'flor'`)
 		return
 	}
@@ -1328,15 +1258,15 @@ func TestDeberiaTenerFlor(t *testing.T) {
 	)
 
 	tieneFlor, _ := p.Ronda.Manojos[0].TieneFlor(p.Ronda.Muestra)
-	oops = !(tieneFlor == true)
-	if oops {
+
+	if oops := !(tieneFlor == true); oops {
 		t.Error(`Alvaro' deberia tener 'flor'`)
 		return
 	}
 
 	tieneFlor, _ = p.Ronda.Manojos[1].TieneFlor(p.Ronda.Muestra)
-	oops = !(tieneFlor == true)
-	if oops {
+
+	if oops := !(tieneFlor == true); oops {
 		t.Error(`Roro' deberia tener 'flor'`)
 		return
 	}
@@ -1399,14 +1329,12 @@ func TestFlorFlorContraFlorQuiero(t *testing.T) {
 	p.Cmd("Adolfo Contra-flor-al-resto")
 	p.Cmd("Richard Quiero")
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado del envido deberia ser 'deshabilitado'`)
 		return
 	}
 
-	oops = p.Ronda.Envite.Estado != pdt.DESHABILITADO
-	if oops {
+	if oops := p.Ronda.Envite.Estado != pdt.DESHABILITADO; oops {
 		t.Error(`El estado de la flor deberia ser 'deshabilitado'`)
 		return
 	}
@@ -1416,8 +1344,8 @@ func TestFlorFlorContraFlorQuiero(t *testing.T) {
 	// duda: deberia sumar tambien los puntos de las flores
 	// oops = !(p.Puntajes[pdt.Azul] == 4*3+10 && p.Puntajes[pdt.Rojo] == 0)
 	// puntos para ganar chico + todas las flores NO ACHICADAS
-	oops = !(p.Puntajes[pdt.Azul] == 10 && p.Puntajes[pdt.Rojo] == 0)
-	if oops {
+
+	if oops := !(p.Puntajes[pdt.Azul] == 10 && p.Puntajes[pdt.Rojo] == 0); oops {
 		t.Error(`El puntaje del equipo azul deberia ser 2`)
 		return
 	}
@@ -1459,13 +1387,11 @@ func TestFixFlor(t *testing.T) {
 	p.Cmd("alvaro 12 basto")
 	p.Cmd("roro 10 basto")
 
-	oops = !(p.Puntajes[pdt.Rojo] == 3)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Rojo] == 3); oops {
 		t.Error(`El puntaje del equipo rojo deberia ser 3 por la flor de richard`)
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 1)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 1); oops {
 		t.Error(`El puntaje del equipo azul deberia ser 1 por la ronda ganada`)
 	}
 
@@ -1483,9 +1409,7 @@ func TestFixFlorBucle(t *testing.T) {
 	p.Cmd("roro flor")
 	p.Cmd("richard flor")
 
-	oops = !(p.Puntajes[pdt.Rojo] == 6)
-
-	if oops {
+	if oops := !(p.Puntajes[pdt.Rojo] == 6); oops {
 		t.Error(`El puntaje del equipo rojo deberia ser 6 por las 2 flores`)
 	}
 
@@ -1529,29 +1453,25 @@ func TestFixContraFlor(t *testing.T) {
 	// tampoco debio de haber pasado su turno
 	p.Cmd("adolfo 11 basto")
 
-	oops = !(p.Ronda.GetElTurno().GetCantCartasTiradas() == 0)
-	if oops {
+	if oops := !(p.Ronda.GetElTurno().GetCantCartasTiradas() == 0); oops {
 		t.Error(`El puntaje del equipo rojo deberia ser 3 por la flor de richard`)
 	}
 
-	oops = !(p.Ronda.GetElTurno().Jugador.Nombre == "Adolfo")
-	if oops {
+	if oops := !(p.Ronda.GetElTurno().Jugador.Nombre == "Adolfo"); oops {
 		t.Error(`No debio de haber pasado su turno`)
 	}
 
 	// no deberia dejarlo tirar xq el envite esta en juego
 	p.Cmd("renzo 12 basto")
 
-	oops = !(p.Ronda.Manojos[2].GetCantCartasTiradas() == 0)
-	if oops {
+	if oops := !(p.Ronda.Manojos[2].GetCantCartasTiradas() == 0); oops {
 		t.Error(`No deberia dejarlo tirar porque nunca llego a ser su turno`)
 	}
 
 	// no hay nada que querer
 	p.Cmd("renzo quiero")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.FLOR)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.FLOR); oops {
 		t.Error(`El estado del envite no debio de haber cambiado`)
 	}
 
@@ -1564,8 +1484,7 @@ func TestFixContraFlor(t *testing.T) {
 	p.Print()
 	out.Consume(p.Stdout, out.Print)
 
-	oops = !(p.Puntajes[pdt.Rojo] > p.Puntajes[pdt.Azul])
-	if oops {
+	if oops := !(p.Puntajes[pdt.Rojo] > p.Puntajes[pdt.Azul]); oops {
 		t.Error(`El equipo rojo deberia de tener mas pts que el azul`)
 	}
 }
@@ -1796,16 +1715,16 @@ func TestParseJugada(t *testing.T) {
 
 	for _, cmd := range shouldBeOK {
 		_, err := p.parseJugada(cmd)
-		oops = !(err == nil)
-		if oops {
+
+		if oops := !(err == nil); oops {
 			t.Error(err.Error())
 		}
 	}
 
 	for _, cmd := range shouldNotBeOK {
 		_, err := p.parseJugada(cmd)
-		oops = !(err != nil)
-		if oops {
+
+		if oops := !(err != nil); oops {
 			t.Error(`Deberia dar error`)
 		}
 	}
@@ -1887,8 +1806,7 @@ func TestPartida1(t *testing.T) {
 	// no deberia dejarlo cantar envido xq tiene flor
 	p.Cmd("Alvaro Envido")
 
-	oops = !(p.Ronda.Envite.Estado != pdt.ENVIDO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado != pdt.ENVIDO); oops {
 		t.Error(`el envite deberia pasar a estado de flor`)
 	}
 
@@ -1898,8 +1816,7 @@ func TestPartida1(t *testing.T) {
 	// deberia dejarlo irse al mazo
 	p.Cmd("Roro Mazo")
 
-	oops = !(p.Ronda.Manojos[1].SeFueAlMazo == true)
-	if oops {
+	if oops := !(p.Ronda.Manojos[1].SeFueAlMazo == true); oops {
 		t.Error(`deberia dejarlo irse al mazo`)
 	}
 
@@ -1909,8 +1826,7 @@ func TestPartida1(t *testing.T) {
 	// deberia aumentar la apuesta
 	p.Cmd("Renzo Contra-flor")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.CONTRAFLOR)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.CONTRAFLOR); oops {
 		t.Error(`deberia aumentar la apuesta a CONTRAFLOR`)
 	}
 
@@ -1927,15 +1843,13 @@ func TestPartidaComandosInvalidos(t *testing.T) {
 	p.Cmd("Alvaro Envido")
 	p.Cmd("Quiero")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.ENVIDO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.ENVIDO); oops {
 		t.Error(`no debio de haberlo querido`)
 	}
 
 	p.Cmd("Schumacher Flor")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.ENVIDO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.ENVIDO); oops {
 		t.Error(`no existe schumacher`)
 	}
 
@@ -1963,8 +1877,8 @@ func TestFixNacho(t *testing.T) {
 
 	roro, _ := p.Ronda.GetManojoByStr("Roro")
 	cantTiradasRoro := roro.GetCantCartasTiradas()
-	oops = !(cantTiradasRoro == 1)
-	if oops {
+
+	if oops := !(cantTiradasRoro == 1); oops {
 		t.Error(`Roro tiro solo 1 carta`)
 	}
 
@@ -1973,8 +1887,7 @@ func TestFixNacho(t *testing.T) {
 	p.Cmd("andres 10 espada")
 	p.Cmd("richard flor")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.DESHABILITADO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.DESHABILITADO); oops {
 		t.Error(`el envido deberia estar inhabilitado por la flor`)
 	}
 
@@ -1982,8 +1895,7 @@ func TestFixNacho(t *testing.T) {
 	p.Cmd("richard truco")
 	p.Cmd("roro quiero")
 
-	oops = !(p.Ronda.Truco.Estado == pdt.TRUCO)
-	if oops {
+	if oops := !(p.Ronda.Truco.Estado == pdt.TRUCO); oops {
 		t.Error(`no deberia poder ya que es de su mismo equipo`)
 	}
 
@@ -1992,63 +1904,54 @@ func TestFixNacho(t *testing.T) {
 	p.Cmd("alvaro mazo")
 	p.Cmd("roro quiero")
 
-	oops = !(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Adolfo")
-	if oops {
+	if oops := !(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Adolfo"); oops {
 		t.Error(`no hay nada que querer`)
 	}
 	p.Cmd("roro retruco") // syntaxis invalida
 	p.Cmd("roro re-truco")
 
-	oops = !(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Adolfo")
-	if oops {
+	if oops := !(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Adolfo"); oops {
 		t.Error(`no debe permitir ya que su equipo no tiene la potestad del truco`)
 	}
 
 	p.Cmd("alvaro re-truco")
 
-	oops = !(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Adolfo")
-	if oops {
+	if oops := !(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Adolfo"); oops {
 		t.Error(`no deberia dejarlo porque se fue al mazo`)
 	}
 
 	p.Cmd("Adolfo re-truco")
 
-	oops = !(p.Ronda.Truco.Estado == pdt.RETRUCO)
-	if oops {
+	if oops := !(p.Ronda.Truco.Estado == pdt.RETRUCO); oops {
 		t.Error(`no deberia dejarlo porque se fue al mazo`)
 	}
 
 	p.Cmd("renzo quiero")
 
-	oops = !(p.Ronda.Truco.Estado == pdt.RETRUCOQUERIDO)
-	if oops {
+	if oops := !(p.Ronda.Truco.Estado == pdt.RETRUCOQUERIDO); oops {
 		t.Error(`no deberia dejarlo porque se fue al mazo`)
 	}
 
-	oops = !(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Renzo")
-	if oops {
+	if oops := !(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Renzo"); oops {
 		t.Error(`no deberia dejarlo porque se fue al mazo`)
 	}
 
 	p.Cmd("roro 6 copa") // no deberia dejarlo porque ya paso su turno
 
-	oops = !(cantTiradasRoro == 1)
-	if oops {
+	if oops := !(cantTiradasRoro == 1); oops {
 		t.Error(`Roro tiro solo 1 carta`)
 	}
 
 	p.Cmd("adolfo re-truco") // no deberia dejarlo
 
-	oops = !(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Renzo")
-	if oops {
+	if oops := !(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Renzo"); oops {
 		t.Error(`no deberia dejarlo porque el re-truco ya fue cantado`)
 	}
 
 	p.Cmd("adolfo 1 espada")
 	p.Cmd("renzo 3 oro")
 
-	oops = !(p.Ronda.GetElTurno().Jugador.Nombre == "Andres")
-	if oops {
+	if oops := !(p.Ronda.GetElTurno().Jugador.Nombre == "Andres"); oops {
 		t.Error(`Deberia ser el turno de Andres`)
 		return
 	}
@@ -2074,8 +1977,7 @@ func TestFixNoFlor(t *testing.T) {
 	// "la flor esta primero":
 	// << Andres canta flor
 
-	oops = !(p.Ronda.Envite.Estado == pdt.FLOR)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.FLOR); oops {
 		t.Error(`El envido esta primero!`)
 	}
 
@@ -2131,16 +2033,14 @@ func TestFixNoFlor(t *testing.T) {
 	p.Cmd("richard vale-4")
 	// << Richard grita vale 4
 
-	oops = !(p.Ronda.Truco.Estado == pdt.VALE4)
-	if oops {
+	if oops := !(p.Ronda.Truco.Estado == pdt.VALE4); oops {
 		t.Error(`Richard deberia poder gritar vale4`)
 	}
 
 	p.Cmd("adolfo quiero")
 	// << Adolfo responde quiero
 
-	oops = !(p.Ronda.Truco.Estado == pdt.VALE4QUERIDO)
-	if oops {
+	if oops := !(p.Ronda.Truco.Estado == pdt.VALE4QUERIDO); oops {
 		t.Error(`El estado del truco deberia ser VALE4QUERIDO`)
 	}
 
@@ -2177,8 +2077,7 @@ func TestFixNoFlor(t *testing.T) {
 	// << Empieza una nueva ronda
 	// << Empieza una nueva ronda
 
-	oops = !(p.GetMaxPuntaje() == 6+4) // 6 de las 2 flores
-	if oops {
+	if oops := !(p.GetMaxPuntaje() == 6+4); /* 6 de las 2 flores */ oops {
 		t.Error(`suma mal los puntos cuando roro se fue al mazo`)
 	}
 
@@ -2301,13 +2200,11 @@ func TestFixBocha(t *testing.T) {
 	p.Cmd("andres mazo")
 	// << Andres se va al mazo
 
-	oops = !(p.Puntajes[pdt.Rojo] == 1 && p.Puntajes[pdt.Azul] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Rojo] == 1 && p.Puntajes[pdt.Azul] == 0); oops {
 		t.Error(`todos los de azul se fueron al mazo, deberian de haber ganado los rojos`)
 	}
 
-	oops = !(p.Ronda.GetElMano().Jugador.Equipo == pdt.Rojo)
-	if oops {
+	if oops := !(p.Ronda.GetElMano().Jugador.Equipo == pdt.Rojo); oops {
 		t.Error(`todos los de azul se fueron al mazo, deberian ser turno de los rojos`)
 	}
 
@@ -2342,8 +2239,7 @@ func TestFixBochaParte2(t *testing.T) {
 	p.Cmd("andres mazo")
 	// << Andres se va al mazo
 
-	oops = !(p.Puntajes[pdt.Rojo] == 1 && p.Puntajes[pdt.Azul] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Rojo] == 1 && p.Puntajes[pdt.Azul] == 0); oops {
 		t.Error(`todos los de azul se fueron al mazo, deberian de haber ganado los rojos`)
 	}
 	// << La ronda ha sido ganada por el equipo pdt.Rojo
@@ -2362,8 +2258,7 @@ func TestFixBochaParte3(t *testing.T) {
 
 	p.Cmd("richard flor")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN); oops {
 		t.Error(`No es posible cantar flor`)
 	}
 
@@ -2372,24 +2267,21 @@ func TestFixBochaParte3(t *testing.T) {
 	// bien fue cantado por uno de su equipo
 	p.Cmd("andres quiero")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN && p.Ronda.Truco.Estado == pdt.NOCANTADO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN && p.Ronda.Truco.Estado == pdt.NOCANTADO); oops {
 		t.Error(`No hay nada "que querer"`)
 	}
 
 	// No es posible cantar contra flor
 	p.Cmd("andres contra-flor")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN); oops {
 		t.Error(`No es posible cantar flor`)
 	}
 
 	// No es posible cantar contra flor
 	p.Cmd("richard contra-flor")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN); oops {
 		t.Error(`No es posible cantar flor`)
 	}
 
@@ -2398,8 +2290,7 @@ func TestFixBochaParte3(t *testing.T) {
 	// bien fue cantado por uno de su equipo
 	p.Cmd("richard quiero")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN && p.Ronda.Truco.Estado == pdt.NOCANTADO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN && p.Ronda.Truco.Estado == pdt.NOCANTADO); oops {
 		t.Error(`No hay nada "que querer"`)
 	}
 
@@ -2415,22 +2306,19 @@ func TestFixAutoQuerer(t *testing.T) {
 
 	p.Cmd("alvaro envido")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.ENVIDO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.ENVIDO); oops {
 		t.Error(`Deberia en estar estado envido`)
 	}
 
 	p.Cmd("alvaro quiero")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.ENVIDO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.ENVIDO); oops {
 		t.Error(`No se deberia poder auto-querer`)
 	}
 
 	p.Cmd("adolfo quiero")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.ENVIDO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.ENVIDO); oops {
 		t.Error(`No se deberia poder auto-querer a uno del mismo equipo`)
 	}
 
@@ -2485,15 +2373,13 @@ func TestFixNoDejaIrseAlMazo(t *testing.T) {
 	p.Cmd("richard 2 oro")
 	p.Cmd("renzo mazo")
 
-	oops = !(p.Ronda.Manojos[3].SeFueAlMazo == true)
-	if oops {
+	if oops := !(p.Ronda.Manojos[3].SeFueAlMazo == true); oops {
 		t.Error(`deberia dejarlo irse al mazo`)
 	}
 
 	p.Cmd("andres mazo")
 
-	oops = !(p.Ronda.Manojos[4].SeFueAlMazo == true)
-	if oops {
+	if oops := !(p.Ronda.Manojos[4].SeFueAlMazo == true); oops {
 		t.Error(`deberia dejarlo irse al mazo`)
 	}
 
@@ -2543,8 +2429,7 @@ func TestFixNoPermiteContraFlor(t *testing.T) {
 	p.Cmd("roro 4 oro")
 	p.Cmd("adolfo flor")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.FLOR)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.FLOR); oops {
 		t.Error(`deberia permitir cantar flor`)
 	}
 
@@ -2552,15 +2437,13 @@ func TestFixNoPermiteContraFlor(t *testing.T) {
 	p.Cmd("renzo 12 basto")
 	p.Cmd("renzo quiero")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.FLOR)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.FLOR); oops {
 		t.Error(`no debio de haber cambiado nada`)
 	}
 
 	p.Cmd("renzo contra-flor")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.CONTRAFLOR)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.CONTRAFLOR); oops {
 		t.Error(`debe de jugarse la contaflor`)
 	}
 
@@ -2582,8 +2465,7 @@ func TestFixDeberiaGanarAzul(t *testing.T) {
 	p.Cmd("alvaro mazo")
 	p.Cmd("roro mazo")
 
-	oops = !(p.Puntajes[pdt.Rojo] == 0 && p.Puntajes[pdt.Azul] > 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Rojo] == 0 && p.Puntajes[pdt.Azul] > 0); oops {
 		t.Error(`La ronda deberia de haber sido ganado por pdt.Azul`)
 		return
 	}
@@ -2602,8 +2484,7 @@ func TestFixPierdeTurno(t *testing.T) {
 	out.Consume(p.Stdout, out.Print)
 	p.Print()
 
-	oops = !(p.Ronda.GetElTurno().Jugador.Nombre == "Roro")
-	if oops {
+	if oops := !(p.Ronda.GetElTurno().Jugador.Nombre == "Roro"); oops {
 		t.Error(`Deberia ser el turno de Roro`)
 		return
 	}
@@ -2619,8 +2500,7 @@ func TestFixTieneFlor(t *testing.T) {
 	p.Cmd("alvaro 5 copa")
 	// no deberia dejarlo jugar porque tiene flor
 
-	oops = !(p.Ronda.GetElTurno().Jugador.Nombre == "Alvaro")
-	if oops {
+	if oops := !(p.Ronda.GetElTurno().Jugador.Nombre == "Alvaro"); oops {
 		t.Error(`Deberia ser el turno de Alvaro`)
 		return
 	}
@@ -2638,8 +2518,7 @@ func Test2FloresSeVaAlMazo(t *testing.T) {
 	p.Cmd("alvaro flor")
 	p.Cmd("richard mazo") // lo deja que se vaya
 
-	oops = !(p.Ronda.Manojos[5].SeFueAlMazo == true)
-	if oops {
+	if oops := !(p.Ronda.Manojos[5].SeFueAlMazo == true); oops {
 		t.Error(`deberia dejarlo irse al mazo`)
 	}
 
@@ -2699,8 +2578,7 @@ func TestTodoTienenFlor(t *testing.T) {
 
 	p.Cmd("Alvaro Envido")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN); oops {
 		t.Error(`alvaro tenia flor; no puede tocar envido`)
 	}
 
@@ -2735,8 +2613,7 @@ func TestFixTopeEnvido(t *testing.T) {
 
 	p.Cmd("Roro envido") // debe retornar error
 
-	oops = !(p.Ronda.Envite.Puntaje == pts)
-	if oops {
+	if oops := !(p.Ronda.Envite.Puntaje == pts); oops {
 		t.Error(`no se puede cantar mas de 5 envidos seeguidos`)
 	}
 
@@ -2760,29 +2637,25 @@ func TestAutoQuererse(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Roro Quiero")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.FALTAENVIDO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.FALTAENVIDO); oops {
 		t.Error(`no lo deberia dejar porque el envite lo propuso el equipo rojo`)
 	}
 
 	p.Cmd("Roro no-quiero")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.FALTAENVIDO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.FALTAENVIDO); oops {
 		t.Error(`no lo deberia dejar porque el envite lo propuso el equipo rojo`)
 	}
 
 	p.Cmd("Renzo Quiero")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.FALTAENVIDO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.FALTAENVIDO); oops {
 		t.Error(`no lo deberia dejar porque el envite lo propuso el equipo rojo`)
 	}
 
 	p.Cmd("Renzo no-quiero")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.FALTAENVIDO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.FALTAENVIDO); oops {
 		t.Error(`no lo deberia dejar porque el envite lo propuso el equipo rojo`)
 	}
 
@@ -2812,8 +2685,7 @@ func TestFixEnvidoManoEsElUltimo(t *testing.T) {
 	p.Cmd("andres Envido")
 	p.Cmd("richard quiero")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.DESHABILITADO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.DESHABILITADO); oops {
 		t.Error(`la sequencia de toques era valida`)
 	}
 
@@ -2832,8 +2704,7 @@ func TestEnvidoManoSeFue(t *testing.T) {
 	p.Cmd("richard mazo")
 	p.Cmd("renzo quiero")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.DESHABILITADO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.DESHABILITADO); oops {
 		t.Error(`la sequencia de toques era valida`)
 	}
 
@@ -2866,8 +2737,7 @@ func TestFlorBlucle(t *testing.T) {
 	p.Cmd("alvaro flor")
 	p.Cmd("roro flor")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.DESHABILITADO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.DESHABILITADO); oops {
 		t.Error(`la flor se debio de haber jugado`)
 	}
 
@@ -2928,23 +2798,20 @@ func TestQuieroContraflorDesdeMazo(t *testing.T) {
 	p.Cmd("alvaro flor")
 	p.Cmd("andres mazo")
 
-	oops = !(p.Ronda.Manojos[4].SeFueAlMazo == true)
-	if oops {
+	if oops := !(p.Ronda.Manojos[4].SeFueAlMazo == true); oops {
 		t.Error(`andres se debio de haber ido al mazo`)
 	}
 
 	p.Cmd("renzo contra-flor")
 	p.Cmd("andres quiero")
 
-	oops = !(p.Ronda.Envite.CantadoPor.Jugador.Nombre == "Renzo")
-	if oops {
+	if oops := !(p.Ronda.Envite.CantadoPor.Jugador.Nombre == "Renzo"); oops {
 		t.Errorf(`andres no puede responder quiero porque se fue al mazo`)
 	}
 
 	t.Log(p.Ronda.Envite.Estado.String())
 
-	oops = !(p.Ronda.Envite.Estado == pdt.CONTRAFLOR)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.CONTRAFLOR); oops {
 		t.Error(`El estado del envite no debio de haber sido modificado`)
 	}
 
@@ -2962,20 +2829,17 @@ func TestFixSeVaAlMazoYTeniaFlor(t *testing.T) {
 
 	p.Cmd("alvaro mazo")
 
-	oops = !(p.Ronda.Manojos[0].SeFueAlMazo == true)
-	if oops {
+	if oops := !(p.Ronda.Manojos[0].SeFueAlMazo == true); oops {
 		t.Error(`deberia dejarlo irse al mazo`)
 	}
 
-	oops = !(ptsAzul == p.Puntajes[pdt.Azul])
-	if oops {
+	if oops := !(ptsAzul == p.Puntajes[pdt.Azul]); oops {
 		t.Error(`no deberia de cambiar el puntaje`)
 	}
 
 	p.Cmd("roro truco")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.EstadoEnvite(pdt.TRUCO))
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.EstadoEnvite(pdt.TRUCO)); oops {
 		t.Error(`Deberia dejarlo cantar truco`)
 	}
 
@@ -2992,8 +2856,7 @@ func TestFixDesconcertante(t *testing.T) {
 	p.Cmd("alvaro flor")
 	p.Cmd("alvaro mazo")
 
-	oops = !(p.Ronda.Manojos[0].SeFueAlMazo == false)
-	if oops {
+	if oops := !(p.Ronda.Manojos[0].SeFueAlMazo == false); oops {
 		t.Error(`No deberia dejarlo irse al mazo porque se esta jugando la flor`)
 	}
 	p.Cmd("roro truco")
@@ -3047,8 +2910,7 @@ func TestMalaAsignacionPts(t *testing.T) {
 	out.Consume(p.Stdout, out.Print)
 	p.Print()
 
-	oops = !(p.Puntajes[pdt.Rojo] == 5 && p.Puntajes[pdt.Azul] == 2)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Rojo] == 5 && p.Puntajes[pdt.Azul] == 2); oops {
 		t.Error(`Asigno mal los puntos`)
 		return
 	}
@@ -3062,184 +2924,156 @@ func TestFixRondaNueva(t *testing.T) {
 
 	p.Cmd("renzo flor")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.DESHABILITADO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.DESHABILITADO); oops {
 		t.Error(`deberia deshabilitar el envite`)
 	}
 
 	p.Cmd("alvaro 1 copa")
 
-	oops = !(p.Ronda.Manojos[0].GetCantCartasTiradas() == 1)
-	if oops {
+	if oops := !(p.Ronda.Manojos[0].GetCantCartasTiradas() == 1); oops {
 		t.Error(`deberia dejarlo tirar la carta`)
 	}
 
 	p.Cmd("roro truco")
 
-	oops = !(p.Ronda.Truco.Estado == pdt.TRUCO)
-	if oops {
+	if oops := !(p.Ronda.Truco.Estado == pdt.TRUCO); oops {
 		t.Error(`Deberia dejarlo cantar truco`)
 	}
 
-	oops = !(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Rojo)
-	if oops {
+	if oops := !(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Rojo); oops {
 		t.Error(`El equipo rojo deberia tener la potestad del truco`)
 	}
 
 	p.Cmd("adolfo re-truco")
 
-	oops = !(p.Ronda.Truco.Estado == pdt.RETRUCO)
-	if oops {
+	if oops := !(p.Ronda.Truco.Estado == pdt.RETRUCO); oops {
 		t.Error(`Deberia dejarlo cantar re-truco`)
 	}
 
-	oops = !(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul)
-	if oops {
+	if oops := !(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul); oops {
 		t.Error(`El equipo azul deberia tener la potestad del truco`)
 	}
 
 	p.Cmd("renzo vale-4")
 
-	oops = !(p.Ronda.Truco.Estado == pdt.VALE4)
-	if oops {
+	if oops := !(p.Ronda.Truco.Estado == pdt.VALE4); oops {
 		t.Error(`Deberia dejarlo cantar vale-3`)
 	}
 
-	oops = !(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Rojo)
-	if oops {
+	if oops := !(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Rojo); oops {
 		t.Error(`El equipo rojo deberia tener la potestad del truco`)
 	}
 
 	p.Cmd("adolfo quiero")
 
-	oops = !(p.Ronda.Truco.Estado == pdt.VALE4QUERIDO)
-	if oops {
+	if oops := !(p.Ronda.Truco.Estado == pdt.VALE4QUERIDO); oops {
 		t.Error(`Deberia dejarlo responder quiero al vale-4`)
 	}
 
-	oops = !(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul)
-	if oops {
+	if oops := !(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul); oops {
 		t.Error(`El equipo azul deberia tener la potestad del truco`)
 	}
 
 	p.Cmd("roro 5 oro")
 
-	oops = !(p.Ronda.Manojos[1].GetCantCartasTiradas() == 1)
-	if oops {
+	if oops := !(p.Ronda.Manojos[1].GetCantCartasTiradas() == 1); oops {
 		t.Error(`deberia dejarlo tirar la carta`)
 	}
 
 	p.Cmd("adolfo 6 basto")
 
-	oops = !(p.Ronda.Manojos[2].GetCantCartasTiradas() == 1)
-	if oops {
+	if oops := !(p.Ronda.Manojos[2].GetCantCartasTiradas() == 1); oops {
 		t.Error(`deberia dejarlo tirar la carta`)
 	}
 
 	p.Cmd("renzo 19 oro")
 
-	oops = !(p.Ronda.Manojos[3].GetCantCartasTiradas() == 0)
-	if oops {
+	if oops := !(p.Ronda.Manojos[3].GetCantCartasTiradas() == 0); oops {
 		t.Error(`no debeia dejarlo porque no existe la carta "19 de oro"`)
 	}
 
 	p.Cmd("renzo 10 oro")
 
-	oops = !(p.Ronda.Manojos[3].GetCantCartasTiradas() == 1)
-	if oops {
+	if oops := !(p.Ronda.Manojos[3].GetCantCartasTiradas() == 1); oops {
 		t.Error(`deberia dejarlo tirar la carta`)
 	}
 
 	p.Cmd("andres 4 copa")
 
-	oops = !(p.Ronda.Manojos[4].GetCantCartasTiradas() == 1)
-	if oops {
+	if oops := !(p.Ronda.Manojos[4].GetCantCartasTiradas() == 1); oops {
 		t.Error(`deberia dejarlo tirar la carta`)
 	}
 
 	p.Cmd("richard 10 espada")
 
-	oops = !(p.Ronda.Manojos[5].GetCantCartasTiradas() == 1)
-	if oops {
+	if oops := !(p.Ronda.Manojos[5].GetCantCartasTiradas() == 1); oops {
 		t.Error(`deberia dejarlo tirar la carta`)
 	}
 
-	oops = !(p.Ronda.Manos[0].Ganador.Jugador.Equipo == pdt.Rojo)
-	if oops {
+	if oops := !(p.Ronda.Manos[0].Ganador.Jugador.Equipo == pdt.Rojo); oops {
 		t.Error(`La primera mano la debio de haber ganado el equipo de richard: el rojo`)
 	}
 
 	// segunda mano
 	p.Cmd("renzo 10 oro")
 
-	oops = !(p.Ronda.Manojos[3].GetCantCartasTiradas() == 1)
-	if oops {
+	if oops := !(p.Ronda.Manojos[3].GetCantCartasTiradas() == 1); oops {
 		t.Error(`ya tiro esa carta; no deberia poder volve a tirarla`)
 	}
 
 	p.Cmd("andres 7 basto")
 
-	oops = !(p.Ronda.Manojos[4].GetCantCartasTiradas() == 1)
-	if oops {
+	if oops := !(p.Ronda.Manojos[4].GetCantCartasTiradas() == 1); oops {
 		t.Error(`no es su turno no deberia poder tirar carta`)
 	}
 
 	p.Cmd("richard 10 espada")
 
-	oops = !(p.Ronda.Manojos[5].GetCantCartasTiradas() == 1)
-	if oops {
+	if oops := !(p.Ronda.Manojos[5].GetCantCartasTiradas() == 1); oops {
 		t.Error(`ya tiro esa carta; no deberia poder volve a tirarla`)
 	}
 
 	p.Cmd("richard 12 copa")
 
-	oops = !(p.Ronda.Manojos[5].GetCantCartasTiradas() == 2)
-	if oops {
+	if oops := !(p.Ronda.Manojos[5].GetCantCartasTiradas() == 2); oops {
 		t.Error(`deberia dejarlo tirar la carta`)
 	}
 
 	p.Cmd("alvaro 3 espada")
 
-	oops = !(p.Ronda.Manojos[0].GetCantCartasTiradas() == 2)
-	if oops {
+	if oops := !(p.Ronda.Manojos[0].GetCantCartasTiradas() == 2); oops {
 		t.Error(`deberia dejarlo tirar la carta`)
 	}
 
 	p.Cmd("roro 4 espada")
 
-	oops = !(p.Ronda.Manojos[1].GetCantCartasTiradas() == 2)
-	if oops {
+	if oops := !(p.Ronda.Manojos[1].GetCantCartasTiradas() == 2); oops {
 		t.Error(`deberia dejarlo tirar la carta`)
 	}
 
 	p.Cmd("adolfo 2 copa")
 
-	oops = !(p.Ronda.Manojos[2].GetCantCartasTiradas() == 2)
-	if oops {
+	if oops := !(p.Ronda.Manojos[2].GetCantCartasTiradas() == 2); oops {
 		t.Error(`deberia dejarlo tirar la carta`)
 	}
 
 	p.Cmd("renzo 4 oro")
 
-	oops = !(p.Ronda.Manojos[3].GetCantCartasTiradas() == 2)
-	if oops {
+	if oops := !(p.Ronda.Manojos[3].GetCantCartasTiradas() == 2); oops {
 		t.Error(`deberia dejarlo tirar la carta`)
 	}
 
 	p.Cmd("andres 5 espada")
 
-	oops = !(p.Ronda.Manojos[4].GetCantCartasTiradas() == 0)
-	if oops {
+	if oops := !(p.Ronda.Manojos[4].GetCantCartasTiradas() == 0); oops {
 		t.Error(`deberia tener 0 cartas tiradas porque empieza una nueva ronda`)
 	}
 
-	oops = !(p.Puntajes[pdt.Rojo] == 3+4) // 3:flor + 4:vale4
-	if oops {
+	if oops := !(p.Puntajes[pdt.Rojo] == 3+4); /* 3:flor + 4:vale4 */ oops {
 		t.Error(`el puntaje para el equipo rojo deberia ser 7: 3 de la flor + 4 del vale4`)
 	}
 
-	oops = !(p.Puntajes[pdt.Azul] == 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] == 0); oops {
 		t.Error(`el puntaje para el equipo azul deberia ser 0 porque no ganaron nada`)
 	}
 
@@ -3255,58 +3089,50 @@ func TestFixIrseAlMazo2(t *testing.T) {
 
 	p.Cmd("renzo flor")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN); oops {
 		t.Error(`Renzo no tiene flor`)
 	}
 
 	// mano 1
 	p.Cmd("alvaro envido")
 
-	oops = !(p.Ronda.Envite.Estado == pdt.ENVIDO)
-	if oops {
+	if oops := !(p.Ronda.Envite.Estado == pdt.ENVIDO); oops {
 		t.Error(`Debio dejarlo cantar truco`)
 	}
 
 	p.Cmd("alvaro 6 basto")
 
-	oops = !(p.Ronda.Manojos[0].GetCantCartasTiradas() == 0)
-	if oops {
+	if oops := !(p.Ronda.Manojos[0].GetCantCartasTiradas() == 0); oops {
 		t.Error(`A este no lo deberia dejar tirar carta`)
 	}
 
 	p.Cmd("roro 11 oro")
 
-	oops = !(p.Ronda.Manojos[1].GetCantCartasTiradas() == 0)
-	if oops {
+	if oops := !(p.Ronda.Manojos[1].GetCantCartasTiradas() == 0); oops {
 		t.Error(`A este no lo deberia dejar tirar carta`)
 	}
 
 	p.Cmd("adolfo 2 basto")
 
-	oops = !(p.Ronda.Manojos[2].GetCantCartasTiradas() == 0)
-	if oops {
+	if oops := !(p.Ronda.Manojos[2].GetCantCartasTiradas() == 0); oops {
 		t.Error(`A este no lo deberia dejar tirar carta`)
 	}
 
 	p.Cmd("renzo 12 oro")
 
-	oops = !(p.Ronda.Manojos[3].GetCantCartasTiradas() == 0)
-	if oops {
+	if oops := !(p.Ronda.Manojos[3].GetCantCartasTiradas() == 0); oops {
 		t.Error(`A este no lo deberia dejar tirar carta`)
 	}
 
 	p.Cmd("andres 7 copa")
 
-	oops = !(p.Ronda.Manojos[4].GetCantCartasTiradas() == 0)
-	if oops {
+	if oops := !(p.Ronda.Manojos[4].GetCantCartasTiradas() == 0); oops {
 		t.Error(`A este no lo deberia dejar tirar carta`)
 	}
 
 	p.Cmd("richard 12 basto")
 
-	oops = !(p.Ronda.Manojos[5].GetCantCartasTiradas() == 0)
-	if oops {
+	if oops := !(p.Ronda.Manojos[5].GetCantCartasTiradas() == 0); oops {
 		t.Error(`A este no lo deberia dejar tirar carta`)
 	}
 
@@ -3325,8 +3151,7 @@ func TestFixIrseAlMazo2(t *testing.T) {
 	p.Print()
 	p.Cmd("roro mazo")
 
-	oops = !(p.Ronda.Manojos[1].SeFueAlMazo == true)
-	if oops {
+	if oops := !(p.Ronda.Manojos[1].SeFueAlMazo == true); oops {
 		t.Error(`deberia dejarlo irse al mazo`)
 	}
 
@@ -3345,59 +3170,50 @@ func TestFixDecirQuiero(t *testing.T) {
 	p.Cmd("renzo flor")
 	p.Cmd("alvaro truco")
 
-	oops = !(p.Ronda.Truco.Estado == pdt.TRUCO)
-	if oops {
+	if oops := !(p.Ronda.Truco.Estado == pdt.TRUCO); oops {
 		t.Error(`Deberia poder gritar truco`)
 	}
 
 	p.Cmd("renzo quiero")
 
-	oops = !(p.Ronda.Truco.Estado == pdt.TRUCOQUERIDO)
-	if oops {
+	if oops := !(p.Ronda.Truco.Estado == pdt.TRUCOQUERIDO); oops {
 		t.Error(`Deberia poder responder quiero al truco`)
 	}
 
 	p.Cmd("alvaro re-truco")
 
-	oops = !(p.Ronda.Truco.Estado == pdt.TRUCOQUERIDO)
-	if oops {
+	if oops := !(p.Ronda.Truco.Estado == pdt.TRUCOQUERIDO); oops {
 		t.Error(`Como no tiene la potestad, no deberia poder aumentar la apuesta`)
 	}
 
-	oops = !(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Rojo)
-	if oops {
+	if oops := !(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Rojo); oops {
 		t.Error(`El equpo Rojo deberia de seguir manteniendo la potestad`)
 	}
 
 	p.Cmd("renzo re-truco")
 	p.Cmd("alvaro vale-4")
 
-	oops = !(p.Ronda.Truco.Estado == pdt.VALE4)
-	if oops {
+	if oops := !(p.Ronda.Truco.Estado == pdt.VALE4); oops {
 		t.Error(`Deberia poder aumentar a vale-4`)
 	}
 
 	p.Cmd("alvaro quiero")
 
-	oops = !(p.Ronda.Truco.Estado == pdt.VALE4)
-	if oops {
+	if oops := !(p.Ronda.Truco.Estado == pdt.VALE4); oops {
 		t.Error(`No puede auto-querse`)
 	}
 
-	oops = !(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul)
-	if oops {
+	if oops := !(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul); oops {
 		t.Error(`El equpo azul deberia tener la potestad`)
 	}
 
 	p.Cmd("renzo re-truco")
 
-	oops = !(p.Ronda.Truco.Estado == pdt.VALE4)
-	if oops {
+	if oops := !(p.Ronda.Truco.Estado == pdt.VALE4); oops {
 		t.Error(`No deberia cambiar el estado del truco`)
 	}
 
-	oops = !(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul)
-	if oops {
+	if oops := !(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul); oops {
 		t.Error(`El equpo azul deberia de seguir manteniendo la potestad`)
 	}
 
@@ -3425,8 +3241,7 @@ func TestFixPanicNoQuiero(t *testing.T) {
 	p.Cmd("andres 7 espada")
 	p.Cmd("richard 10 copa")
 
-	oops = !(p.Ronda.Manos[0].Ganador.Jugador.Equipo == pdt.Rojo)
-	if oops {
+	if oops := !(p.Ronda.Manos[0].Ganador.Jugador.Equipo == pdt.Rojo); oops {
 		t.Error(`La primera mano la debio de haber ganado el equipo de renzo: el rojo`)
 	}
 
@@ -3437,8 +3252,7 @@ func TestFixPanicNoQuiero(t *testing.T) {
 	p.Cmd("roro 6 espada")
 	p.Cmd("adolfo 5 copa")
 
-	oops = !(p.Ronda.Manos[1].Ganador.Jugador.Equipo == pdt.Azul)
-	if oops {
+	if oops := !(p.Ronda.Manos[1].Ganador.Jugador.Equipo == pdt.Azul); oops {
 		t.Error(`La segunda mano la debio de haber ganado el equipo de andres: el Azul`)
 	}
 
@@ -3451,8 +3265,7 @@ func TestFixPanicNoQuiero(t *testing.T) {
 	p.Cmd("roro vale-4")
 	p.Cmd("andres no-quiero")
 
-	oops = !(p.Puntajes[pdt.Rojo] == ptsPostFlor+3)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Rojo] == ptsPostFlor+3); oops {
 		t.Error(`Deberian gana 3 puntines por el vale-4 no querido`)
 		return
 	}
@@ -3477,8 +3290,7 @@ func TestFixCartaYaJugada(t *testing.T) {
 	p.Cmd("richard 5 oro")
 	p.Cmd("richard 5 oro")
 
-	oops = !(p.Ronda.GetElTurno().Jugador.Nombre == "Richard")
-	if oops {
+	if oops := !(p.Ronda.GetElTurno().Jugador.Nombre == "Richard"); oops {
 		t.Error(`Deberia ser el turno de Richard`)
 		return
 	}
@@ -3497,8 +3309,7 @@ func TestFixTrucoNoQuiero(t *testing.T) {
 	p.Cmd("alvaro truco")
 	p.Cmd("roro no-quiero")
 
-	oops = !(p.Puntajes[pdt.Azul] > 0)
-	if oops {
+	if oops := !(p.Puntajes[pdt.Azul] > 0); oops {
 		t.Error(`La ronda deberia de haber sido ganado por Azul`)
 		return
 	}
@@ -3579,13 +3390,11 @@ func TestPardaSigTurno1(t *testing.T) {
 
 	p.Print()
 
-	oops = !(p.Ronda.Manos[0].Resultado == pdt.Empardada)
-	if oops {
+	if oops := !(p.Ronda.Manos[0].Resultado == pdt.Empardada); oops {
 		t.Error(`La mano debio ser parda`)
 	}
 
-	oops = !(p.Ronda.GetElTurno().Jugador.Nombre == "Adolfo")
-	if oops {
+	if oops := !(p.Ronda.GetElTurno().Jugador.Nombre == "Adolfo"); oops {
 		t.Error(`Deberia ser turno de Adolfo, debido a que es el mas cercano del mano y qu empardo`)
 	}
 }
@@ -3654,13 +3463,11 @@ func TestPardaSigTurno2(t *testing.T) {
 
 	p.Print()
 
-	oops = !(p.Ronda.Manos[0].Resultado == pdt.Empardada)
-	if oops {
+	if oops := !(p.Ronda.Manos[0].Resultado == pdt.Empardada); oops {
 		t.Error(`La mano debio ser parda`)
 	}
 
-	oops = !(p.Ronda.GetElTurno().Jugador.Nombre == "Renzo")
-	if oops {
+	if oops := !(p.Ronda.GetElTurno().Jugador.Nombre == "Renzo"); oops {
 		t.Error(`Deberia ser turno de Renzo, debido a que es el mas cercano del mano y qu empardo`)
 	}
 }
@@ -3739,13 +3546,11 @@ func TestPardaSigTurno3(t *testing.T) {
 
 	p.Print()
 
-	oops = !(p.Ronda.Manos[0].Resultado == pdt.Empardada)
-	if oops {
+	if oops := !(p.Ronda.Manos[0].Resultado == pdt.Empardada); oops {
 		t.Error(`La mano debio ser parda`)
 	}
 
-	oops = !(p.Ronda.GetElTurno().Jugador.Nombre == "Roro")
-	if oops {
+	if oops := !(p.Ronda.GetElTurno().Jugador.Nombre == "Roro"); oops {
 		t.Error(`Deberia ser turno de Roro, debido a que es el mas cercano del mano y qu empardo`)
 	}
 }
