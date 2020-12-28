@@ -616,10 +616,10 @@ func (p *PartidaDT) Perspectiva(j string) (*PartidaDT, error) {
 func (p *PartidaDT) PerspectivaCacheFlor(manojo *Manojo) *PartidaDT {
 	copia := cheepCopy(p)
 
-	// oculto las caras no tiradas de los manojos que no son el
+	// oculto las caras no tiradas de los manojos que no son de su equipo
 	for i, m := range copia.Ronda.Manojos {
-		noEsSuManojo := m.Jugador.ID != manojo.Jugador.ID
-		if noEsSuManojo {
+		noEsDeSuEquipo := m.Jugador.Equipo != manojo.Jugador.Equipo
+		if noEsDeSuEquipo {
 			// oculto solo las cartas que no tiro
 			for j, noTirada := range m.CartasNoTiradas {
 				if noTirada {
