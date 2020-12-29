@@ -54,9 +54,11 @@ const (
 	SumaPts
 	Mazo
 	TimeOut
-	Info // <- se debe ir
 	ElEnvidoEstaPrimero
 	Abandono
+	LaManoResultaParda
+	ManoGanada
+	RondaGanada
 )
 
 // Razon ..
@@ -80,6 +82,37 @@ const (
 	TrucoNoQuerido
 	TrucoQuerido
 )
+
+func (r Razon) String() string {
+	var s string
+	switch r {
+	case EnvidoGanado:
+		s = "envido"
+	case RealEnvidoGanado:
+		s = "real envido"
+	case FaltaEnvidoGanado:
+		s = "falta envido"
+	case EnviteNoQuerido:
+		s = "envite no querido"
+	case FlorAchicada:
+		s = "flor achicada"
+	case LaUnicaFlor:
+		s = "la unica flor"
+	case LasFlores:
+		s = "las flores"
+	case LaFlorMasAlta:
+		s = "la flor mas alta"
+	case ContraFlorGanada:
+		s = "contra flor ganada"
+	case ContraFlorAlRestoGanada:
+		s = "contra flor al resto"
+	case TrucoNoQuerido:
+		s = "truco no querido"
+	case TrucoQuerido:
+		s = "truco"
+	}
+	return s
+}
 
 // Tipo1 .
 type Tipo1 struct {
@@ -136,6 +169,10 @@ func Msg(t CodMsg, data ...interface{}) *Message {
 	var cont json.RawMessage
 
 	switch t {
+	case // (nil)
+		LaManoResultaParda:
+
+		cont = nil
 	case // (string)
 		Error,
 		ByeBye,
@@ -154,7 +191,6 @@ func Msg(t CodMsg, data ...interface{}) *Message {
 		QuieroTruco,
 		QuieroEnvite,
 		Mazo,
-		Info,
 		ElEnvidoEstaPrimero,
 		Abandono:
 
@@ -180,7 +216,9 @@ func Msg(t CodMsg, data ...interface{}) *Message {
 
 	case // (string, int)
 		DiceTengo,
-		DiceSonMejores:
+		DiceSonMejores,
+		ManoGanada,
+		RondaGanada:
 
 		autor := data[0].(string)
 		valor := data[1].(int)

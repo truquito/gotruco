@@ -109,10 +109,8 @@ func Parse(p *pdt.PartidaDT, m *enco.Message) string {
 		lower := strings.ToLower(err[:1]) + err[1:]
 		decoded = fmt.Sprintf("Error, %s", lower)
 
-	case enco.Info:
-		err := Str(m)
-		lower := strings.ToLower(err[:1]) + err[1:]
-		decoded = fmt.Sprintf("Info, %s", lower)
+	case enco.LaManoResultaParda:
+		decoded = fmt.Sprintf(`La Mano resulta parda`)
 
 	case enco.Mazo:
 		decoded = fmt.Sprintf(`%s se fue al mazo`, Autor(p, m).Jugador.Nombre)
@@ -191,6 +189,16 @@ func Parse(p *pdt.PartidaDT, m *enco.Message) string {
 	case enco.DiceTengo:
 		autor, valor := Tipo1(p, m)
 		decoded = fmt.Sprintf(`%s: "tengo %d"`, autor.Jugador.Nombre, valor)
+
+	case enco.ManoGanada:
+		autor, valor := Tipo1(p, m)
+		decoded = fmt.Sprintf(`La %s mano la gano el equipo %s gracias a %s`,
+			pdt.NumMano(valor).String(), autor.Jugador.Equipo, autor.Jugador.Nombre)
+
+	case enco.RondaGanada:
+		autor, razon := Tipo1(p, m)
+		decoded = fmt.Sprintf(`La ronda ha sido ganada por el equipo %s debido al %s`,
+			autor.Jugador.Equipo, enco.Razon(razon).String())
 
 	case enco.DiceSonMejores:
 		autor, valor := Tipo1(p, m)

@@ -1,14 +1,8 @@
 # TODO
-- hay 2 metodos de evaluacion de flores; uno usa pkts otro no
 - usar mapas para mapear str a manojos <- na xq primero tengo que verificar que 
   esta la key: eos es o(n) -> igual q como esta ahora.
 - URGENTE: LOS CONTAINS USAN REFLECT, SUPER ANTI PERFORMANTE!!
 - [?] enco.TrucoQuerido -> enco.TrucoQuerido, enco.RetrucoQuerido, enco.Vale4Querido
-- tabular los mensajes de info enco.Info ->:
-    "La Mano resulta parda"
-    "La %s mano la gano el equipo %s gracias a %s"
-    "La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s no querido"
-    "La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado"
 - SetNextTurnoPosMano siempre se usa luego de un p.Ronda.ManoEnJuego++ ?
   fusionarlo o bien hacer un r.incManoEnJuego
 
@@ -23,6 +17,10 @@
 
 
 # LIMPIEZA DE CODIGO
+- el eval de la flor esta dividido: el eval solo se llama cuando se juega flor comun
+  mientras que los quiero/noquiero se llaman desde ahi mismo
+  para el eval de contraflor/contrafloralresto no hay case (ya que se implementan
+  en los quiero/noquiero)
 - Hay codigo repetido entre noQuiero y mazo cuando niega la flor (codigo copiado)
 - hay redundancia entre cantarFloresSiLasHay y cantarFlores
 - hay redundancia entre p.Ronda.GetLaFlorMasAlta y 

@@ -334,7 +334,7 @@ func (p *PartidaDT) EvaluarMano() (bool, []*enco.Packet) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.Info, "La Mano resulta parda"),
+			enco.Msg(enco.LaManoResultaParda),
 		))
 
 		// no se cambia el turno
@@ -356,12 +356,7 @@ func (p *PartidaDT) EvaluarMano() (bool, []*enco.Packet) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.Info,
-				fmt.Sprintf("La %s mano la gano el equipo %s gracias a %s",
-					strings.ToLower(p.Ronda.ManoEnJuego.String()),
-					mano.Ganador.Jugador.Equipo.String(),
-					mano.Ganador.Jugador.Nombre),
-			),
+			enco.Msg(enco.ManoGanada, mano.Ganador.Jugador.Nombre, int(p.Ronda.ManoEnJuego)),
 		))
 
 	}
@@ -498,7 +493,6 @@ func (p *PartidaDT) EvaluarRonda() (bool, []*enco.Packet) {
 	// ya sabemos el ganador ahora es el
 	// momento de sumar los puntos del truco
 	var totalPts int = 0
-	var msg string
 
 	switch p.Ronda.Truco.Estado {
 	case NOCANTADO, TRUCO: // caso en que se hayan ido todos al mazo y no se haya respondido ~ equivalente a un no quiero
@@ -513,31 +507,47 @@ func (p *PartidaDT) EvaluarRonda() (bool, []*enco.Packet) {
 
 	if elTrucoNoTuvoRespuesta {
 		ganador = p.Ronda.Truco.CantadoPor
-		msg = fmt.Sprintf(`La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s no querido`,
-			ganador.Jugador.Equipo,
-			totalPts,
-			ganador.Jugador.Equipo,
-			p.Ronda.Truco.Estado.String())
+
+		var razon enco.Razon
+		switch p.Ronda.Truco.Estado {
+		case TRUCO:
+			razon = enco.TrucoNoQuerido
+		case RETRUCO:
+			razon = enco.TrucoNoQuerido
+		case VALE4:
+			razon = enco.TrucoNoQuerido
+		}
+
+		pkts = append(pkts, enco.Pkt(
+			enco.Dest("ALL"),
+			enco.Msg(enco.RondaGanada, ganador.Jugador.ID, int(razon)),
+			// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s no querido`
+		))
 
 	} else {
-		msg = fmt.Sprintf(`La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado`,
-			ganador.Jugador.Equipo,
-			totalPts,
-			ganador.Jugador.Equipo,
-			p.Ronda.Truco.Estado.String())
+		var razon enco.Razon
+		switch p.Ronda.Truco.Estado {
+		case TRUCO:
+			razon = enco.TrucoQuerido
+		case RETRUCO:
+			razon = enco.TrucoQuerido
+		case VALE4:
+			razon = enco.TrucoQuerido
+		}
+
+		pkts = append(pkts, enco.Pkt(
+			enco.Dest("ALL"),
+			enco.Msg(enco.RondaGanada, ganador.Jugador.ID, int(razon)),
+			// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado`
+		))
 	}
 
-	pkts = append(pkts, enco.Pkt(
-		enco.Dest("ALL"),
-		enco.Msg(enco.Info, msg),
-	))
+	p.SumarPuntos(ganador.Jugador.Equipo, totalPts)
 
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
 		enco.Msg(enco.SumaPts, ganador.Jugador.ID, enco.TrucoQuerido, totalPts),
 	))
-
-	p.SumarPuntos(ganador.Jugador.Equipo, totalPts)
 
 	return true, pkts // porque se empezo una nueva ronda
 }
