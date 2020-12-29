@@ -1211,7 +1211,7 @@ func TestDeberiaTenerFlor(t *testing.T) {
 
 func TestFlorFlorContraFlorQuiero(t *testing.T) {
 
-	p, _, _ := NuevaPartida(pdt.A20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	p, out, _ := NuevaPartida(pdt.A20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
 	p.Ronda.SetMuestra(pdt.Carta{Palo: pdt.Oro, Valor: 3})
 	p.Ronda.SetManojos(
 		[]pdt.Manojo{
@@ -1260,11 +1260,17 @@ func TestFlorFlorContraFlorQuiero(t *testing.T) {
 		},
 	)
 
+	t.Log(p)
+
 	p.Cmd("Alvaro Flor")
 	p.Cmd("Roro Mazo")
 	p.Cmd("Renzo Flor")
 	p.Cmd("Adolfo Contra-flor-al-resto")
 	p.Cmd("Richard Quiero")
+
+	enco.Consume(out, func(pkt *enco.Packet) {
+		t.Log(deco.Stringify(pkt, p.PartidaDT))
+	})
 
 	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia ser 'deshabilitado'`)
@@ -3593,6 +3599,23 @@ func TestAbandono(t *testing.T) {
 
 	enco.Consume(out, func(pkt *enco.Packet) {
 		t.Log(deco.Stringify(pkt, p.PartidaDT))
+	})
+
+}
+
+func TestFixOrdenCantoFlor(t *testing.T) {
+	// simulacro de un jugador abandonando
+	p, out, _ := NuevaPartida(pdt.A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	partidaJSON := `{"Jugadores":[{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"},{"id":"Roro","nombre":"Roro","equipo":"Rojo"},{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"},{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"},{"id":"Andres","nombre":"Andres","equipo":"Azul"},{"id":"Richard","nombre":"Richard","equipo":"Rojo"}],"cantJugadores":6,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":3,"Rojo":3},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null},"truco":{"cantadoPor":null,"estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":12},{"palo":"Espada","valor":7},{"palo":"Espada","valor":6}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":11},{"palo":"Espada","valor":11},{"palo":"Espada","valor":2}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":6},{"palo":"Oro","valor":10},{"palo":"Espada","valor":1}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":11},{"palo":"Oro","valor":3},{"palo":"Oro","valor":12}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":4},{"palo":"Copa","valor":3},{"palo":"Copa","valor":6}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Andres","nombre":"Andres","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":4},{"palo":"Copa","valor":12},{"palo":"Basto","valor":1}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}],"muestra":{"palo":"Basto","valor":7},"manos":[{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null}]}}`
+	p.PartidaDT.FromJSON([]byte(partidaJSON))
+	t.Log(p)
+
+	p.Cmd("alvaro flor")
+	p.Cmd("renzo flor")
+	p.Cmd("andres flor")
+
+	assert(contains(enco.Collect(out), enco.DiceSonBuenas), func() {
+		t.Error("debio de haber dicho son bueas")
 	})
 
 }

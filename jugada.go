@@ -571,7 +571,15 @@ func evalFlor(p *Partida) {
 	}
 
 	// cual es la flor ganadora?
-	manojoConLaFlorMasAlta, _ := p.Ronda.GetLaFlorMasAlta()
+	// empieza cantando el autor del envite no el que "quizo"
+	autorIdx := p.Ronda.GetIdx(*p.Ronda.Envite.CantadoPor)
+	manojoConLaFlorMasAlta, _, pkts := p.Ronda.ExecLaFlores(pdt.JugadorIdx(autorIdx))
+
+	if pkts != nil {
+		for _, pkt := range pkts {
+			enco.Write(p.out, pkt)
+		}
+	}
 	equipoGanador := manojoConLaFlorMasAlta.Jugador.Equipo
 
 	// que estaba en juego?
@@ -963,7 +971,16 @@ func (jugada responderQuiero) hacer(p *Partida) {
 		))
 
 		// empieza cantando el autor del envite no el que "quizo"
-		manojoConLaFlorMasAlta, _ := p.Ronda.GetLaFlorMasAlta()
+		autorIdx := p.Ronda.GetIdx(*p.Ronda.Envite.CantadoPor)
+		manojoConLaFlorMasAlta, _, pkts := p.Ronda.ExecLaFlores(pdt.JugadorIdx(autorIdx))
+
+		if pkts != nil {
+			for _, pkt := range pkts {
+				enco.Write(p.out, pkt)
+			}
+		}
+
+		// manojoConLaFlorMasAlta, _ := p.Ronda.GetLaFlorMasAlta()
 		equipoGanador := manojoConLaFlorMasAlta.Jugador.Equipo
 
 		if p.Ronda.Envite.Estado == pdt.CONTRAFLOR {

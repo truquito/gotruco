@@ -472,8 +472,8 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*enco.Packet) {
 	return jIdx, max, pkts
 }
 
+// ExecLaFlores computa los cantos de la flor
 /**
-* execCantarFlores computa la flor
 * @return `j *Manojo` Es el ptr al manojo con
 * la flor mas alta (i.e., ganador)
 * @return `max int` Es el valor numerico de la flor mas alta
@@ -487,7 +487,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*enco.Packet) {
 *	`pkts[3] = Juan dice: "33 son mejores!"`
 *
  */
-func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts []*enco.Packet) {
+func (r *Ronda) ExecLaFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts []*enco.Packet) {
 
 	cantJugadores := len(r.Manojos)
 
@@ -510,7 +510,7 @@ func (r *Ronda) execCantarFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts
 	for i := range r.Manojos {
 		flores[i], _ = r.Manojos[i].calcFlor(r.Muestra)
 		tieneFlor := flores[i] > 0
-		seFueAlMazo := r.Manojos[i].SeFueAlMazo == false
+		seFueAlMazo := r.Manojos[i].SeFueAlMazo == true
 		if tieneFlor && !seFueAlMazo {
 			yaDijeron[i] = false
 		} else {
