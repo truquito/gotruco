@@ -12,6 +12,9 @@ import (
 	"github.com/filevich/truco/ptr"
 )
 
+// VERSION actual del binario
+const VERSION = "0.0.0"
+
 // el envido, la Primera o la mentira
 // el envido, la Primera o la mentira
 // el truco, la Segunda o el rabón
