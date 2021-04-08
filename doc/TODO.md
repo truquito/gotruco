@@ -17,6 +17,11 @@
 
 
 # LIMPIEZA DE CODIGO
+- cartasNoJugadas (que usa [true, true, true]) deberia ser tiradas [false, false, false]
+  jugadores podria ir adentro de manojo.jugador.
+  notar que ambos cambios hacen que dejen de andar los tests cargados como json/
+  habria que re-generarlos a todos.
+  O MEJOR: DEJAR JUGADORES COMO PRIVADO EN JSON EXPORT ;)
 - el eval de la flor esta dividido: el eval solo se llama cuando se juega flor comun
   mientras que los quiero/noquiero se llaman desde ahi mismo
   para el eval de contraflor/contrafloralresto no hay case (ya que se implementan

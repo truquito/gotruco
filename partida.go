@@ -217,5 +217,13 @@ func NuevaPartida(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*
 	p.out = buff
 	p.ErrCh = make(chan bool, 1)
 
+	for _, m := range p.Ronda.Manojos {
+		enco.Write(p.out, enco.Pkt(
+			enco.Dest(m.Jugador.ID),
+			enco.Msg(enco.NuevaPartida, p.PartidaDT.PerspectivaCacheFlor(&m)),
+		))
+
+	}
+
 	return &p, buff, nil
 }
