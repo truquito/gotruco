@@ -161,6 +161,10 @@ func (p *Partida) Cmd(cmd string) error {
 
 	jugada.hacer(p)
 
+	if p.Terminada() {
+		p.byeBye()
+	}
+
 	return nil
 }
 

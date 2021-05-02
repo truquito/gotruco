@@ -186,9 +186,9 @@ func (jugada tirarCarta) hacer(p *Partida) {
 
 				}
 
-			} else {
-				p.byeBye()
-			}
+			} // else {
+				// p.byeBye()
+			// }
 
 		}
 
@@ -1233,9 +1233,9 @@ func (jugada responderNoQuiero) hacer(p *Partida) {
 					))
 				}
 
-			} else {
-				p.byeBye()
-			}
+			} // else {
+				// p.byeBye()
+			// }
 
 		}
 
@@ -1456,9 +1456,9 @@ func (jugada irseAlMazo) hacer(p *Partida) {
 					))
 				}
 
-			} else {
-				p.byeBye()
-			}
+			} // else {
+				// p.byeBye()
+			// }
 
 		}
 	} else {
