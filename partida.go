@@ -13,7 +13,7 @@ import (
 )
 
 // VERSION actual del binario
-const VERSION = "0.0.0"
+const VERSION = "0.0.1"
 
 // el envido, la Primera o la mentira
 // el envido, la Primera o la mentira
