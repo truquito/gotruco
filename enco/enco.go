@@ -28,37 +28,37 @@ type CodMsg int
 
 // Tipos de Mensajes
 const (
-	Error CodMsg = iota // 0
-	ByeBye // 1
-	DiceSonBuenas // 2
-	CantarFlor // 3
-	CantarContraFlor // 4
-	CantarContraFlorAlResto // 5
-	TocarEnvido // 6
-	TocarRealEnvido // 7
-	TocarFaltaEnvido // 8
-	GritarTruco // 9
-	GritarReTruco // 10
-	GritarVale4 // 11
-	NoQuiero // 12
-	ConFlorMeAchico // 13
-	QuieroTruco // 14
-	QuieroEnvite // 15
-	SigTurno // 16
-	SigTurnoPosMano // 17
-	DiceTengo // 18
-	DiceSonMejores // 19
-	NuevaPartida // 20
-	NuevaRonda // 21
-	TirarCarta // 22
-	SumaPts // 23
-	Mazo // 24
-	TimeOut // 25
-	ElEnvidoEstaPrimero // 26
-	Abandono // 27
-	LaManoResultaParda // 28
-	ManoGanada // 29
-	RondaGanada // 30
+	Error                   CodMsg = iota // 0
+	ByeBye                                // 1
+	DiceSonBuenas                         // 2
+	CantarFlor                            // 3
+	CantarContraFlor                      // 4
+	CantarContraFlorAlResto               // 5
+	TocarEnvido                           // 6
+	TocarRealEnvido                       // 7
+	TocarFaltaEnvido                      // 8
+	GritarTruco                           // 9
+	GritarReTruco                         // 10
+	GritarVale4                           // 11
+	NoQuiero                              // 12
+	ConFlorMeAchico                       // 13
+	QuieroTruco                           // 14
+	QuieroEnvite                          // 15
+	SigTurno                              // 16
+	SigTurnoPosMano                       // 17
+	DiceTengo                             // 18
+	DiceSonMejores                        // 19
+	NuevaPartida                          // 20
+	NuevaRonda                            // 21
+	TirarCarta                            // 22
+	SumaPts                               // 23
+	Mazo                                  // 24
+	TimeOut                               // 25
+	ElEnvidoEstaPrimero                   // 26
+	Abandono                              // 27
+	LaManoResultaParda                    // 28
+	ManoGanada                            // 29
+	RondaGanada                           // 30
 )
 
 // Razon ..
@@ -172,7 +172,8 @@ func Msg(t CodMsg, data ...interface{}) *Message {
 	case // (nil)
 		LaManoResultaParda:
 
-		cont = nil
+		var s *string = nil
+		cont, _ = json.Marshal(s)
 	case // (string)
 		Error,
 		ByeBye,

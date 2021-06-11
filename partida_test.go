@@ -3619,3 +3619,23 @@ func TestFixOrdenCantoFlor(t *testing.T) {
 	})
 
 }
+
+func TestFixTester2(t *testing.T) {
+	// simulacro de un jugador abandonando
+	p, out, _ := NuevaPartida(pdt.A30, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	partidaJSON := `{"Jugadores": [{"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}, {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}, {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}, {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}], "cantJugadores": 4, "puntuacion": 30, "puntajes": {"Azul": 27, "Rojo": 23}, "ronda": {"manoEnJuego": 0, "cantJugadoresEnJuego": {"Azul": 2, "Rojo": 2}, "elMano": 2, "turno": 3, "pies": [0, 0], "envite": {"estado": "noCantadoAun", "puntaje": 0, "cantadoPor": null}, "truco": {"cantadoPor": null, "estado": "noCantado"}, "manojos": [{"seFueAlMazo": false, "cartas": [{"palo": "Oro", "valor": 12}, {"palo": "Basto", "valor": 5}, {"palo": "Basto", "valor": 12}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Oro", "valor": 3}, {"palo": "Espada", "valor": 1}, {"palo": "Oro", "valor": 7}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Oro", "valor": 6}, {"palo": "Copa", "valor": 7}, {"palo": "Espada", "valor": 12}], "cartasNoJugadas": [true, false, true], "ultimaTirada": 1, "jugador": {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 3}, {"palo": "Copa", "valor": 12}, {"palo": "Basto", "valor": 3}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}}], "muestra": {"palo": "Oro", "valor": 5}, "manos": [{"resultado": "ganoRojo", "ganador": null, "cartasTiradas": [{"palo": "Copa", "valor": 7}]}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}]}}`
+	p.PartidaDT.FromJSON([]byte(partidaJSON))
+	t.Log(p)
+
+	p.Cmd("Adolfo no-quiero")
+	p.Cmd("Adolfo 7 Copa")
+	p.Cmd("Roro 3 Oro")
+	p.Cmd("Renzo contra-flor-al-resto")
+	p.Cmd("Roro 7 Oro")
+	p.Cmd("Alvaro flor")
+
+	enco.Consume(out, func(pkt *enco.Packet) {
+		t.Log(deco.Stringify(pkt, p.PartidaDT))
+	})
+
+}

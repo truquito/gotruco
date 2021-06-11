@@ -124,12 +124,11 @@ func (p *Partida) byeBye() {
 	if p.Terminada() {
 
 		var s string
-		if p.PartidaDT.EsManoAMano() { // retorna jugador
-			if p.Jugadores[0].Equipo == p.ElQueVaGanando() {
-				s = p.Jugadores[0].Nombre
-			} else {
-				s = p.Jugadores[1].Nombre
-			}
+
+		if p.Jugadores[0].Equipo == p.ElQueVaGanando() {
+			s = p.Jugadores[0].Nombre
+		} else {
+			s = p.Jugadores[1].Nombre
 		}
 
 		enco.Write(p.out, enco.Pkt(
