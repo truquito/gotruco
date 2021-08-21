@@ -1,2 +1,2 @@
-github.com/filevich/canvas v0.0.0-20200208005413-6eed08f93eda h1:kcmGNwiZ/bvt1+ABw1nQnN5PripQeYrbIKBLfX8pWu4=
-github.com/filevich/canvas v0.0.0-20200208005413-6eed08f93eda/go.mod h1:2WDjtrcEFTg3FyTRtZQQudUjRNtWx2Z8NmbQqexiF0Y=
+github.com/filevich/canvas v0.0.0 h1:lsp8q8U5QVt/7h22qC5qQC6/Xg5mzNwBnk9KWmLoUpw=
+github.com/filevich/canvas v0.0.0/go.mod h1:2WDjtrcEFTg3FyTRtZQQudUjRNtWx2Z8NmbQqexiF0Y=
