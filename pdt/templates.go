@@ -1,10 +1,9 @@
-package ptr
+package pdt
 
 import (
 	"strconv"
 
 	"github.com/filevich/canvas"
-	"github.com/filevich/truco/pdt"
 )
 
 type templates struct{}
@@ -68,7 +67,7 @@ func mkCarta(valor, palo string) string {
 	return template
 }
 
-func (t templates) carta(carta pdt.Carta) string {
+func (t templates) carta(carta Carta) string {
 	valor, palo := carta.Valor, carta.Palo.String()
 	numStr := t.renderValorCarta(valor)
 	return mkCarta(numStr, palo[:2])
@@ -78,7 +77,7 @@ func (t templates) cartaOculta() string {
 	return mkCarta("──", "//")
 }
 
-func (t templates) cartaDobleSolapada(carta pdt.Carta) string {
+func (t templates) cartaDobleSolapada(carta Carta) string {
 	valor, palo := carta.Valor, carta.Palo.String()
 	cartaDobleSolapada := canvas.Raw(`
 ┌xx┐┐
@@ -93,7 +92,7 @@ func (t templates) cartaDobleSolapada(carta pdt.Carta) string {
 	return cartaDobleSolapada
 }
 
-func (t templates) cartaTripleSolapada(carta pdt.Carta) string {
+func (t templates) cartaTripleSolapada(carta Carta) string {
 	valor, palo := carta.Valor, carta.Palo.String()
 	cartaTripleSolapada := canvas.Raw(`
 ┌xx┐┐┐
@@ -124,7 +123,7 @@ func mkCartaDobleVisible(valores, palos []string) string {
 	return cartaDobleSolapada
 }
 
-func (t templates) cartaDobleVisible(cartas []*pdt.Carta) string {
+func (t templates) cartaDobleVisible(cartas []*Carta) string {
 
 	valor1, palo1 := cartas[0].Valor, cartas[0].Palo.String()
 	numStr1 := t.renderValorCarta(valor1)
@@ -162,7 +161,7 @@ func mkCartaTripleVisible(valores, palos []string) string {
 	return cartaDobleSolapada
 }
 
-func (t templates) cartaTripleVisible(cartas []*pdt.Carta) string {
+func (t templates) cartaTripleVisible(cartas []*Carta) string {
 
 	valor1, palo1 := cartas[0].Valor, cartas[0].Palo.String()
 	numStr1 := t.renderValorCarta(valor1)

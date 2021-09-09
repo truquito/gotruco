@@ -9,7 +9,6 @@ import (
 
 	"github.com/filevich/truco/enco"
 	"github.com/filevich/truco/pdt"
-	"github.com/filevich/truco/ptr"
 )
 
 // VERSION actual del binario
@@ -47,7 +46,7 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 
 		manojo, err := p.GetManojoByStr(jugadorStr)
 		if err != nil {
-			return nil, fmt.Errorf("Usuario %s no encontrado", jugadorStr)
+			return nil, fmt.Errorf("usuario %s no encontrado", jugadorStr)
 		}
 
 		jugadaStr = strings.ToLower(jugadaStr)
@@ -91,19 +90,19 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 		case "tirar":
 			jugada = irseAlMazo{manojo}
 		default:
-			return nil, fmt.Errorf("No existe esa jugada")
+			return nil, fmt.Errorf("no existe esa jugada")
 		}
 	} else {
 		match = regexps["jugadaTirada"].FindAllStringSubmatch(cmd, 1)
 		if match == nil {
-			return nil, fmt.Errorf("No existe esa jugada")
+			return nil, fmt.Errorf("no existe esa jugada")
 		}
 		jugadorStr := match[0][1]
 		valorStr, paloStr := match[0][2], match[0][3]
 
 		manojo, err := p.GetManojoByStr(jugadorStr)
 		if err != nil {
-			return nil, fmt.Errorf("Usuario %s no encontrado", jugadorStr)
+			return nil, fmt.Errorf("usuario %s no encontrado", jugadorStr)
 		}
 
 		carta, err := pdt.ParseCarta(valorStr, paloStr)
@@ -142,14 +141,14 @@ func (p *Partida) byeBye() {
 func (p *Partida) Cmd(cmd string) error {
 
 	if p.Terminada() {
-		return fmt.Errorf("La partida ya termino")
+		return fmt.Errorf("la partida ya termino")
 	}
 
 	// checkeo sintactico
 	// ok := regexp.MustCompile(`^(\w|-)+\s(\w|-)+\n?$`).MatchString(cmd)
 	ok := true
 	if !ok {
-		return fmt.Errorf("Sintaxis invalida: comando incorrecto")
+		return fmt.Errorf("sintaxis invalida: comando incorrecto")
 	}
 
 	// checkeo semantico
@@ -169,10 +168,10 @@ func (p *Partida) Cmd(cmd string) error {
 
 // String retorna una representacion en formato de string
 func (p *Partida) String() string {
-	return ptr.Renderizar(p.PartidaDT)
+	return pdt.Renderizar(p.PartidaDT)
 }
 
-func (p *Partida) notify() {
+func (p *Partida) Notify() {
 
 	// ojo primero hay que grabar el buff, luego avisar
 	enco.Write(p.out, enco.Pkt(
@@ -188,7 +187,7 @@ func (p *Partida) Abandono(jugador string) error {
 	// encuentra al jugador
 	manojo, err := p.GetManojoByStr(jugador)
 	if err != nil {
-		return fmt.Errorf("Usuario %s no encontrado", jugador)
+		return fmt.Errorf("usuario %s no encontrado", jugador)
 	}
 	// doy por ganador al equipo contrario
 	equipoContrario := manojo.Jugador.GetEquipoContrario()
