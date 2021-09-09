@@ -1711,43 +1711,30 @@ func (jugada IrseAlMazo) Hacer(p *PartidaDT) []*enco.Packet {
 	return pkts
 }
 
-var jugadas = map[string]([]string){
-	"Gritos": []string{
-		"Truco",    // 1/2
-		"Re-truco", // 2/3
-		"Vale 4",   // 3/4
-	},
-	"Toques": []string{
-		"Envido",
-		"Real envido",
-		"Falta envido",
-	},
-	"Cantos": []string{
-		"Flor",                 // 2pts (tanto o el-primero)
-		"Contra flor",          // 3 pts
-		"Contra flor al resto", // 4 pts
+/*
+Gritos
+	Truco    // 1/2
+	Re-truco // 2/3
+	Vale 4   // 3/4
 
-		//"Con flor me achico",
-		//"Con flor quiero",
-	},
-	"Respuestas": []string{
-		"Quiero",
-		"No quiero",
-	},
-	"Acciones": []string{
-		"Irse al mazo",
-		"Tirar carta",
-	},
-}
+Toques
+	Envido
+	Real envido
+	Falta envido
 
-// ImprimirJugadas imprime las jugadas posibles
-func ImprimirJugadas() {
-	for tipoJugada, opciones := range jugadas {
-		fmt.Printf("%s: ", tipoJugada) //
-		for _, jugada := range opciones {
-			fmt.Printf("%s, ", jugada) //
-		}
-		fmt.Printf("\n") //
-	}
-	fmt.Println()
-}
+Cantos
+	Flor                 // 2pts (tanto o el-primero)
+	Contra flor          // 3 pts
+	Contra flor al resto // 4 pts
+
+	// Con flor me achico ~ quiero
+	// Con flor quiero ~ no quiero
+
+Respuestas
+	Quiero
+	No quiero
+
+Acciones
+	Irse al mazo
+	Tirar carta
+*/
