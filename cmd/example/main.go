@@ -14,7 +14,7 @@ import (
 var reader = bufio.NewReader(os.Stdin)
 
 func readLn(prefix string) string {
-	fmt.Printf(prefix)
+	fmt.Print(prefix)
 	cmd, _ := reader.ReadString('\n')
 	return strings.TrimSuffix(cmd, "\n")
 }
