@@ -303,84 +303,84 @@ func nuevaImpresora2() impresora2 {
 		impresora{canvas: canvas.NewCanvas(75, 19),
 			areasJugadores: map[string](map[posicion]canvas.Rectangle){
 				"nombres": map[posicion]canvas.Rectangle{
-					a: canvas.Rectangle{
+					a: {
 						From: canvas.Point{X: 44, Y: 9},
 						To:   canvas.Point{X: 53, Y: 9},
 					},
-					b: canvas.Rectangle{
+					b: {
 						From: canvas.Point{X: 0, Y: 9},
 						To:   canvas.Point{X: 9, Y: 9},
 					},
 				},
 				"tiradas": map[posicion]canvas.Rectangle{
-					a: canvas.Rectangle{
+					a: {
 						From: canvas.Point{X: 35, Y: 8},
 						To:   canvas.Point{X: 40, Y: 13},
 					},
-					b: canvas.Rectangle{
+					b: {
 						From: canvas.Point{X: 13, Y: 8},
 						To:   canvas.Point{X: 18, Y: 10},
 					},
 				},
 				"posesiones": map[posicion]canvas.Rectangle{
-					a: canvas.Rectangle{
+					a: {
 						From: canvas.Point{X: 44, Y: 10},
 						To:   canvas.Point{X: 53, Y: 12},
 					},
-					b: canvas.Rectangle{
+					b: {
 						From: canvas.Point{X: 0, Y: 10},
 						To:   canvas.Point{X: 9, Y: 12},
 					},
 				},
 				"tooltips": map[posicion]canvas.Rectangle{
-					a: canvas.Rectangle{
+					a: {
 						From: canvas.Point{X: 44, Y: 8},
 						To:   canvas.Point{X: 53, Y: 8},
 					},
-					b: canvas.Rectangle{
+					b: {
 						From: canvas.Point{X: 0, Y: 8},
 						To:   canvas.Point{X: 5, Y: 12},
 					},
 				},
 			},
 			otrasAreas: map[string]canvas.Rectangle{
-				"muestra": canvas.Rectangle{
+				"muestra": {
 					From: canvas.Point{X: 25, Y: 8},
 					To:   canvas.Point{X: 28, Y: 10},
 				},
-				"exteriorMesa": canvas.Rectangle{
+				"exteriorMesa": {
 					From: canvas.Point{X: 11, Y: 5},
 					To:   canvas.Point{X: 42, Y: 13},
 				},
-				"interiorMesa": canvas.Rectangle{
+				"interiorMesa": {
 					From: canvas.Point{X: 12, Y: 6},
 					To:   canvas.Point{X: 41, Y: 12},
 				},
-				"estadisticas": canvas.Rectangle{
+				"estadisticas": {
 					From: canvas.Point{X: 57, Y: 2},
 					To:   canvas.Point{X: 74, Y: 15},
 				},
-				"#Mano": canvas.Rectangle{
+				"#Mano": {
 					From: canvas.Point{X: 66, Y: 3},
 					To:   canvas.Point{X: 72, Y: 3},
 				},
-				"Mano": canvas.Rectangle{
+				"Mano": {
 					From: canvas.Point{X: 65, Y: 5},
 					To:   canvas.Point{X: 72, Y: 5},
 				},
-				"Turno": canvas.Rectangle{
+				"Turno": {
 					From: canvas.Point{X: 66, Y: 7},
 					To:   canvas.Point{X: 72, Y: 7},
 				},
-				"Puntuacion": canvas.Rectangle{
+				"Puntuacion": {
 					From: canvas.Point{X: 71, Y: 9},
 					To:   canvas.Point{X: 72, Y: 9},
 				},
-				"puntajeRojo": canvas.Rectangle{
+				"puntajeRojo": {
 					From: canvas.Point{X: 61, Y: 14},
 					To:   canvas.Point{X: 62, Y: 14},
 				},
-				"puntajeAzul": canvas.Rectangle{
+				"puntajeAzul": {
 					From: canvas.Point{X: 68, Y: 14},
 					To:   canvas.Point{X: 69, Y: 14},
 				},
@@ -395,120 +395,120 @@ func nuevaImpresora4() impresora4 {
 			canvas: canvas.NewCanvas(75, 19),
 			areasJugadores: map[string](map[posicion]canvas.Rectangle){
 				"nombres": map[posicion]canvas.Rectangle{
-					a: canvas.Rectangle{
+					a: {
 						From: canvas.Point{X: 15, Y: 14},
 						To:   canvas.Point{X: 24, Y: 14},
 					},
-					b: canvas.Rectangle{
+					b: {
 						From: canvas.Point{X: 29, Y: 14},
 						To:   canvas.Point{X: 38, Y: 14},
 					},
 
-					c: canvas.Rectangle{
+					c: {
 						From: canvas.Point{X: 29, Y: 4},
 						To:   canvas.Point{X: 38, Y: 4},
 					},
-					d: canvas.Rectangle{
+					d: {
 						From: canvas.Point{X: 15, Y: 4},
 						To:   canvas.Point{X: 24, Y: 4},
 					},
 				},
 				"tiradas": map[posicion]canvas.Rectangle{
-					a: canvas.Rectangle{
+					a: {
 						From: canvas.Point{X: 19, Y: 10},
 						To:   canvas.Point{X: 24, Y: 12},
 					},
-					b: canvas.Rectangle{
+					b: {
 						From: canvas.Point{X: 29, Y: 10},
 						To:   canvas.Point{X: 34, Y: 12},
 					},
 
-					c: canvas.Rectangle{
+					c: {
 						From: canvas.Point{X: 29, Y: 6},
 						To:   canvas.Point{X: 34, Y: 8},
 					},
-					d: canvas.Rectangle{
+					d: {
 						From: canvas.Point{X: 19, Y: 6},
 						To:   canvas.Point{X: 24, Y: 8},
 					},
 				},
 				"posesiones": map[posicion]canvas.Rectangle{
-					a: canvas.Rectangle{
+					a: {
 						From: canvas.Point{X: 15, Y: 16},
 						To:   canvas.Point{X: 24, Y: 18},
 					},
-					b: canvas.Rectangle{
+					b: {
 						From: canvas.Point{X: 29, Y: 16},
 						To:   canvas.Point{X: 38, Y: 18},
 					},
 
-					c: canvas.Rectangle{
+					c: {
 						From: canvas.Point{X: 29, Y: 0},
 						To:   canvas.Point{X: 38, Y: 2},
 					},
-					d: canvas.Rectangle{
+					d: {
 						From: canvas.Point{X: 15, Y: 0},
 						To:   canvas.Point{X: 24, Y: 2},
 					},
 				},
 				"tooltips": map[posicion]canvas.Rectangle{
-					a: canvas.Rectangle{
+					a: {
 						From: canvas.Point{X: 15, Y: 15},
 						To:   canvas.Point{X: 24, Y: 15},
 					},
-					b: canvas.Rectangle{
+					b: {
 						From: canvas.Point{X: 29, Y: 15},
 						To:   canvas.Point{X: 38, Y: 15},
 					},
 
-					c: canvas.Rectangle{
+					c: {
 						From: canvas.Point{X: 29, Y: 3},
 						To:   canvas.Point{X: 38, Y: 3},
 					},
-					d: canvas.Rectangle{
+					d: {
 						From: canvas.Point{X: 15, Y: 3},
 						To:   canvas.Point{X: 24, Y: 3},
 					},
 				},
 			},
 			otrasAreas: map[string]canvas.Rectangle{
-				"muestra": canvas.Rectangle{
+				"muestra": {
 					From: canvas.Point{X: 25, Y: 8},
 					To:   canvas.Point{X: 28, Y: 10},
 				},
-				"exteriorMesa": canvas.Rectangle{
+				"exteriorMesa": {
 					From: canvas.Point{X: 11, Y: 5},
 					To:   canvas.Point{X: 42, Y: 13},
 				},
-				"interiorMesa": canvas.Rectangle{
+				"interiorMesa": {
 					From: canvas.Point{X: 12, Y: 6},
 					To:   canvas.Point{X: 41, Y: 12},
 				},
-				"estadisticas": canvas.Rectangle{
+				"estadisticas": {
 					From: canvas.Point{X: 57, Y: 2},
 					To:   canvas.Point{X: 74, Y: 15},
 				},
-				"#Mano": canvas.Rectangle{
+				"#Mano": {
 					From: canvas.Point{X: 66, Y: 3},
 					To:   canvas.Point{X: 72, Y: 3},
 				},
-				"Mano": canvas.Rectangle{
+				"Mano": {
 					From: canvas.Point{X: 65, Y: 5},
 					To:   canvas.Point{X: 72, Y: 5},
 				},
-				"Turno": canvas.Rectangle{
+				"Turno": {
 					From: canvas.Point{X: 66, Y: 7},
 					To:   canvas.Point{X: 72, Y: 7},
 				},
-				"Puntuacion": canvas.Rectangle{
+				"Puntuacion": {
 					From: canvas.Point{X: 71, Y: 9},
 					To:   canvas.Point{X: 72, Y: 9},
 				},
-				"puntajeRojo": canvas.Rectangle{
+				"puntajeRojo": {
 					From: canvas.Point{X: 61, Y: 14},
 					To:   canvas.Point{X: 62, Y: 14},
 				},
-				"puntajeAzul": canvas.Rectangle{
+				"puntajeAzul": {
 					From: canvas.Point{X: 68, Y: 14},
 					To:   canvas.Point{X: 69, Y: 14},
 				},
@@ -523,148 +523,148 @@ func nuevaImpresora6() impresora6 {
 			canvas: canvas.NewCanvas(75, 19),
 			areasJugadores: map[string](map[posicion]canvas.Rectangle){
 				"nombres": map[posicion]canvas.Rectangle{
-					a: canvas.Rectangle{
+					a: {
 						From: canvas.Point{X: 15, Y: 14},
 						To:   canvas.Point{X: 24, Y: 14},
 					},
-					b: canvas.Rectangle{
+					b: {
 						From: canvas.Point{X: 29, Y: 14},
 						To:   canvas.Point{X: 38, Y: 14},
 					},
-					c: canvas.Rectangle{
+					c: {
 						From: canvas.Point{X: 44, Y: 9},
 						To:   canvas.Point{X: 53, Y: 9},
 					},
-					d: canvas.Rectangle{
+					d: {
 						From: canvas.Point{X: 29, Y: 4},
 						To:   canvas.Point{X: 38, Y: 4},
 					},
-					e: canvas.Rectangle{
+					e: {
 						From: canvas.Point{X: 15, Y: 4},
 						To:   canvas.Point{X: 24, Y: 4},
 					},
-					f: canvas.Rectangle{
+					f: {
 						From: canvas.Point{X: 0, Y: 9},
 						To:   canvas.Point{X: 9, Y: 9},
 					},
 				},
 				"tiradas": map[posicion]canvas.Rectangle{
-					a: canvas.Rectangle{
+					a: {
 						From: canvas.Point{X: 19, Y: 10},
 						To:   canvas.Point{X: 24, Y: 12},
 					},
-					b: canvas.Rectangle{
+					b: {
 						From: canvas.Point{X: 29, Y: 10},
 						To:   canvas.Point{X: 34, Y: 12},
 					},
-					c: canvas.Rectangle{
+					c: {
 						From: canvas.Point{X: 35, Y: 8},
 						To:   canvas.Point{X: 40, Y: 13},
 					},
-					d: canvas.Rectangle{
+					d: {
 						From: canvas.Point{X: 29, Y: 6},
 						To:   canvas.Point{X: 34, Y: 8},
 					},
-					e: canvas.Rectangle{
+					e: {
 						From: canvas.Point{X: 19, Y: 6},
 						To:   canvas.Point{X: 24, Y: 8},
 					},
-					f: canvas.Rectangle{
+					f: {
 						From: canvas.Point{X: 13, Y: 8},
 						To:   canvas.Point{X: 18, Y: 10},
 					},
 				},
 				"posesiones": map[posicion]canvas.Rectangle{
-					a: canvas.Rectangle{
+					a: {
 						From: canvas.Point{X: 15, Y: 16},
 						To:   canvas.Point{X: 24, Y: 18},
 					},
-					b: canvas.Rectangle{
+					b: {
 						From: canvas.Point{X: 29, Y: 16},
 						To:   canvas.Point{X: 38, Y: 18},
 					},
-					c: canvas.Rectangle{
+					c: {
 						From: canvas.Point{X: 44, Y: 10},
 						To:   canvas.Point{X: 53, Y: 12},
 					},
-					d: canvas.Rectangle{
+					d: {
 						From: canvas.Point{X: 29, Y: 0},
 						To:   canvas.Point{X: 38, Y: 2},
 					},
-					e: canvas.Rectangle{
+					e: {
 						From: canvas.Point{X: 15, Y: 0},
 						To:   canvas.Point{X: 24, Y: 2},
 					},
-					f: canvas.Rectangle{
+					f: {
 						From: canvas.Point{X: 0, Y: 10},
 						To:   canvas.Point{X: 9, Y: 12},
 					},
 				},
 				"tooltips": map[posicion]canvas.Rectangle{
-					a: canvas.Rectangle{
+					a: {
 						From: canvas.Point{X: 15, Y: 15},
 						To:   canvas.Point{X: 24, Y: 15},
 					},
-					b: canvas.Rectangle{
+					b: {
 						From: canvas.Point{X: 29, Y: 15},
 						To:   canvas.Point{X: 38, Y: 15},
 					},
-					c: canvas.Rectangle{
+					c: {
 						From: canvas.Point{X: 44, Y: 8},
 						To:   canvas.Point{X: 53, Y: 8},
 					},
-					d: canvas.Rectangle{
+					d: {
 						From: canvas.Point{X: 29, Y: 3},
 						To:   canvas.Point{X: 38, Y: 3},
 					},
-					e: canvas.Rectangle{
+					e: {
 						From: canvas.Point{X: 15, Y: 3},
 						To:   canvas.Point{X: 24, Y: 3},
 					},
-					f: canvas.Rectangle{
+					f: {
 						From: canvas.Point{X: 0, Y: 8},
 						To:   canvas.Point{X: 5, Y: 12},
 					},
 				},
 			},
 			otrasAreas: map[string]canvas.Rectangle{
-				"muestra": canvas.Rectangle{
+				"muestra": {
 					From: canvas.Point{X: 25, Y: 8},
 					To:   canvas.Point{X: 28, Y: 10},
 				},
-				"exteriorMesa": canvas.Rectangle{
+				"exteriorMesa": {
 					From: canvas.Point{X: 11, Y: 5},
 					To:   canvas.Point{X: 42, Y: 13},
 				},
-				"interiorMesa": canvas.Rectangle{
+				"interiorMesa": {
 					From: canvas.Point{X: 12, Y: 6},
 					To:   canvas.Point{X: 41, Y: 12},
 				},
-				"estadisticas": canvas.Rectangle{
+				"estadisticas": {
 					From: canvas.Point{X: 57, Y: 2},
 					To:   canvas.Point{X: 74, Y: 15},
 				},
-				"#Mano": canvas.Rectangle{
+				"#Mano": {
 					From: canvas.Point{X: 66, Y: 3},
 					To:   canvas.Point{X: 72, Y: 3},
 				},
-				"Mano": canvas.Rectangle{
+				"Mano": {
 					From: canvas.Point{X: 65, Y: 5},
 					To:   canvas.Point{X: 72, Y: 5},
 				},
-				"Turno": canvas.Rectangle{
+				"Turno": {
 					From: canvas.Point{X: 66, Y: 7},
 					To:   canvas.Point{X: 72, Y: 7},
 				},
-				"Puntuacion": canvas.Rectangle{
+				"Puntuacion": {
 					From: canvas.Point{X: 71, Y: 9},
 					To:   canvas.Point{X: 72, Y: 9},
 				},
-				"puntajeRojo": canvas.Rectangle{
+				"puntajeRojo": {
 					From: canvas.Point{X: 61, Y: 14},
 					To:   canvas.Point{X: 62, Y: 14},
 				},
-				"puntajeAzul": canvas.Rectangle{
+				"puntajeAzul": {
 					From: canvas.Point{X: 68, Y: 14},
 					To:   canvas.Point{X: 69, Y: 14},
 				},
