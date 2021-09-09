@@ -33,9 +33,9 @@ type Partida struct {
 	ErrCh chan bool `json:"-"`
 }
 
-func (p *Partida) parseJugada(cmd string) (IJugada, error) {
+func (p *Partida) parseJugada(cmd string) (pdt.IJugada, error) {
 
-	var jugada IJugada
+	var jugada pdt.IJugada
 
 	// comando simple son
 	// jugadas sin parametro del tipo `$autor $jugada`
@@ -44,7 +44,7 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 	if match != nil {
 		jugadorStr, jugadaStr := match[0][1], match[0][2]
 
-		manojo, err := p.GetManojoByStr(jugadorStr)
+		m, err := p.GetManojoByStr(jugadorStr)
 		if err != nil {
 			return nil, fmt.Errorf("usuario %s no encontrado", jugadorStr)
 		}
@@ -54,41 +54,41 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 		switch jugadaStr {
 		// toques
 		case "envido":
-			jugada = tocarEnvido{manojo}
+			jugada = pdt.TocarEnvido{Manojo: m}
 		case "real-envido":
-			jugada = tocarRealEnvido{manojo}
+			jugada = pdt.TocarRealEnvido{Manojo: m}
 		case "falta-envido":
-			jugada = tocarFaltaEnvido{manojo}
+			jugada = pdt.TocarFaltaEnvido{Manojo: m}
 
 		// cantos
 		case "flor":
-			jugada = cantarFlor{manojo}
+			jugada = pdt.CantarFlor{Manojo: m}
 		case "contra-flor":
-			jugada = cantarContraFlor{manojo}
+			jugada = pdt.CantarContraFlor{Manojo: m}
 		case "contra-flor-al-resto":
-			jugada = cantarContraFlorAlResto{manojo}
+			jugada = pdt.CantarContraFlorAlResto{Manojo: m}
 
 		// gritos
 		case "truco":
-			jugada = gritarTruco{manojo}
+			jugada = pdt.GritarTruco{Manojo: m}
 		case "re-truco":
-			jugada = gritarReTruco{manojo}
+			jugada = pdt.GritarReTruco{Manojo: m}
 		case "vale-4":
-			jugada = gritarVale4{manojo}
+			jugada = pdt.GritarVale4{Manojo: m}
 
 		// respuestas
 		case "quiero":
-			jugada = responderQuiero{manojo}
+			jugada = pdt.ResponderQuiero{Manojo: m}
 		case "no-quiero":
-			jugada = responderNoQuiero{manojo}
+			jugada = pdt.ResponderNoQuiero{Manojo: m}
 		// case "tiene":
-		// 	jugada = responderNoQuiero{manojo}
+		// 	jugada = responderNoQuiero{Manojo: m}
 
 		// acciones
 		case "mazo":
-			jugada = irseAlMazo{manojo}
+			jugada = pdt.IrseAlMazo{Manojo: m}
 		case "tirar":
-			jugada = irseAlMazo{manojo}
+			jugada = pdt.IrseAlMazo{Manojo: m}
 		default:
 			return nil, fmt.Errorf("no existe esa jugada")
 		}
@@ -100,19 +100,19 @@ func (p *Partida) parseJugada(cmd string) (IJugada, error) {
 		jugadorStr := match[0][1]
 		valorStr, paloStr := match[0][2], match[0][3]
 
-		manojo, err := p.GetManojoByStr(jugadorStr)
+		m, err := p.GetManojoByStr(jugadorStr)
 		if err != nil {
 			return nil, fmt.Errorf("usuario %s no encontrado", jugadorStr)
 		}
 
-		carta, err := pdt.ParseCarta(valorStr, paloStr)
+		c, err := pdt.ParseCarta(valorStr, paloStr)
 		if err != nil {
 			return nil, err
 		}
 
-		jugada = tirarCarta{
-			manojo,
-			*carta,
+		jugada = pdt.TirarCarta{
+			Manojo: m,
+			Carta:  *c,
 		}
 	}
 
@@ -157,7 +157,11 @@ func (p *Partida) Cmd(cmd string) error {
 		return err
 	}
 
-	jugada.hacer(p)
+	pkts := jugada.Hacer(p.PartidaDT)
+
+	for _, pkt := range pkts {
+		enco.Write(p.out, pkt)
+	}
 
 	if p.Terminada() {
 		p.byeBye()

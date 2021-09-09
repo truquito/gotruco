@@ -8,17 +8,17 @@ import (
 
 // IJugada Interface para las jugadas
 type IJugada interface {
-	hacer(p *PartidaDT) []*enco.Packet
+	Hacer(p *PartidaDT) []*enco.Packet
 }
 
 type TirarCarta struct {
-	*Manojo
-	Carta
+	Manojo *Manojo
+	Carta  Carta
 }
 
 // el jugador tira una carta;
 // el parametro se encuentra en la struct como atributo
-func (jugada TirarCarta) hacer(p *PartidaDT) []*enco.Packet {
+func (jugada TirarCarta) Hacer(p *PartidaDT) []*enco.Packet {
 
 	pkts := make([]*enco.Packet, 0)
 
@@ -206,10 +206,10 @@ func (jugada TirarCarta) hacer(p *PartidaDT) []*enco.Packet {
 // PRE: supongo que el jugador que toca este envido
 // no tiene flor (es checkeada cuando es su turno)
 type TocarEnvido struct {
-	*Manojo
+	Manojo *Manojo
 }
 
-func (jugada TocarEnvido) hacer(p *PartidaDT) []*enco.Packet {
+func (jugada TocarEnvido) Hacer(p *PartidaDT) []*enco.Packet {
 
 	pkts := make([]*enco.Packet, 0)
 
@@ -270,8 +270,8 @@ func (jugada TocarEnvido) hacer(p *PartidaDT) []*enco.Packet {
 		// solo por jugadas de tipo flor-related
 		// lo mismo para el real-envido; falta-envido
 		manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
-		siguienteJugada := cantarFlor{manojosConFlor[0]}
-		siguienteJugada.hacer(p)
+		siguienteJugada := CantarFlor{manojosConFlor[0]}
+		siguienteJugada.Hacer(p)
 
 	} else {
 		p.TocarEnvido(jugada.Manojo)
@@ -303,10 +303,10 @@ func (jugada TocarEnvido) Eval(p *PartidaDT) []*enco.Packet {
 }
 
 type TocarRealEnvido struct {
-	*Manojo
+	Manojo *Manojo
 }
 
-func (jugada TocarRealEnvido) hacer(p *PartidaDT) []*enco.Packet {
+func (jugada TocarRealEnvido) Hacer(p *PartidaDT) []*enco.Packet {
 
 	pkts := make([]*enco.Packet, 0)
 
@@ -366,8 +366,8 @@ func (jugada TocarRealEnvido) hacer(p *PartidaDT) []*enco.Packet {
 
 	if hayFlor {
 		manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
-		siguienteJugada := cantarFlor{manojosConFlor[0]}
-		siguienteJugada.hacer(p)
+		siguienteJugada := CantarFlor{manojosConFlor[0]}
+		siguienteJugada.Hacer(p)
 
 	}
 
@@ -375,10 +375,10 @@ func (jugada TocarRealEnvido) hacer(p *PartidaDT) []*enco.Packet {
 }
 
 type TocarFaltaEnvido struct {
-	*Manojo
+	Manojo *Manojo
 }
 
-func (jugada TocarFaltaEnvido) hacer(p *PartidaDT) []*enco.Packet {
+func (jugada TocarFaltaEnvido) Hacer(p *PartidaDT) []*enco.Packet {
 
 	pkts := make([]*enco.Packet, 0)
 
@@ -438,8 +438,8 @@ func (jugada TocarFaltaEnvido) hacer(p *PartidaDT) []*enco.Packet {
 	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
 	if hayFlor {
 		manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
-		siguienteJugada := cantarFlor{manojosConFlor[0]}
-		siguienteJugada.hacer(p)
+		siguienteJugada := CantarFlor{manojosConFlor[0]}
+		siguienteJugada.Hacer(p)
 	}
 
 	return pkts
@@ -484,8 +484,8 @@ func (jugada TocarFaltaEnvido) Eval(p *PartidaDT) []*enco.Packet {
 	return pkts
 }
 
-type cantarFlor struct {
-	*Manojo
+type CantarFlor struct {
+	Manojo *Manojo
 }
 
 // fix
@@ -503,7 +503,7 @@ se pase a calcular el resultado solo de las flores acumuladas
 se necesita timer
 
 */
-func (jugada cantarFlor) hacer(p *PartidaDT) []*enco.Packet {
+func (jugada CantarFlor) Hacer(p *PartidaDT) []*enco.Packet {
 
 	pkts := make([]*enco.Packet, 0)
 
@@ -542,7 +542,7 @@ func (jugada cantarFlor) hacer(p *PartidaDT) []*enco.Packet {
 	todosLosJugadoresConFlorCantaron := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) == 0
 	if todosLosJugadoresConFlorCantaron {
 
-		evalFlor(p)
+		pkts = append(pkts, evalFlor(p)...)
 
 	} else {
 
@@ -558,12 +558,12 @@ func (jugada cantarFlor) hacer(p *PartidaDT) []*enco.Packet {
 		}
 
 		if soloLosDeSuEquipoTienenFlor {
-			// los quiero llamar a todos, pero no quiero hacer llamadas al pedo
+			// los quiero llamar a todos, pero no quiero Hacer llamadas al pedo
 			// entonces: llamo al primero sin cantar, y que este llame al proximo
 			// y que el proximo llame al siguiente, y asi...
 			primero := p.Ronda.Envite.JugadoresConFlorQueNoCantaron[0]
-			siguienteJugada := cantarFlor{primero}
-			siguienteJugada.hacer(p)
+			siguienteJugada := CantarFlor{primero}
+			siguienteJugada.Hacer(p)
 		}
 
 	}
@@ -630,10 +630,10 @@ func evalFlor(p *PartidaDT) []*enco.Packet {
 }
 
 type CantarContraFlor struct {
-	*Manojo
+	Manojo *Manojo
 }
 
-func (jugada CantarContraFlor) hacer(p *PartidaDT) []*enco.Packet {
+func (jugada CantarContraFlor) Hacer(p *PartidaDT) []*enco.Packet {
 
 	pkts := make([]*enco.Packet, 0)
 
@@ -671,10 +671,10 @@ func (jugada CantarContraFlor) hacer(p *PartidaDT) []*enco.Packet {
 }
 
 type CantarContraFlorAlResto struct {
-	*Manojo
+	Manojo *Manojo
 }
 
-func (jugada CantarContraFlorAlResto) hacer(p *PartidaDT) []*enco.Packet {
+func (jugada CantarContraFlorAlResto) Hacer(p *PartidaDT) []*enco.Packet {
 
 	pkts := make([]*enco.Packet, 0)
 
@@ -712,18 +712,18 @@ func (jugada CantarContraFlorAlResto) hacer(p *PartidaDT) []*enco.Packet {
 }
 
 type CantarConFlorMeAchico struct {
-	*Manojo
+	Manojo *Manojo
 }
 
-func (jugada CantarConFlorMeAchico) hacer(p *PartidaDT) []*enco.Packet {
+func (jugada CantarConFlorMeAchico) Hacer(p *PartidaDT) []*enco.Packet {
 	return nil
 }
 
 type GritarTruco struct {
-	*Manojo
+	Manojo *Manojo
 }
 
-func (jugada GritarTruco) hacer(p *PartidaDT) []*enco.Packet {
+func (jugada GritarTruco) Hacer(p *PartidaDT) []*enco.Packet {
 
 	pkts := make([]*enco.Packet, 0)
 
@@ -746,8 +746,8 @@ func (jugada GritarTruco) hacer(p *PartidaDT) []*enco.Packet {
 
 		if laFlorEstaPrimero {
 			manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
-			siguienteJugada := cantarFlor{manojosConFlor[0]}
-			siguienteJugada.hacer(p)
+			siguienteJugada := CantarFlor{manojosConFlor[0]}
+			siguienteJugada.Hacer(p)
 		}
 
 		return pkts
@@ -765,13 +765,13 @@ func (jugada GritarTruco) hacer(p *PartidaDT) []*enco.Packet {
 }
 
 type GritarReTruco struct {
-	*Manojo
+	Manojo *Manojo
 }
 
 // checkeaos de este tipo:
 // que pasa cuando gritan re-truco cuando el campo truco se encuentra nil
 // ese fue el nil pointer exception
-func (jugada GritarReTruco) hacer(p *PartidaDT) []*enco.Packet {
+func (jugada GritarReTruco) Hacer(p *PartidaDT) []*enco.Packet {
 
 	pkts := make([]*enco.Packet, 0)
 
@@ -805,8 +805,8 @@ func (jugada GritarReTruco) hacer(p *PartidaDT) []*enco.Packet {
 
 		if laFlorEstaPrimero {
 			manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
-			siguienteJugada := cantarFlor{manojosConFlor[0]}
-			siguienteJugada.hacer(p)
+			siguienteJugada := CantarFlor{manojosConFlor[0]}
+			siguienteJugada.Hacer(p)
 		}
 
 		pkts = append(pkts, enco.Pkt(
@@ -829,10 +829,10 @@ func (jugada GritarReTruco) hacer(p *PartidaDT) []*enco.Packet {
 }
 
 type GritarVale4 struct {
-	*Manojo
+	Manojo *Manojo
 }
 
-func (jugada GritarVale4) hacer(p *PartidaDT) []*enco.Packet {
+func (jugada GritarVale4) Hacer(p *PartidaDT) []*enco.Packet {
 
 	pkts := make([]*enco.Packet, 0)
 
@@ -868,8 +868,8 @@ func (jugada GritarVale4) hacer(p *PartidaDT) []*enco.Packet {
 
 		if laFlorEstaPrimero {
 			manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
-			siguienteJugada := cantarFlor{manojosConFlor[0]}
-			siguienteJugada.hacer(p)
+			siguienteJugada := CantarFlor{manojosConFlor[0]}
+			siguienteJugada.Hacer(p)
 		}
 
 		pkts = append(pkts, enco.Pkt(
@@ -892,10 +892,10 @@ func (jugada GritarVale4) hacer(p *PartidaDT) []*enco.Packet {
 }
 
 type ResponderQuiero struct {
-	*Manojo
+	Manojo *Manojo
 }
 
-func (jugada ResponderQuiero) hacer(p *PartidaDT) []*enco.Packet {
+func (jugada ResponderQuiero) Hacer(p *PartidaDT) []*enco.Packet {
 
 	pkts := make([]*enco.Packet, 0)
 
@@ -904,7 +904,7 @@ func (jugada ResponderQuiero) hacer(p *PartidaDT) []*enco.Packet {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(jugada.Manojo.Jugador.Nombre),
-			enco.Msg(enco.Error, "Te fuiste al mazo; no podes hacer esta jugada"),
+			enco.Msg(enco.Error, "Te fuiste al mazo; no podes Hacer esta jugada"),
 		))
 
 		return pkts
@@ -1056,10 +1056,10 @@ func (jugada ResponderQuiero) hacer(p *PartidaDT) []*enco.Packet {
 }
 
 type ResponderNoQuiero struct {
-	*Manojo
+	Manojo *Manojo
 }
 
-func (jugada ResponderNoQuiero) hacer(p *PartidaDT) []*enco.Packet {
+func (jugada ResponderNoQuiero) Hacer(p *PartidaDT) []*enco.Packet {
 
 	pkts := make([]*enco.Packet, 0)
 
@@ -1068,7 +1068,7 @@ func (jugada ResponderNoQuiero) hacer(p *PartidaDT) []*enco.Packet {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(jugada.Manojo.Jugador.Nombre),
-			enco.Msg(enco.Error, "Te fuiste al mazo; no podes hacer esta jugada"),
+			enco.Msg(enco.Error, "Te fuiste al mazo; no podes Hacer esta jugada"),
 		))
 
 		return pkts
@@ -1269,10 +1269,10 @@ func (jugada ResponderNoQuiero) hacer(p *PartidaDT) []*enco.Packet {
 }
 
 type IrseAlMazo struct {
-	*Manojo
+	Manojo *Manojo
 }
 
-func (jugada IrseAlMazo) hacer(p *PartidaDT) []*enco.Packet {
+func (jugada IrseAlMazo) Hacer(p *PartidaDT) []*enco.Packet {
 
 	pkts := make([]*enco.Packet, 0)
 
@@ -1347,10 +1347,10 @@ func (jugada IrseAlMazo) hacer(p *PartidaDT) []*enco.Packet {
 		p.Ronda.Envite.JugadoresConFlor = Eliminar(p.Ronda.Envite.JugadoresConFlor, jugada.Manojo)
 		p.Ronda.Envite.JugadoresConFlorQueNoCantaron = Eliminar(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.Manojo)
 		// que pasa si era el ultimo que se esperaba que cantara flor?
-		// tengo que hacer el Eval de la flor
+		// tengo que Hacer el Eval de la flor
 		todosLosJugadoresConFlorCantaron := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) == 0
 		if todosLosJugadoresConFlorCantaron {
-			evalFlor(p)
+			pkts = append(pkts, evalFlor(p)...)
 		}
 	}
 
