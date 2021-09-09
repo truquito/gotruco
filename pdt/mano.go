@@ -93,7 +93,7 @@ func (n NumMano) String() string {
 	return manos[n]
 }
 
-type tirarCarta struct {
+type cartaTirada struct {
 	autor *Manojo
 	Carta
 }
@@ -103,9 +103,9 @@ type Mano struct {
 	Resultado Resultado `json:"resultado"`
 	Ganador   *Manojo   `json:"ganador"`
 	// en cada mano los jugadores van a tirar hata 1 carta
-	CartasTiradas []tirarCarta `json:"cartasTiradas"`
+	CartasTiradas []cartaTirada `json:"cartasTiradas"`
 }
 
-func (m *Mano) agregarTirada(cartaTirada tirarCarta) {
+func (m *Mano) agregarTirada(cartaTirada cartaTirada) {
 	m.CartasTiradas = append(m.CartasTiradas, cartaTirada)
 }

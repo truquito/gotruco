@@ -282,7 +282,7 @@ func (p *PartidaDT) EvaluarMano() (bool, []*enco.Packet) {
 	// una carta con el mismo poder -> se queda con la Primera
 	// es decir, la que "gana de mano"
 	maxPoder := map[Equipo]int{Rojo: -1, Azul: -1}
-	max := map[Equipo]*tirarCarta{Rojo: nil, Azul: nil}
+	max := map[Equipo]*cartaTirada{Rojo: nil, Azul: nil}
 	tiradas := p.Ronda.GetManoActual().CartasTiradas
 
 	for i, tirada := range tiradas {
@@ -340,7 +340,7 @@ func (p *PartidaDT) EvaluarMano() (bool, []*enco.Packet) {
 		// no se cambia el turno
 
 	} else {
-		var tiradaGanadora *tirarCarta
+		var tiradaGanadora *cartaTirada
 
 		if maxPoder[Rojo] > maxPoder[Azul] {
 			tiradaGanadora = max[Rojo]
@@ -573,7 +573,7 @@ func (p *PartidaDT) GetManojoByStr(idJugador string) (*Manojo, error) {
 			return &p.Ronda.Manojos[i], nil
 		}
 	}
-	return nil, fmt.Errorf("Jugador `%s` no encontrado", idJugador)
+	return nil, fmt.Errorf("jugador `%s` no encontrado", idJugador)
 }
 
 // MarshalJSON retorna la partida en formato json
@@ -607,7 +607,7 @@ func (p *PartidaDT) Perspectiva(j string) (*PartidaDT, error) {
 	// primero encuentro el jugador
 	manojo, err := p.GetManojoByStr(j)
 	if err != nil {
-		return nil, fmt.Errorf("Usuario %s no encontrado", j)
+		return nil, fmt.Errorf("usuario %s no encontrado", j)
 	}
 
 	return p.PerspectivaCacheFlor(manojo), nil
@@ -640,7 +640,7 @@ func (p *PartidaDT) TirarCarta(manojo *Manojo, idx int) {
 	manojo.CartasNoTiradas[idx] = false
 	manojo.UltimaTirada = idx
 	carta := manojo.Cartas[idx]
-	tirada := tirarCarta{manojo, *carta}
+	tirada := cartaTirada{manojo, *carta}
 	p.Ronda.GetManoActual().agregarTirada(tirada)
 }
 
@@ -653,7 +653,7 @@ func NuevaPartidaDt(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Pa
 	ok := mismaCantidadDeJugadores && cantidadCorrecta
 
 	if !ok {
-		return nil, fmt.Errorf(`La cantidad de jugadores no es correcta`)
+		return nil, fmt.Errorf(`la cantidad de jugadores no es correcta`)
 	}
 	// paso a crear los jugadores; intercalados
 	var jugadores []Jugador
