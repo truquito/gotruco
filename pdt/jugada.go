@@ -271,7 +271,8 @@ func (jugada TocarEnvido) Hacer(p *PartidaDT) []*enco.Packet {
 		// lo mismo para el real-envido; falta-envido
 		manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
 		siguienteJugada := CantarFlor{manojosConFlor[0]}
-		siguienteJugada.Hacer(p)
+		res := siguienteJugada.Hacer(p)
+		pkts = append(pkts, res...)
 
 	} else {
 		p.TocarEnvido(jugada.Manojo)
@@ -367,8 +368,8 @@ func (jugada TocarRealEnvido) Hacer(p *PartidaDT) []*enco.Packet {
 	if hayFlor {
 		manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
 		siguienteJugada := CantarFlor{manojosConFlor[0]}
-		siguienteJugada.Hacer(p)
-
+		res := siguienteJugada.Hacer(p)
+		pkts = append(pkts, res...)
 	}
 
 	return pkts
@@ -439,7 +440,8 @@ func (jugada TocarFaltaEnvido) Hacer(p *PartidaDT) []*enco.Packet {
 	if hayFlor {
 		manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
 		siguienteJugada := CantarFlor{manojosConFlor[0]}
-		siguienteJugada.Hacer(p)
+		res := siguienteJugada.Hacer(p)
+		pkts = append(pkts, res...)
 	}
 
 	return pkts
@@ -563,7 +565,8 @@ func (jugada CantarFlor) Hacer(p *PartidaDT) []*enco.Packet {
 			// y que el proximo llame al siguiente, y asi...
 			primero := p.Ronda.Envite.JugadoresConFlorQueNoCantaron[0]
 			siguienteJugada := CantarFlor{primero}
-			siguienteJugada.Hacer(p)
+			res := siguienteJugada.Hacer(p)
+			pkts = append(pkts, res...)
 		}
 
 	}
@@ -747,7 +750,8 @@ func (jugada GritarTruco) Hacer(p *PartidaDT) []*enco.Packet {
 		if laFlorEstaPrimero {
 			manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
 			siguienteJugada := CantarFlor{manojosConFlor[0]}
-			siguienteJugada.Hacer(p)
+			res := siguienteJugada.Hacer(p)
+			pkts = append(pkts, res...)
 		}
 
 		return pkts
@@ -806,7 +810,8 @@ func (jugada GritarReTruco) Hacer(p *PartidaDT) []*enco.Packet {
 		if laFlorEstaPrimero {
 			manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
 			siguienteJugada := CantarFlor{manojosConFlor[0]}
-			siguienteJugada.Hacer(p)
+			res := siguienteJugada.Hacer(p)
+			pkts = append(pkts, res...)
 		}
 
 		pkts = append(pkts, enco.Pkt(
@@ -869,7 +874,8 @@ func (jugada GritarVale4) Hacer(p *PartidaDT) []*enco.Packet {
 		if laFlorEstaPrimero {
 			manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
 			siguienteJugada := CantarFlor{manojosConFlor[0]}
-			siguienteJugada.Hacer(p)
+			res := siguienteJugada.Hacer(p)
+			pkts = append(pkts, res...)
 		}
 
 		pkts = append(pkts, enco.Pkt(
@@ -968,15 +974,14 @@ func (jugada ResponderQuiero) Hacer(p *PartidaDT) []*enco.Packet {
 		))
 
 		if p.Ronda.Envite.Estado == FALTAENVIDO {
-			TocarFaltaEnvido(jugada).Eval(p)
-			return pkts
+			res := TocarFaltaEnvido(jugada).Eval(p)
+			return append(pkts, res...)
 		}
 		// si no, era envido/real-envido o cualquier
 		// combinacion valida de ellos
 
-		TocarEnvido(jugada).Eval(p)
-
-		return pkts
+		res := TocarEnvido(jugada).Eval(p)
+		return append(pkts, res...)
 
 	} else if laContraFlorEsRespondible {
 		// tengo que verificar si efectivamente tiene flor
