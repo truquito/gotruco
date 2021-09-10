@@ -79,7 +79,7 @@ func TestAcciones(t *testing.T) {
 	pdt, _ := NuevaPartidaDt(A20, []string{"Alvaro"}, []string{"Roro"})
 
 	alvaro := pdt.Ronda.GetElTurno()
-	// TirarCarta{Manojo: alvaro, Carta: *alvaro.Cartas[0]}.Hacer(pdt)
+	TirarCarta{Manojo: alvaro, Carta: *alvaro.Cartas[0]}.Hacer(pdt)
 
 	t.Log(Renderizar(pdt))
 
