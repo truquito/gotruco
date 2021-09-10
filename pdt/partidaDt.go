@@ -680,3 +680,72 @@ func NuevaPartidaDt(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Pa
 
 	return &p, nil
 }
+
+// A es el conjunto de acciones posibles para el manojo `m`
+/*
+Gritos
+	Truco    // 1/2
+	Re-truco // 2/3
+	Vale 4   // 3/4
+
+Toques
+	Envido
+	Real envido
+	Falta envido
+
+Cantos
+	Flor                 // 2pts (tanto o el-primero)
+	Contra flor          // 3 pts
+	Contra flor al resto // 4 pts
+
+	// Con flor me achico ~ quiero
+	// Con flor quiero ~ no quiero
+
+Respuestas
+	Quiero
+	No quiero
+
+*/
+func (p *PartidaDT) A(m *Manojo) []*enco.Message {
+	A := make([]*enco.Message, 0)
+
+	/* Acciones */
+	// tirada de cartas
+	for _, c := range m.Cartas {
+		j := TirarCarta{Manojo: m, Carta: *c}
+		if _, ok := j.Ok(p); ok {
+			msg := enco.Msg(enco.TirarCarta, "", int(j.Carta.Palo), j.Carta.Valor)
+			A = append(A, msg)
+		}
+	}
+
+	// ijugada debe tener metodo ToCod
+	xs := []struct {
+		j   IJugada
+		cod enco.CodMsg
+	}{
+		// TirarCarta{},
+		{TocarEnvido{m}, enco.TocarEnvido},
+		{TocarRealEnvido{m}, enco.TocarRealEnvido},
+		{TocarFaltaEnvido{m}, enco.TocarFaltaEnvido},
+		{CantarFlor{m}, enco.CantarFlor},
+		{CantarContraFlor{m}, enco.CantarContraFlor},
+		{CantarContraFlorAlResto{m}, enco.CantarContraFlorAlResto},
+		// { CantarConFlorMeAchico{m}, enco.new },
+		{GritarTruco{m}, enco.GritarTruco},
+		{GritarReTruco{m}, enco.GritarReTruco},
+		{GritarVale4{m}, enco.GritarVale4},
+		{ResponderQuiero{m}, enco.QuieroEnvite}, // <- ojo que aca uso quiero envite tanto para el envite como el truco
+		{ResponderNoQuiero{m}, enco.NoQuiero},
+		{IrseAlMazo{m}, enco.Mazo},
+	}
+
+	for _, x := range xs {
+		if _, ok := x.j.Ok(p); ok {
+			msg := enco.Msg(x.cod, "")
+			A = append(A, msg)
+		}
+	}
+
+	return A
+}
