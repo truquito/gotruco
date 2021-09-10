@@ -6,6 +6,7 @@ import (
 	"github.com/filevich/truco/deco"
 	"github.com/filevich/truco/enco"
 	"github.com/filevich/truco/pdt"
+	"github.com/filevich/truco/util"
 )
 
 func assert(should bool, callback func()) {
@@ -1659,7 +1660,7 @@ func TestParseJugada(t *testing.T) {
 	}
 
 	for _, cmd := range shouldBeOK {
-		_, err := p.parseJugada(cmd)
+		_, err := util.ParseJugada(p.PartidaDT, cmd)
 
 		assert(err == nil, func() {
 			t.Error(err.Error())
@@ -1667,7 +1668,7 @@ func TestParseJugada(t *testing.T) {
 	}
 
 	for _, cmd := range shouldNotBeOK {
-		_, err := p.parseJugada(cmd)
+		_, err := util.ParseJugada(p.PartidaDT, cmd)
 
 		assert(err != nil, func() {
 			t.Error(`Deberia dar error`)
