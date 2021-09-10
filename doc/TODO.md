@@ -61,6 +61,14 @@
 
 # DUDAS
 
+- estamos jugando de a 2, yo tiro un 10 de la muestra (perica), y mi oponente luego
+  tira un 11 de la muestra (perico). entonces:
+    * la mano resulta parda? o la gano el del perico?
+    * el siguiente turno, de quien es? porque ambas tienen el mismo valor (27)
+      pero el perico le gana a la perica entonces es turno del oponente?
+      o es mi turno porque tienen el mismo valor pero yo tire primero? (le gano de "mano")
+      me decante por: no es parda, le gana el perico en todo.
+
 **indeps**:
 - no necesariamente tiene que ser RETRUCOQUERIDO el estado del truco para recien
      ahi gritar vale4, podes ir de 1???
