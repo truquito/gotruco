@@ -839,8 +839,8 @@ func (jugada GritarTruco) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 	noSeCantoFlor := p.Ronda.Envite.Estado > DESHABILITADO && p.Ronda.Envite.Estado < FLOR
 	laFlorEstaPrimero := hayFlor && noSeCantoFlor
 	trucoNoSeJugoAun := p.Ronda.Truco.Estado == NOCANTADO
-	// esSuTurno := p.Ronda.GetElTurno() == jugada.Manojo
-	trucoHabilitado := noSeFueAlMazo && trucoNoSeJugoAun && noSeEstaJugandoElEnvite && !laFlorEstaPrimero // && esSuTurno
+	esSuTurno := p.Ronda.GetElTurno() == jugada.Manojo
+	trucoHabilitado := noSeFueAlMazo && trucoNoSeJugoAun && noSeEstaJugandoElEnvite && !laFlorEstaPrimero && esSuTurno
 
 	if !trucoHabilitado {
 
@@ -908,7 +908,7 @@ func (jugada GritarReTruco) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 	unoDelEquipoContrarioGritoTruco := trucoGritado && p.Ronda.Truco.CantadoPor.Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	casoI := trucoGritado && unoDelEquipoContrarioGritoTruco
 
-	// CASO I:
+	// CASO II:
 	trucoYaQuerido := p.Ronda.Truco.Estado == TRUCOQUERIDO
 	unoDeMiEquipoQuizo := trucoYaQuerido && p.Ronda.Truco.CantadoPor.Jugador.Equipo == jugada.Manojo.Jugador.Equipo
 	// esTurnoDeMiEquipo := p.Ronda.GetElTurno().Jugador.Equipo == jugada.Manojo.Jugador.Equipo

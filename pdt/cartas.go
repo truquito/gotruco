@@ -169,54 +169,49 @@ func (c Carta) calcPoder(muestra Carta) int {
 	if c.esPieza(muestra) {
 		switch c.Valor {
 		case 2:
-			poder = 30
+			poder = 34
 		case 4:
-			poder = 29
+			poder = 33
 		case 5:
-			poder = 28
-		case 11, 10:
-			poder = 27
+			poder = 32
+		case 11:
+			poder = 31
+		case 10:
+			poder = 30
 		case 12:
 			valeComo := Carta{Palo: c.Palo, Valor: muestra.Valor}
 			poder = valeComo.calcPoder(muestra)
 		}
 
 	} else if c.Palo == Espada && c.Valor == 1 {
-		poder = 26
-
-	} else if c.Palo == Basto && c.Valor == 1 {
-		poder = 25
-
-	} else if c.Palo == Espada && c.Valor == 7 {
-		poder = 24
-
-	} else if c.Palo == Oro && c.Valor == 7 {
 		poder = 23
-
+	} else if c.Palo == Basto && c.Valor == 1 {
+		poder = 22
+	} else if c.Palo == Espada && c.Valor == 7 {
+		poder = 21
+	} else if c.Palo == Oro && c.Valor == 7 {
+		poder = 20
 		// Chicas
 	} else if c.Valor == 3 {
-		poder = 22
-
-	} else if c.Valor == 2 {
-		poder = 21
-
-	} else if c.Valor == 1 {
-		poder = 20
-
-	} else if c.Valor == 12 {
 		poder = 19
-	} else if c.Valor == 11 {
+	} else if c.Valor == 2 {
 		poder = 18
-	} else if c.Valor == 10 {
+	} else if c.Valor == 1 {
 		poder = 17
-	} else if c.Valor == 7 {
+	} else if c.Valor == 12 {
 		poder = 16
-	} else if c.Valor == 6 {
+	} else if c.Valor == 11 {
 		poder = 15
-	} else if c.Valor == 5 {
+	} else if c.Valor == 10 {
 		poder = 14
-	} else if c.Valor == 4 {
+	} else if c.Valor == 7 {
 		poder = 13
+	} else if c.Valor == 6 {
+		poder = 12
+	} else if c.Valor == 5 {
+		poder = 11
+	} else if c.Valor == 4 {
+		poder = 10
 	}
 
 	return poder
