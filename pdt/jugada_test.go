@@ -78,17 +78,10 @@ func toStr(c enco.CodMsg) string {
 func TestAcciones(t *testing.T) {
 	pdt, _ := NuevaPartidaDt(A20, []string{"Alvaro"}, []string{"Roro"})
 
+	alvaro := pdt.Ronda.GetElTurno()
+	// TirarCarta{Manojo: alvaro, Carta: *alvaro.Cartas[0]}.Hacer(pdt)
+
 	t.Log(Renderizar(pdt))
 
-	alvaro := pdt.Ronda.GetElTurno()
-
-	for _, a := range pdt.A(alvaro) {
-		m, _ := a.Cont.MarshalJSON()
-		t.Log(toStr(enco.CodMsg(a.Cod)), string(m))
-	}
-	// t.Log(pdt.A(alvaro))
-
-	// assert(p.Ronda.Envite.Puntaje == 2, func() {
-	// 	t.Error(`El puntaje del envido deberia de ser 2`)
-	// })
+	t.Log(pdt.A(alvaro))
 }

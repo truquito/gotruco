@@ -706,45 +706,90 @@ Respuestas
 	No quiero
 
 */
-func (p *PartidaDT) A(m *Manojo) []*enco.Message {
-	A := make([]*enco.Message, 0)
 
-	/* Acciones */
-	// tirada de cartas
-	for _, c := range m.Cartas {
-		j := TirarCarta{Manojo: m, Carta: *c}
-		if _, ok := j.Ok(p); ok {
-			msg := enco.Msg(enco.TirarCarta, "", int(j.Carta.Palo), j.Carta.Valor)
-			A = append(A, msg)
+// 3 tiradas + 12 jugadas = 15 acciones
+type A [15]bool // por default arranca en `false` todos
+
+func (A A) String() string {
+	s := ""
+
+	codigos := []string{
+		// cartas
+		"primera",
+		"segunda",
+		"tercera",
+		// envite
+		"envido",
+		"real-envido",
+		"falta-envido",
+		"flor",
+		"contra-flor",
+		"contra-flor-al-resto",
+		// truco
+		"truco",
+		"re-truco",
+		"vale-4",
+		// respuestas
+		"quiero",
+		"no-Quiero",
+		"mazo",
+	}
+
+	for i, v := range A {
+		if v {
+			s += codigos[i] + ", "
 		}
+	}
+
+	if len(s) > 0 {
+		s = s[:len(s)-2]
+	}
+
+	return s
+}
+
+func (p *PartidaDT) A(m *Manojo) A {
+
+	var A [15]bool
+
+	// tirada de cartas
+	for i, c := range m.Cartas {
+		j := TirarCarta{Manojo: m, Carta: *c}
+		_, ok := j.Ok(p)
+		A[i] = ok
+		// msg := enco.Msg(enco.TirarCarta, m.Jugador.ID, int(j.Carta.Palo), j.Carta.Valor)
+		// A = append(A, msg)
 	}
 
 	// ijugada debe tener metodo ToCod
-	xs := []struct {
-		j   IJugada
-		cod enco.CodMsg
-	}{
+	js := []IJugada{
 		// TirarCarta{},
-		{TocarEnvido{m}, enco.TocarEnvido},
-		{TocarRealEnvido{m}, enco.TocarRealEnvido},
-		{TocarFaltaEnvido{m}, enco.TocarFaltaEnvido},
-		{CantarFlor{m}, enco.CantarFlor},
-		{CantarContraFlor{m}, enco.CantarContraFlor},
-		{CantarContraFlorAlResto{m}, enco.CantarContraFlorAlResto},
+
+		// envite
+		TocarEnvido{m},
+		TocarRealEnvido{m},
+		TocarFaltaEnvido{m},
+		CantarFlor{m},
+		CantarContraFlor{m},
+		CantarContraFlorAlResto{m},
 		// { CantarConFlorMeAchico{m}, enco.new },
-		{GritarTruco{m}, enco.GritarTruco},
-		{GritarReTruco{m}, enco.GritarReTruco},
-		{GritarVale4{m}, enco.GritarVale4},
-		{ResponderQuiero{m}, enco.QuieroEnvite}, // <- ojo que aca uso quiero envite tanto para el envite como el truco
-		{ResponderNoQuiero{m}, enco.NoQuiero},
-		{IrseAlMazo{m}, enco.Mazo},
+
+		// truco
+		GritarTruco{m},
+		GritarReTruco{m},
+		GritarVale4{m},
+
+		// respuestas
+		ResponderQuiero{m},
+		ResponderNoQuiero{m},
+
+		// mazo
+		IrseAlMazo{m},
 	}
 
-	for _, x := range xs {
-		if _, ok := x.j.Ok(p); ok {
-			msg := enco.Msg(x.cod, "")
-			A = append(A, msg)
-		}
+	for i, j := range js {
+		_, ok := j.Ok(p)
+		A[i+3] = ok
 	}
 
 	return A
