@@ -52,3 +52,14 @@ func Collect(r io.Reader) (res []*Packet) {
 	}
 	return res
 }
+
+// contains dado un buffer se fija si contiene un mensaje
+// con ese codigo (y string de ser no-nulo)
+func Contains(pkts []*Packet, cod CodMsg) bool {
+	for _, pkt := range pkts {
+		if pkt.Message.Cod == int(cod) {
+			return true
+		}
+	}
+	return false
+}

@@ -15,17 +15,6 @@ func assert(should bool, callback func()) {
 	}
 }
 
-// contains dado un buffer se fija si contiene un mensaje
-// con ese codigo (y string de ser no-nulo)
-func contains(pkts []*enco.Packet, cod enco.CodMsg) bool {
-	for _, pkt := range pkts {
-		if pkt.Message.Cod == int(cod) {
-			return true
-		}
-	}
-	return false
-}
-
 // Tests:
 // Envido	2/1
 // Real envido	 3/1
@@ -3537,7 +3526,7 @@ func TestPardaSigTurno3(t *testing.T) {
 
 	p.Cmd("Alvaro 5 Copa")
 
-	assert(contains(enco.Collect(out), enco.TirarCarta), func() {
+	assert(enco.Contains(enco.Collect(out), enco.TirarCarta), func() {
 		t.Error("debio de haber tirado carta")
 	})
 
@@ -3593,7 +3582,7 @@ func TestFixTrucoDeshabilitaEnvido(t *testing.T) {
 	// el envido esta primero!!
 	p.Cmd("Roro envido")
 
-	assert(!contains(enco.Collect(out), enco.Error), func() {
+	assert(!enco.Contains(enco.Collect(out), enco.Error), func() {
 		t.Error("No deberia resultar en un error tocar envido ahora")
 	})
 
@@ -3644,7 +3633,7 @@ func TestFixOrdenCantoFlor(t *testing.T) {
 	p.Cmd("renzo flor")
 	p.Cmd("andres flor")
 
-	assert(contains(enco.Collect(out), enco.DiceSonBuenas), func() {
+	assert(enco.Contains(enco.Collect(out), enco.DiceSonBuenas), func() {
 		t.Error("debio de haber dicho son bueas")
 	})
 
@@ -3668,4 +3657,32 @@ func TestFixTester2(t *testing.T) {
 		t.Log(deco.Stringify(pkt, p.PartidaDT))
 	})
 
+}
+
+func TestFixFlorNoCantada(t *testing.T) {
+	// Roro tiene flor y aun asi es capaz de tira carta sin cantarla
+	// no deberia ser posible; primero debe cantar la flor
+	p, out, _ := NuevaPartida(pdt.A30, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	partidaJSON := `{"Jugadores": [{"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}, {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}, {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}, {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}], "cantJugadores": 4, "puntuacion": 20, "puntajes": {"Azul": 0, "Rojo": 0}, "ronda": {"manoEnJuego": 0, "cantJugadoresEnJuego": {"Azul": 2, "Rojo": 2}, "elMano": 0, "turno": 0, "pies": [0, 0], "envite": {"estado": "noCantadoAun", "puntaje": 0, "cantadoPor": null}, "truco": {"cantadoPor": null, "estado": "noCantado"}, "manojos": [{"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 4}, {"palo": "Espada", "valor": 2}, {"palo": "Basto", "valor": 2}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Oro", "valor": 1}, {"palo": "Basto", "valor": 10}, {"palo": "Basto", "valor": 4}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Basto", "valor": 1}, {"palo": "Basto", "valor": 5}, {"palo": "Espada", "valor": 1}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Oro", "valor": 5}, {"palo": "Basto", "valor": 6}, {"palo": "Copa", "valor": 12}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}}], "muestra": {"palo": "Basto", "valor": 12}, "manos": [{"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}]}}`
+	p.PartidaDT.FromJSON([]byte(partidaJSON))
+	t.Log(p)
+
+	p.Cmd("Alvaro 2 Basto")
+
+	enco.Consume(out, func(pkt *enco.Packet) {
+		t.Log(deco.Stringify(pkt, p.PartidaDT))
+	})
+
+	roro, _ := p.GetManojoByStr("Roro")
+	aa := util.GetA(p.PartidaDT, roro)
+
+	t.Log(aa)
+
+	// p.Cmd("Roro 4 Basto")
+
+	// enco.Consume(out, func(pkt *enco.Packet) {
+	// 	t.Log(deco.Stringify(pkt, p.PartidaDT))
+	// })
+
+	t.Log(p)
 }
