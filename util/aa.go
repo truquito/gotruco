@@ -69,6 +69,7 @@ func (A A) String() string {
 	return s
 }
 
+// Retorna todas las acciones posibles para un jugador `m` dado
 func GetA(p *pdt.PartidaDT, m *pdt.Manojo) A {
 
 	var A [15]bool
@@ -114,4 +115,13 @@ func GetA(p *pdt.PartidaDT, m *pdt.Manojo) A {
 	}
 
 	return A
+}
+
+// Retorna TODAS las jugadas posibles de cada jugador
+func GetAA(p *pdt.PartidaDT) []A {
+	res := make([]A, p.CantJugadores)
+	for i := range p.Ronda.Manojos {
+		res[i] = GetA(p, &p.Ronda.Manojos[i])
+	}
+	return res
 }
