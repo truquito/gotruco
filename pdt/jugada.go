@@ -116,9 +116,11 @@ func (jugada TirarCarta) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 
 	}
 
+	// cambio: ahora no puede tirar carta si el grito truco
 	trucoGritado := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
 	unoDelEquipoContrarioGritoTruco := trucoGritado && p.Ronda.Truco.CantadoPor.Jugador.Equipo != jugada.Manojo.Jugador.Equipo
-	elTrucoEsRespondible := trucoGritado && unoDelEquipoContrarioGritoTruco
+	yoGiteElTruco := trucoGritado && jugada.Manojo.Jugador.ID == p.Ronda.Truco.CantadoPor.Jugador.ID
+	elTrucoEsRespondible := trucoGritado && unoDelEquipoContrarioGritoTruco && !yoGiteElTruco
 	if elTrucoEsRespondible {
 
 		pkts = append(pkts, enco.Pkt(
@@ -611,6 +613,13 @@ func (jugada CantarFlor) Hacer(p *PartidaDT) []*enco.Packet {
 		enco.Msg(enco.CantarFlor, jugada.Manojo.Jugador.Nombre),
 	))
 
+	// corresponde que desactive el truco?
+	// si lo desactivo: es medio tedioso para el usuario tener q volver a gritar
+	// si no lo desacivo: medio como que se olvida
+	// QUEDA CONSISTENTE CON "EL ENVIDO ESTA PRIMERO"!
+	p.Ronda.Truco.CantadoPor = nil
+	p.Ronda.Truco.Estado = NOCANTADO
+
 	// y me elimino de los que no-cantaron
 	p.Ronda.Envite.JugadoresConFlorQueNoCantaron = Eliminar(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.Manojo)
 
@@ -829,15 +838,35 @@ type GritarTruco struct {
 	Manojo *Manojo
 }
 
+// se resuelve lo siguiente:
+// ------------------------
+// si yo tengo flor, o uno de mis companeros tienen flor
+// (y no se ha cantado aun)
+// entonces no puedo cantar truco
+
+// si yo puedo gritar truco ->
+// cambia el estado del Truco a TRUCO
+// luego si alguien dice:
+// 		quiero -> no debe poder si uno de su equipo tiene flor
+// 		si dice flor -> debe resetear el Truco
+
 func (jugada GritarTruco) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 	pkts := make([]*enco.Packet, 0)
 
 	// checkeos:
 	noSeFueAlMazo := !jugada.Manojo.SeFueAlMazo
 	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
-	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
-	noSeCantoFlor := p.Ronda.Envite.Estado > DESHABILITADO && p.Ronda.Envite.Estado < FLOR
-	laFlorEstaPrimero := hayFlor && noSeCantoFlor
+
+	yoOUnoDeMisCompasTieneFlorYAunNoCanto := false
+	for _, m := range p.Ronda.Envite.JugadoresConFlorQueNoCantaron {
+		mismoEquipo := m.Jugador.Equipo == jugada.Manojo.Jugador.Equipo
+		if mismoEquipo {
+			yoOUnoDeMisCompasTieneFlorYAunNoCanto = true
+			break
+		}
+	}
+
+	laFlorEstaPrimero := yoOUnoDeMisCompasTieneFlorYAunNoCanto
 	trucoNoSeJugoAun := p.Ronda.Truco.Estado == NOCANTADO
 	esSuTurno := p.Ronda.GetElTurno() == jugada.Manojo
 	trucoHabilitado := noSeFueAlMazo && trucoNoSeJugoAun && noSeEstaJugandoElEnvite && !laFlorEstaPrimero && esSuTurno
@@ -848,13 +877,6 @@ func (jugada GritarTruco) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 			enco.Dest(jugada.Manojo.Jugador.Nombre),
 			enco.Msg(enco.Error, "No es posible cantar truco ahora"),
 		))
-
-		if laFlorEstaPrimero {
-			manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
-			siguienteJugada := CantarFlor{manojosConFlor[0]}
-			res := siguienteJugada.Hacer(p)
-			pkts = append(pkts, res...)
-		}
 
 		return pkts, false
 
@@ -893,9 +915,17 @@ func (jugada GritarReTruco) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 	// checkeos generales:
 	noSeFueAlMazo := !jugada.Manojo.SeFueAlMazo
 	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
-	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
-	noSeCantoFlor := p.Ronda.Envite.Estado > DESHABILITADO && p.Ronda.Envite.Estado < FLOR
-	laFlorEstaPrimero := hayFlor && noSeCantoFlor
+
+	yoOUnoDeMisCompasTieneFlorYAunNoCanto := false
+	for _, m := range p.Ronda.Envite.JugadoresConFlorQueNoCantaron {
+		mismoEquipo := m.Jugador.Equipo == jugada.Manojo.Jugador.Equipo
+		if mismoEquipo {
+			yoOUnoDeMisCompasTieneFlorYAunNoCanto = true
+			break
+		}
+	}
+
+	laFlorEstaPrimero := yoOUnoDeMisCompasTieneFlorYAunNoCanto
 
 	/*
 		Hay 2 casos para cantar rectruco:
@@ -917,13 +947,6 @@ func (jugada GritarReTruco) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 	reTrucoHabilitado := noSeFueAlMazo && noSeEstaJugandoElEnvite && (casoI || casoII) && !laFlorEstaPrimero
 
 	if !reTrucoHabilitado {
-
-		if laFlorEstaPrimero {
-			manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
-			siguienteJugada := CantarFlor{manojosConFlor[0]}
-			res := siguienteJugada.Hacer(p)
-			pkts = append(pkts, res...)
-		}
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(jugada.Manojo.Jugador.Nombre),
@@ -971,9 +994,17 @@ func (jugada GritarVale4) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 	noSeFueAlMazo := !jugada.Manojo.SeFueAlMazo
 
 	noSeEstaJugandoElEnvite := p.Ronda.Envite.Estado <= NOCANTADOAUN
-	hayFlor := len(p.Ronda.Envite.JugadoresConFlorQueNoCantaron) > 0
-	noSeCantoFlor := p.Ronda.Envite.Estado > DESHABILITADO && p.Ronda.Envite.Estado < FLOR
-	laFlorEstaPrimero := hayFlor && noSeCantoFlor
+
+	yoOUnoDeMisCompasTieneFlorYAunNoCanto := false
+	for _, m := range p.Ronda.Envite.JugadoresConFlorQueNoCantaron {
+		mismoEquipo := m.Jugador.Equipo == jugada.Manojo.Jugador.Equipo
+		if mismoEquipo {
+			yoOUnoDeMisCompasTieneFlorYAunNoCanto = true
+			break
+		}
+	}
+
+	laFlorEstaPrimero := yoOUnoDeMisCompasTieneFlorYAunNoCanto
 
 	/*
 		Hay 2 casos para cantar rectruco:
@@ -996,13 +1027,6 @@ func (jugada GritarVale4) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 	vale4Habilitado := noSeFueAlMazo && (casoI || casoII) && noSeEstaJugandoElEnvite && !laFlorEstaPrimero
 
 	if !vale4Habilitado {
-
-		if laFlorEstaPrimero {
-			manojosConFlor := p.Ronda.Envite.JugadoresConFlorQueNoCantaron
-			siguienteJugada := CantarFlor{manojosConFlor[0]}
-			res := siguienteJugada.Hacer(p)
-			pkts = append(pkts, res...)
-		}
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(jugada.Manojo.Jugador.Nombre),
@@ -1059,7 +1083,16 @@ func (jugada ResponderQuiero) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 	// caso particular del checkeo: no se le puede decir quiero a la flor
 	// pero si a la contra flor o contra flor al resto
 	florEnJuego := p.Ronda.Envite.Estado == FLOR
-	if florEnJuego {
+	yoOUnoDeMisCompasTieneFlorYAunNoCanto := false
+	for _, m := range p.Ronda.Envite.JugadoresConFlorQueNoCantaron {
+		mismoEquipo := m.Jugador.Equipo == jugada.Manojo.Jugador.Equipo
+		if mismoEquipo {
+			yoOUnoDeMisCompasTieneFlorYAunNoCanto = true
+			break
+		}
+	}
+
+	if florEnJuego || yoOUnoDeMisCompasTieneFlorYAunNoCanto {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(jugada.Manojo.Jugador.Nombre),
