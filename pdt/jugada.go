@@ -1080,9 +1080,27 @@ func (jugada ResponderQuiero) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 	}
 
 	// checkeo flor en juego
-	// caso particular del checkeo: no se le puede decir quiero a la flor
+	// caso particular del checkeo:
+	// no se le puede decir quiero ni al envido* ni al truco si se esta jugando la flor
+	// no se le puede decir quiero a la flor -> si la flor esta en juego -> error
 	// pero si a la contra flor o contra flor al resto
+
+	// casos posibles:
+	// alguien dijo envido/truco, otro responde quiero, pero hay uno que tiene flor que todavia no la jugo -> deberia saltar error: "alguien tiene flor y no la jugo aun"
+	// alguien tiene flor, uno dice quiero -> no deberia dejarlo porque la flor no se responde con quiero
+	// se esta jugando la contra-flor/CFAR -> ok
+
 	florEnJuego := p.Ronda.Envite.Estado == FLOR
+	if florEnJuego {
+		pkts = append(pkts, enco.Pkt(
+			enco.Dest(jugada.Manojo.Jugador.Nombre),
+			enco.Msg(enco.Error, "No es posible responder quiero ahora"),
+		))
+
+		return pkts, false
+	}
+
+	noHanCantadoLaFlorAun := p.Ronda.Envite.Estado < FLOR
 	yoOUnoDeMisCompasTieneFlorYAunNoCanto := false
 	for _, m := range p.Ronda.Envite.JugadoresConFlorQueNoCantaron {
 		mismoEquipo := m.Jugador.Equipo == jugada.Manojo.Jugador.Equipo
@@ -1091,16 +1109,13 @@ func (jugada ResponderQuiero) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 			break
 		}
 	}
-
-	if florEnJuego || yoOUnoDeMisCompasTieneFlorYAunNoCanto {
-
+	if noHanCantadoLaFlorAun && yoOUnoDeMisCompasTieneFlorYAunNoCanto {
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(jugada.Manojo.Jugador.Nombre),
-			enco.Msg(enco.Error, "No es posible responder quiero ahora"),
+			enco.Msg(enco.Error, "No es posible responder 'quiero' porque alguien con flor no ha cantado aun"),
 		))
 
 		return pkts, false
-
 	}
 	// se acepta una respuesta 'quiero' solo cuando:
 	// - CASO I: se toco un envite+ (con autor del equipo contario)

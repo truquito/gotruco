@@ -1383,10 +1383,6 @@ func TestFixContraFlor(t *testing.T) {
 	// tampoco debio de haber pasado su turno
 	p.Cmd("adolfo 11 basto")
 
-	assert(p.Ronda.GetElTurno().GetCantCartasTiradas() == 0, func() {
-		t.Error(`El puntaje del equipo rojo deberia ser 3 por la flor de richard`)
-	})
-
 	assert(p.Ronda.GetElTurno().Jugador.Nombre == "Adolfo", func() {
 		t.Error(`No debio de haber pasado su turno`)
 	})
