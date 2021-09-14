@@ -61,6 +61,7 @@
 
 # DUDAS
 
+- caso muy dudoso: TestFlorFlorContraFlorQuiero
 - que pasa si uno tiene flor, no es su turno y el otro se va al mazo y no le da la chance
   ganar los +3 pts de la flor. Deberia ser posible?
 - estamos jugando de a 2, yo tiro un 10 de la muestra (perica), y mi oponente luego
