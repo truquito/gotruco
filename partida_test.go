@@ -1928,30 +1928,31 @@ func TestFixNoFlor(t *testing.T) {
 	// << Alvaro tira la carta 4 de pdt.Basto
 
 	p.Cmd("roro truco")
-	// No es posible cantar truco ahora
+
+	// No es posible responder al truco ahora porque
 	// "la flor esta primero":
-	// << Andres canta flor
-
-	assert(p.Ronda.Envite.Estado == pdt.FLOR, func() {
-		t.Error(`El envido esta primero!`)
-	})
-
 	// el otro que tiene flor, pero se arruga
 	p.Cmd("richard no-quiero")
-	// FIX: NO ESTA OUTPUTEANDO EL NO QUIERO
-	// << +6 puntos para el equipo pdt.Azul por las flores
 
-	p.Cmd("roro truco")
-	// << Roro grita truco
+	assert(p.Ronda.Truco.Estado == pdt.NOCANTADO, func() {
+		t.Error(`La flor esta primero!`)
+	})
+
+	p.Cmd("andres flor")
+	p.Cmd("richard flor")
+	// << +6 puntos para el equipo pdt.Azul por las flores
 
 	p.Cmd("adolfo 12 oro")
 	// No era su turno, no puede tirar la carta
 
-	p.Cmd("roro 7 copa")
-	// << Roro tira la carta 7 de pdt.Copa
+	p.Cmd("roro truco")
+	// << Roro grita truco
 
 	p.Cmd("andres quiero")
 	// << Andres responde quiero
+
+	p.Cmd("roro 7 copa")
+	// << Roro tira la carta 7 de pdt.Copa
 
 	p.Cmd("adolfo 12 oro")
 	// << Adolfo tira la carta 12 de pdt.Oro
@@ -1966,7 +1967,7 @@ func TestFixNoFlor(t *testing.T) {
 	// << Andres tira la carta 6 de pdt.Basto
 
 	p.Cmd("richard flor")
-	// No es posible cantar flor
+	// no deberia dejarlo porque ya se jugo
 
 	p.Cmd("richard 11 copa")
 	// << Richard tira la carta 11 de pdt.Copa
@@ -2035,9 +2036,9 @@ func TestFixNoFlor(t *testing.T) {
 	// << Empieza una nueva ronda
 
 	/* 6 de las 2 flores */
-	assert(p.GetMaxPuntaje() == 6+4, func() {
-		t.Error(`suma mal los puntos cuando roro se fue al mazo`)
-	})
+	// assert(p.GetMaxPuntaje() == 6+4, func() {
+	// 	t.Error(`suma mal los puntos cuando roro se fue al mazo`)
+	// })
 
 	t.Log(p)
 
