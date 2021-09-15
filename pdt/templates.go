@@ -31,6 +31,23 @@ func (t templates) marco() string {
 	return marco
 }
 
+func (t templates) dialogo(up bool) string {
+	template := canvas.Raw(`
+╭──────U──────╮
+│             │
+╰──────D──────╯
+`)
+	if up {
+		template = canvas.Replace("U", "╩", template)
+		template = canvas.Replace("D", "─", template)
+	} else {
+		template = canvas.Replace("U", "─", template)
+		template = canvas.Replace("D", "╦", template)
+	}
+
+	return template
+}
+
 func (t templates) estadisticas() string {
 	marco := canvas.Raw(`
 ╔════════════════╗
