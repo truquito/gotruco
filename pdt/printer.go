@@ -166,6 +166,9 @@ func (pr impresora) dibujarPosesiones(manojos []Manojo) {
 	var area canvas.Rectangle
 
 	for i := range manojos {
+		if manojos[i].SeFueAlMazo {
+			continue
+		}
 		area = pr.areasJugadores["posesiones"][posicion(i)]
 		manojo := manojos[i]
 
@@ -214,6 +217,10 @@ func (pr impresora) dibujarTooltips(r Ronda) {
 
 	for i, manojo := range r.Manojos {
 		tooltip := ""
+
+		if manojo.SeFueAlMazo {
+			tooltip += "✗ "
+		}
 
 		// flor
 		if lasConoce(manojo.Cartas[:]) {
