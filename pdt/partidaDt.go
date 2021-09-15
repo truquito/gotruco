@@ -593,6 +593,13 @@ func (p *PartidaDT) FromJSON(data []byte) error {
 	return nil
 }
 
+// Parse
+func Parse(json string) (*PartidaDT, error) {
+	p, _ := NuevaPartidaDt(0, []string{""}, []string{""})
+	err := p.FromJSON([]byte(json))
+	return p, err
+}
+
 func cheepCopy(p *PartidaDT) *PartidaDT {
 	copia := *p
 	copia.Ronda.Manojos = make([]Manojo, len(p.Ronda.Manojos))
