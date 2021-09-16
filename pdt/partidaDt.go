@@ -589,14 +589,19 @@ func (p *PartidaDT) FromJSON(data []byte) error {
 	if err != nil {
 		return err
 	}
+
 	p.Ronda.cachearFlores()
+	// cargo los jugadores xq no vienen en el json
+	p.Jugadores = make([]Jugador, p.CantJugadores)
+	for i, m := range p.Ronda.Manojos {
+		p.Jugadores[i] = *m.Jugador
+	}
 	return nil
 }
 
-// Parse
-func Parse(json string) (*PartidaDT, error) {
-	p, _ := NuevaPartidaDt(0, []string{""}, []string{""})
-	err := p.FromJSON([]byte(json))
+func Parse(data string) (*PartidaDT, error) {
+	p := new(PartidaDT)
+	err := p.FromJSON([]byte(data))
 	return p, err
 }
 
