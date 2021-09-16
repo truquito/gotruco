@@ -3669,7 +3669,7 @@ func TestFixFlorNoCantada(t *testing.T) {
 	})
 
 	roro, _ := p.GetManojoByStr("Roro")
-	aa := util.GetA(p.PartidaDT, roro)
+	aa := pdt.GetA(p.PartidaDT, roro)
 
 	t.Log(aa)
 
