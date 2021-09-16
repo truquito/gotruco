@@ -1,6 +1,4 @@
-package util
-
-import "github.com/filevich/truco/pdt"
+package pdt
 
 // A es el conjunto de acciones posibles para el manojo `m`
 /*
@@ -70,13 +68,13 @@ func (A A) String() string {
 }
 
 // Retorna todas las acciones posibles para un jugador `m` dado
-func GetA(p *pdt.PartidaDT, m *pdt.Manojo) A {
+func GetA(p *PartidaDT, m *Manojo) A {
 
 	var A [15]bool
 
 	// tirada de cartas
 	for i, c := range m.Cartas {
-		j := pdt.TirarCarta{Manojo: m, Carta: *c}
+		j := TirarCarta{Manojo: m, Carta: *c}
 		_, ok := j.Ok(p)
 		A[i] = ok
 		// msg := enco.Msg(enco.TirarCarta, m.Jugador.ID, int(j.Carta.Palo), j.Carta.Valor)
@@ -84,29 +82,29 @@ func GetA(p *pdt.PartidaDT, m *pdt.Manojo) A {
 	}
 
 	// ijugada debe tener metodo ToCod
-	js := []pdt.IJugada{
+	js := []IJugada{
 		// TirarCarta{},
 
 		// envite
-		pdt.TocarEnvido{Manojo: m},
-		pdt.TocarRealEnvido{Manojo: m},
-		pdt.TocarFaltaEnvido{Manojo: m},
-		pdt.CantarFlor{Manojo: m},
-		pdt.CantarContraFlor{Manojo: m},
-		pdt.CantarContraFlorAlResto{Manojo: m},
+		TocarEnvido{Manojo: m},
+		TocarRealEnvido{Manojo: m},
+		TocarFaltaEnvido{Manojo: m},
+		CantarFlor{Manojo: m},
+		CantarContraFlor{Manojo: m},
+		CantarContraFlorAlResto{Manojo: m},
 		// { CantarConFlorMeAchico{Manojo: m}, enco.new },
 
 		// truco
-		pdt.GritarTruco{Manojo: m},
-		pdt.GritarReTruco{Manojo: m},
-		pdt.GritarVale4{Manojo: m},
+		GritarTruco{Manojo: m},
+		GritarReTruco{Manojo: m},
+		GritarVale4{Manojo: m},
 
 		// respuestas
-		pdt.ResponderQuiero{Manojo: m},
-		pdt.ResponderNoQuiero{Manojo: m},
+		ResponderQuiero{Manojo: m},
+		ResponderNoQuiero{Manojo: m},
 
 		// mazo
-		pdt.IrseAlMazo{Manojo: m},
+		IrseAlMazo{Manojo: m},
 	}
 
 	for i, j := range js {
@@ -118,7 +116,7 @@ func GetA(p *pdt.PartidaDT, m *pdt.Manojo) A {
 }
 
 // Retorna TODAS las jugadas posibles de cada jugador
-func GetAA(p *pdt.PartidaDT) []A {
+func GetAA(p *PartidaDT) []A {
 	res := make([]A, p.CantJugadores)
 	for i := range p.Ronda.Manojos {
 		res[i] = GetA(p, &p.Ronda.Manojos[i])
