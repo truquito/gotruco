@@ -9,12 +9,6 @@ import (
 	"github.com/filevich/truco/util"
 )
 
-func assert(should bool, callback func()) {
-	if !should {
-		callback()
-	}
-}
-
 // Tests:
 // Envido	2/1
 // Real envido	 3/1
@@ -56,16 +50,16 @@ func TestEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Envido")
 	p.Cmd("Roro Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue aceptado por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 2, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 2, func() {
 		t.Error(`El puntaje del envido deberia de ser 2`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 2 && p.Puntajes[pdt.Rojo] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 2 && p.Puntajes[pdt.Rojo] == 0, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 2`)
 	})
 
@@ -96,20 +90,20 @@ func TestEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Envido")
 	p.Cmd("Roro No-Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue rechazado por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 1, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 1, func() {
 		t.Error(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 1, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 1, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Rojo] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Rojo] == 0, func() {
 		t.Error(`El puntaje del equipo rojo deberia de ser 0`)
 	})
 
@@ -140,16 +134,16 @@ func TestRealEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Real-Envido")
 	p.Cmd("Roro Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue aceptado por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 3, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 3, func() {
 		t.Error(`El puntaje del envido deberia de ser 3`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 3 && p.Puntajes[pdt.Rojo] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 3 && p.Puntajes[pdt.Rojo] == 0, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 	})
 
@@ -180,16 +174,16 @@ func TestRealEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Real-Envido")
 	p.Cmd("Roro No-Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue aceptado por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 1, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 1, func() {
 		t.Error(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 1 && p.Puntajes[pdt.Rojo] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 1 && p.Puntajes[pdt.Rojo] == 0, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 1`)
 	})
 
@@ -220,16 +214,16 @@ func TestFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue aceptado por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 10, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 10, func() {
 		t.Errorf(`El puntaje del envido deberia de ser 10`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 10 && p.Puntajes[pdt.Rojo] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 10 && p.Puntajes[pdt.Rojo] == 0, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 10`)
 	})
 
@@ -260,16 +254,16 @@ func TestFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro No-Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 1, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 1, func() {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 1 && p.Puntajes[pdt.Rojo] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 1 && p.Puntajes[pdt.Rojo] == 0, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 1`)
 	})
 
@@ -299,22 +293,22 @@ func TestEnvidoEnvidoQuiero(t *testing.T) {
 
 	p.Cmd("Alvaro Envido")
 
-	assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
 		t.Error("El estado del envido deberia de ser `envido`")
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 2, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 2, func() {
 		t.Error("El `puntaje` del envido deberia de ser 2")
 	})
 
 	p.Cmd("Roro Envido")
 
-	assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
 		t.Error(`El estado del envido deberia de ser 'envido', incluso luego de que
 		ambos Alvaro y Roro lo hayan tocando`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 4, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 4, func() {
 		t.Error(`El puntaje del envido deberia ahora de ser '2 + 2 = 4'`)
 	})
 
@@ -348,16 +342,16 @@ func TestEnvidoEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Roro Envido")
 	p.Cmd("Alvaro No-Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 2+1, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 2+1, func() {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+1, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+1, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 0`)
 	})
 
@@ -389,16 +383,16 @@ func TestEnvidoRealEnvidoQuiero(t *testing.T) {
 	p.Cmd("Roro Real-Envido")
 	p.Cmd("Alvaro Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 2+3, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 2+3, func() {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 2+3 && p.Puntajes[pdt.Rojo] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 2+3 && p.Puntajes[pdt.Rojo] == 0, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 5`)
 	})
 
@@ -430,16 +424,16 @@ func TestEnvidoRealEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Roro Real-Envido")
 	p.Cmd("Alvaro No-Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 2+1, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 2+1, func() {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+1, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+1, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 	})
 
@@ -471,16 +465,16 @@ func TestEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 2+10, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 2+10, func() {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 2+10 && p.Puntajes[pdt.Rojo] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 2+10 && p.Puntajes[pdt.Rojo] == 0, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 	})
 
@@ -512,16 +506,16 @@ func TestEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro No-Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 2+1, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 2+1, func() {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+1, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+1, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 	})
 
@@ -553,16 +547,16 @@ func TestRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 3+10, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 3+10, func() {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 3+10 && p.Puntajes[pdt.Rojo] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 3+10 && p.Puntajes[pdt.Rojo] == 0, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 	})
 
@@ -594,16 +588,16 @@ func TestRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro No-Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 3+1, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 3+1, func() {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 3+1, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 3+1, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 	})
 
@@ -636,16 +630,16 @@ func TestEnvidoEnvidoRealEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Real-Envido")
 	p.Cmd("Roro Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 2+2+3, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 2+2+3, func() {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 2+2+3 && p.Puntajes[pdt.Rojo] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 2+2+3 && p.Puntajes[pdt.Rojo] == 0, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 	})
 
@@ -678,16 +672,16 @@ func TestEnvidoEnvidoRealEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Real-Envido")
 	p.Cmd("Roro No-Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 2+2+1, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 2+2+1, func() {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 2+2+1 && p.Puntajes[pdt.Rojo] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 2+2+1 && p.Puntajes[pdt.Rojo] == 0, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 	})
 
@@ -720,16 +714,16 @@ func TestEnvidoEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 2+2+10, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 2+2+10, func() {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 2+2+10 && p.Puntajes[pdt.Rojo] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 2+2+10 && p.Puntajes[pdt.Rojo] == 0, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 	})
 
@@ -762,16 +756,16 @@ func TestEnvidoEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro No-Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 2+2+1, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 2+2+1, func() {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 2+2+1 && p.Puntajes[pdt.Rojo] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 2+2+1 && p.Puntajes[pdt.Rojo] == 0, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 	})
 
@@ -804,16 +798,16 @@ func TestEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 2+3+10, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 2+3+10, func() {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 2+3+10 && p.Puntajes[pdt.Rojo] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 2+3+10 && p.Puntajes[pdt.Rojo] == 0, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 	})
 
@@ -846,16 +840,16 @@ func TestEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Alvaro Falta-Envido")
 	p.Cmd("Roro No-Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 2+3+1, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 2+3+1, func() {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 2+3+1 && p.Puntajes[pdt.Rojo] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 2+3+1 && p.Puntajes[pdt.Rojo] == 0, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 	})
 
@@ -889,16 +883,16 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 2+2+3+10, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 2+2+3+10, func() {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 2+2+3+10 && p.Puntajes[pdt.Rojo] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 2+2+3+10 && p.Puntajes[pdt.Rojo] == 0, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 	})
 
@@ -932,16 +926,16 @@ func TestEnvidoEnvidoRealEnvidoFaltaEnvidoNoQuiero(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro No-Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia de ser 'deshabilitado',
 		ya que fue no-querido por Roro`)
 	})
 
-	assert(p.Ronda.Envite.Puntaje == 2+2+3+1, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == 2+2+3+1, func() {
 		t.Errorf(`El puntaje del envido deberia de ser 1`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+2+3+1, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 2+2+3+1, func() {
 		t.Error(`El puntaje del equipo azul deberia de ser 3`)
 	})
 }
@@ -1003,7 +997,7 @@ func TestCalcEnvido(t *testing.T) {
 	for i, manojo := range p.Ronda.Manojos {
 		got := manojo.CalcularEnvido(p.Ronda.Muestra)
 
-		assert(expected[i] == got, func() {
+		util.Assert(expected[i] == got, func() {
 			t.Errorf(
 				`El resultado del envido del jugador %s es incorrecto.
 				\nEXPECTED: %v
@@ -1016,7 +1010,7 @@ func TestCalcEnvido(t *testing.T) {
 	p.Cmd("D Envido")
 	p.Cmd("C Quiero")
 
-	assert(p.Puntajes[pdt.Azul] == 4+2, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 4+2, func() {
 		t.Error("El resultado es incorrecto")
 	})
 
@@ -1078,7 +1072,7 @@ func TestCalcEnvido2(t *testing.T) {
 	for i, manojo := range p.Ronda.Manojos {
 		got := manojo.CalcularEnvido(p.Ronda.Muestra)
 
-		assert(expected[i] == got, func() {
+		util.Assert(expected[i] == got, func() {
 			t.Errorf(
 				`El resultado del envido del jugador %s es incorrecto.
 				\nEXPECTED: %v
@@ -1092,7 +1086,7 @@ func TestCalcEnvido2(t *testing.T) {
 	p.Cmd("D Envido")
 	p.Cmd("C Quiero")
 
-	assert(p.Puntajes[pdt.Rojo] == 3+2, func() {
+	util.Assert(p.Puntajes[pdt.Rojo] == 3+2, func() {
 		t.Error("El resultado es incorrecto")
 	})
 
@@ -1124,13 +1118,13 @@ func TestNoDeberianTenerFlor(t *testing.T) {
 
 	tieneFlor, _ := p.Ronda.Manojos[0].TieneFlor(p.Ronda.Muestra)
 
-	assert(tieneFlor == false, func() {
+	util.Assert(tieneFlor == false, func() {
 		t.Error(`Alvaro' NO deberia de tener 'flor'`)
 	})
 
 	tieneFlor, _ = p.Ronda.Manojos[1].TieneFlor(p.Ronda.Muestra)
 
-	assert(tieneFlor == false, func() {
+	util.Assert(tieneFlor == false, func() {
 		t.Error(`Roro' NO deberia de tener 'flor'`)
 	})
 
@@ -1161,7 +1155,7 @@ func TestNoDeberianTenerFlor2(t *testing.T) {
 
 	tieneFlor, _ := p.Ronda.Manojos[0].TieneFlor(p.Ronda.Muestra)
 
-	assert(tieneFlor == false, func() {
+	util.Assert(tieneFlor == false, func() {
 		t.Error(`Alvaro' NO deberia de tener 'flor'`)
 	})
 }
@@ -1191,13 +1185,13 @@ func TestDeberiaTenerFlor(t *testing.T) {
 
 	tieneFlor, _ := p.Ronda.Manojos[0].TieneFlor(p.Ronda.Muestra)
 
-	assert(tieneFlor == true, func() {
+	util.Assert(tieneFlor == true, func() {
 		t.Error(`Alvaro' deberia tener 'flor'`)
 	})
 
 	tieneFlor, _ = p.Ronda.Manojos[1].TieneFlor(p.Ronda.Muestra)
 
-	assert(tieneFlor == true, func() {
+	util.Assert(tieneFlor == true, func() {
 		t.Error(`Roro' deberia tener 'flor'`)
 	})
 }
@@ -1265,11 +1259,11 @@ func TestFlorFlorContraFlorQuiero(t *testing.T) {
 		t.Log(deco.Stringify(pkt, p.PartidaDT))
 	})
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia ser 'deshabilitado'`)
 	})
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado de la flor deberia ser 'deshabilitado'`)
 	})
 
@@ -1279,7 +1273,7 @@ func TestFlorFlorContraFlorQuiero(t *testing.T) {
 	// oops = !(p.Puntajes[pdt.Azul] == 4*3+10 && p.Puntajes[pdt.Rojo] == 0)
 	// puntos para ganar chico + todas las flores NO ACHICADAS
 
-	assert(p.Puntajes[pdt.Azul] == 10 && p.Puntajes[pdt.Rojo] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 10 && p.Puntajes[pdt.Rojo] == 0, func() {
 		t.Error(`El puntaje del equipo azul deberia ser 2`)
 	})
 }
@@ -1320,11 +1314,11 @@ func TestFixFlor(t *testing.T) {
 	p.Cmd("alvaro 12 basto")
 	p.Cmd("roro 10 basto")
 
-	assert(p.Puntajes[pdt.Rojo] == 3, func() {
+	util.Assert(p.Puntajes[pdt.Rojo] == 3, func() {
 		t.Error(`El puntaje del equipo rojo deberia ser 3 por la flor de richard`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 1, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 1, func() {
 		t.Error(`El puntaje del equipo azul deberia ser 1 por la ronda ganada`)
 	})
 
@@ -1342,7 +1336,7 @@ func TestFixFlorBucle(t *testing.T) {
 	p.Cmd("roro flor")
 	p.Cmd("richard flor")
 
-	assert(p.Puntajes[pdt.Rojo] == 6, func() {
+	util.Assert(p.Puntajes[pdt.Rojo] == 6, func() {
 		t.Error(`El puntaje del equipo rojo deberia ser 6 por las 2 flores`)
 	})
 
@@ -1386,21 +1380,21 @@ func TestFixContraFlor(t *testing.T) {
 	// tampoco debio de haber pasado su turno
 	p.Cmd("adolfo 11 basto")
 
-	assert(p.Ronda.GetElTurno().Jugador.Nombre == "Adolfo", func() {
+	util.Assert(p.Ronda.GetElTurno().Jugador.Nombre == "Adolfo", func() {
 		t.Error(`No debio de haber pasado su turno`)
 	})
 
 	// no deberia dejarlo tirar xq el envite esta en juego
 	p.Cmd("renzo 12 basto")
 
-	assert(p.Ronda.Manojos[2].GetCantCartasTiradas() == 0, func() {
+	util.Assert(p.Ronda.Manojos[2].GetCantCartasTiradas() == 0, func() {
 		t.Error(`No deberia dejarlo tirar porque nunca llego a ser su turno`)
 	})
 
 	// no hay nada que querer
 	p.Cmd("renzo quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.FLOR, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.FLOR, func() {
 		t.Error(`El estado del envite no debio de haber cambiado`)
 	})
 
@@ -1416,7 +1410,7 @@ func TestFixContraFlor(t *testing.T) {
 		t.Log(deco.Stringify(pkt, p.PartidaDT))
 	})
 
-	assert(p.Puntajes[pdt.Rojo] > p.Puntajes[pdt.Azul], func() {
+	util.Assert(p.Puntajes[pdt.Rojo] > p.Puntajes[pdt.Azul], func() {
 		t.Error(`El equipo rojo deberia de tener mas pts que el azul`)
 	})
 }
@@ -1650,7 +1644,7 @@ func TestParseJugada(t *testing.T) {
 	for _, cmd := range shouldBeOK {
 		_, err := pdt.ParseJugada(p.PartidaDT, cmd)
 
-		assert(err == nil, func() {
+		util.Assert(err == nil, func() {
 			t.Error(err.Error())
 		})
 	}
@@ -1658,7 +1652,7 @@ func TestParseJugada(t *testing.T) {
 	for _, cmd := range shouldNotBeOK {
 		_, err := pdt.ParseJugada(p.PartidaDT, cmd)
 
-		assert(err != nil, func() {
+		util.Assert(err != nil, func() {
 			t.Error(`Deberia dar error`)
 		})
 	}
@@ -1740,7 +1734,7 @@ func TestPartida1(t *testing.T) {
 	// no deberia dejarlo cantar envido xq tiene flor
 	p.Cmd("Alvaro Envido")
 
-	assert(p.Ronda.Envite.Estado != pdt.ENVIDO, func() {
+	util.Assert(p.Ronda.Envite.Estado != pdt.ENVIDO, func() {
 		t.Error(`el envite deberia pasar a estado de flor`)
 	})
 
@@ -1750,7 +1744,7 @@ func TestPartida1(t *testing.T) {
 	// deberia dejarlo irse al mazo
 	p.Cmd("Roro Mazo")
 
-	assert(p.Ronda.Manojos[1].SeFueAlMazo == true, func() {
+	util.Assert(p.Ronda.Manojos[1].SeFueAlMazo == true, func() {
 		t.Error(`deberia dejarlo irse al mazo`)
 	})
 
@@ -1760,7 +1754,7 @@ func TestPartida1(t *testing.T) {
 	// deberia aumentar la apuesta
 	p.Cmd("Renzo Contra-flor")
 
-	assert(p.Ronda.Envite.Estado == pdt.CONTRAFLOR, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.CONTRAFLOR, func() {
 		t.Error(`deberia aumentar la apuesta a CONTRAFLOR`)
 	})
 
@@ -1777,13 +1771,13 @@ func TestPartidaComandosInvalidos(t *testing.T) {
 	p.Cmd("Alvaro Envido")
 	p.Cmd("Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
 		t.Error(`no debio de haberlo querido`)
 	})
 
 	p.Cmd("Schumacher Flor")
 
-	assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
 		t.Error(`no existe schumacher`)
 	})
 
@@ -1820,7 +1814,7 @@ func TestFixNacho(t *testing.T) {
 	roro, _ := p.GetManojoByStr("Roro")
 	cantTiradasRoro := roro.GetCantCartasTiradas()
 
-	assert(cantTiradasRoro == 1, func() {
+	util.Assert(cantTiradasRoro == 1, func() {
 		t.Error(`Roro tiro solo 1 carta`)
 	})
 
@@ -1829,13 +1823,13 @@ func TestFixNacho(t *testing.T) {
 	p.Cmd("andres 10 espada")
 	p.Cmd("richard flor")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`el envido deberia estar inhabilitado por la flor`)
 	})
 
 	p.Cmd("richard 11 espada")
 
-	assert(p.Ronda.GetElTurno().Jugador.Nombre == "Richard", func() {
+	util.Assert(p.Ronda.GetElTurno().Jugador.Nombre == "Richard", func() {
 		t.Error(`Deberia ser el turno de Richard ya que 11 (perico) > 10 (perica)`)
 	})
 
@@ -1847,13 +1841,13 @@ func TestFixNacho(t *testing.T) {
 
 	p.Cmd("richard truco")
 
-	assert(p.Ronda.Truco.Estado == pdt.TRUCO, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.TRUCO, func() {
 		t.Error(`deberia poder cantar truco ya que es su turno`)
 	})
 
 	p.Cmd("roro quiero")
 
-	assert(p.Ronda.Truco.Estado == pdt.TRUCO, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.TRUCO, func() {
 		t.Error(`no deberia poder ya que es de su mismo equipo`)
 	})
 
@@ -1862,54 +1856,54 @@ func TestFixNacho(t *testing.T) {
 	p.Cmd("alvaro mazo")
 	p.Cmd("roro quiero")
 
-	assert(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Adolfo", func() {
+	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Adolfo", func() {
 		t.Error(`no hay nada que querer`)
 	})
 	p.Cmd("roro retruco") // syntaxis invalida
 	p.Cmd("roro re-truco")
 
-	assert(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Adolfo", func() {
+	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Adolfo", func() {
 		t.Error(`no debe permitir ya que su equipo no tiene la potestad del truco`)
 	})
 
 	p.Cmd("alvaro re-truco")
 
-	assert(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Adolfo", func() {
+	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Adolfo", func() {
 		t.Error(`no deberia dejarlo porque se fue al mazo`)
 	})
 
 	p.Cmd("Adolfo re-truco")
 
-	assert(p.Ronda.Truco.Estado == pdt.RETRUCO, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.RETRUCO, func() {
 		t.Error(`no deberia dejarlo porque se fue al mazo`)
 	})
 
 	p.Cmd("renzo quiero")
 
-	assert(p.Ronda.Truco.Estado == pdt.RETRUCOQUERIDO, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.RETRUCOQUERIDO, func() {
 		t.Error(`no deberia dejarlo porque se fue al mazo`)
 	})
 
-	assert(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Renzo", func() {
+	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Renzo", func() {
 		t.Error(`no deberia dejarlo porque se fue al mazo`)
 	})
 
 	p.Cmd("roro 6 copa") // no deberia dejarlo porque ya paso su turno
 
-	assert(cantTiradasRoro == 1, func() {
+	util.Assert(cantTiradasRoro == 1, func() {
 		t.Error(`Roro tiro solo 1 carta`)
 	})
 
 	p.Cmd("adolfo re-truco") // no deberia dejarlo
 
-	assert(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Renzo", func() {
+	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Nombre == "Renzo", func() {
 		t.Error(`no deberia dejarlo porque el re-truco ya fue cantado`)
 	})
 
 	p.Cmd("adolfo 1 espada")
 	p.Cmd("renzo 3 oro")
 
-	assert(p.Ronda.GetElTurno().Jugador.Nombre == "Andres", func() {
+	util.Assert(p.Ronda.GetElTurno().Jugador.Nombre == "Andres", func() {
 		t.Error(`Deberia ser el turno de Andres`)
 	})
 
@@ -1938,7 +1932,7 @@ func TestFixNoFlor(t *testing.T) {
 	// el otro que tiene flor, pero se arruga
 	p.Cmd("richard no-quiero")
 
-	assert(p.Ronda.Truco.Estado == pdt.NOCANTADO, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.NOCANTADO, func() {
 		t.Error(`La flor esta primero!`)
 	})
 
@@ -1995,14 +1989,14 @@ func TestFixNoFlor(t *testing.T) {
 	p.Cmd("richard vale-4")
 	// << Richard grita vale 4
 
-	assert(p.Ronda.Truco.Estado == pdt.VALE4, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.VALE4, func() {
 		t.Error(`Richard deberia poder gritar vale4`)
 	})
 
 	p.Cmd("adolfo quiero")
 	// << Adolfo responde quiero
 
-	assert(p.Ronda.Truco.Estado == pdt.VALE4QUERIDO, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.VALE4QUERIDO, func() {
 		t.Error(`El estado del truco deberia ser VALE4QUERIDO`)
 	})
 
@@ -2040,7 +2034,7 @@ func TestFixNoFlor(t *testing.T) {
 	// << Empieza una nueva ronda
 
 	/* 6 de las 2 flores */
-	// assert(p.GetMaxPuntaje() == 6+4, func() {
+	// util.Assert(p.GetMaxPuntaje() == 6+4, func() {
 	// 	t.Error(`suma mal los puntos cuando roro se fue al mazo`)
 	// })
 
@@ -2163,11 +2157,11 @@ func TestFixBocha(t *testing.T) {
 	p.Cmd("andres mazo")
 	// << Andres se va al mazo
 
-	assert(p.Puntajes[pdt.Rojo] == 1 && p.Puntajes[pdt.Azul] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Rojo] == 1 && p.Puntajes[pdt.Azul] == 0, func() {
 		t.Error(`todos los de azul se fueron al mazo, deberian de haber ganado los rojos`)
 	})
 
-	assert(p.Ronda.GetElMano().Jugador.Equipo == pdt.Rojo, func() {
+	util.Assert(p.Ronda.GetElMano().Jugador.Equipo == pdt.Rojo, func() {
 		t.Error(`todos los de azul se fueron al mazo, deberian ser turno de los rojos`)
 	})
 
@@ -2202,7 +2196,7 @@ func TestFixBochaParte2(t *testing.T) {
 	p.Cmd("andres mazo")
 	// << Andres se va al mazo
 
-	assert(p.Puntajes[pdt.Rojo] == 1 && p.Puntajes[pdt.Azul] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Rojo] == 1 && p.Puntajes[pdt.Azul] == 0, func() {
 		t.Error(`todos los de azul se fueron al mazo, deberian de haber ganado los rojos`)
 	})
 	// << La ronda ha sido ganada por el equipo pdt.Rojo
@@ -2221,7 +2215,7 @@ func TestFixBochaParte3(t *testing.T) {
 
 	p.Cmd("richard flor")
 
-	assert(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN, func() {
 		t.Error(`No es posible cantar flor`)
 	})
 
@@ -2230,21 +2224,21 @@ func TestFixBochaParte3(t *testing.T) {
 	// bien fue cantado por uno de su equipo
 	p.Cmd("andres quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN && p.Ronda.Truco.Estado == pdt.NOCANTADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN && p.Ronda.Truco.Estado == pdt.NOCANTADO, func() {
 		t.Error(`No hay nada "que querer"`)
 	})
 
 	// No es posible cantar contra flor
 	p.Cmd("andres contra-flor")
 
-	assert(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN, func() {
 		t.Error(`No es posible cantar flor`)
 	})
 
 	// No es posible cantar contra flor
 	p.Cmd("richard contra-flor")
 
-	assert(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN, func() {
 		t.Error(`No es posible cantar flor`)
 	})
 
@@ -2253,7 +2247,7 @@ func TestFixBochaParte3(t *testing.T) {
 	// bien fue cantado por uno de su equipo
 	p.Cmd("richard quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN && p.Ronda.Truco.Estado == pdt.NOCANTADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN && p.Ronda.Truco.Estado == pdt.NOCANTADO, func() {
 		t.Error(`No hay nada "que querer"`)
 	})
 
@@ -2269,19 +2263,19 @@ func TestFixAutoQuerer(t *testing.T) {
 
 	p.Cmd("alvaro envido")
 
-	assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
 		t.Error(`Deberia en estar estado envido`)
 	})
 
 	p.Cmd("alvaro quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
 		t.Error(`No se deberia poder auto-querer`)
 	})
 
 	p.Cmd("adolfo quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
 		t.Error(`No se deberia poder auto-querer a uno del mismo equipo`)
 	})
 
@@ -2336,13 +2330,13 @@ func TestFixNoDejaIrseAlMazo(t *testing.T) {
 	p.Cmd("richard 2 oro")
 	p.Cmd("renzo mazo")
 
-	assert(p.Ronda.Manojos[3].SeFueAlMazo == true, func() {
+	util.Assert(p.Ronda.Manojos[3].SeFueAlMazo == true, func() {
 		t.Error(`deberia dejarlo irse al mazo`)
 	})
 
 	p.Cmd("andres mazo")
 
-	assert(p.Ronda.Manojos[4].SeFueAlMazo == true, func() {
+	util.Assert(p.Ronda.Manojos[4].SeFueAlMazo == true, func() {
 		t.Error(`deberia dejarlo irse al mazo`)
 	})
 
@@ -2392,7 +2386,7 @@ func TestFixNoPermiteContraFlor(t *testing.T) {
 	p.Cmd("roro 4 oro")
 	p.Cmd("adolfo flor")
 
-	assert(p.Ronda.Envite.Estado == pdt.FLOR, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.FLOR, func() {
 		t.Error(`deberia permitir cantar flor`)
 	})
 
@@ -2400,13 +2394,13 @@ func TestFixNoPermiteContraFlor(t *testing.T) {
 	p.Cmd("renzo 12 basto")
 	p.Cmd("renzo quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.FLOR, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.FLOR, func() {
 		t.Error(`no debio de haber cambiado nada`)
 	})
 
 	p.Cmd("renzo contra-flor")
 
-	assert(p.Ronda.Envite.Estado == pdt.CONTRAFLOR, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.CONTRAFLOR, func() {
 		t.Error(`debe de jugarse la contaflor`)
 	})
 
@@ -2428,7 +2422,7 @@ func TestFixDeberiaGanarAzul(t *testing.T) {
 	p.Cmd("alvaro mazo")
 	p.Cmd("roro mazo")
 
-	assert(p.Puntajes[pdt.Rojo] == 0 && p.Puntajes[pdt.Azul] > 0, func() {
+	util.Assert(p.Puntajes[pdt.Rojo] == 0 && p.Puntajes[pdt.Azul] > 0, func() {
 		t.Error(`La ronda deberia de haber sido ganado por pdt.Azul`)
 	})
 
@@ -2448,7 +2442,7 @@ func TestFixPierdeTurno(t *testing.T) {
 	})
 	t.Log(p)
 
-	assert(p.Ronda.GetElTurno().Jugador.Nombre == "Roro", func() {
+	util.Assert(p.Ronda.GetElTurno().Jugador.Nombre == "Roro", func() {
 		t.Error(`Deberia ser el turno de Roro`)
 	})
 
@@ -2463,7 +2457,7 @@ func TestFixTieneFlor(t *testing.T) {
 	p.Cmd("alvaro 5 copa")
 	// no deberia dejarlo jugar porque tiene flor
 
-	assert(p.Ronda.GetElTurno().Jugador.Nombre == "Alvaro", func() {
+	util.Assert(p.Ronda.GetElTurno().Jugador.Nombre == "Alvaro", func() {
 		t.Error(`Deberia ser el turno de Alvaro`)
 	})
 
@@ -2480,7 +2474,7 @@ func Test2FloresSeVaAlMazo(t *testing.T) {
 	p.Cmd("alvaro flor")
 	p.Cmd("richard mazo") // lo deja que se vaya
 
-	assert(p.Ronda.Manojos[5].SeFueAlMazo == true, func() {
+	util.Assert(p.Ronda.Manojos[5].SeFueAlMazo == true, func() {
 		t.Error(`deberia dejarlo irse al mazo`)
 	})
 
@@ -2542,7 +2536,7 @@ func TestTodoTienenFlor(t *testing.T) {
 
 	p.Cmd("Alvaro Envido")
 
-	assert(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN, func() {
 		t.Error(`alvaro tenia flor; no puede tocar envido`)
 	})
 
@@ -2579,7 +2573,7 @@ func TestFixTopeEnvido(t *testing.T) {
 
 	p.Cmd("Roro envido") // debe retornar error
 
-	assert(p.Ronda.Envite.Puntaje == pts, func() {
+	util.Assert(p.Ronda.Envite.Puntaje == pts, func() {
 		t.Error(`no se puede cantar mas de 5 envidos seeguidos`)
 	})
 
@@ -2605,25 +2599,25 @@ func TestAutoQuererse(t *testing.T) {
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Roro Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.FALTAENVIDO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.FALTAENVIDO, func() {
 		t.Error(`no lo deberia dejar porque el envite lo propuso el equipo rojo`)
 	})
 
 	p.Cmd("Roro no-quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.FALTAENVIDO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.FALTAENVIDO, func() {
 		t.Error(`no lo deberia dejar porque el envite lo propuso el equipo rojo`)
 	})
 
 	p.Cmd("Renzo Quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.FALTAENVIDO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.FALTAENVIDO, func() {
 		t.Error(`no lo deberia dejar porque el envite lo propuso el equipo rojo`)
 	})
 
 	p.Cmd("Renzo no-quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.FALTAENVIDO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.FALTAENVIDO, func() {
 		t.Error(`no lo deberia dejar porque el envite lo propuso el equipo rojo`)
 	})
 
@@ -2655,7 +2649,7 @@ func TestFixEnvidoManoEsElUltimo(t *testing.T) {
 	p.Cmd("andres Envido")
 	p.Cmd("richard quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`la sequencia de toques era valida`)
 	})
 
@@ -2676,7 +2670,7 @@ func TestEnvidoManoSeFue(t *testing.T) {
 	p.Cmd("richard mazo")
 	p.Cmd("renzo quiero")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`la sequencia de toques era valida`)
 	})
 
@@ -2711,7 +2705,7 @@ func TestFlorBlucle(t *testing.T) {
 	p.Cmd("alvaro flor")
 	p.Cmd("roro flor")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`la flor se debio de haber jugado`)
 	})
 
@@ -2774,20 +2768,20 @@ func TestQuieroContraflorDesdeMazo(t *testing.T) {
 	p.Cmd("alvaro flor")
 	p.Cmd("andres mazo")
 
-	assert(p.Ronda.Manojos[4].SeFueAlMazo == true, func() {
+	util.Assert(p.Ronda.Manojos[4].SeFueAlMazo == true, func() {
 		t.Error(`andres se debio de haber ido al mazo`)
 	})
 
 	p.Cmd("renzo contra-flor")
 	p.Cmd("andres quiero")
 
-	assert(p.Ronda.Envite.CantadoPor.Jugador.Nombre == "Renzo", func() {
+	util.Assert(p.Ronda.Envite.CantadoPor.Jugador.Nombre == "Renzo", func() {
 		t.Errorf(`andres no puede responder quiero porque se fue al mazo`)
 	})
 
 	t.Log(p.Ronda.Envite.Estado.String())
 
-	assert(p.Ronda.Envite.Estado == pdt.CONTRAFLOR, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.CONTRAFLOR, func() {
 		t.Error(`El estado del envite no debio de haber sido modificado`)
 	})
 
@@ -2807,17 +2801,17 @@ func TestFixSeVaAlMazoYTeniaFlor(t *testing.T) {
 
 	p.Cmd("alvaro mazo")
 
-	assert(p.Ronda.Manojos[0].SeFueAlMazo == true, func() {
+	util.Assert(p.Ronda.Manojos[0].SeFueAlMazo == true, func() {
 		t.Error(`deberia dejarlo irse al mazo`)
 	})
 
-	assert(ptsAzul == p.Puntajes[pdt.Azul], func() {
+	util.Assert(ptsAzul == p.Puntajes[pdt.Azul], func() {
 		t.Error(`no deberia de cambiar el puntaje`)
 	})
 
 	p.Cmd("roro truco")
 
-	assert(p.Ronda.Envite.Estado == pdt.EstadoEnvite(pdt.TRUCO), func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.EstadoEnvite(pdt.TRUCO), func() {
 		t.Error(`Deberia dejarlo cantar truco`)
 	})
 
@@ -2836,7 +2830,7 @@ func TestFixDesconcertante(t *testing.T) {
 	p.Cmd("alvaro flor")
 	p.Cmd("alvaro mazo")
 
-	assert(p.Ronda.Manojos[0].SeFueAlMazo == false, func() {
+	util.Assert(p.Ronda.Manojos[0].SeFueAlMazo == false, func() {
 		t.Error(`No deberia dejarlo irse al mazo porque se esta jugando la flor`)
 	})
 	p.Cmd("roro truco")
@@ -2900,7 +2894,7 @@ func TestMalaAsignacionPts(t *testing.T) {
 	// puntaje de Rojo deberia ser = 3 + 4
 	// puntaje de Azul deberia ser = 2
 
-	assert(p.Puntajes[pdt.Rojo] == 3+4 && p.Puntajes[pdt.Azul] == 2, func() {
+	util.Assert(p.Puntajes[pdt.Rojo] == 3+4 && p.Puntajes[pdt.Azul] == 2, func() {
 		t.Error(`Asigno mal los puntos`)
 	})
 }
@@ -2913,157 +2907,157 @@ func TestFixRondaNueva(t *testing.T) {
 
 	p.Cmd("renzo flor")
 
-	assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`deberia deshabilitar el envite`)
 	})
 
 	p.Cmd("alvaro 1 copa")
 
-	assert(p.Ronda.Manojos[0].GetCantCartasTiradas() == 1, func() {
+	util.Assert(p.Ronda.Manojos[0].GetCantCartasTiradas() == 1, func() {
 		t.Error(`deberia dejarlo tirar la carta`)
 	})
 
 	p.Cmd("roro truco")
 
-	assert(p.Ronda.Truco.Estado == pdt.TRUCO, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.TRUCO, func() {
 		t.Error(`Deberia dejarlo cantar truco`)
 	})
 
-	assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Rojo, func() {
+	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Rojo, func() {
 		t.Error(`El equipo rojo deberia tener la potestad del truco`)
 	})
 
 	p.Cmd("adolfo re-truco")
 
-	assert(p.Ronda.Truco.Estado == pdt.RETRUCO, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.RETRUCO, func() {
 		t.Error(`Deberia dejarlo cantar re-truco`)
 	})
 
-	assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul, func() {
+	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul, func() {
 		t.Error(`El equipo azul deberia tener la potestad del truco`)
 	})
 
 	p.Cmd("renzo vale-4")
 
-	assert(p.Ronda.Truco.Estado == pdt.VALE4, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.VALE4, func() {
 		t.Error(`Deberia dejarlo cantar vale-3`)
 	})
 
-	assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Rojo, func() {
+	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Rojo, func() {
 		t.Error(`El equipo rojo deberia tener la potestad del truco`)
 	})
 
 	p.Cmd("adolfo quiero")
 
-	assert(p.Ronda.Truco.Estado == pdt.VALE4QUERIDO, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.VALE4QUERIDO, func() {
 		t.Error(`Deberia dejarlo responder quiero al vale-4`)
 	})
 
-	assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul, func() {
+	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul, func() {
 		t.Error(`El equipo azul deberia tener la potestad del truco`)
 	})
 
 	p.Cmd("roro 5 oro")
 
-	assert(p.Ronda.Manojos[1].GetCantCartasTiradas() == 1, func() {
+	util.Assert(p.Ronda.Manojos[1].GetCantCartasTiradas() == 1, func() {
 		t.Error(`deberia dejarlo tirar la carta`)
 	})
 
 	p.Cmd("adolfo 6 basto")
 
-	assert(p.Ronda.Manojos[2].GetCantCartasTiradas() == 1, func() {
+	util.Assert(p.Ronda.Manojos[2].GetCantCartasTiradas() == 1, func() {
 		t.Error(`deberia dejarlo tirar la carta`)
 	})
 
 	p.Cmd("renzo 19 oro")
 
-	assert(p.Ronda.Manojos[3].GetCantCartasTiradas() == 0, func() {
+	util.Assert(p.Ronda.Manojos[3].GetCantCartasTiradas() == 0, func() {
 		t.Error(`no debeia dejarlo porque no existe la carta "19 de oro"`)
 	})
 
 	p.Cmd("renzo 10 oro")
 
-	assert(p.Ronda.Manojos[3].GetCantCartasTiradas() == 1, func() {
+	util.Assert(p.Ronda.Manojos[3].GetCantCartasTiradas() == 1, func() {
 		t.Error(`deberia dejarlo tirar la carta`)
 	})
 
 	p.Cmd("andres 4 copa")
 
-	assert(p.Ronda.Manojos[4].GetCantCartasTiradas() == 1, func() {
+	util.Assert(p.Ronda.Manojos[4].GetCantCartasTiradas() == 1, func() {
 		t.Error(`deberia dejarlo tirar la carta`)
 	})
 
 	p.Cmd("richard 10 espada")
 
-	assert(p.Ronda.Manojos[5].GetCantCartasTiradas() == 1, func() {
+	util.Assert(p.Ronda.Manojos[5].GetCantCartasTiradas() == 1, func() {
 		t.Error(`deberia dejarlo tirar la carta`)
 	})
 
-	assert(p.Ronda.Manos[0].Ganador.Jugador.Equipo == pdt.Rojo, func() {
+	util.Assert(p.Ronda.Manos[0].Ganador.Jugador.Equipo == pdt.Rojo, func() {
 		t.Error(`La primera mano la debio de haber ganado el equipo de richard: el rojo`)
 	})
 
 	// segunda mano
 	p.Cmd("renzo 10 oro")
 
-	assert(p.Ronda.Manojos[3].GetCantCartasTiradas() == 1, func() {
+	util.Assert(p.Ronda.Manojos[3].GetCantCartasTiradas() == 1, func() {
 		t.Error(`ya tiro esa carta; no deberia poder volve a tirarla`)
 	})
 
 	p.Cmd("andres 7 basto")
 
-	assert(p.Ronda.Manojos[4].GetCantCartasTiradas() == 1, func() {
+	util.Assert(p.Ronda.Manojos[4].GetCantCartasTiradas() == 1, func() {
 		t.Error(`no es su turno no deberia poder tirar carta`)
 	})
 
 	p.Cmd("richard 10 espada")
 
-	assert(p.Ronda.Manojos[5].GetCantCartasTiradas() == 1, func() {
+	util.Assert(p.Ronda.Manojos[5].GetCantCartasTiradas() == 1, func() {
 		t.Error(`ya tiro esa carta; no deberia poder volve a tirarla`)
 	})
 
 	p.Cmd("richard 12 copa")
 
-	assert(p.Ronda.Manojos[5].GetCantCartasTiradas() == 2, func() {
+	util.Assert(p.Ronda.Manojos[5].GetCantCartasTiradas() == 2, func() {
 		t.Error(`deberia dejarlo tirar la carta`)
 	})
 
 	p.Cmd("alvaro 3 espada")
 
-	assert(p.Ronda.Manojos[0].GetCantCartasTiradas() == 2, func() {
+	util.Assert(p.Ronda.Manojos[0].GetCantCartasTiradas() == 2, func() {
 		t.Error(`deberia dejarlo tirar la carta`)
 	})
 
 	p.Cmd("roro 4 espada")
 
-	assert(p.Ronda.Manojos[1].GetCantCartasTiradas() == 2, func() {
+	util.Assert(p.Ronda.Manojos[1].GetCantCartasTiradas() == 2, func() {
 		t.Error(`deberia dejarlo tirar la carta`)
 	})
 
 	p.Cmd("adolfo 2 copa")
 
-	assert(p.Ronda.Manojos[2].GetCantCartasTiradas() == 2, func() {
+	util.Assert(p.Ronda.Manojos[2].GetCantCartasTiradas() == 2, func() {
 		t.Error(`deberia dejarlo tirar la carta`)
 	})
 
 	p.Cmd("renzo 4 oro")
 
-	assert(p.Ronda.Manojos[3].GetCantCartasTiradas() == 2, func() {
+	util.Assert(p.Ronda.Manojos[3].GetCantCartasTiradas() == 2, func() {
 		t.Error(`deberia dejarlo tirar la carta`)
 	})
 
 	p.Cmd("andres 5 espada")
 
-	assert(p.Ronda.Manojos[4].GetCantCartasTiradas() == 0, func() {
+	util.Assert(p.Ronda.Manojos[4].GetCantCartasTiradas() == 0, func() {
 		t.Error(`deberia tener 0 cartas tiradas porque empieza una nueva ronda`)
 	})
 
 	/* 3:flor + 4:vale4 */
-	assert(p.Puntajes[pdt.Rojo] == 3+4, func() {
+	util.Assert(p.Puntajes[pdt.Rojo] == 3+4, func() {
 		t.Error(`el puntaje para el equipo rojo deberia ser 7: 3 de la flor + 4 del vale4`)
 	})
 
-	assert(p.Puntajes[pdt.Azul] == 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] == 0, func() {
 		t.Error(`el puntaje para el equipo azul deberia ser 0 porque no ganaron nada`)
 	})
 
@@ -3081,50 +3075,50 @@ func TestFixIrseAlMazo2(t *testing.T) {
 
 	p.Cmd("renzo flor")
 
-	assert(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.NOCANTADOAUN, func() {
 		t.Error(`Renzo no tiene flor`)
 	})
 
 	// mano 1
 	p.Cmd("alvaro envido")
 
-	assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
 		t.Error(`Debio dejarlo cantar truco`)
 	})
 
 	p.Cmd("alvaro 6 basto")
 
-	assert(p.Ronda.Manojos[0].GetCantCartasTiradas() == 0, func() {
+	util.Assert(p.Ronda.Manojos[0].GetCantCartasTiradas() == 0, func() {
 		t.Error(`A este no lo deberia dejar tirar carta`)
 	})
 
 	p.Cmd("roro 11 oro")
 
-	assert(p.Ronda.Manojos[1].GetCantCartasTiradas() == 0, func() {
+	util.Assert(p.Ronda.Manojos[1].GetCantCartasTiradas() == 0, func() {
 		t.Error(`A este no lo deberia dejar tirar carta`)
 	})
 
 	p.Cmd("adolfo 2 basto")
 
-	assert(p.Ronda.Manojos[2].GetCantCartasTiradas() == 0, func() {
+	util.Assert(p.Ronda.Manojos[2].GetCantCartasTiradas() == 0, func() {
 		t.Error(`A este no lo deberia dejar tirar carta`)
 	})
 
 	p.Cmd("renzo 12 oro")
 
-	assert(p.Ronda.Manojos[3].GetCantCartasTiradas() == 0, func() {
+	util.Assert(p.Ronda.Manojos[3].GetCantCartasTiradas() == 0, func() {
 		t.Error(`A este no lo deberia dejar tirar carta`)
 	})
 
 	p.Cmd("andres 7 copa")
 
-	assert(p.Ronda.Manojos[4].GetCantCartasTiradas() == 0, func() {
+	util.Assert(p.Ronda.Manojos[4].GetCantCartasTiradas() == 0, func() {
 		t.Error(`A este no lo deberia dejar tirar carta`)
 	})
 
 	p.Cmd("richard 12 basto")
 
-	assert(p.Ronda.Manojos[5].GetCantCartasTiradas() == 0, func() {
+	util.Assert(p.Ronda.Manojos[5].GetCantCartasTiradas() == 0, func() {
 		t.Error(`A este no lo deberia dejar tirar carta`)
 	})
 
@@ -3143,7 +3137,7 @@ func TestFixIrseAlMazo2(t *testing.T) {
 	t.Log(p)
 	p.Cmd("roro mazo")
 
-	assert(p.Ronda.Manojos[1].SeFueAlMazo == true, func() {
+	util.Assert(p.Ronda.Manojos[1].SeFueAlMazo == true, func() {
 		t.Error(`deberia dejarlo irse al mazo`)
 	})
 
@@ -3164,50 +3158,50 @@ func TestFixDecirQuiero(t *testing.T) {
 	p.Cmd("renzo flor")
 	p.Cmd("alvaro truco")
 
-	assert(p.Ronda.Truco.Estado == pdt.TRUCO, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.TRUCO, func() {
 		t.Error(`Deberia poder gritar truco`)
 	})
 
 	p.Cmd("renzo quiero")
 
-	assert(p.Ronda.Truco.Estado == pdt.TRUCOQUERIDO, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.TRUCOQUERIDO, func() {
 		t.Error(`Deberia poder responder quiero al truco`)
 	})
 
 	p.Cmd("alvaro re-truco")
 
-	assert(p.Ronda.Truco.Estado == pdt.TRUCOQUERIDO, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.TRUCOQUERIDO, func() {
 		t.Error(`Como no tiene la potestad, no deberia poder aumentar la apuesta`)
 	})
 
-	assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Rojo, func() {
+	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Rojo, func() {
 		t.Error(`El equpo Rojo deberia de seguir manteniendo la potestad`)
 	})
 
 	p.Cmd("renzo re-truco")
 	p.Cmd("alvaro vale-4")
 
-	assert(p.Ronda.Truco.Estado == pdt.VALE4, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.VALE4, func() {
 		t.Error(`Deberia poder aumentar a vale-4`)
 	})
 
 	p.Cmd("alvaro quiero")
 
-	assert(p.Ronda.Truco.Estado == pdt.VALE4, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.VALE4, func() {
 		t.Error(`No puede auto-querse`)
 	})
 
-	assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul, func() {
+	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul, func() {
 		t.Error(`El equpo azul deberia tener la potestad`)
 	})
 
 	p.Cmd("renzo re-truco")
 
-	assert(p.Ronda.Truco.Estado == pdt.VALE4, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.VALE4, func() {
 		t.Error(`No deberia cambiar el estado del truco`)
 	})
 
-	assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul, func() {
+	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul, func() {
 		t.Error(`El equpo azul deberia de seguir manteniendo la potestad`)
 	})
 
@@ -3237,7 +3231,7 @@ func TestFixPanicNoQuiero(t *testing.T) {
 	p.Cmd("andres 7 espada")
 	p.Cmd("richard 10 copa")
 
-	assert(p.Ronda.Manos[0].Ganador.Jugador.Equipo == pdt.Rojo, func() {
+	util.Assert(p.Ronda.Manos[0].Ganador.Jugador.Equipo == pdt.Rojo, func() {
 		t.Error(`La primera mano la debio de haber ganado el equipo de renzo: el rojo`)
 	})
 
@@ -3248,7 +3242,7 @@ func TestFixPanicNoQuiero(t *testing.T) {
 	p.Cmd("roro 6 espada")
 	p.Cmd("adolfo 5 copa")
 
-	assert(p.Ronda.Manos[1].Ganador.Jugador.Equipo == pdt.Azul, func() {
+	util.Assert(p.Ronda.Manos[1].Ganador.Jugador.Equipo == pdt.Azul, func() {
 		t.Error(`La segunda mano la debio de haber ganado el equipo de andres: el Azul`)
 	})
 
@@ -3261,7 +3255,7 @@ func TestFixPanicNoQuiero(t *testing.T) {
 	p.Cmd("roro vale-4")
 	p.Cmd("andres no-quiero")
 
-	assert(p.Puntajes[pdt.Rojo] == ptsPostFlor+3, func() {
+	util.Assert(p.Puntajes[pdt.Rojo] == ptsPostFlor+3, func() {
 		t.Error(`Deberian gana 3 puntines por el vale-4 no querido`)
 	})
 
@@ -3287,7 +3281,7 @@ func TestFixCartaYaJugada(t *testing.T) {
 	p.Cmd("richard 5 oro")
 	p.Cmd("richard 5 oro")
 
-	assert(p.Ronda.GetElTurno().Jugador.Nombre == "Richard", func() {
+	util.Assert(p.Ronda.GetElTurno().Jugador.Nombre == "Richard", func() {
 		t.Error(`Deberia ser el turno de Richard`)
 	})
 
@@ -3307,7 +3301,7 @@ func TestFixTrucoNoQuiero(t *testing.T) {
 	p.Cmd("alvaro truco")
 	p.Cmd("roro no-quiero")
 
-	assert(p.Puntajes[pdt.Azul] > 0, func() {
+	util.Assert(p.Puntajes[pdt.Azul] > 0, func() {
 		t.Error(`La ronda deberia de haber sido ganado por Azul`)
 	})
 
@@ -3390,11 +3384,11 @@ func TestPardaSigTurno1(t *testing.T) {
 
 	t.Log(p)
 
-	assert(p.Ronda.Manos[0].Resultado == pdt.Empardada, func() {
+	util.Assert(p.Ronda.Manos[0].Resultado == pdt.Empardada, func() {
 		t.Error(`La mano debio ser parda`)
 	})
 
-	assert(p.Ronda.GetElTurno().Jugador.Nombre == "Adolfo", func() {
+	util.Assert(p.Ronda.GetElTurno().Jugador.Nombre == "Adolfo", func() {
 		t.Error(`Deberia ser turno de Adolfo, debido a que es el mas cercano del mano y qu empardo`)
 	})
 }
@@ -3463,11 +3457,11 @@ func TestPardaSigTurno2(t *testing.T) {
 
 	t.Log(p)
 
-	assert(p.Ronda.Manos[0].Resultado == pdt.Empardada, func() {
+	util.Assert(p.Ronda.Manos[0].Resultado == pdt.Empardada, func() {
 		t.Error(`La mano debio ser parda`)
 	})
 
-	assert(p.Ronda.GetElTurno().Jugador.Nombre == "Renzo", func() {
+	util.Assert(p.Ronda.GetElTurno().Jugador.Nombre == "Renzo", func() {
 		t.Error(`Deberia ser turno de Renzo, debido a que es el mas cercano del mano y qu empardo`)
 	})
 }
@@ -3527,7 +3521,7 @@ func TestPardaSigTurno3(t *testing.T) {
 
 	p.Cmd("Alvaro 5 Copa")
 
-	assert(enco.Contains(enco.Collect(out), enco.TirarCarta), func() {
+	util.Assert(enco.Contains(enco.Collect(out), enco.TirarCarta), func() {
 		t.Error("debio de haber tirado carta")
 	})
 
@@ -3553,15 +3547,15 @@ func TestPardaSigTurno3(t *testing.T) {
 
 	t.Log(p)
 
-	assert(p.Ronda.Manos[0].Resultado == pdt.Empardada, func() {
+	util.Assert(p.Ronda.Manos[0].Resultado == pdt.Empardada, func() {
 		t.Error(`La mano debio ser parda`)
 	})
 
-	assert(p.Ronda.GetElTurno().Jugador.Nombre == "Roro", func() {
+	util.Assert(p.Ronda.GetElTurno().Jugador.Nombre == "Roro", func() {
 		t.Error(`Deberia ser turno de Roro, debido a que es el mas cercano del mano y qu empardo`)
 	})
 
-	assert(p.Ronda.Manojos[5].SeFueAlMazo == true, func() {
+	util.Assert(p.Ronda.Manojos[5].SeFueAlMazo == true, func() {
 		t.Error(`deberia dejarlo irse al mazo`)
 	})
 }
@@ -3576,18 +3570,18 @@ func TestFixTrucoDeshabilitaEnvido(t *testing.T) {
 
 	p.Cmd("Alvaro truco")
 
-	assert(p.Ronda.Truco.Estado == pdt.TRUCO, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.TRUCO, func() {
 		t.Error(`Deberia dejarlo gritar truco`)
 	})
 
 	// el envido esta primero!!
 	p.Cmd("Roro envido")
 
-	assert(!enco.Contains(enco.Collect(out), enco.Error), func() {
+	util.Assert(!enco.Contains(enco.Collect(out), enco.Error), func() {
 		t.Error("No deberia resultar en un error tocar envido ahora")
 	})
 
-	assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
+	util.Assert(p.Ronda.Envite.Estado == pdt.ENVIDO, func() {
 		t.Error(`Deberia dejarlo tocar envido`)
 	})
 
@@ -3602,18 +3596,18 @@ func TestAbandono(t *testing.T) {
 
 	p.Cmd("Alvaro truco")
 
-	assert(p.Ronda.Truco.Estado == pdt.TRUCO, func() {
+	util.Assert(p.Ronda.Truco.Estado == pdt.TRUCO, func() {
 		t.Error(`Deberia dejarlo gritar truco`)
 	})
 
 	// el envido esta primero!!
 	p.Abandono("Adolfo")
 
-	assert(p.Terminada(), func() {
+	util.Assert(p.Terminada(), func() {
 		t.Error(`Deberia haber acabado la partida`)
 	})
 
-	assert(p.Puntajes[pdt.Rojo] == int(p.Puntuacion), func() {
+	util.Assert(p.Puntajes[pdt.Rojo] == int(p.Puntuacion), func() {
 		t.Error(`El equipo rojo debio de haber completado los pts`)
 	})
 
@@ -3634,7 +3628,7 @@ func TestFixOrdenCantoFlor(t *testing.T) {
 	p.Cmd("renzo flor")
 	p.Cmd("andres flor")
 
-	assert(enco.Contains(enco.Collect(out), enco.DiceSonBuenas), func() {
+	util.Assert(enco.Contains(enco.Collect(out), enco.DiceSonBuenas), func() {
 		t.Error("debio de haber dicho son bueas")
 	})
 
