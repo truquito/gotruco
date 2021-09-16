@@ -61,6 +61,8 @@
 
 # DUDAS
 
+- puede un mismo tipo decir "truco" y luego decir el mismo "envido esta primero", medio bobo
+  pero es parte del protocolo (?)
 - caso muy dudoso: TestFlorFlorContraFlorQuiero
 - que pasa si uno tiene flor, no es su turno y el otro se va al mazo y no le da la chance
   ganar los +3 pts de la flor. Deberia ser posible?
