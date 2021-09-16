@@ -1648,7 +1648,7 @@ func TestParseJugada(t *testing.T) {
 	}
 
 	for _, cmd := range shouldBeOK {
-		_, err := util.ParseJugada(p.PartidaDT, cmd)
+		_, err := pdt.ParseJugada(p.PartidaDT, cmd)
 
 		assert(err == nil, func() {
 			t.Error(err.Error())
@@ -1656,7 +1656,7 @@ func TestParseJugada(t *testing.T) {
 	}
 
 	for _, cmd := range shouldNotBeOK {
-		_, err := util.ParseJugada(p.PartidaDT, cmd)
+		_, err := pdt.ParseJugada(p.PartidaDT, cmd)
 
 		assert(err != nil, func() {
 			t.Error(`Deberia dar error`)

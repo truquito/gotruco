@@ -7,7 +7,6 @@ import (
 
 	"github.com/filevich/truco/enco"
 	"github.com/filevich/truco/pdt"
-	"github.com/filevich/truco/util"
 )
 
 // VERSION actual del binario
@@ -24,41 +23,16 @@ type Partida struct {
 	ErrCh chan bool `json:"-"`
 }
 
-func (p *Partida) byeBye() {
-	if p.Terminada() {
-
-		var s string
-
-		if p.Jugadores[0].Equipo == p.ElQueVaGanando() {
-			s = p.Jugadores[0].Nombre
-		} else {
-			s = p.Jugadores[1].Nombre
-		}
-
-		enco.Write(p.out, enco.Pkt(
-			enco.Dest("ALL"),
-			enco.Msg(enco.ByeBye, s),
-		))
-	}
-}
-
 // Cmd nexo capa presentacion con capa logica
 func (p *Partida) Cmd(cmd string) error {
 
-	// checkeo semantico
-	jugada, err := util.ParseJugada(p.PartidaDT, cmd)
+	pkts, err := p.PartidaDT.Cmd(cmd)
 	if err != nil {
 		return err
 	}
 
-	pkts := jugada.Hacer(p.PartidaDT)
-
 	for _, pkt := range pkts {
 		enco.Write(p.out, pkt)
-	}
-
-	if p.Terminada() {
-		p.byeBye()
 	}
 
 	return nil
