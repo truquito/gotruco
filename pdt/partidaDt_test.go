@@ -33,3 +33,47 @@ func TestNoStruct(t *testing.T) {
 
 	t.Log(Renderizar(p))
 }
+
+func TestFixPanic(t *testing.T) {
+	p, _ := NuevaPartidaDt(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	p.Ronda.SetMuestra(Carta{Palo: Basto, Valor: 4})
+	p.Puntajes[Rojo] = 17
+	p.Puntajes[Azul] = 10
+	p.Ronda.ManoEnJuego = Primera
+	p.Ronda.ElMano = 3 // renzo
+	p.Ronda.Turno = 3  // renzo
+	p.Ronda.SetManojos(
+		[]Manojo{
+			{
+				Cartas: [3]*Carta{ // cartas de Alvaro
+					{Palo: Espada, Valor: 7},
+					{Palo: Copa, Valor: 4},
+					{Palo: Espada, Valor: 11},
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // cartas Roro
+					{Palo: Copa, Valor: 6},
+					{Palo: Copa, Valor: 1},
+					{Palo: Basto, Valor: 10},
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // cartas de Adolfo
+					{Palo: Oro, Valor: 7},
+					{Palo: Copa, Valor: 11},
+					{Palo: Copa, Valor: 3},
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // cartas de Renzo
+					{Palo: Basto, Valor: 3},
+					{Palo: Copa, Valor: 7},
+					{Palo: Basto, Valor: 11},
+				},
+			},
+		},
+	)
+	p.Cmd("Renzo 11 Basto")
+	t.Log(Renderizar(p)) // retorna el render
+}
