@@ -248,8 +248,15 @@ func (jugada TocarEnvido) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 	envidoHabilitado := (p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.Estado == ENVIDO)
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == ENVIDO
 	apuestaSaturada := p.Ronda.Envite.Puntaje >= p.CalcPtsFalta()
-	elEnvidoEstaPrimero := p.Ronda.Truco.Estado == TRUCO && !yaEstabamosEnEnvido && esPrimeraMano
-	ok := (envidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario) && (esSuTurno || yaEstabamosEnEnvido || elEnvidoEstaPrimero) && !apuestaSaturada
+	trucoNoCantado := p.Ronda.Truco.Estado == NOCANTADO
+
+	estaIniciandoPorPrimeraVezElEnvido := esSuTurno && p.Ronda.Envite.Estado == NOCANTADOAUN && trucoNoCantado
+	estaRedoblandoLaApuesta := p.Ronda.Envite.Estado == ENVIDO && esDelEquipoContrario // cuando redobla una apuesta puede o no ser su turno
+	elEnvidoEstaPrimero := !esSuTurno && p.Ronda.Truco.Estado == TRUCO && !yaEstabamosEnEnvido && esPrimeraMano
+
+	puedeTocarEnvido := estaIniciandoPorPrimeraVezElEnvido || estaRedoblandoLaApuesta || elEnvidoEstaPrimero
+
+	ok := (envidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario) && puedeTocarEnvido && !apuestaSaturada
 
 	if !ok {
 
@@ -364,8 +371,14 @@ func (jugada TocarRealEnvido) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 	realEnvidoHabilitado := (p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.Estado == ENVIDO)
 	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == ENVIDO
-	elEnvidoEstaPrimero := p.Ronda.Truco.Estado == TRUCO && !yaEstabamosEnEnvido && esPrimeraMano
-	ok := realEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario && (esSuTurno || yaEstabamosEnEnvido || elEnvidoEstaPrimero)
+	trucoNoCantado := p.Ronda.Truco.Estado == NOCANTADO
+
+	estaIniciandoPorPrimeraVezElEnvido := esSuTurno && p.Ronda.Envite.Estado == NOCANTADOAUN && trucoNoCantado
+	estaRedoblandoLaApuesta := p.Ronda.Envite.Estado == ENVIDO && esDelEquipoContrario // cuando redobla una apuesta puede o no ser su turno
+	elEnvidoEstaPrimero := !esSuTurno && p.Ronda.Truco.Estado == TRUCO && !yaEstabamosEnEnvido && esPrimeraMano
+
+	puedeTocarRealEnvido := estaIniciandoPorPrimeraVezElEnvido || estaRedoblandoLaApuesta || elEnvidoEstaPrimero
+	ok := (realEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario) && puedeTocarRealEnvido
 
 	if !ok {
 
@@ -452,9 +465,15 @@ func (jugada TocarFaltaEnvido) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
 	faltaEnvidoHabilitado := p.Ronda.Envite.Estado >= NOCANTADOAUN && p.Ronda.Envite.Estado < FALTAENVIDO
 	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.Manojo.Jugador.Equipo
-	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == ENVIDO || p.Ronda.Envite.Estado == REALENVIDO
-	elEnvidoEstaPrimero := p.Ronda.Truco.Estado == TRUCO && !yaEstabamosEnEnvido && esPrimeraMano
-	ok := faltaEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario && (esSuTurno || yaEstabamosEnEnvido || elEnvidoEstaPrimero)
+	yaEstabamosEnEnvido := p.Ronda.Envite.Estado >= ENVIDO
+	trucoNoCantado := p.Ronda.Truco.Estado == NOCANTADO
+
+	estaIniciandoPorPrimeraVezElEnvido := esSuTurno && p.Ronda.Envite.Estado == NOCANTADOAUN && trucoNoCantado
+	estaRedoblandoLaApuesta := p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado < FALTAENVIDO && esDelEquipoContrario // cuando redobla una apuesta puede o no ser su turno
+	elEnvidoEstaPrimero := !esSuTurno && p.Ronda.Truco.Estado == TRUCO && !yaEstabamosEnEnvido && esPrimeraMano
+
+	puedeTocarFaltaEnvido := estaIniciandoPorPrimeraVezElEnvido || estaRedoblandoLaApuesta || elEnvidoEstaPrimero
+	ok := (faltaEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario) && puedeTocarFaltaEnvido
 
 	if !ok {
 

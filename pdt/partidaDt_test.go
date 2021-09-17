@@ -144,3 +144,98 @@ func TestFixNoLePermiteGritarTruco(t *testing.T) {
 		t.Error("Deberia dejarlo gritar truco!")
 	})
 }
+
+func TestFixLePermiteCFAR(t *testing.T) {
+	p, _ := NuevaPartidaDt(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	p.Ronda.SetMuestra(Carta{Palo: Copa, Valor: 3})
+	p.Puntajes[Rojo] = 1
+	p.Puntajes[Azul] = 6
+	p.Ronda.ManoEnJuego = Primera
+	p.Ronda.ElMano = 2 // renzo
+	p.Ronda.Turno = 2  // renzo
+	p.Ronda.SetManojos(
+		[]Manojo{
+			{
+				Cartas: [3]*Carta{ // cartas de Alvaro
+					{Palo: Copa, Valor: 1},
+					{Palo: Copa, Valor: 5},
+					{Palo: Copa, Valor: 7},
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // cartas Roro
+					{Palo: Copa, Valor: 2},
+					{Palo: Oro, Valor: 1},
+					{Palo: Basto, Valor: 10},
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // cartas de Adolfo
+					{Palo: Espada, Valor: 1},
+					{Palo: Espada, Valor: 5},
+					{Palo: Oro, Valor: 2},
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // cartas de Renzo
+					{Palo: Oro, Valor: 12},
+					{Palo: Oro, Valor: 5},
+					{Palo: Copa, Valor: 11},
+				},
+			},
+		},
+	)
+
+	m, _ := p.GetManojoByStr("Renzo")
+	A := GetA(p, m)
+
+	ok := A[6] == true && A[7] == false && A[8] == false
+	util.Assert(ok, func() {
+		t.Error("No deberia dejarlo cantar algo mas poderoso que `flor`")
+	})
+
+	pkts, _ := p.Cmd("Renzo contra-flor-al-resto")
+	util.Assert(enco.Contains(pkts, enco.Error), func() {
+		t.Error("No deberia dejarlo cantar CFAR")
+	})
+
+	pkts, _ = p.Cmd("Renzo no-quiero")
+	util.Assert(enco.Contains(pkts, enco.Error), func() {
+		t.Error("No deberia dejarlo responder no-quiero")
+	})
+}
+
+func TestFixNoLeDebePermitirTocarEnvidoSiGritoTruco(t *testing.T) {
+	data := `{"Jugadores": [{"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}, {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}, {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}, {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}], "cantJugadores": 4, "puntuacion": 20, "puntajes": {"Azul": 0, "Rojo": 0}, "ronda": {"manoEnJuego": 0, "cantJugadoresEnJuego": {"Azul": 2, "Rojo": 2}, "elMano": 0, "turno": 0, "pies": [0, 0], "envite": {"estado": "noCantadoAun", "puntaje": 0, "cantadoPor": null}, "truco": {"cantadoPor": null, "estado": "noCantado"}, "manojos": [{"seFueAlMazo": false, "cartas": [{"palo": "Espada", "valor": 3}, {"palo": "Oro", "valor": 7}, {"palo": "Copa", "valor": 7}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 10}, {"palo": "Basto", "valor": 5}, {"palo": "Oro", "valor": 6}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 2}, {"palo": "Oro", "valor": 3}, {"palo": "Espada", "valor": 7}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Espada", "valor": 1}, {"palo": "Espada", "valor": 6}, {"palo": "Espada", "valor": 10}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}}], "muestra": {"palo": "Copa", "valor": 3}, "manos": [{"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}]}} `
+	p, err := Parse(data)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(Renderizar(p))
+
+	pkts, _ := p.Cmd("Alvaro truco")
+	util.Assert(enco.Contains(pkts, enco.GritarTruco), func() {
+		t.Error("Deberia dejarlo gritar truco!")
+	})
+
+	pkts, _ = p.Cmd("Alvaro envido")
+	ok := util.All(
+		p.Ronda.Envite.Estado == NOCANTADOAUN,
+		p.Ronda.Truco.Estado != NOCANTADO,
+		enco.Contains(pkts, enco.Error),
+	)
+	util.Assert(ok, func() {
+		t.Error("No deberia dejarlo tocar envido si fue el mismo el que toco truco!")
+	})
+
+	pkts, _ = p.Cmd("Alvaro real-envido")
+	ok = util.All(
+		p.Ronda.Envite.Estado == NOCANTADOAUN,
+		p.Ronda.Truco.Estado != NOCANTADO,
+		enco.Contains(pkts, enco.Error),
+	)
+	util.Assert(ok, func() {
+		t.Error("No deberia dejarlo tocar real-envido si fue el mismo el que toco truco!")
+	})
+
+}

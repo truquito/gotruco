@@ -543,6 +543,8 @@ func TestRealEnvidoFaltaEnvidoQuiero(t *testing.T) {
 		},
 	)
 
+	t.Log(p.String())
+
 	p.Cmd("Alvaro Real-Envido")
 	p.Cmd("Roro Falta-Envido")
 	p.Cmd("Alvaro Quiero")

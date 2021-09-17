@@ -2,7 +2,7 @@ package util
 
 import "reflect"
 
-func All(bs []bool) bool {
+func All(bs ...bool) bool {
 	for _, b := range bs {
 		if !b {
 			return false
