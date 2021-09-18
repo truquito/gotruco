@@ -490,6 +490,19 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*enco.Packet) {
  */
 func (r *Ronda) ExecLaFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts []*enco.Packet) {
 
+	// si solo un equipo tiene flor, entonces se saltea esta parte
+	soloUnEquipoTieneFlores := true
+	equipo := r.Envite.JugadoresConFlor[0].Jugador.Equipo
+	for _, m := range r.Envite.JugadoresConFlor[1:] {
+		if m.Jugador.Equipo != equipo {
+			soloUnEquipoTieneFlores = false
+			break
+		}
+	}
+	if soloUnEquipoTieneFlores {
+		return r.Envite.JugadoresConFlor[0], 0, nil
+	}
+
 	cantJugadores := len(r.Manojos)
 
 	// decir flores en orden segun las reglas:
