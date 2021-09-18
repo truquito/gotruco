@@ -407,7 +407,8 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*enco.Packet) {
 	// ergo, cuando se "resetea" el iterador,
 	// se setea a `p.Ronda.elMano + 1`
 	for i != r.ElMano {
-		todaviaEsTenidoEnCuenta := !yaDijeron[i]
+		seFueAlMazo := r.Manojos[i].SeFueAlMazo
+		todaviaEsTenidoEnCuenta := !yaDijeron[i] && !seFueAlMazo
 		if todaviaEsTenidoEnCuenta {
 
 			esDeEquipoContrario := r.Manojos[i].Jugador.Equipo != r.Manojos[jIdx].Jugador.Equipo

@@ -1,6 +1,7 @@
 package pdt
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/filevich/truco/enco"
@@ -237,5 +238,53 @@ func TestFixNoLeDebePermitirTocarEnvidoSiGritoTruco(t *testing.T) {
 	util.Assert(ok, func() {
 		t.Error("No deberia dejarlo tocar real-envido si fue el mismo el que toco truco!")
 	})
+
+}
+
+func TestFixNoLeDeberiaResponderDesdeUltratumba(t *testing.T) {
+	data := `{"Jugadores": [{"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}, {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}, {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}, {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}], "cantJugadores": 4, "puntuacion": 20, "puntajes": {"Azul": 5, "Rojo": 6}, "ronda": {"manoEnJuego": 0, "cantJugadoresEnJuego": {"Azul": 2, "Rojo": 2}, "elMano": 2, "turno": 2, "pies": [0, 0], "envite": {"estado": "noCantadoAun", "puntaje": 0, "cantadoPor": null}, "truco": {"cantadoPor": null, "estado": "noCantado"}, "manojos": [{"seFueAlMazo": false, "cartas": [{"palo": "Basto", "valor": 2}, {"palo": "Basto", "valor": 6}, {"palo": "Espada", "valor": 5}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 6}, {"palo": "Espada", "valor": 11}, {"palo": "Copa", "valor": 12}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Oro", "valor": 3}, {"palo": "Espada", "valor": 10}, {"palo": "Oro", "valor": 10}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 1}, {"palo": "Basto", "valor": 11}, {"palo": "Espada", "valor": 3}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}}], "muestra": {"palo": "Copa", "valor": 5}, "manos": [{"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}]}}`
+	p, err := Parse(data)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(Renderizar(p))
+
+	p.Cmd("Renzo mazo")
+	m, _ := p.GetManojoByStr("Renzo")
+	util.Assert(m.SeFueAlMazo, func() {
+		t.Error("Deberia dejarlo irse al mazo")
+	})
+
+	p.Cmd("Adolfo falta-envido")
+
+	pkts, _ := p.Cmd("Roro quiero")
+	for _, pkt := range pkts {
+		diceSonBuenas := pkt.Cod == int(enco.DiceSonBuenas)
+		loDijoRenzo := string(pkt.Cont) == "\"Renzo\""
+		if diceSonBuenas && loDijoRenzo {
+			t.Error("No deberia poder responder desde ultratumba")
+		}
+	}
+
+	// debio de haber ganado el envido
+	for _, pkt := range pkts {
+		if pkt.Cod == int(enco.SumaPts) {
+			var t3 enco.Tipo3
+			json.Unmarshal(pkt.Message.Cont, &t3)
+
+			ok := util.All(
+				t3.Puntos == 4,
+				t3.Razon == int(enco.FaltaEnvidoGanado),
+				t3.Autor == "Roro",
+				p.Ronda.Envite.Estado == DESHABILITADO,
+			)
+
+			util.Assert(ok, func() {
+				t.Error("Alguna condicion no se cumplio")
+			})
+
+			break
+		}
+	}
 
 }
