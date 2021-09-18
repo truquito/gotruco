@@ -419,7 +419,8 @@ func (p *PartidaDT) EvaluarRonda() (bool, []*enco.Packet) {
 	pardaSegunda := p.Ronda.Manos[1].Resultado == Empardada
 	pardaTercera := p.Ronda.Manos[2].Resultado == Empardada
 	seEstaJugandoLaSegunda := p.Ronda.ManoEnJuego == Segunda
-	noSeAcaboAun := seEstaJugandoLaSegunda && hayEmpate && hayJugadoresEnAmbos
+
+	noSeAcaboAun := seEstaJugandoLaSegunda && hayEmpate && hayJugadoresEnAmbos && !elTrucoFueNoQuerido
 
 	if noSeAcaboAun {
 		return false, nil

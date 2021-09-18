@@ -1484,6 +1484,8 @@ func TestTirada1(t *testing.T) {
 	p.Cmd("Andres 10 Copa")
 	p.Cmd("Richard 10 Oro")
 
+	t.Log(p)
+
 	enco.Consume(out, func(pkt *enco.Packet) {
 		t.Log(deco.Stringify(pkt, p.PartidaDT))
 	})
@@ -1508,6 +1510,9 @@ func TestTirada1(t *testing.T) {
 	p.Cmd("Adolfo 2 Copa")
 	p.Cmd("Renzo 4 Espada")
 	p.Cmd("Andres 7 Oro")
+
+	t.Log(p)
+
 	p.Cmd("Richard 2 Oro")
 
 	// como la muestra es Palo: pdt.Oro, Valor: 3 -> gana richard
