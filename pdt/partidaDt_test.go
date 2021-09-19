@@ -426,3 +426,50 @@ func TestFixDecirSonBuenasDesdeUltratumba(t *testing.T) {
 	}
 
 }
+
+func TestFixLoadJsonCartasTiradasAutorNil(t *testing.T) {
+	data := `{"Jugadores": [{"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}, {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}, {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}, {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}], "cantJugadores": 4, "puntuacion": 20, "puntajes": {"Azul": 6, "Rojo": 6}, "ronda": {"manoEnJuego": 0, "cantJugadoresEnJuego": {"Azul": 1, "Rojo": 2}, "elMano": 2, "turno": 1, "pies": [0, 0], "envite": {"estado": "deshabilitado", "puntaje": 3, "cantadoPor": {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 7}, {"palo": "Oro", "valor": 10}, {"palo": "Espada", "valor": 3}], "cartasNoJugadas": [true, false, true], "ultimaTirada": 1, "jugador": {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}}}, "truco": {"cantadoPor": null, "estado": "noCantado"}, "manojos": [{"seFueAlMazo": true, "cartas": [{"palo": "Oro", "valor": 12}, {"palo": "Oro", "valor": 1}, {"palo": "Espada", "valor": 11}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 6}, {"palo": "Copa", "valor": 2}, {"palo": "Espada", "valor": 1}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 7}, {"palo": "Oro", "valor": 10}, {"palo": "Espada", "valor": 3}], "cartasNoJugadas": [true, false, true], "ultimaTirada": 1, "jugador": {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Basto", "valor": 6}, {"palo": "Oro", "valor": 3}, {"palo": "Copa", "valor": 4}], "cartasNoJugadas": [false, true, true], "ultimaTirada": 0, "jugador": {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}}], "muestra": {"palo": "Basto", "valor": 10}, "manos": [{"resultado": "ganoRojo", "ganador": null, "cartasTiradas": [{"palo": "Oro", "valor": 10}, {"palo": "Basto", "valor": 6}]}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}]}}`
+	p, _ := Parse(data)
+
+	ok := util.All(
+		len(p.Ronda.Manos[0].CartasTiradas) == 2,
+		p.Ronda.Manos[0].CartasTiradas[0].autor.Jugador.ID == "Adolfo",
+		p.Ronda.Manos[0].CartasTiradas[1].autor.Jugador.ID == "Renzo",
+	)
+	util.Assert(ok, func() {
+		t.Error("El mapeo de las cartas tiradas con sus autores no coincide")
+	})
+}
+
+func TestFixPorQueDejaARoroTirarCarta(t *testing.T) {
+	data := `{"Jugadores": [{"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}, {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}, {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}, {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}], "cantJugadores": 4, "puntuacion": 20, "puntajes": {"Azul": 6, "Rojo": 6}, "ronda": {"manoEnJuego": 0, "cantJugadoresEnJuego": {"Azul": 1, "Rojo": 2}, "elMano": 2, "turno": 1, "pies": [0, 0], "envite": {"estado": "deshabilitado", "puntaje": 3, "cantadoPor": {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 7}, {"palo": "Oro", "valor": 10}, {"palo": "Espada", "valor": 3}], "cartasNoJugadas": [true, false, true], "ultimaTirada": 1, "jugador": {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}}}, "truco": {"cantadoPor": null, "estado": "noCantado"}, "manojos": [{"seFueAlMazo": true, "cartas": [{"palo": "Oro", "valor": 12}, {"palo": "Oro", "valor": 1}, {"palo": "Espada", "valor": 11}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 6}, {"palo": "Copa", "valor": 2}, {"palo": "Espada", "valor": 1}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 7}, {"palo": "Oro", "valor": 10}, {"palo": "Espada", "valor": 3}], "cartasNoJugadas": [true, false, true], "ultimaTirada": 1, "jugador": {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Basto", "valor": 6}, {"palo": "Oro", "valor": 3}, {"palo": "Copa", "valor": 4}], "cartasNoJugadas": [false, true, true], "ultimaTirada": 0, "jugador": {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}}], "muestra": {"palo": "Basto", "valor": 10}, "manos": [{"resultado": "ganoRojo", "ganador": null, "cartasTiradas": [{"palo": "Oro", "valor": 10}, {"palo": "Basto", "valor": 6}]}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}]}}`
+	p, _ := Parse(data)
+
+	t.Log(Renderizar(p))
+
+	pkts, _ := p.Cmd("Roro truco")
+	util.Assert(enco.Contains(pkts, enco.GritarTruco), func() {
+		t.Error("Deberia dejarlo poder gritar truco")
+	})
+
+	pkts, _ = p.Cmd("Roro 1 Espada")
+	util.Assert(enco.Contains(pkts, enco.SigTurnoPosMano), func() {
+		t.Error("Deberia pasarle el turno y empezar una mano nueva")
+	})
+	util.Assert(p.Ronda.GetElTurno().Jugador.ID == "Roro", func() {
+		t.Error("Deberia mantener el turno porque gano la primera mano")
+	})
+	util.Assert(p.Ronda.ManoEnJuego == Segunda, func() {
+		t.Error("Deberiamos estar jugando la segunda mano")
+	})
+
+	pkts, _ = p.Cmd("Renzo 3 Copa")
+	util.Assert(enco.Contains(pkts, enco.Error), func() {
+		t.Error("No deberia dejar a renzo tirar carta si antes debe responder Adolfo y ni siquiera es su turno!")
+	})
+
+	pkts, _ = p.Cmd("Roro 2 copa")
+	util.Assert(enco.Contains(pkts, enco.SigTurno), func() {
+		t.Error("Deberia pasarle el turno")
+	})
+}

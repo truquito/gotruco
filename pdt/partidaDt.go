@@ -381,7 +381,19 @@ func (p *PartidaDT) EvaluarMano() (bool, []*enco.Packet) {
 // si no se termino la ronda 	 -> retorna false
 func (p *PartidaDT) EvaluarRonda() (bool, []*enco.Packet) {
 
+	/*
+		TENER EN CUENTA:
+		===============
+		el enum p.Ronda.Mano.Resultado \in {GanoRojo,GanoAzul,Empardada}
+		no me dice el resultado per se,
+		sino:
+			noSeSabe sii (no esta empardada) & (ganador == nil)
+		por default dice "ganoRojo"
+	*/
+
 	var pkts []*enco.Packet
+
+	// la ronda continua...
 
 	/* A MENOS QUE SE HAYAN IDO TODOS EN LA PRIMERA MANO!!! */
 	hayJugadoresRojo := p.Ronda.CantJugadoresEnJuego[Rojo] > 0
@@ -396,7 +408,9 @@ func (p *PartidaDT) EvaluarRonda() (bool, []*enco.Packet) {
 	estaManoYaTieneGanador := noFueParda && p.Ronda.Manos[manoActual].Ganador != nil
 	elTrucoFueNoQuerido := elTrucoNoTuvoRespuesta && estaManoYaTieneGanador
 
-	noSeAcabo := (primeraMano && hayJugadoresEnAmbos && !elTrucoFueNoQuerido)
+	elTrucoFueQuerido := !elTrucoFueNoQuerido
+
+	noSeAcabo := (primeraMano && hayJugadoresEnAmbos && elTrucoFueQuerido)
 	if noSeAcabo {
 		return false, nil
 	}
@@ -423,6 +437,22 @@ func (p *PartidaDT) EvaluarRonda() (bool, []*enco.Packet) {
 	noSeAcaboAun := seEstaJugandoLaSegunda && hayEmpate && hayJugadoresEnAmbos && !elTrucoFueNoQuerido
 
 	if noSeAcaboAun {
+		return false, nil
+	}
+
+	// caso particular:
+	// no puedo definir quien gano si la seguna mano no tiene definido un resultado
+	noEstaEmpardada := p.Ronda.Manos[Segunda].Resultado != Empardada
+	noTieneGanador := p.Ronda.Manos[Segunda].Ganador == nil
+	segundaManoIndefinida := noEstaEmpardada && noTieneGanador
+	// tengo que diferenciar si vengo de: TirarCarta o si vengo de un no quiero:
+	// si viniera de un TirarCarta -> en la mano actual (o la anterior)? la ultima carta tirada pertenece al turno actual
+	n := len(p.Ronda.Manos[p.Ronda.ManoEnJuego].CartasTiradas)
+	actual := p.Ronda.GetElTurno().Jugador.ID
+	mix := p.Ronda.ManoEnJuego
+	ultimaCartaTiradaPerteneceAlTurnoActual := n > 0 && p.Ronda.Manos[mix].CartasTiradas[n-1].autor.Jugador.ID == actual
+	vengoDeTirarCarta := ultimaCartaTiradaPerteneceAlTurnoActual
+	if segundaManoIndefinida && hayJugadoresEnAmbos && vengoDeTirarCarta {
 		return false, nil
 	}
 
@@ -597,6 +627,43 @@ func (p *PartidaDT) FromJSON(data []byte) error {
 	for i, m := range p.Ronda.Manojos {
 		p.Jugadores[i] = *m.Jugador
 	}
+
+	// cargo los autores de las tiradas de cada una de las 3 manos
+	/*
+		para cada mano i:
+			si i no tiene cartas tiradas break
+			j = 0
+			para tirada t:
+				count = p.cantJugadores
+				mientras que j no sea quien tiene la carta t.c:
+					j.sig()
+					count--
+					if count == 0 return err
+				t.c.autor = j
+				j.sigManojo_NOSE()
+	*/
+	for mix, mano := range p.Ronda.Manos {
+		if len(mano.CartasTiradas) == 0 {
+			break
+		}
+		jix := 0
+		for tix, t := range mano.CartasTiradas {
+			count := p.CantJugadores
+			for {
+				if count--; count == -1 {
+					return fmt.Errorf("los datos no son consistentes")
+				}
+				if _, err := p.Ronda.Manojos[jix].GetCartaIdx(t.Carta); err == nil {
+					break // bingo
+				} else {
+					jix = int(p.Ronda.getSig(JugadorIdx(jix))) // no tiene la carta, siguiente
+				}
+			}
+			p.Ronda.Manos[mix].CartasTiradas[tix].autor = &p.Ronda.Manojos[jix]
+			jix = int(p.Ronda.getSig(JugadorIdx(jix)))
+		}
+	}
+
 	return nil
 }
 
