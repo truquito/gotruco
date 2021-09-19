@@ -366,3 +366,63 @@ func TestFixNoCantarPuntajeFlorCuandoNoEsNecesario(t *testing.T) {
 	})
 
 }
+
+func TestFixDecirSonBuenasDesdeUltratumba(t *testing.T) {
+	p, _ := NuevaPartidaDt(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	p.Ronda.SetMuestra(Carta{Palo: Espada, Valor: 12})
+	p.Ronda.ManoEnJuego = Primera
+	p.Ronda.ElMano = 0 // alvaro
+	p.Ronda.Turno = 0  // alvaro
+	p.Ronda.SetManojos(
+		[]Manojo{
+			{
+				Cartas: [3]*Carta{ // cartas de Alvaro
+					{Palo: Basto, Valor: 5},
+					{Palo: Oro, Valor: 7},
+					{Palo: Espada, Valor: 2},
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // cartas Roro
+					{Palo: Basto, Valor: 4},
+					{Palo: Oro, Valor: 1},
+					{Palo: Basto, Valor: 10},
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // cartas de Adolfo
+					{Palo: Oro, Valor: 1},
+					{Palo: Basto, Valor: 10},
+					{Palo: Espada, Valor: 10},
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // cartas de Renzo
+					{Palo: Copa, Valor: 4},
+					{Palo: Copa, Valor: 12},
+					{Palo: Basto, Valor: 6},
+				},
+			},
+		},
+	)
+
+	p.Cmd("Alvaro 2 espada")
+	p.Cmd("Roro 4 basto")
+	p.Cmd("Roro mazo")
+	p.Cmd("Adolfo falta-envido")
+
+	t.Log(Renderizar(p))
+
+	pkts, _ := p.Cmd("Renzo quiero")
+	for _, pkt := range pkts {
+		if pkt.Cod == int(enco.DiceSonBuenas) {
+			var autor string
+			json.Unmarshal(pkt.Message.Cont, &autor)
+			if autor == "Roro" {
+				t.Error("Roro no deberia poder hablar dedse ultratumba")
+				break
+			}
+		}
+	}
+
+}
