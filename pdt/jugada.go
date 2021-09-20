@@ -241,6 +241,7 @@ func (jugada TocarEnvido) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 		return pkts, false
 
 	}
+	seFueAlMazo := jugada.Manojo.SeFueAlMazo
 	esPrimeraMano := p.Ronda.ManoEnJuego == Primera
 	esSuTurno := p.Ronda.GetElTurno() == jugada.Manojo
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
@@ -256,7 +257,7 @@ func (jugada TocarEnvido) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 
 	puedeTocarEnvido := estaIniciandoPorPrimeraVezElEnvido || estaRedoblandoLaApuesta || elEnvidoEstaPrimero
 
-	ok := (envidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario) && puedeTocarEnvido && !apuestaSaturada
+	ok := !seFueAlMazo && (envidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario) && puedeTocarEnvido && !apuestaSaturada
 
 	if !ok {
 
@@ -365,6 +366,7 @@ func (jugada TocarRealEnvido) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 		return pkts, false
 
 	}
+	seFueAlMazo := jugada.Manojo.SeFueAlMazo
 	esPrimeraMano := p.Ronda.ManoEnJuego == Primera
 	esSuTurno := p.Ronda.GetElTurno() == jugada.Manojo
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
@@ -378,7 +380,7 @@ func (jugada TocarRealEnvido) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 	elEnvidoEstaPrimero := !esSuTurno && p.Ronda.Truco.Estado == TRUCO && !yaEstabamosEnEnvido && esPrimeraMano
 
 	puedeTocarRealEnvido := estaIniciandoPorPrimeraVezElEnvido || estaRedoblandoLaApuesta || elEnvidoEstaPrimero
-	ok := (realEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario) && puedeTocarRealEnvido
+	ok := !seFueAlMazo && (realEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario) && puedeTocarRealEnvido
 
 	if !ok {
 
@@ -459,7 +461,7 @@ func (jugada TocarFaltaEnvido) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 		return pkts, false
 
 	}
-
+	seFueAlMazo := jugada.Manojo.SeFueAlMazo
 	esSuTurno := p.Ronda.GetElTurno() == jugada.Manojo
 	esPrimeraMano := p.Ronda.ManoEnJuego == Primera
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
@@ -473,7 +475,7 @@ func (jugada TocarFaltaEnvido) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 	elEnvidoEstaPrimero := !esSuTurno && p.Ronda.Truco.Estado == TRUCO && !yaEstabamosEnEnvido && esPrimeraMano
 
 	puedeTocarFaltaEnvido := estaIniciandoPorPrimeraVezElEnvido || estaRedoblandoLaApuesta || elEnvidoEstaPrimero
-	ok := (faltaEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario) && puedeTocarFaltaEnvido
+	ok := !seFueAlMazo && (faltaEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario) && puedeTocarFaltaEnvido
 
 	if !ok {
 
@@ -597,10 +599,11 @@ func (jugada CantarFlor) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 
 	// manojo dice que puede cantar flor;
 	// es esto verdad?
+	seFueAlMazo := jugada.Manojo.SeFueAlMazo
 	florHabilitada := (p.Ronda.Envite.Estado >= NOCANTADOAUN && p.Ronda.Envite.Estado <= FLOR) && p.Ronda.ManoEnJuego == Primera
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
 	noCantoFlorAun := Contains(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.Manojo)
-	ok := florHabilitada && tieneFlor && noCantoFlorAun
+	ok := !seFueAlMazo && florHabilitada && tieneFlor && noCantoFlorAun
 
 	if !ok {
 
@@ -747,11 +750,12 @@ func (jugada CantarContraFlor) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 
 	// manojo dice que puede cantar flor;
 	// es esto verdad?
+	seFueAlMazo := jugada.Manojo.SeFueAlMazo
 	contraFlorHabilitada := p.Ronda.Envite.Estado == FLOR && p.Ronda.ManoEnJuego == Primera
 	esDelEquipoContrario := contraFlorHabilitada && p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
 	noCantoFlorAun := Contains(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.Manojo)
-	ok := contraFlorHabilitada && tieneFlor && esDelEquipoContrario && noCantoFlorAun
+	ok := !seFueAlMazo && contraFlorHabilitada && tieneFlor && esDelEquipoContrario && noCantoFlorAun
 	if !ok {
 
 		pkts = append(pkts, enco.Pkt(
@@ -800,11 +804,12 @@ func (jugada CantarContraFlorAlResto) Ok(p *PartidaDT) ([]*enco.Packet, bool) {
 
 	// manojo dice que puede cantar flor;
 	// es esto verdad?
+	seFueAlMazo := jugada.Manojo.SeFueAlMazo
 	contraFlorHabilitada := (p.Ronda.Envite.Estado == FLOR || p.Ronda.Envite.Estado == CONTRAFLOR) && p.Ronda.ManoEnJuego == Primera
 	esDelEquipoContrario := contraFlorHabilitada && p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
 	noCantoFlorAun := Contains(p.Ronda.Envite.JugadoresConFlorQueNoCantaron, jugada.Manojo)
-	ok := contraFlorHabilitada && tieneFlor && esDelEquipoContrario && noCantoFlorAun
+	ok := !seFueAlMazo && contraFlorHabilitada && tieneFlor && esDelEquipoContrario && noCantoFlorAun
 	if !ok {
 
 		pkts = append(pkts, enco.Pkt(
@@ -1777,31 +1782,3 @@ func (jugada IrseAlMazo) Hacer(p *PartidaDT) []*enco.Packet {
 
 	return pkts
 }
-
-/*
-Gritos
-	Truco    // 1/2
-	Re-truco // 2/3
-	Vale 4   // 3/4
-
-Toques
-	Envido
-	Real envido
-	Falta envido
-
-Cantos
-	Flor                 // 2pts (tanto o el-primero)
-	Contra flor          // 3 pts
-	Contra flor al resto // 4 pts
-
-	// Con flor me achico ~ quiero
-	// Con flor quiero ~ no quiero
-
-Respuestas
-	Quiero
-	No quiero
-
-Acciones
-	Irse al mazo
-	Tirar carta
-*/

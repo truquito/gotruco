@@ -473,3 +473,30 @@ func TestFixPorQueDejaARoroTirarCarta(t *testing.T) {
 		t.Error("Deberia pasarle el turno")
 	})
 }
+
+func TestFixRespuestaNadaQueVer(t *testing.T) {
+	data := `{"Jugadores": [{"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}, {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}, {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}, {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}], "cantJugadores": 4, "puntuacion": 20, "puntajes": {"Azul": 15, "Rojo": 6}, "ronda": {"manoEnJuego": 0, "cantJugadoresEnJuego": {"Azul": 2, "Rojo": 2}, "elMano": 0, "turno": 1, "pies": [0, 0], "envite": {"estado": "noCantadoAun", "puntaje": 0, "cantadoPor": null}, "truco": {"cantadoPor": null, "estado": "noCantado"}, "manojos": [{"seFueAlMazo": false, "cartas": [{"palo": "Espada", "valor": 7}, {"palo": "Oro", "valor": 2}, {"palo": "Copa", "valor": 1}], "cartasNoJugadas": [true, false, true], "ultimaTirada": 1, "jugador": {"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 4}, {"palo": "Basto", "valor": 11}, {"palo": "Oro", "valor": 12}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Basto", "valor": 12}, {"palo": "Espada", "valor": 10}, {"palo": "Oro", "valor": 4}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Basto", "valor": 7}, {"palo": "Copa", "valor": 2}, {"palo": "Copa", "valor": 7}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}}], "muestra": {"palo": "Oro", "valor": 7}, "manos": [{"resultado": "ganoRojo", "ganador": null, "cartasTiradas": [{"palo": "Oro", "valor": 2}]}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}]}}`
+	p, _ := Parse(data)
+
+	t.Log(Renderizar(p))
+
+	pkts, _ := p.Cmd("Renzo mazo")
+	util.Assert(enco.Contains(pkts, enco.Mazo), func() {
+		t.Error("Renzo debieria ser capaz de irse al mazo")
+	})
+
+	pkts, _ = p.Cmd("Alvaro mazo")
+	util.Assert(enco.Contains(pkts, enco.Mazo), func() {
+		t.Error("Alvaro debieria ser capaz de irse al mazo")
+	})
+
+	pkts, _ = p.Cmd("Roro truco")
+	util.Assert(enco.Contains(pkts, enco.GritarTruco), func() {
+		t.Error("Roro debieria ser capaz de gritar truco")
+	})
+
+	pkts, _ = p.Cmd("Alvaro real-envido")
+	util.Assert(!enco.Contains(pkts, enco.ElEnvidoEstaPrimero), func() {
+		t.Error("Alvaro no deberia ser capaz de tocar envido porque ya se fue al mazo")
+	})
+}
