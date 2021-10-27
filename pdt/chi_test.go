@@ -5,7 +5,7 @@ import (
 )
 
 func TestAcciones(t *testing.T) {
-	p, _ := NuevaPartidaDt(A20, []string{"Alvaro"}, []string{"Roro"})
+	p, _ := NuevaPartida(A20, []string{"Alvaro"}, []string{"Roro"})
 
 	alvaro := p.Ronda.GetElTurno()
 	a := TocarEnvido{Manojo: alvaro}
@@ -18,15 +18,15 @@ func TestAcciones(t *testing.T) {
 	as := GetAA(p)
 	t.Log(Renderizar(p))
 	for i, a := range as {
-		t.Logf("%s : %v", p.Jugadores[i].Nombre, a)
+		t.Logf("%s : %v", p.Jugadores[i].ID, a)
 	}
 }
 
 func TestTodasLasAcciones(t *testing.T) {
-	p, _ := NuevaPartidaDt(A20, []string{"Alvaro"}, []string{"Roro"})
+	p, _ := NuevaPartida(A20, []string{"Alvaro"}, []string{"Roro"})
 	as := GetAA(p)
 	t.Log(Renderizar(p))
 	for i, a := range as {
-		t.Logf("%s : %v", p.Jugadores[i].Nombre, a)
+		t.Logf("%s : %v", p.Jugadores[i].ID, a)
 	}
 }

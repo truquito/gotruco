@@ -59,7 +59,7 @@ func BenchmarkMaxOld(b *testing.B) {
 // 	}
 
 // 	for _, m := range manojos {
-// 		fmt.Println(m.Jugador.Nombre)
+// 		fmt.Println(m.Jugador.ID)
 // 	}
 
 // 	manojoAEliminar := &p.Ronda.Manojos[5]
@@ -70,7 +70,7 @@ func BenchmarkMaxOld(b *testing.B) {
 // 	}
 
 // 	for _, m := range manojos {
-// 		fmt.Println(m.Jugador.Nombre)
+// 		fmt.Println(m.Jugador.ID)
 // 	}
 
 // 	manojoAEliminar = &p.Ronda.Manojos[2]
@@ -81,7 +81,7 @@ func BenchmarkMaxOld(b *testing.B) {
 // 	}
 
 // 	for _, m := range manojos {
-// 		fmt.Println(m.Jugador.Nombre)
+// 		fmt.Println(m.Jugador.ID)
 // 	}
 
 // }

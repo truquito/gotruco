@@ -16,7 +16,7 @@ var (
 	}
 )
 
-func checkeoSemantico(p *PartidaDT, cmd string) (IJugada, error) {
+func checkeoSemantico(p *Partida, cmd string) (IJugada, error) {
 
 	var jugada IJugada
 
@@ -102,7 +102,7 @@ func checkeoSemantico(p *PartidaDT, cmd string) (IJugada, error) {
 	return jugada, nil
 }
 
-func ParseJugada(p *PartidaDT, cmd string) (IJugada, error) {
+func ParseJugada(p *Partida, cmd string) (IJugada, error) {
 	if p.Terminada() {
 		return nil, fmt.Errorf("la partida ya termino")
 	}
@@ -119,7 +119,7 @@ func ParseJugada(p *PartidaDT, cmd string) (IJugada, error) {
 
 }
 
-func (p *PartidaDT) byeBye() []*enco.Packet {
+func (p *Partida) byeBye() []*enco.Packet {
 	pkts := make([]*enco.Packet, 0)
 
 	if p.Terminada() {
@@ -127,9 +127,9 @@ func (p *PartidaDT) byeBye() []*enco.Packet {
 		var s string
 
 		if p.Jugadores[0].Equipo == p.ElQueVaGanando() {
-			s = p.Jugadores[0].Nombre
+			s = p.Jugadores[0].ID
 		} else {
-			s = p.Jugadores[1].Nombre
+			s = p.Jugadores[1].ID
 		}
 
 		pkts = append(pkts, enco.Pkt(
@@ -142,7 +142,7 @@ func (p *PartidaDT) byeBye() []*enco.Packet {
 }
 
 // Cmd nexo capa presentacion con capa logica
-func (p *PartidaDT) Cmd(cmd string) ([]*enco.Packet, error) {
+func (p *Partida) Cmd(cmd string) ([]*enco.Packet, error) {
 
 	// checkeo semantico
 	jugada, err := ParseJugada(p, cmd)

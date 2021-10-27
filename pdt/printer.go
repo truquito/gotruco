@@ -28,14 +28,14 @@ const (
 // iPrinter Interface para las impresoras de 2, 4 y 6 jugadores
 type iPrinter interface {
 	dibujarMarco()
-	dibujarEstadisticas(p *PartidaDT)
+	dibujarEstadisticas(p *Partida)
 	dibujarMuestra(muestra Carta)
 	dibujarNombres(manojos []Manojo, muestra Carta)
 	dibujarTiradas(manojos []Manojo)
 	dibujarPosesiones(manojos []Manojo)
 	dibujarTooltips(r Ronda)
 	dibujarDialogos(r Ronda, dialogos ...Dialogo)
-	// Print(p *PartidaDT)
+	// Print(p *Partida)
 	render() string
 }
 
@@ -69,7 +69,7 @@ func (pr impresora) dibujarMarco() {
 	pr.canvas.DrawAt(pr.otrasAreas["exteriorMesa"].From, marco)
 }
 
-func (pr impresora) dibujarEstadisticas(p *PartidaDT) {
+func (pr impresora) dibujarEstadisticas(p *Partida) {
 	template := pr.templates.estadisticas()
 	pr.canvas.DrawAt(pr.otrasAreas["estadisticas"].From, template)
 
@@ -78,12 +78,12 @@ func (pr impresora) dibujarEstadisticas(p *PartidaDT) {
 	pr.canvas.DrawAt(pr.otrasAreas["#Mano"].From, numMano)
 
 	// Mano
-	mano := p.Ronda.GetElMano().Jugador.Nombre
+	mano := p.Ronda.GetElMano().Jugador.ID
 	mano = chop(mano, 8)
 	pr.canvas.DrawAt(pr.otrasAreas["Mano"].From, mano)
 
 	// Turno
-	turno := p.Ronda.GetElTurno().Jugador.Nombre
+	turno := p.Ronda.GetElTurno().Jugador.ID
 	turno = chop(turno, 8)
 	pr.canvas.DrawAt(pr.otrasAreas["Turno"].From, turno)
 
@@ -107,7 +107,7 @@ func (pr impresora) dibujarMuestra(muestra Carta) {
 
 func (pr impresora) dibujarNombres(manojos []Manojo, muestra Carta) {
 	for i, manojo := range manojos {
-		nombre := manojo.Jugador.Nombre
+		nombre := manojo.Jugador.ID
 		// tieneFlor, _ := manojo.tieneFlor(muestra)
 		// if tieneFlor {
 		// 	nombre = "❀ " + nombre
@@ -279,7 +279,7 @@ type Dialogo struct {
 }
 
 // Renderizar .
-func Renderizar(p *PartidaDT, dialogos ...Dialogo) string {
+func Renderizar(p *Partida, dialogos ...Dialogo) string {
 
 	// como tiene el parametro en Print
 	// basta con tener una sola instancia de impresora

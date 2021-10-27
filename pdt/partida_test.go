@@ -41,7 +41,7 @@ func TestNoStruct(t *testing.T) {
 }
 
 func TestFixPanic(t *testing.T) {
-	p, _ := NuevaPartidaDt(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	p, _ := NuevaPartida(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
 	p.Ronda.SetMuestra(Carta{Palo: Basto, Valor: 4})
 	p.Puntajes[Rojo] = 17
 	p.Puntajes[Azul] = 10
@@ -85,7 +85,7 @@ func TestFixPanic(t *testing.T) {
 }
 
 func TestFixNoLePermiteTocarEnvido(t *testing.T) {
-	p, _ := NuevaPartidaDt(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	p, _ := NuevaPartida(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
 	p.Ronda.SetMuestra(Carta{Palo: Basto, Valor: 4})
 	p.Puntajes[Rojo] = 0
 	p.Puntajes[Azul] = 0
@@ -147,7 +147,7 @@ func TestFixNoLePermiteGritarTruco(t *testing.T) {
 }
 
 func TestFixLePermiteCFAR(t *testing.T) {
-	p, _ := NuevaPartidaDt(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	p, _ := NuevaPartida(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
 	p.Ronda.SetMuestra(Carta{Palo: Copa, Valor: 3})
 	p.Puntajes[Rojo] = 1
 	p.Puntajes[Azul] = 6
@@ -368,7 +368,7 @@ func TestFixNoCantarPuntajeFlorCuandoNoEsNecesario(t *testing.T) {
 }
 
 func TestFixDecirSonBuenasDesdeUltratumba(t *testing.T) {
-	p, _ := NuevaPartidaDt(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	p, _ := NuevaPartida(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
 	p.Ronda.SetMuestra(Carta{Palo: Espada, Valor: 12})
 	p.Ronda.ManoEnJuego = Primera
 	p.Ronda.ElMano = 0 // alvaro

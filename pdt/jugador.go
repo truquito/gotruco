@@ -6,7 +6,6 @@ type JugadorIdx int
 // Jugador :
 type Jugador struct {
 	ID     string `json:"id"`
-	Nombre string `json:"nombre"`
 	Equipo Equipo `json:"equipo"`
 }
 

@@ -10,7 +10,7 @@ import (
 )
 
 // Manojo .
-func Manojo(p *pdt.PartidaDT, id string) *pdt.Manojo {
+func Manojo(p *pdt.Partida, id string) *pdt.Manojo {
 	manojo, _ := p.GetManojoByStr(id)
 	return manojo
 }
@@ -30,20 +30,20 @@ func Int(m *enco.Message) int {
 }
 
 // Autor .
-func Autor(p *pdt.PartidaDT, m *enco.Message) *pdt.Manojo {
+func Autor(p *pdt.Partida, m *enco.Message) *pdt.Manojo {
 	id := enco.ParseStr(m)
 	return Manojo(p, id)
 }
 
 // Tipo1 .
-func Tipo1(p *pdt.PartidaDT, m *enco.Message) (*pdt.Manojo, int) {
+func Tipo1(p *pdt.Partida, m *enco.Message) (*pdt.Manojo, int) {
 	var t1 enco.Tipo1
 	json.Unmarshal(m.Cont, &t1)
 	return Manojo(p, t1.Autor), t1.Valor
 }
 
 // Tipo2 .
-func Tipo2(p *pdt.PartidaDT, m *enco.Message) (*pdt.Manojo, pdt.Palo, int) {
+func Tipo2(p *pdt.Partida, m *enco.Message) (*pdt.Manojo, pdt.Palo, int) {
 	var t2 enco.Tipo2
 	json.Unmarshal(m.Cont, &t2)
 	palo := pdt.Palo(t2.Palo)
@@ -51,7 +51,7 @@ func Tipo2(p *pdt.PartidaDT, m *enco.Message) (*pdt.Manojo, pdt.Palo, int) {
 }
 
 // Tipo3 .
-func Tipo3(p *pdt.PartidaDT, m *enco.Message) (*pdt.Manojo, int, int) {
+func Tipo3(p *pdt.Partida, m *enco.Message) (*pdt.Manojo, int, int) {
 	var t3 enco.Tipo3
 	json.Unmarshal(m.Cont, &t3)
 	return Manojo(p, t3.Autor), t3.Razon, t3.Puntos
@@ -91,13 +91,13 @@ func Razon2str(r int) string {
 
 // Stringify parsea un pkt
 // de momento solo su contenido (el msg)
-func Stringify(pkt *enco.Packet, p *pdt.PartidaDT) string {
+func Stringify(pkt *enco.Packet, p *pdt.Partida) string {
 	s := Parse(p, pkt.Message)
 	return strings.Replace(s, `"`, `'`, -1)
 }
 
 // Parse parsea un mensaje de salida y retorna su string correspondiente
-func Parse(p *pdt.PartidaDT, m *enco.Message) string {
+func Parse(p *pdt.Partida, m *enco.Message) string {
 
 	var decoded string
 
@@ -113,14 +113,14 @@ func Parse(p *pdt.PartidaDT, m *enco.Message) string {
 		decoded = fmt.Sprintf(`La Mano resulta parda`)
 
 	case enco.Mazo:
-		decoded = fmt.Sprintf(`%s se fue al mazo`, Autor(p, m).Jugador.Nombre)
+		decoded = fmt.Sprintf(`%s se fue al mazo`, Autor(p, m).Jugador.ID)
 
 	case enco.ByeBye:
 		var template, s string
 
 		if p.EsManoAMano() {
 			template = "el ganador fue %s"
-			s = Autor(p, m).Jugador.Nombre
+			s = Autor(p, m).Jugador.ID
 		} else {
 			template = "gano el equipo %s"
 			s = Autor(p, m).Jugador.Equipo.String()
@@ -129,54 +129,54 @@ func Parse(p *pdt.PartidaDT, m *enco.Message) string {
 		decoded = fmt.Sprintf("C'est fini! "+template, s)
 
 	case enco.DiceSonBuenas:
-		decoded = fmt.Sprintf(`%s: "son buenas"`, Autor(p, m).Jugador.Nombre)
+		decoded = fmt.Sprintf(`%s: "son buenas"`, Autor(p, m).Jugador.ID)
 
 	case enco.Abandono:
 		autor := Autor(p, m)
 		decoded = fmt.Sprintf(`%s abandono la partida. Gano el equipo %s`,
-			autor.Jugador.Nombre, autor.Jugador.GetEquipoContrario())
+			autor.Jugador.ID, autor.Jugador.GetEquipoContrario())
 
 	case enco.CantarFlor:
-		decoded = fmt.Sprintf(`%s canta flor`, Autor(p, m).Jugador.Nombre)
+		decoded = fmt.Sprintf(`%s canta flor`, Autor(p, m).Jugador.ID)
 
 	case enco.CantarContraFlor:
-		decoded = fmt.Sprintf(`%s canta contra-flor`, Autor(p, m).Jugador.Nombre)
+		decoded = fmt.Sprintf(`%s canta contra-flor`, Autor(p, m).Jugador.ID)
 
 	case enco.CantarContraFlorAlResto:
-		decoded = fmt.Sprintf(`%s canta contra-flor al resto`, Autor(p, m).Jugador.Nombre)
+		decoded = fmt.Sprintf(`%s canta contra-flor al resto`, Autor(p, m).Jugador.ID)
 
 	case enco.TocarEnvido:
-		decoded = fmt.Sprintf(`%s toca envido`, Autor(p, m).Jugador.Nombre)
+		decoded = fmt.Sprintf(`%s toca envido`, Autor(p, m).Jugador.ID)
 
 	case enco.TocarRealEnvido:
-		decoded = fmt.Sprintf(`%s toca real envido`, Autor(p, m).Jugador.Nombre)
+		decoded = fmt.Sprintf(`%s toca real envido`, Autor(p, m).Jugador.ID)
 
 	case enco.TocarFaltaEnvido:
-		decoded = fmt.Sprintf(`%s toca falta envido`, Autor(p, m).Jugador.Nombre)
+		decoded = fmt.Sprintf(`%s toca falta envido`, Autor(p, m).Jugador.ID)
 
 	case enco.ElEnvidoEstaPrimero:
-		decoded = fmt.Sprintf(`%s "el envido esta primero!"`, Autor(p, m).Jugador.Nombre)
+		decoded = fmt.Sprintf(`%s "el envido esta primero!"`, Autor(p, m).Jugador.ID)
 
 	case enco.GritarTruco:
-		decoded = fmt.Sprintf(`%s grita truco`, Autor(p, m).Jugador.Nombre)
+		decoded = fmt.Sprintf(`%s grita truco`, Autor(p, m).Jugador.ID)
 
 	case enco.GritarReTruco:
-		decoded = fmt.Sprintf(`%s grita re-truco`, Autor(p, m).Jugador.Nombre)
+		decoded = fmt.Sprintf(`%s grita re-truco`, Autor(p, m).Jugador.ID)
 
 	case enco.GritarVale4:
-		decoded = fmt.Sprintf(`%s grita vale-4`, Autor(p, m).Jugador.Nombre)
+		decoded = fmt.Sprintf(`%s grita vale-4`, Autor(p, m).Jugador.ID)
 
 	case enco.NoQuiero:
-		decoded = fmt.Sprintf(`%s: "no quiero"`, Autor(p, m).Jugador.Nombre)
+		decoded = fmt.Sprintf(`%s: "no quiero"`, Autor(p, m).Jugador.ID)
 
 	case enco.ConFlorMeAchico:
-		decoded = fmt.Sprintf(`%s: "con flor me achico"`, Autor(p, m).Jugador.Nombre)
+		decoded = fmt.Sprintf(`%s: "con flor me achico"`, Autor(p, m).Jugador.ID)
 
 	case enco.QuieroTruco:
-		decoded = fmt.Sprintf(`%s: "quiero"`, Autor(p, m).Jugador.Nombre)
+		decoded = fmt.Sprintf(`%s: "quiero"`, Autor(p, m).Jugador.ID)
 
 	case enco.QuieroEnvite:
-		decoded = fmt.Sprintf(`%s: "quiero"`, Autor(p, m).Jugador.Nombre)
+		decoded = fmt.Sprintf(`%s: "quiero"`, Autor(p, m).Jugador.ID)
 
 	// (int)
 	case enco.SigTurno:
@@ -188,12 +188,12 @@ func Parse(p *pdt.PartidaDT, m *enco.Message) string {
 	// (string, int)
 	case enco.DiceTengo:
 		autor, valor := Tipo1(p, m)
-		decoded = fmt.Sprintf(`%s: "tengo %d"`, autor.Jugador.Nombre, valor)
+		decoded = fmt.Sprintf(`%s: "tengo %d"`, autor.Jugador.ID, valor)
 
 	case enco.ManoGanada:
 		autor, valor := Tipo1(p, m)
 		decoded = fmt.Sprintf(`La %s mano la gano el equipo %s gracias a %s`,
-			pdt.NumMano(valor).String(), autor.Jugador.Equipo, autor.Jugador.Nombre)
+			pdt.NumMano(valor).String(), autor.Jugador.Equipo, autor.Jugador.ID)
 
 	case enco.RondaGanada:
 		autor, razon := Tipo1(p, m)
@@ -202,7 +202,7 @@ func Parse(p *pdt.PartidaDT, m *enco.Message) string {
 
 	case enco.DiceSonMejores:
 		autor, valor := Tipo1(p, m)
-		decoded = fmt.Sprintf(`%s: "%d son mejores!"`, autor.Jugador.Nombre, valor)
+		decoded = fmt.Sprintf(`%s: "%d son mejores!"`, autor.Jugador.ID, valor)
 
 	// (partida)
 	case enco.NuevaPartida:
@@ -215,7 +215,7 @@ func Parse(p *pdt.PartidaDT, m *enco.Message) string {
 	case enco.TirarCarta:
 		// autor, palo, valor := Tipo2(p, m)
 		// fmt.Printf("detectado codigo %d\n", enco.CodMsg(m.Cod))
-		// decoded = fmt.Sprintf(`%s tira %d de %s`, autor.Jugador.Nombre, valor, palo.String())
+		// decoded = fmt.Sprintf(`%s tira %d de %s`, autor.Jugador.ID, valor, palo.String())
 		decoded = ""
 
 	// (string, string, int)
@@ -223,7 +223,7 @@ func Parse(p *pdt.PartidaDT, m *enco.Message) string {
 		autor, razon, pts := Tipo3(p, m)
 		if p.EsManoAMano() {
 			decoded = fmt.Sprintf(`+%d pts para %s por %s`,
-				pts, autor.Jugador.Nombre, Razon2str(razon))
+				pts, autor.Jugador.ID, Razon2str(razon))
 		} else {
 			decoded = fmt.Sprintf(`+%d pts para el equipo %s por %s`,
 				pts, autor.Jugador.Equipo.String(), Razon2str(razon))

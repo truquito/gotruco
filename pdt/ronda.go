@@ -382,7 +382,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*enco.Packet) {
 
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.DiceTengo, r.Manojos[jIdx].Jugador.Nombre, envidos[jIdx]),
+		enco.Msg(enco.DiceTengo, r.Manojos[jIdx].Jugador.ID, envidos[jIdx]),
 	))
 
 	// `todaviaNoDijeronSonMejores` se usa para
@@ -422,7 +422,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*enco.Packet) {
 
 					pkts = append(pkts, enco.Pkt(
 						enco.Dest("ALL"),
-						enco.Msg(enco.DiceSonMejores, r.Manojos[i].Jugador.Nombre, envidos[i]),
+						enco.Msg(enco.DiceSonMejores, r.Manojos[i].Jugador.ID, envidos[i]),
 					))
 
 					jIdx = i
@@ -444,7 +444,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*enco.Packet) {
 
 						pkts = append(pkts, enco.Pkt(
 							enco.Dest("ALL"),
-							enco.Msg(enco.DiceSonBuenas, r.Manojos[i].Jugador.Nombre),
+							enco.Msg(enco.DiceSonBuenas, r.Manojos[i].Jugador.ID),
 							// valor de su envido es `envidos[i]` pero no corresponde decirlo
 						))
 
@@ -540,7 +540,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts []*
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.DiceTengo, r.Manojos[aPartirDe].Jugador.Nombre, flores[aPartirDe]),
+			enco.Msg(enco.DiceTengo, r.Manojos[aPartirDe].Jugador.ID, flores[aPartirDe]),
 		))
 	}
 
@@ -573,7 +573,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts []*
 
 					pkts = append(pkts, enco.Pkt(
 						enco.Dest("ALL"),
-						enco.Msg(enco.DiceSonMejores, r.Manojos[i].Jugador.Nombre, flores[i]),
+						enco.Msg(enco.DiceSonMejores, r.Manojos[i].Jugador.ID, flores[i]),
 					))
 
 					jIdx = i
@@ -595,7 +595,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts []*
 
 						pkts = append(pkts, enco.Pkt(
 							enco.Dest("ALL"),
-							enco.Msg(enco.DiceSonBuenas, r.Manojos[i].Jugador.Nombre),
+							enco.Msg(enco.DiceSonBuenas, r.Manojos[i].Jugador.ID),
 							// valor de su envido es `flores[i]` pero no corresponde decirlo
 						))
 
