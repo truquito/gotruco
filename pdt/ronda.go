@@ -653,18 +653,11 @@ func (r *Ronda) cachearFlores() {
 	r.Envite.JugadoresConFlorQueNoCantaron = JugadoresConFlorCopy
 }
 
-func (r *Ronda) singleLinking(jugadores []Jugador) {
-	cantJugadores := len(jugadores)
-	for i := 0; i < cantJugadores; i++ {
-		r.Manojos[i].Jugador = &jugadores[i]
-	}
-}
-
 /*
  * Reparte 3 cartas al azar a cada manojo de c/jugador
  * y 1 a la `muestra` (se las actualiza)
  */
-func (r *Ronda) dealCards() {
+func (r *Ronda) repartirCartas() {
 	cantJugadores := cap(r.Manojos)
 	// genero `3*cantJugadores + 1` cartas al azar
 	randomCards := getCartasRandom(3*cantJugadores + 1)
@@ -683,37 +676,67 @@ func (r *Ronda) dealCards() {
 	r.Muestra = nuevaCarta(CartaID(randomCards[n-1]))
 }
 
+func (r *Ronda) nuevaRonda(elMano JugadorIdx) {
+	cantJugadores := len(r.Manojos)
+	cantJugadoresPorEquipo := cantJugadores / 2
+
+	r.ManoEnJuego = Primera
+	r.CantJugadoresEnJuego[Rojo] = cantJugadoresPorEquipo
+	r.CantJugadoresEnJuego[Azul] = cantJugadoresPorEquipo
+	r.ElMano = elMano
+	r.Turno = elMano
+	r.Envite = Envite{Estado: NOCANTADOAUN, Puntaje: 0}
+	r.Truco = Truco{CantadoPor: nil, Estado: NOCANTADO}
+	r.Manos = make([]Mano, 3)
+
+	for i := range r.Manojos {
+		r.Manojos[i].SeFueAlMazo = false
+		// r.Manojos[i].Cartas
+		r.Manojos[i].CartasNoTiradas = [cantCartasManojo]bool{true, true, true}
+	}
+
+	// reparto 3 cartas al azar a cada jugador
+	// y ademas una muestra, tambien al azar.
+	r.repartirCartas()
+
+	// flores
+	r.cachearFlores()
+}
+
 /* CONSTRUCTOR */
 
-// NuevaRonda : crea una nueva ronda al azar
-func NuevaRonda(jugadores []Jugador, elMano JugadorIdx) Ronda {
-	cantJugadores := len(jugadores)
-	cantJugadoresPorEquipo := cantJugadores / 2
+// Reserva el espacio en memoria
+// Por default, cuando se crea una ronda el mano sera el jix = 0
+func MakeRonda(equipoAzul, equipoRojo []string) Ronda {
+
+	cantJugadores := len(equipoAzul) * 2
+	cantJugadoresPorEquipo := len(equipoAzul)
+
 	ronda := Ronda{
 		ManoEnJuego: Primera,
 		CantJugadoresEnJuego: map[Equipo]int{
 			Rojo: cantJugadoresPorEquipo,
 			Azul: cantJugadoresPorEquipo,
 		},
-		ElMano:  elMano,
-		Turno:   elMano,
+		ElMano:  0,
+		Turno:   0,
 		Envite:  Envite{Estado: NOCANTADOAUN, Puntaje: 0},
 		Truco:   Truco{CantadoPor: nil, Estado: NOCANTADO},
 		Manojos: make([]Manojo, cantJugadores),
 		Manos:   make([]Mano, 3),
 	}
 
+	for i := 0; i < cantJugadoresPorEquipo; i++ {
+		ronda.Manojos[i*2].Jugador = &Jugador{equipoAzul[i], Azul}
+		ronda.Manojos[i*2+1].Jugador = &Jugador{equipoRojo[i], Rojo}
+	}
+
 	// reparto 3 cartas al azar a cada jugador
 	// y ademas una muestra, tambien al azar.
-	ronda.dealCards()
-
-	// // hago el SINGLE-linking "jugadores <- manojos"
-	ronda.singleLinking(jugadores)
+	ronda.repartirCartas()
 
 	// flores
 	ronda.cachearFlores()
-
-	// p.Ronda.setTurno()
 
 	return ronda
 }

@@ -126,10 +126,10 @@ func (p *Partida) byeBye() []*enco.Packet {
 
 		var s string
 
-		if p.Jugadores[0].Equipo == p.ElQueVaGanando() {
-			s = p.Jugadores[0].ID
+		if p.Ronda.Manojos[0].Jugador.Equipo == p.ElQueVaGanando() {
+			s = p.Ronda.Manojos[0].Jugador.ID
 		} else {
-			s = p.Jugadores[1].ID
+			s = p.Ronda.Manojos[1].Jugador.ID
 		}
 
 		pkts = append(pkts, enco.Pkt(

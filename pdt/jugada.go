@@ -336,7 +336,7 @@ func (jugada TocarEnvido) Eval(p *Partida) []*enco.Packet {
 
 	pkts = append(pkts, res...)
 
-	jug := &p.Jugadores[jIdx]
+	jug := p.Ronda.Manojos[jIdx].Jugador
 
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
@@ -560,7 +560,7 @@ func (jugada TocarFaltaEnvido) Eval(p *Partida) []*enco.Packet {
 	pkts = append(pkts, res...)
 
 	// jug es el que gano el (falta) envido
-	jug := &p.Jugadores[jIdx]
+	jug := p.Ronda.Manojos[jIdx].Jugador
 
 	pts := p.CalcPtsFaltaEnvido(jug.Equipo)
 

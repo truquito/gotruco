@@ -31,7 +31,7 @@ func TestNoStruct(t *testing.T) {
 		t.Error("El estado del envite deberia ser NOCANTADOAUN")
 	}
 
-	if !(len(p.Jugadores) == 6) {
+	if !(len(p.Ronda.Manojos) == 6) {
 		t.Error("deberia haber 6 jugadores")
 	}
 

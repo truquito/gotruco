@@ -66,7 +66,6 @@ func (e *Equipo) UnmarshalJSON(b []byte) error {
 
 // Partida solo los datos de una partida
 type Partida struct {
-	Jugadores     []Jugador
 	CantJugadores int            `json:"cantJugadores"`
 	Puntuacion    Puntuacion     `json:"puntuacion"`
 	Puntajes      map[Equipo]int `json:"puntajes"`
@@ -585,7 +584,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 
 // NuevaRonda .
 func (p *Partida) NuevaRonda(elMano JugadorIdx) {
-	p.Ronda = NuevaRonda(p.Jugadores, elMano)
+	p.Ronda.nuevaRonda(elMano)
 }
 
 // DEPRECATED: usar `.Manojo(s)`
@@ -624,10 +623,10 @@ func (p *Partida) FromJSON(data []byte) error {
 
 	p.Ronda.cachearFlores()
 	// cargo los jugadores xq no vienen en el json
-	p.Jugadores = make([]Jugador, p.CantJugadores)
-	for i, m := range p.Ronda.Manojos {
-		p.Jugadores[i] = *m.Jugador
-	}
+	// p.Jugadores = make([]Jugador, p.CantJugadores)
+	// for i, m := range p.Ronda.Manojos {
+	// 	p.Jugadores[i] = *m.Jugador
+	// }
 
 	// cargo los autores de las tiradas de cada una de las 3 manos
 	/*
@@ -749,15 +748,13 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	p := Partida{
 		Puntuacion:    puntuacion,
 		CantJugadores: cantJugadores,
-		Jugadores:     jugadores,
 	}
 
 	p.Puntajes = make(map[Equipo]int)
 	p.Puntajes[Rojo] = 0
 	p.Puntajes[Azul] = 0
 
-	elMano := JugadorIdx(0)
-	p.NuevaRonda(elMano)
+	p.Ronda = MakeRonda(equipoAzul, equipoRojo)
 
 	return &p, nil
 }
