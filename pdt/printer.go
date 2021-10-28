@@ -286,7 +286,7 @@ func Renderizar(p *Partida, dialogos ...Dialogo) string {
 	// para imprimir varias instancias de partidas diferentes
 	var pr iPrinter
 
-	switch p.CantJugadores {
+	switch len(p.Ronda.Manojos) {
 	case 2:
 		pr = nuevaImpresora2()
 	case 4:

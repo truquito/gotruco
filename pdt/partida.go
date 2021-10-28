@@ -66,10 +66,9 @@ func (e *Equipo) UnmarshalJSON(b []byte) error {
 
 // Partida solo los datos de una partida
 type Partida struct {
-	CantJugadores int            `json:"cantJugadores"`
-	Puntuacion    Puntuacion     `json:"puntuacion"`
-	Puntajes      map[Equipo]int `json:"puntajes"`
-	Ronda         Ronda          `json:"ronda"`
+	Puntuacion Puntuacion     `json:"puntuacion"`
+	Puntajes   map[Equipo]int `json:"puntajes"`
+	Ronda      Ronda          `json:"ronda"`
 }
 
 // GetMaxPuntaje .
@@ -97,7 +96,7 @@ func (p *Partida) GetPuntuacionMalas() int {
 
 // EsManoAMano retorna true sii la partida consta de exactamente 2 jugadores
 func (p *Partida) EsManoAMano() bool {
-	return p.CantJugadores == 2
+	return len(p.Ronda.Manojos) == 2
 }
 
 // Terminada retorna true si la partida acabo
@@ -648,7 +647,7 @@ func (p *Partida) FromJSON(data []byte) error {
 		}
 		jix := 0
 		for tix, t := range mano.CartasTiradas {
-			count := p.CantJugadores
+			count := len(p.Ronda.Manojos)
 			for {
 				if count--; count == -1 {
 					return fmt.Errorf("los datos no son consistentes")
@@ -746,8 +745,7 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	}
 
 	p := Partida{
-		Puntuacion:    puntuacion,
-		CantJugadores: cantJugadores,
+		Puntuacion: puntuacion,
 	}
 
 	p.Puntajes = make(map[Equipo]int)

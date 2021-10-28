@@ -117,7 +117,8 @@ func GetA(p *Partida, m *Manojo) A {
 
 // Retorna TODAS las jugadas posibles de cada jugador
 func GetAA(p *Partida) []A {
-	res := make([]A, p.CantJugadores)
+	n := len(p.Ronda.Manojos)
+	res := make([]A, n)
 	for i := range p.Ronda.Manojos {
 		res[i] = GetA(p, &p.Ronda.Manojos[i])
 	}
