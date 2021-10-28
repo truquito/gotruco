@@ -1309,6 +1309,7 @@ func TestFixFlor(t *testing.T) {
 	p.Cmd("renzo 6 basto")
 	p.Cmd("andres 6 copa")
 	p.Cmd("richard 3 espada")
+
 	p.Cmd("adolfo 10 copa")
 	p.Cmd("renzo 10 espada")
 	p.Cmd("andres 3 copa")
@@ -1818,8 +1819,7 @@ func TestFixNacho(t *testing.T) {
 	p.Cmd("alvaro 6 basto")
 	p.Cmd("roro 2 basto")
 
-	roro, _ := p.GetManojoByStr("Roro")
-	cantTiradasRoro := roro.GetCantCartasTiradas()
+	cantTiradasRoro := p.Manojo["Roro"].GetCantCartasTiradas()
 
 	util.Assert(cantTiradasRoro == 1, func() {
 		t.Error(`Roro tiro solo 1 carta`)
@@ -3675,7 +3675,7 @@ func TestFixFlorNoCantada(t *testing.T) {
 		t.Log(deco.Stringify(pkt, p.Partida))
 	})
 
-	roro, _ := p.GetManojoByStr("Roro")
+	roro := p.Manojo["Roro"]
 	aa := pdt.GetA(p.Partida, roro)
 
 	t.Log(aa)

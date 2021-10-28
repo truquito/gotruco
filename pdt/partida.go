@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
-	"strings"
 
 	"github.com/filevich/truco/enco"
 )
@@ -69,6 +68,7 @@ type Partida struct {
 	Puntuacion Puntuacion     `json:"puntuacion"`
 	Puntajes   map[Equipo]int `json:"puntajes"`
 	Ronda      Ronda          `json:"ronda"`
+	Manojo     map[string]*Manojo
 }
 
 // GetMaxPuntaje .
@@ -586,26 +586,6 @@ func (p *Partida) NuevaRonda(elMano JugadorIdx) {
 	p.Ronda.nuevaRonda(elMano)
 }
 
-// DEPRECATED: usar `.Manojo(s)`
-// GetManojoByStr ..
-// OJO QUE AHORA LAS COMPARACIONES SON CASE INSENSITIVE
-// ENTONCES SI EL IDENTIFICADOR Juan == jUaN
-// ojo con los kakeos
-// todo: esto es ineficiente
-// getManojo devuelve el puntero al manojo,
-// dado un string que identifique al jugador duenio de ese manojo
-func (p *Partida) GetManojoByStr(idJugador string) (*Manojo, error) {
-	idJugador = strings.ToLower(idJugador)
-	for i := range p.Ronda.Manojos {
-		idActual := strings.ToLower(p.Ronda.Manojos[i].Jugador.ID)
-		esEse := idActual == idJugador
-		if esEse {
-			return &p.Ronda.Manojos[i], nil
-		}
-	}
-	return nil, fmt.Errorf("jugador `%s` no encontrado", idJugador)
-}
-
 // MarshalJSON retorna la partida en formato json
 func (p *Partida) MarshalJSON() ([]byte, error) {
 	// return json.Marshal(p)
@@ -621,11 +601,8 @@ func (p *Partida) FromJSON(data []byte) error {
 	}
 
 	p.Ronda.cachearFlores()
-	// cargo los jugadores xq no vienen en el json
-	// p.Jugadores = make([]Jugador, p.CantJugadores)
-	// for i, m := range p.Ronda.Manojos {
-	// 	p.Jugadores[i] = *m.Jugador
-	// }
+
+	p.indexarManojos()
 
 	// cargo los autores de las tiradas de cada una de las 3 manos
 	/*
@@ -667,9 +644,11 @@ func (p *Partida) FromJSON(data []byte) error {
 }
 
 func Parse(data string) (*Partida, error) {
-	p := new(Partida)
+	p := Partida{
+		Manojo: make(map[string]*Manojo),
+	}
 	err := p.FromJSON([]byte(data))
-	return p, err
+	return &p, err
 }
 
 func cheepCopy(p *Partida) *Partida {
@@ -684,8 +663,8 @@ func cheepCopy(p *Partida) *Partida {
 // el jugador `j` de la partida
 func (p *Partida) Perspectiva(j string) (*Partida, error) {
 	// primero encuentro el jugador
-	manojo, err := p.GetManojoByStr(j)
-	if err != nil {
+	manojo, ok := p.Manojo[j]
+	if !ok {
 		return nil, fmt.Errorf("usuario %s no encontrado", j)
 	}
 
@@ -710,6 +689,14 @@ func (p *Partida) PerspectivaCacheFlor(manojo *Manojo) *Partida {
 	}
 
 	return copia
+}
+
+func (p *Partida) indexarManojos() {
+	// indexo los manojos
+	for i := range p.Ronda.Manojos {
+		id := p.Ronda.Manojos[i].Jugador.ID
+		p.Manojo[id] = &p.Ronda.Manojos[i]
+	}
 }
 
 /* metodos de manipulacion */
@@ -737,6 +724,7 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 
 	p := Partida{
 		Puntuacion: puntuacion,
+		Manojo:     make(map[string]*Manojo),
 	}
 
 	p.Puntajes = make(map[Equipo]int)
@@ -744,6 +732,8 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	p.Puntajes[Azul] = 0
 
 	p.Ronda = MakeRonda(equipoAzul, equipoRojo)
+
+	p.indexarManojos()
 
 	return &p, nil
 }

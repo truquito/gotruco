@@ -25,11 +25,16 @@ func checkeoSemantico(p *Partida, cmd string) (IJugada, error) {
 	match := regexps["jugadaSimple"].FindAllStringSubmatch(cmd, 1)
 
 	if match != nil {
+
 		jugadorStr, jugadaStr := match[0][1], match[0][2]
 
-		m, err := p.GetManojoByStr(jugadorStr)
-		if err != nil {
-			return nil, fmt.Errorf("usuario %s no encontrado", jugadorStr)
+		m, ok := p.Manojo[jugadorStr]
+		if !ok {
+			// segundo intento
+			m, ok = p.Manojo[strings.Title(jugadorStr)]
+			if !ok {
+				return nil, fmt.Errorf("usuario %s no encontrado", jugadorStr)
+			}
 		}
 
 		jugadaStr = strings.ToLower(jugadaStr)
@@ -75,7 +80,9 @@ func checkeoSemantico(p *Partida, cmd string) (IJugada, error) {
 		default:
 			return nil, fmt.Errorf("no existe esa jugada")
 		}
+
 	} else {
+
 		match = regexps["jugadaTirada"].FindAllStringSubmatch(cmd, 1)
 		if match == nil {
 			return nil, fmt.Errorf("no existe esa jugada")
@@ -83,9 +90,13 @@ func checkeoSemantico(p *Partida, cmd string) (IJugada, error) {
 		jugadorStr := match[0][1]
 		valorStr, paloStr := match[0][2], match[0][3]
 
-		m, err := p.GetManojoByStr(jugadorStr)
-		if err != nil {
-			return nil, fmt.Errorf("usuario %s no encontrado", jugadorStr)
+		m, ok := p.Manojo[jugadorStr]
+		if !ok {
+			// segundo intento
+			m, ok = p.Manojo[strings.Title(jugadorStr)]
+			if !ok {
+				return nil, fmt.Errorf("usuario %s no encontrado", jugadorStr)
+			}
 		}
 
 		c, err := ParseCarta(valorStr, paloStr)
@@ -97,6 +108,7 @@ func checkeoSemantico(p *Partida, cmd string) (IJugada, error) {
 			Manojo: m,
 			Carta:  *c,
 		}
+
 	}
 
 	return jugada, nil

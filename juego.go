@@ -57,8 +57,8 @@ func (j *Juego) Notify() {
 // Abandono da por ganada la partida al equipo contario
 func (j *Juego) Abandono(jugador string) error {
 	// encuentra al jugador
-	manojo, err := j.GetManojoByStr(jugador)
-	if err != nil {
+	manojo, ok := j.Partida.Manojo[jugador]
+	if !ok {
 		return fmt.Errorf("usuario %s no encontrado", jugador)
 	}
 	// doy por ganador al equipo contrario

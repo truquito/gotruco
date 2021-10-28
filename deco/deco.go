@@ -9,12 +9,6 @@ import (
 	"github.com/filevich/truco/pdt"
 )
 
-// Manojo .
-func Manojo(p *pdt.Partida, id string) *pdt.Manojo {
-	manojo, _ := p.GetManojoByStr(id)
-	return manojo
-}
-
 // Str .
 func Str(m *enco.Message) string {
 	var str string
@@ -32,14 +26,14 @@ func Int(m *enco.Message) int {
 // Autor .
 func Autor(p *pdt.Partida, m *enco.Message) *pdt.Manojo {
 	id := enco.ParseStr(m)
-	return Manojo(p, id)
+	return p.Manojo[id]
 }
 
 // Tipo1 .
 func Tipo1(p *pdt.Partida, m *enco.Message) (*pdt.Manojo, int) {
 	var t1 enco.Tipo1
 	json.Unmarshal(m.Cont, &t1)
-	return Manojo(p, t1.Autor), t1.Valor
+	return p.Manojo[t1.Autor], t1.Valor
 }
 
 // Tipo2 .
@@ -47,14 +41,14 @@ func Tipo2(p *pdt.Partida, m *enco.Message) (*pdt.Manojo, pdt.Palo, int) {
 	var t2 enco.Tipo2
 	json.Unmarshal(m.Cont, &t2)
 	palo := pdt.Palo(t2.Palo)
-	return Manojo(p, t2.Autor), palo, t2.Valor
+	return p.Manojo[t2.Autor], palo, t2.Valor
 }
 
 // Tipo3 .
 func Tipo3(p *pdt.Partida, m *enco.Message) (*pdt.Manojo, int, int) {
 	var t3 enco.Tipo3
 	json.Unmarshal(m.Cont, &t3)
-	return Manojo(p, t3.Autor), t3.Razon, t3.Puntos
+	return p.Manojo[t3.Autor], t3.Razon, t3.Puntos
 }
 
 // Razon2str retorna el string correspondiente a `r`
