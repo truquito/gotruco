@@ -92,7 +92,7 @@ type Ronda struct {
 
 	/* cartas */
 	Manojos []Manojo           `json:"manojos"`
-	Manojo  map[string]*Manojo // index/hash de jugadores
+	Manojo  map[string]*Manojo `json:"-"` // index/hash de jugadores
 	Muestra Carta              `json:"muestra"`
 
 	Manos []Mano `json:"manos"`
@@ -663,7 +663,7 @@ func (r *Ronda) cachearFlores() {
 	_, JugadoresConFlor := r.getFlores()
 	r.Envite.JugadoresConFlor = JugadoresConFlor
 
-	var conFlor []string
+	conFlor := make([]string, 0)
 	for _, m := range JugadoresConFlor {
 		conFlor = append(conFlor, m.Jugador.ID)
 	}
