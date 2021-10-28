@@ -91,8 +91,9 @@ type Ronda struct {
 	Truco  Truco  `json:"truco"`
 
 	/* cartas */
-	Manojos []Manojo `json:"manojos"`
-	Muestra Carta    `json:"muestra"`
+	Manojos []Manojo           `json:"manojos"`
+	Manojo  map[string]*Manojo // index/hash de jugadores
+	Muestra Carta              `json:"muestra"`
 
 	Manos []Mano `json:"manos"`
 }
@@ -647,9 +648,10 @@ func (r *Ronda) ExecLaFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts []*
 func (r *Ronda) cachearFlores() {
 	// flores
 	_, JugadoresConFlor := r.getFlores()
+	r.Envite.JugadoresConFlor = JugadoresConFlor
+
 	JugadoresConFlorCopy := make([]*Manojo, len(JugadoresConFlor))
 	copy(JugadoresConFlorCopy, JugadoresConFlor)
-	r.Envite.JugadoresConFlor = JugadoresConFlor
 	r.Envite.JugadoresConFlorQueNoCantaron = JugadoresConFlorCopy
 }
 
@@ -674,6 +676,14 @@ func (r *Ronda) repartirCartas() {
 	// la ultima es la muestra
 	n := cap(randomCards)
 	r.Muestra = nuevaCarta(CartaID(randomCards[n-1]))
+}
+
+func (r *Ronda) indexarManojos() {
+	// indexo los manojos
+	for i := range r.Manojos {
+		id := r.Manojos[i].Jugador.ID
+		r.Manojo[id] = &r.Manojos[i]
+	}
 }
 
 func (r *Ronda) nuevaRonda(elMano JugadorIdx) {
@@ -723,6 +733,7 @@ func MakeRonda(equipoAzul, equipoRojo []string) Ronda {
 		Envite:  Envite{Estado: NOCANTADOAUN, Puntaje: 0},
 		Truco:   Truco{CantadoPor: nil, Estado: NOCANTADO},
 		Manojos: make([]Manojo, cantJugadores),
+		Manojo:  make(map[string]*Manojo),
 		Manos:   make([]Mano, 3),
 	}
 
@@ -730,6 +741,8 @@ func MakeRonda(equipoAzul, equipoRojo []string) Ronda {
 		ronda.Manojos[i*2].Jugador = &Jugador{equipoAzul[i], Azul}
 		ronda.Manojos[i*2+1].Jugador = &Jugador{equipoRojo[i], Rojo}
 	}
+
+	ronda.indexarManojos()
 
 	// reparto 3 cartas al azar a cada jugador
 	// y ademas una muestra, tambien al azar.

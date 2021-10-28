@@ -28,10 +28,10 @@ func checkeoSemantico(p *Partida, cmd string) (IJugada, error) {
 
 		jugadorStr, jugadaStr := match[0][1], match[0][2]
 
-		m, ok := p.Manojo[jugadorStr]
+		m, ok := p.Ronda.Manojo[jugadorStr]
 		if !ok {
 			// segundo intento
-			m, ok = p.Manojo[strings.Title(jugadorStr)]
+			m, ok = p.Ronda.Manojo[strings.Title(jugadorStr)]
 			if !ok {
 				return nil, fmt.Errorf("usuario %s no encontrado", jugadorStr)
 			}
@@ -90,10 +90,10 @@ func checkeoSemantico(p *Partida, cmd string) (IJugada, error) {
 		jugadorStr := match[0][1]
 		valorStr, paloStr := match[0][2], match[0][3]
 
-		m, ok := p.Manojo[jugadorStr]
+		m, ok := p.Ronda.Manojo[jugadorStr]
 		if !ok {
 			// segundo intento
-			m, ok = p.Manojo[strings.Title(jugadorStr)]
+			m, ok = p.Ronda.Manojo[strings.Title(jugadorStr)]
 			if !ok {
 				return nil, fmt.Errorf("usuario %s no encontrado", jugadorStr)
 			}

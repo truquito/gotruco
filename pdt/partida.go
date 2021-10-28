@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"strings"
 
 	"github.com/filevich/truco/enco"
 )
@@ -68,7 +69,6 @@ type Partida struct {
 	Puntuacion Puntuacion     `json:"puntuacion"`
 	Puntajes   map[Equipo]int `json:"puntajes"`
 	Ronda      Ronda          `json:"ronda"`
-	Manojo     map[string]*Manojo
 }
 
 // GetMaxPuntaje .
@@ -600,9 +600,11 @@ func (p *Partida) FromJSON(data []byte) error {
 		return err
 	}
 
-	p.Ronda.cachearFlores()
+	// este lo tengo que hacer a mano porque no esta en el JSON
+	p.Ronda.Manojo = make(map[string]*Manojo)
+	p.Ronda.indexarManojos()
 
-	p.indexarManojos()
+	p.Ronda.cachearFlores()
 
 	// cargo los autores de las tiradas de cada una de las 3 manos
 	/*
@@ -644,11 +646,15 @@ func (p *Partida) FromJSON(data []byte) error {
 }
 
 func Parse(data string) (*Partida, error) {
-	p := Partida{
-		Manojo: make(map[string]*Manojo),
-	}
+	p := new(Partida)
+
+	// de estos se encarga el Unmarshal:
+	// Manojos: make([]Manojo, cantJugadores)
+	// Manos:   make([]Mano, 3)
+
 	err := p.FromJSON([]byte(data))
-	return &p, err
+
+	return p, err
 }
 
 func cheepCopy(p *Partida) *Partida {
@@ -662,12 +668,7 @@ func cheepCopy(p *Partida) *Partida {
 // Perspectiva retorna una representacion en json de la PerspectivaCacheFlor que tiene
 // el jugador `j` de la partida
 func (p *Partida) Perspectiva(j string) (*Partida, error) {
-	// primero encuentro el jugador
-	manojo, ok := p.Manojo[j]
-	if !ok {
-		return nil, fmt.Errorf("usuario %s no encontrado", j)
-	}
-
+	manojo := p.Manojo(j)
 	return p.PerspectivaCacheFlor(manojo), nil
 }
 
@@ -691,12 +692,17 @@ func (p *Partida) PerspectivaCacheFlor(manojo *Manojo) *Partida {
 	return copia
 }
 
-func (p *Partida) indexarManojos() {
-	// indexo los manojos
-	for i := range p.Ronda.Manojos {
-		id := p.Ronda.Manojos[i].Jugador.ID
-		p.Manojo[id] = &p.Ronda.Manojos[i]
+func (p *Partida) Manojo(j string) *Manojo {
+	m, ok := p.Ronda.Manojo[j]
+	if ok {
+		return m
 	}
+	// segundo intento
+	m, ok = p.Ronda.Manojo[strings.Title(j)]
+	if ok {
+		return m
+	}
+	return nil
 }
 
 /* metodos de manipulacion */
@@ -724,7 +730,6 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 
 	p := Partida{
 		Puntuacion: puntuacion,
-		Manojo:     make(map[string]*Manojo),
 	}
 
 	p.Puntajes = make(map[Equipo]int)
@@ -732,8 +737,6 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	p.Puntajes[Azul] = 0
 
 	p.Ronda = MakeRonda(equipoAzul, equipoRojo)
-
-	p.indexarManojos()
 
 	return &p, nil
 }

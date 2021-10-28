@@ -2,7 +2,6 @@ package truco
 
 import (
 	"bytes"
-	"fmt"
 	"io"
 
 	"github.com/filevich/truco/enco"
@@ -57,10 +56,7 @@ func (j *Juego) Notify() {
 // Abandono da por ganada la partida al equipo contario
 func (j *Juego) Abandono(jugador string) error {
 	// encuentra al jugador
-	manojo, ok := j.Partida.Manojo[jugador]
-	if !ok {
-		return fmt.Errorf("usuario %s no encontrado", jugador)
-	}
+	manojo := j.Partida.Manojo(jugador)
 	// doy por ganador al equipo contrario
 	equipoContrario := manojo.Jugador.GetEquipoContrario()
 	ptsFaltantes := int(j.Puntuacion) - j.Puntajes[equipoContrario]

@@ -187,7 +187,7 @@ func TestFixLePermiteCFAR(t *testing.T) {
 		},
 	)
 
-	m := p.Manojo["Renzo"]
+	m := p.Manojo("Renzo")
 	A := GetA(p, m)
 
 	ok := A[6] == true && A[7] == false && A[8] == false
@@ -250,7 +250,7 @@ func TestFixNoLeDeberiaResponderDesdeUltratumba(t *testing.T) {
 	t.Log(Renderizar(p))
 
 	p.Cmd("Renzo mazo")
-	m := p.Manojo["Renzo"]
+	m := p.Manojo("Renzo")
 	util.Assert(m.SeFueAlMazo, func() {
 		t.Error("Deberia dejarlo irse al mazo")
 	})
