@@ -244,6 +244,17 @@ func (r Ronda) leGanaDeMano(i, j JugadorIdx) bool {
 	return p < q
 }
 
+func (r *Ronda) hayEquipoSinCantar(equipo Equipo) bool {
+	for _, jid := range r.Envite.SinCantar {
+		mismoEquipo := r.Manojo[jid].Jugador.Equipo == equipo
+		if mismoEquipo {
+			return true
+		}
+	}
+
+	return false
+}
+
 /* SETTERS */
 
 // SetNextTurno este metodo es inseguro ya que manojoSigTurno puede ser nil
@@ -311,6 +322,7 @@ func (r *Ronda) SetNextTurnoPosMano() {
 
 // SetManojos .
 func (r *Ronda) SetManojos(manojos []Manojo) {
+	// cargo los manojos
 	for m, manojo := range manojos {
 		for c, carta := range manojo.Cartas {
 			r.Manojos[m].Cartas[c] = carta
@@ -323,6 +335,7 @@ func (r *Ronda) SetManojos(manojos []Manojo) {
 // SetMuestra .
 func (r *Ronda) SetMuestra(muestra Carta) {
 	r.Muestra = muestra
+	r.cachearFlores()
 }
 
 /* EDITORES */
@@ -650,9 +663,11 @@ func (r *Ronda) cachearFlores() {
 	_, JugadoresConFlor := r.getFlores()
 	r.Envite.JugadoresConFlor = JugadoresConFlor
 
-	JugadoresConFlorCopy := make([]*Manojo, len(JugadoresConFlor))
-	copy(JugadoresConFlorCopy, JugadoresConFlor)
-	r.Envite.JugadoresConFlorQueNoCantaron = JugadoresConFlorCopy
+	var conFlor []string
+	for _, m := range JugadoresConFlor {
+		conFlor = append(conFlor, m.Jugador.ID)
+	}
+	r.Envite.SinCantar = conFlor
 }
 
 /*

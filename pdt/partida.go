@@ -600,6 +600,10 @@ func (p *Partida) FromJSON(data []byte) error {
 		return err
 	}
 
+	// de estos se encarga el Unmarshal:
+	// Manojos: make([]Manojo, cantJugadores)
+	// Manos:   make([]Mano, 3)
+
 	// este lo tengo que hacer a mano porque no esta en el JSON
 	p.Ronda.Manojo = make(map[string]*Manojo)
 	p.Ronda.indexarManojos()
@@ -647,10 +651,6 @@ func (p *Partida) FromJSON(data []byte) error {
 
 func Parse(data string) (*Partida, error) {
 	p := new(Partida)
-
-	// de estos se encarga el Unmarshal:
-	// Manojos: make([]Manojo, cantJugadores)
-	// Manos:   make([]Mano, 3)
 
 	err := p.FromJSON([]byte(data))
 

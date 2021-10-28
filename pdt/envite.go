@@ -71,6 +71,15 @@ func (e *EstadoEnvite) UnmarshalJSON(b []byte) error {
 	return nil
 }
 
+func (e *Envite) noCantoFlorAun(j string) bool {
+	for _, id := range e.SinCantar {
+		if id == j {
+			return true
+		}
+	}
+	return false
+}
+
 // Elimina a `j` de los jugadores que tienen pendiente cantar flor
 func (e *Envite) cantoFlor(j string) {
 	// lo elimino
@@ -89,10 +98,9 @@ func (e *Envite) cantoFlor(j string) {
 
 // Envite :
 type Envite struct {
-	Estado                        EstadoEnvite `json:"estado"`
-	Puntaje                       int          `json:"puntaje"`
-	CantadoPor                    *Manojo      `json:"cantadoPor"`
-	JugadoresConFlor              []*Manojo    `json:"-"`
-	JugadoresConFlorQueNoCantaron []*Manojo    `json:"-"`
-	SinCantar                     []string     `json:"asdn"`
+	Estado           EstadoEnvite `json:"estado"`
+	Puntaje          int          `json:"puntaje"`
+	CantadoPor       *Manojo      `json:"cantadoPor"`
+	JugadoresConFlor []*Manojo    `json:"-"`
+	SinCantar        []string     `json:"sinCantar"`
 }
