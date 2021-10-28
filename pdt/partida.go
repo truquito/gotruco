@@ -608,7 +608,7 @@ func (p *Partida) FromJSON(data []byte) error {
 	p.Ronda.Manojo = make(map[string]*Manojo)
 	p.Ronda.indexarManojos()
 
-	p.Ronda.cachearFlores()
+	p.Ronda.cachearFlores(false) // sin reset
 
 	// cargo los autores de las tiradas de cada una de las 3 manos
 	/*

@@ -329,13 +329,13 @@ func (r *Ronda) SetManojos(manojos []Manojo) {
 		}
 	}
 	// flores
-	r.cachearFlores()
+	r.cachearFlores(true)
 }
 
 // SetMuestra .
 func (r *Ronda) SetMuestra(muestra Carta) {
 	r.Muestra = muestra
-	r.cachearFlores()
+	r.cachearFlores(true)
 }
 
 /* EDITORES */
@@ -658,16 +658,18 @@ func (r *Ronda) ExecLaFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts []*
 
 /* INICIALIZADORES */
 
-func (r *Ronda) cachearFlores() {
+func (r *Ronda) cachearFlores(reset bool) {
 	// flores
 	_, JugadoresConFlor := r.getFlores()
 	r.Envite.JugadoresConFlor = JugadoresConFlor
 
-	conFlor := make([]string, 0)
-	for _, m := range JugadoresConFlor {
-		conFlor = append(conFlor, m.Jugador.ID)
+	if reset {
+		conFlor := make([]string, 0)
+		for _, m := range JugadoresConFlor {
+			conFlor = append(conFlor, m.Jugador.ID)
+		}
+		r.Envite.SinCantar = conFlor
 	}
-	r.Envite.SinCantar = conFlor
 }
 
 /*
@@ -675,7 +677,7 @@ func (r *Ronda) cachearFlores() {
  * y 1 a la `muestra` (se las actualiza)
  */
 func (r *Ronda) repartirCartas() {
-	cantJugadores := cap(r.Manojos)
+	cantJugadores := len(r.Manojos)
 	// genero `3*cantJugadores + 1` cartas al azar
 	randomCards := getCartasRandom(3*cantJugadores + 1)
 
@@ -725,7 +727,7 @@ func (r *Ronda) nuevaRonda(elMano JugadorIdx) {
 	r.repartirCartas()
 
 	// flores
-	r.cachearFlores()
+	r.cachearFlores(true)
 }
 
 /* CONSTRUCTOR */
@@ -764,7 +766,7 @@ func MakeRonda(equipoAzul, equipoRojo []string) Ronda {
 	ronda.repartirCartas()
 
 	// flores
-	ronda.cachearFlores()
+	ronda.cachearFlores(true)
 
 	return ronda
 }

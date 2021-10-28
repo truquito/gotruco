@@ -333,37 +333,49 @@ func TestFixNoCantarPuntajeFlorCuandoNoEsNecesario(t *testing.T) {
 	p.Ronda.Turno = 1
 	p.Cmd("Roro truco")
 
-	util.Assert(p.Ronda.Truco.Estado == TRUCO, func() {
+	ok := p.Ronda.Truco.Estado == TRUCO
+	if !ok {
 		t.Error("Roro deberia ser capaz de gritar truco")
-	})
+	}
 
 	t.Log(Renderizar(p))
 
 	ptsAntes := p.Puntajes[Azul]
 	pkts, _ := p.Cmd("Alvaro flor")
 
-	util.Assert(!enco.Contains(pkts, enco.DiceTengo), func() {
+	ok = !enco.Contains(pkts, enco.DiceTengo)
+	if !ok {
 		t.Error("Alvaro no deberia decir cuanto tiene de flor ya que es el unico")
-	})
+	}
 
-	util.Assert(ptsAntes+6 == p.Puntajes[Azul], func() {
+	ok = ptsAntes+6 == p.Puntajes[Azul]
+	if !ok {
 		t.Error("Debio de haber ganado +6 pts por las 2 flores")
-	})
+	}
 
 	// ejemplo con 1 solo jugador; tampoco deberia
-	partidaJSON = `{"Jugadores": [{"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}, {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}, {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}, {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}], "cantJugadores": 4, "puntuacion": 20, "puntajes": {"Azul": 7, "Rojo": 0}, "ronda": {"manoEnJuego": 0, "cantJugadoresEnJuego": {"Azul": 2, "Rojo": 1}, "elMano": 1, "turno": 1, "pies": [0, 0], "envite": {"estado": "noCantadoAun", "puntaje": 0, "cantadoPor": null}, "truco": {"cantadoPor": null, "estado": "noCantado"}, "manojos": [{"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 11}, {"palo": "Copa", "valor": 7}, {"palo": "Copa", "valor": 3}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 10}, {"palo": "Copa", "valor": 2}, {"palo": "Basto", "valor": 7}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Espada", "valor": 11}, {"palo": "Basto", "valor": 4}, {"palo": "Oro", "valor": 10}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}}, {"seFueAlMazo": true, "cartas": [{"palo": "Basto", "valor": 6}, {"palo": "Oro", "valor": 4}, {"palo": "Oro", "valor": 3}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}}], "muestra": {"palo": "Espada", "valor": 1}, "manos": [{"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}]}}`
+	partidaJSON = `{"puntuacion":20,"puntajes":{"Azul":10,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":1},"elMano":1,"turno":1,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null,"sinCantar":["Alvaro"]},"truco":{"cantadoPor":null,"estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":11},{"palo":"Copa","valor":7},{"palo":"Copa","valor":3}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":10},{"palo":"Copa","valor":2},{"palo":"Basto","valor":7}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":11},{"palo":"Basto","valor":4},{"palo":"Oro","valor":10}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":true,"cartas":[{"palo":"Basto","valor":6},{"palo":"Oro","valor":4},{"palo":"Oro","valor":3}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Espada","valor":1},"manos":[{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null}]}}`
 	p, _ = Parse(partidaJSON)
 
 	t.Log(Renderizar(p))
 
 	ptsAntes = p.Puntajes[Azul]
 	pkts, _ = p.Cmd("Alvaro flor")
-	util.Assert(!enco.Contains(pkts, enco.DiceTengo), func() {
+
+	ok = !enco.Contains(pkts, enco.DiceTengo)
+	if !ok {
 		t.Error("Alvaro no deberia decir cuanto tiene de flor ya que es el unico")
-	})
-	util.Assert(ptsAntes+3 == p.Puntajes[Azul], func() {
+	}
+
+	ok = ptsAntes+3 == p.Puntajes[Azul]
+	if !ok {
+		t.Log("mal!")
+	}
+
+	ok = ptsAntes+3 == p.Puntajes[Azul]
+	if !ok {
 		t.Error("Debio de haber ganado +3 pts por la flor")
-	})
+	}
 
 }
 
@@ -536,4 +548,20 @@ func TestFixError39(t *testing.T) {
 	util.Assert(ok, func() {
 		t.Error("Debimos haber vuelto al inicio: Alavaro deberia ser quien canto el 1er envite")
 	})
+}
+
+// {"puntuacion": 20, "puntajes": {"Azul": 3, "Rojo": 0}, "ronda": {"manoEnJuego": 0, "cantJugadoresEnJuego": {"Azul": 1, "Rojo": 1}, "elMano": 0, "turno": 0, "pies": [0, 0], "envite": {"estado": "deshabilitado", "puntaje": 3, "cantadoPor": {"seFueAlMazo": false, "cartas": [{"palo": "Oro", "valor": 11}, {"palo": "Copa", "valor": 5}, {"palo": "Copa", "valor": 7}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Alvaro", "equipo": "Azul"}}, "sinCantar": []}, "truco": {"cantadoPor": null, "estado": "noCantado"}, "manojos": [{"seFueAlMazo": false, "cartas": [{"palo": "Oro", "valor": 11}, {"palo": "Copa", "valor": 5}, {"palo": "Copa", "valor": 7}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Alvaro", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Oro", "valor": 2}, {"palo": "Espada", "valor": 6}, {"palo": "Copa", "valor": 11}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Roro", "equipo": "Rojo"}}], "muestra": {"palo": "Oro", "valor": 10}, "manos": [{"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}]}}
+
+func TestFixBadParsing(t *testing.T) {
+	data := `{"puntuacion": 20, "puntajes": {"Azul": 3, "Rojo": 0}, "ronda": {"manoEnJuego": 0, "cantJugadoresEnJuego": {"Azul": 1, "Rojo": 1}, "elMano": 0, "turno": 0, "pies": [0, 0], "envite": {"estado": "deshabilitado", "puntaje": 3, "cantadoPor": {"seFueAlMazo": false, "cartas": [{"palo": "Oro", "valor": 11}, {"palo": "Copa", "valor": 5}, {"palo": "Copa", "valor": 7}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Alvaro", "equipo": "Azul"}}, "sinCantar": []}, "truco": {"cantadoPor": null, "estado": "noCantado"}, "manojos": [{"seFueAlMazo": false, "cartas": [{"palo": "Oro", "valor": 11}, {"palo": "Copa", "valor": 5}, {"palo": "Copa", "valor": 7}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Alvaro", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Oro", "valor": 2}, {"palo": "Espada", "valor": 6}, {"palo": "Copa", "valor": 11}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Roro", "equipo": "Rojo"}}], "muestra": {"palo": "Oro", "valor": 10}, "manos": [{"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}]}}`
+	p, _ := Parse(data)
+
+	ok := util.All(
+		p.Ronda.Envite.Estado == DESHABILITADO,
+		len(p.Ronda.Envite.SinCantar) == 0,
+	)
+	util.Assert(ok, func() {
+		t.Error("Alavaro ya canto la flor!")
+	})
+
 }
