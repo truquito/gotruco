@@ -734,15 +734,6 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 	if !ok {
 		return nil, fmt.Errorf(`la cantidad de jugadores no es correcta`)
 	}
-	// paso a crear los jugadores; intercalados
-	var jugadores []Jugador
-	// para cada rjo que agrego; le agrego tambien su mano
-	for i := range equipoRojo {
-		// uso como id sus nombres
-		nuevoJugadorRojo := Jugador{equipoRojo[i], Rojo}
-		nuevoJugadorAzul := Jugador{equipoAzul[i], Azul}
-		jugadores = append(jugadores, nuevoJugadorAzul, nuevoJugadorRojo)
-	}
 
 	p := Partida{
 		Puntuacion: puntuacion,
