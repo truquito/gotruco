@@ -1465,7 +1465,7 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []*enco.Packet {
 
 		// pongo al equipo que propuso el truco como ganador de la mano actual
 		manoActual := p.Ronda.ManoEnJuego.ToInt() - 1
-		p.Ronda.Manos[manoActual].Ganador = p.Ronda.Manojo[p.Ronda.Truco.CantadoPor]
+		p.Ronda.Manos[manoActual].Ganador = p.Ronda.Truco.CantadoPor
 		equipoGanador := GanoAzul
 		if p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo == Rojo {
 			equipoGanador = GanoRojo

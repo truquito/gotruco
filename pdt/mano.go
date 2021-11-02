@@ -101,7 +101,7 @@ type cartaTirada struct {
 // Mano :
 type Mano struct {
 	Resultado Resultado `json:"resultado"`
-	Ganador   *Manojo   `json:"ganador"`
+	Ganador   string    `json:"ganador"`
 	// en cada mano los jugadores van a tirar hata 1 carta
 	CartasTiradas []cartaTirada `json:"cartasTiradas"`
 }

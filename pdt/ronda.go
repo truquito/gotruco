@@ -289,7 +289,7 @@ func (r *Ronda) SetNextTurnoPosMano() {
 		// solo si la mano anterior no fue parda
 		// si fue parda busco la que empardo mas cercano al mano
 		if r.GetManoAnterior().Resultado != Empardada {
-			r.Turno = JugadorIdx(r.GetIdx(*r.GetManoAnterior().Ganador))
+			r.Turno = JugadorIdx(r.GetIdx(*r.Manojo[r.GetManoAnterior().Ganador]))
 		} else {
 			// 1. obtengo la carta de maximo valor de la mano anterior
 			// 2. busco a partir de la mano quien es el primero en tener

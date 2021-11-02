@@ -315,9 +315,9 @@ func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
 		// aca le tengo que poner un ganador para despues sacarle el equipo
 		// le asigno el primero que encuentre del equipo ganador
 		if p.Ronda.Manojos[0].Jugador.Equipo == equipoGanador {
-			mano.Ganador = &p.Ronda.Manojos[0]
+			mano.Ganador = p.Ronda.Manojos[0].Jugador.ID
 		} else {
-			mano.Ganador = &p.Ronda.Manojos[1]
+			mano.Ganador = p.Ronda.Manojos[1].Jugador.ID
 		}
 
 		// todo: MENSAJE ACAAAAAAA!!!
@@ -328,7 +328,7 @@ func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
 
 	} else if esParda {
 		mano.Resultado = Empardada
-		mano.Ganador = nil
+		mano.Ganador = ""
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
@@ -350,11 +350,11 @@ func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
 
 		// el turno pasa a ser el del mano.ganador
 		// pero se setea despues de evaluar la ronda
-		mano.Ganador = tiradaGanadora.autor
+		mano.Ganador = tiradaGanadora.autor.Jugador.ID
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.ManoGanada, mano.Ganador.Jugador.ID, int(p.Ronda.ManoEnJuego)),
+			enco.Msg(enco.ManoGanada, mano.Ganador, int(p.Ronda.ManoEnJuego)),
 		))
 
 	}
@@ -403,7 +403,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 	manoActual := p.Ronda.ManoEnJuego.ToInt() - 1
 	elTrucoNoTuvoRespuesta := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
 	noFueParda := p.Ronda.Manos[manoActual].Resultado != Empardada
-	estaManoYaTieneGanador := noFueParda && p.Ronda.Manos[manoActual].Ganador != nil
+	estaManoYaTieneGanador := noFueParda && p.Ronda.Manos[manoActual].Ganador != ""
 	elTrucoFueNoQuerido := elTrucoNoTuvoRespuesta && estaManoYaTieneGanador
 
 	elTrucoFueQuerido := !elTrucoFueNoQuerido
@@ -422,7 +422,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 	for i := 0; i < p.Ronda.ManoEnJuego.ToInt(); i++ {
 		mano := p.Ronda.Manos[i]
 		if mano.Resultado != Empardada {
-			cantManosGanadas[mano.Ganador.Jugador.Equipo]++
+			cantManosGanadas[p.Ronda.Manojo[mano.Ganador].Jugador.Equipo]++
 		}
 	}
 
@@ -441,7 +441,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 	// caso particular:
 	// no puedo definir quien gano si la seguna mano no tiene definido un resultado
 	noEstaEmpardada := p.Ronda.Manos[Segunda].Resultado != Empardada
-	noTieneGanador := p.Ronda.Manos[Segunda].Ganador == nil
+	noTieneGanador := p.Ronda.Manos[Segunda].Ganador == ""
 	segundaManoIndefinida := noEstaEmpardada && noTieneGanador
 	// tengo que diferenciar si vengo de: TirarCarta o si vengo de un no quiero:
 	// si viniera de un TirarCarta -> en la mano actual (o la anterior)? la ultima carta tirada pertenece al turno actual
@@ -462,24 +462,24 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 		// enonces como antes paso por evaluar mano
 		// y seteo a ganador de la ultima mano jugada (la "actual")
 		// al equipo que no abandono -> lo sacao de ahi
-		ganador = p.Ronda.GetManoActual().Ganador.Jugador.ID
+		ganador = p.Ronda.GetManoActual().Ganador
 
 		// primero el caso clasico: un equipo gano 2 o mas manos
 	} else if cantManosGanadas[Rojo] >= 2 {
 		// agarro cualquier manojo de los rojos
 		// o bien es la Primera o bien la Segunda
-		if p.Ronda.Manos[0].Ganador.Jugador.Equipo == Rojo {
-			ganador = p.Ronda.Manos[0].Ganador.Jugador.ID
+		if p.Ronda.Manojo[p.Ronda.Manos[0].Ganador].Jugador.Equipo == Rojo {
+			ganador = p.Ronda.Manos[0].Ganador
 		} else {
-			ganador = p.Ronda.Manos[1].Ganador.Jugador.ID
+			ganador = p.Ronda.Manos[1].Ganador
 		}
 	} else if cantManosGanadas[Azul] >= 2 {
 		// agarro cualquier manojo de los azules
 		// o bien es la Primera o bien la Segunda
-		if p.Ronda.Manos[0].Ganador.Jugador.Equipo == Azul {
-			ganador = p.Ronda.Manos[0].Ganador.Jugador.ID
+		if p.Ronda.Manojo[p.Ronda.Manos[0].Ganador].Jugador.Equipo == Azul {
+			ganador = p.Ronda.Manos[0].Ganador
 		} else {
-			ganador = p.Ronda.Manos[1].Ganador.Jugador.ID
+			ganador = p.Ronda.Manos[1].Ganador
 		}
 
 	} else {
@@ -500,16 +500,16 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 		caso5 := pardaPrimera && pardaSegunda && pardaTercera
 
 		if caso1 {
-			ganador = p.Ronda.Manos[Segunda].Ganador.Jugador.ID
+			ganador = p.Ronda.Manos[Segunda].Ganador
 
 		} else if caso2 {
-			ganador = p.Ronda.Manos[Primera].Ganador.Jugador.ID
+			ganador = p.Ronda.Manos[Primera].Ganador
 
 		} else if caso3 {
-			ganador = p.Ronda.Manos[Primera].Ganador.Jugador.ID
+			ganador = p.Ronda.Manos[Primera].Ganador
 
 		} else if caso4 {
-			ganador = p.Ronda.Manos[Tercera].Ganador.Jugador.ID
+			ganador = p.Ronda.Manos[Tercera].Ganador
 
 		} else if caso5 {
 			ganador = p.Ronda.GetElMano().Jugador.ID
