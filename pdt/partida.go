@@ -538,7 +538,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.RondaGanada, ganador, int(enco.SeFueronAlMazo)),
+			enco.Msg(enco.RondaGanada, ganador, enco.SeFueronAlMazo),
 			// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado`
 		))
 
@@ -558,7 +558,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.RondaGanada, ganador, int(razon)),
+			enco.Msg(enco.RondaGanada, ganador, razon),
 			// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s no querido`
 		))
 
@@ -576,7 +576,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.RondaGanada, ganador, int(razon)),
+			enco.Msg(enco.RondaGanada, ganador, razon),
 			// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado`
 		))
 

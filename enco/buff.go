@@ -57,7 +57,7 @@ func Collect(r io.Reader) (res []*Packet) {
 // con ese codigo (y string de ser no-nulo)
 func Contains(pkts []*Packet, cod CodMsg) bool {
 	for _, pkt := range pkts {
-		if pkt.Message.Cod == int(cod) {
+		if pkt.Message.Cod == string(cod) {
 			return true
 		}
 	}

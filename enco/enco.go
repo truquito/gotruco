@@ -9,8 +9,8 @@ import (
 
 // Packet ..
 type Packet struct {
-	Destination *[]string
-	*Message
+	Destination *[]string `json:"destination"`
+	Message     *Message  `json:"message"`
 }
 
 func (pkt *Packet) String() string {
@@ -19,70 +19,70 @@ func (pkt *Packet) String() string {
 
 // Message .
 type Message struct {
-	Cod  int `json:"cod"`
-	Cont json.RawMessage
+	Cod  string          `json:"cod"`
+	Cont json.RawMessage `json:"cont"`
 }
 
 // CodMsg ..
-type CodMsg int
+type CodMsg string
 
 // Tipos de Mensajes
 const (
-	Error                   CodMsg = iota // 0
-	ByeBye                                // 1
-	DiceSonBuenas                         // 2
-	CantarFlor                            // 3
-	CantarContraFlor                      // 4
-	CantarContraFlorAlResto               // 5
-	TocarEnvido                           // 6
-	TocarRealEnvido                       // 7
-	TocarFaltaEnvido                      // 8
-	GritarTruco                           // 9
-	GritarReTruco                         // 10
-	GritarVale4                           // 11
-	NoQuiero                              // 12
-	ConFlorMeAchico                       // 13
-	QuieroTruco                           // 14
-	QuieroEnvite                          // 15
-	SigTurno                              // 16
-	SigTurnoPosMano                       // 17
-	DiceTengo                             // 18
-	DiceSonMejores                        // 19
-	NuevaPartida                          // 20
-	NuevaRonda                            // 21
-	TirarCarta                            // 22
-	SumaPts                               // 23
-	Mazo                                  // 24
-	TimeOut                               // 25
-	ElEnvidoEstaPrimero                   // 26
-	Abandono                              // 27
-	LaManoResultaParda                    // 28
-	ManoGanada                            // 29
-	RondaGanada                           // 30
+	Error                   CodMsg = "Error"
+	ByeBye                  CodMsg = "ByeBye"
+	DiceSonBuenas           CodMsg = "DiceSonBuenas"
+	CantarFlor              CodMsg = "CantarFlor"
+	CantarContraFlor        CodMsg = "CantarContraFlor"
+	CantarContraFlorAlResto CodMsg = "CantarContraFlorAlResto"
+	TocarEnvido             CodMsg = "TocarEnvido"
+	TocarRealEnvido         CodMsg = "TocarRealEnvido"
+	TocarFaltaEnvido        CodMsg = "TocarFaltaEnvido"
+	GritarTruco             CodMsg = "GritarTruco"
+	GritarReTruco           CodMsg = "GritarReTruco"
+	GritarVale4             CodMsg = "GritarVale4"
+	NoQuiero                CodMsg = "NoQuiero"
+	ConFlorMeAchico         CodMsg = "ConFlorMeAchico"
+	QuieroTruco             CodMsg = "QuieroTruco"
+	QuieroEnvite            CodMsg = "QuieroEnvite"
+	SigTurno                CodMsg = "SigTurno"
+	SigTurnoPosMano         CodMsg = "SigTurnoPosMano"
+	DiceTengo               CodMsg = "DiceTengo"
+	DiceSonMejores          CodMsg = "DiceSonMejores"
+	NuevaPartida            CodMsg = "NuevaPartida"
+	NuevaRonda              CodMsg = "NuevaRonda"
+	TirarCarta              CodMsg = "TirarCarta"
+	SumaPts                 CodMsg = "SumaPts"
+	Mazo                    CodMsg = "Mazo"
+	TimeOut                 CodMsg = "TimeOut"
+	ElEnvidoEstaPrimero     CodMsg = "ElEnvidoEstaPrimero"
+	Abandono                CodMsg = "Abandono"
+	LaManoResultaParda      CodMsg = "LaManoResultaParda"
+	ManoGanada              CodMsg = "ManoGanada"
+	RondaGanada             CodMsg = "RondaGanada"
 )
 
 // Razon ..
-type Razon int
+type Razon string
 
 // Razon por la que se suman puntos
 const (
-	EnvidoGanado Razon = iota
-	RealEnvidoGanado
-	FaltaEnvidoGanado
+	EnvidoGanado      Razon = "EnvidoGanado"
+	RealEnvidoGanado  Razon = "RealEnvidoGanado"
+	FaltaEnvidoGanado Razon = "FaltaEnvidoGanado"
 
-	EnviteNoQuerido
-	FlorAchicada
+	EnviteNoQuerido Razon = "EnviteNoQuerido"
+	FlorAchicada    Razon = "FlorAchicada"
 
-	LaUnicaFlor
-	LasFlores
-	LaFlorMasAlta
-	ContraFlorGanada
-	ContraFlorAlRestoGanada
+	LaUnicaFlor             Razon = "LaUnicaFlor"
+	LasFlores               Razon = "LasFlores"
+	LaFlorMasAlta           Razon = "LaFlorMasAlta"
+	ContraFlorGanada        Razon = "ContraFlorGanada"
+	ContraFlorAlRestoGanada Razon = "ContraFlorAlRestoGanada"
 
-	TrucoNoQuerido
-	TrucoQuerido
+	TrucoNoQuerido Razon = "TrucoNoQuerido"
+	TrucoQuerido   Razon = "TrucoQuerido"
 
-	SeFueronAlMazo
+	SeFueronAlMazo Razon = "SeFueronAlMazo"
 )
 
 func (r Razon) String() string {
@@ -132,8 +132,13 @@ type Tipo2 struct {
 // Tipo3 .
 type Tipo3 struct {
 	Autor  string `json:"autor"`
-	Razon  int    `json:"razon"`
+	Razon  Razon  `json:"razon"`
 	Puntos int    `json:"puntos"`
+}
+
+type Tipo4 struct {
+	Autor string `json:"autor"`
+	Razon Razon  `json:"razon"`
 }
 
 // Pkt .
@@ -220,13 +225,22 @@ func Msg(t CodMsg, data ...interface{}) *Message {
 	case // (string, int)
 		DiceTengo,
 		DiceSonMejores,
-		ManoGanada,
-		RondaGanada:
+		ManoGanada:
 
 		autor := data[0].(string)
 		valor := data[1].(int)
 
 		bs, _ := json.Marshal(&Tipo1{autor, valor})
+
+		cont = bs
+
+	case // (string, string)
+		RondaGanada:
+
+		autor := data[0].(string)
+		razon := data[1].(Razon)
+
+		bs, _ := json.Marshal(&Tipo4{autor, razon})
 
 		cont = bs
 
@@ -252,7 +266,7 @@ func Msg(t CodMsg, data ...interface{}) *Message {
 		SumaPts:
 
 		autor := data[0].(string)
-		razon := int(data[1].(Razon))
+		razon := data[1].(Razon)
 		pts := data[2].(int)
 
 		bs, _ := json.Marshal(&Tipo3{autor, razon, pts})
@@ -265,7 +279,7 @@ func Msg(t CodMsg, data ...interface{}) *Message {
 	}
 
 	return &Message{
-		Cod:  int(t),
+		Cod:  string(t),
 		Cont: cont,
 	}
 }

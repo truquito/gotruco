@@ -45,14 +45,20 @@ func Tipo2(p *pdt.Partida, m *enco.Message) (*pdt.Manojo, pdt.Palo, int) {
 }
 
 // Tipo3 .
-func Tipo3(p *pdt.Partida, m *enco.Message) (*pdt.Manojo, int, int) {
+func Tipo3(p *pdt.Partida, m *enco.Message) (*pdt.Manojo, enco.Razon, int) {
 	var t3 enco.Tipo3
 	json.Unmarshal(m.Cont, &t3)
 	return p.Manojo(t3.Autor), t3.Razon, t3.Puntos
 }
 
+func Tipo4(p *pdt.Partida, m *enco.Message) (*pdt.Manojo, enco.Razon) {
+	var t1 enco.Tipo4
+	json.Unmarshal(m.Cont, &t1)
+	return p.Manojo(t1.Autor), t1.Razon
+}
+
 // Razon2str retorna el string correspondiente a `r`
-func Razon2str(r int) string {
+func Razon2str(r string) string {
 	var str string
 	switch enco.Razon(r) {
 	case enco.EnvidoGanado:
@@ -192,7 +198,7 @@ func Parse(p *pdt.Partida, m *enco.Message) string {
 			pdt.NumMano(valor).String(), autor.Jugador.Equipo, autor.Jugador.ID)
 
 	case enco.RondaGanada:
-		autor, razon := Tipo1(p, m)
+		autor, razon := Tipo4(p, m)
 		decoded = fmt.Sprintf(`La ronda ha sido ganada por el equipo %s debido al %s`,
 			autor.Jugador.Equipo, enco.Razon(razon).String())
 
@@ -219,10 +225,10 @@ func Parse(p *pdt.Partida, m *enco.Message) string {
 		autor, razon, pts := Tipo3(p, m)
 		if p.EsManoAMano() {
 			decoded = fmt.Sprintf(`+%d pts para %s por %s`,
-				pts, autor.Jugador.ID, Razon2str(razon))
+				pts, autor.Jugador.ID, Razon2str(string(razon)))
 		} else {
 			decoded = fmt.Sprintf(`+%d pts para el equipo %s por %s`,
-				pts, autor.Jugador.Equipo.String(), Razon2str(razon))
+				pts, autor.Jugador.Equipo.String(), Razon2str(string(razon)))
 		}
 
 	}

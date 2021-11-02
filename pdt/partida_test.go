@@ -2,7 +2,6 @@ package pdt
 
 import (
 	"encoding/json"
-	"strconv"
 	"testing"
 
 	"github.com/filevich/truco/enco"
@@ -260,8 +259,8 @@ func TestFixNoLeDeberiaResponderDesdeUltratumba(t *testing.T) {
 
 	pkts, _ := p.Cmd("Roro quiero")
 	for _, pkt := range pkts {
-		diceSonBuenas := pkt.Cod == int(enco.DiceSonBuenas)
-		loDijoRenzo := string(pkt.Cont) == "\"Renzo\""
+		diceSonBuenas := pkt.Message.Cod == string(enco.DiceSonBuenas)
+		loDijoRenzo := string(pkt.Message.Cont) == "\"Renzo\""
 		if diceSonBuenas && loDijoRenzo {
 			t.Error("No deberia poder responder desde ultratumba")
 		}
@@ -269,13 +268,13 @@ func TestFixNoLeDeberiaResponderDesdeUltratumba(t *testing.T) {
 
 	// debio de haber ganado el envido
 	for _, pkt := range pkts {
-		if pkt.Cod == int(enco.SumaPts) {
+		if pkt.Message.Cod == string(enco.SumaPts) {
 			var t3 enco.Tipo3
 			json.Unmarshal(pkt.Message.Cont, &t3)
 
 			ok := util.All(
 				t3.Puntos == 4,
-				t3.Razon == int(enco.FaltaEnvidoGanado),
+				t3.Razon == enco.FaltaEnvidoGanado,
 				t3.Autor == "Roro",
 				p.Ronda.Envite.Estado == DESHABILITADO,
 			)
@@ -428,7 +427,7 @@ func TestFixDecirSonBuenasDesdeUltratumba(t *testing.T) {
 
 	pkts, _ := p.Cmd("Renzo quiero")
 	for _, pkt := range pkts {
-		if pkt.Cod == int(enco.DiceSonBuenas) {
+		if pkt.Message.Cod == string(enco.DiceSonBuenas) {
 			var autor string
 			json.Unmarshal(pkt.Message.Cont, &autor)
 			if autor == "Roro" {
@@ -590,18 +589,24 @@ func TestFixRazonErronea(t *testing.T) {
 		var cont map[string]json.RawMessage
 		json.Unmarshal(pkt.Message.Cont, &cont)
 
-		if pkt.Message.Cod == int(enco.RondaGanada) {
+		if pkt.Message.Cod == string(enco.RondaGanada) {
 			countMsgRondaGanada++
-			r, _ := strconv.Atoi(string(cont["valor"]))
+
+			var r string
+			json.Unmarshal(cont["razon"], &r)
+
 			ok := enco.Razon(r) != enco.EnvidoGanado
 			if !ok {
 				t.Error(`la razon por que ganan la ronda no deberia ser "por el envido"`)
 			}
 		}
 
-		if pkt.Message.Cod == int(enco.SumaPts) {
-			r, _ := strconv.Atoi(string(cont["razon"]))
-			ok := enco.Razon(r) == enco.TrucoQuerido || enco.Razon(r) == enco.TrucoNoQuerido
+		if pkt.Message.Cod == string(enco.SumaPts) {
+			var r string
+			json.Unmarshal(cont["razon"], &r)
+
+			razon := enco.Razon(r)
+			ok := razon == enco.TrucoQuerido || razon == enco.TrucoNoQuerido
 			if !ok {
 				t.Error("no deberia ser la razon")
 			}
@@ -628,17 +633,23 @@ func TestFixRazonErronea(t *testing.T) {
 		var cont map[string]json.RawMessage
 		json.Unmarshal(pkt.Message.Cont, &cont)
 
-		if pkt.Message.Cod == int(enco.RondaGanada) {
+		if pkt.Message.Cod == string(enco.RondaGanada) {
 			countMsgRondaGanada++
-			r, _ := strconv.Atoi(string(cont["valor"]))
+
+			var r string
+			json.Unmarshal(cont["razon"], &r)
+
 			ok := enco.Razon(r) != enco.EnvidoGanado
 			if !ok {
 				t.Error(`la razon por que ganan la ronda no deberia ser "por el envido"`)
 			}
 		}
 
-		if pkt.Message.Cod == int(enco.SumaPts) {
-			r, _ := strconv.Atoi(string(cont["razon"]))
+		if pkt.Message.Cod == string(enco.SumaPts) {
+
+			var r string
+			json.Unmarshal(cont["razon"], &r)
+
 			ok := enco.Razon(r) == enco.TrucoQuerido || enco.Razon(r) == enco.TrucoNoQuerido
 			if !ok {
 				t.Error("no deberia ser la razon")
