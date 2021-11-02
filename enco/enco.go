@@ -19,7 +19,7 @@ func (pkt *Packet) String() string {
 
 // Message .
 type Message struct {
-	Cod  string          `json:"cod"`
+	Cod  CodMsg          `json:"cod"`
 	Cont json.RawMessage `json:"cont"`
 }
 
@@ -141,7 +141,7 @@ type Tipo4 struct {
 	Razon Razon  `json:"razon"`
 }
 
-// Pkt .
+// Pkt Packet maker
 func Pkt(dest *[]string, m *Message) *Packet {
 	return &Packet{
 		Destination: dest,
@@ -149,28 +149,12 @@ func Pkt(dest *[]string, m *Message) *Packet {
 	}
 }
 
-// Dest .
+// Dest Dest maker
 func Dest(ds ...string) *[]string {
 	return &ds
 }
 
-// ParseStr dado un `Message` cuyo `Cont` es de tipo `string`
-// lo extrae y retorna
-func ParseStr(m *Message) string {
-	var str string
-	json.Unmarshal(m.Cont, &str)
-	return str
-}
-
-// ParseInt dado un `Message` cuyo `Cont` es de tipo `int`
-// lo extrae y retorna
-func ParseInt(m *Message) int {
-	var num int
-	json.Unmarshal(m.Cont, &num)
-	return num
-}
-
-// Msg .
+// Msg Message maker
 func Msg(t CodMsg, data ...interface{}) *Message {
 
 	var cont json.RawMessage
@@ -279,7 +263,7 @@ func Msg(t CodMsg, data ...interface{}) *Message {
 	}
 
 	return &Message{
-		Cod:  string(t),
+		Cod:  t,
 		Cont: cont,
 	}
 }

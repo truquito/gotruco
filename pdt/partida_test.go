@@ -259,7 +259,7 @@ func TestFixNoLeDeberiaResponderDesdeUltratumba(t *testing.T) {
 
 	pkts, _ := p.Cmd("Roro quiero")
 	for _, pkt := range pkts {
-		diceSonBuenas := pkt.Message.Cod == string(enco.DiceSonBuenas)
+		diceSonBuenas := pkt.Message.Cod == enco.DiceSonBuenas
 		loDijoRenzo := string(pkt.Message.Cont) == "\"Renzo\""
 		if diceSonBuenas && loDijoRenzo {
 			t.Error("No deberia poder responder desde ultratumba")
@@ -268,7 +268,7 @@ func TestFixNoLeDeberiaResponderDesdeUltratumba(t *testing.T) {
 
 	// debio de haber ganado el envido
 	for _, pkt := range pkts {
-		if pkt.Message.Cod == string(enco.SumaPts) {
+		if pkt.Message.Cod == enco.SumaPts {
 			var t3 enco.Tipo3
 			json.Unmarshal(pkt.Message.Cont, &t3)
 
@@ -427,7 +427,7 @@ func TestFixDecirSonBuenasDesdeUltratumba(t *testing.T) {
 
 	pkts, _ := p.Cmd("Renzo quiero")
 	for _, pkt := range pkts {
-		if pkt.Message.Cod == string(enco.DiceSonBuenas) {
+		if pkt.Message.Cod == enco.DiceSonBuenas {
 			var autor string
 			json.Unmarshal(pkt.Message.Cont, &autor)
 			if autor == "Roro" {
@@ -589,7 +589,7 @@ func TestFixRazonErronea(t *testing.T) {
 		var cont map[string]json.RawMessage
 		json.Unmarshal(pkt.Message.Cont, &cont)
 
-		if pkt.Message.Cod == string(enco.RondaGanada) {
+		if pkt.Message.Cod == enco.RondaGanada {
 			countMsgRondaGanada++
 
 			var r string
@@ -601,7 +601,7 @@ func TestFixRazonErronea(t *testing.T) {
 			}
 		}
 
-		if pkt.Message.Cod == string(enco.SumaPts) {
+		if pkt.Message.Cod == enco.SumaPts {
 			var r string
 			json.Unmarshal(cont["razon"], &r)
 
@@ -633,7 +633,7 @@ func TestFixRazonErronea(t *testing.T) {
 		var cont map[string]json.RawMessage
 		json.Unmarshal(pkt.Message.Cont, &cont)
 
-		if pkt.Message.Cod == string(enco.RondaGanada) {
+		if pkt.Message.Cod == enco.RondaGanada {
 			countMsgRondaGanada++
 
 			var r string
@@ -645,7 +645,7 @@ func TestFixRazonErronea(t *testing.T) {
 			}
 		}
 
-		if pkt.Message.Cod == string(enco.SumaPts) {
+		if pkt.Message.Cod == enco.SumaPts {
 
 			var r string
 			json.Unmarshal(cont["razon"], &r)

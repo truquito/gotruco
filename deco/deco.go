@@ -25,8 +25,10 @@ func Int(m *enco.Message) int {
 
 // Autor .
 func Autor(p *pdt.Partida, m *enco.Message) *pdt.Manojo {
-	id := enco.ParseStr(m)
-	return p.Manojo(id)
+	var jid string
+	json.Unmarshal(m.Cont, &jid)
+
+	return p.Manojo(jid)
 }
 
 // Tipo1 .
