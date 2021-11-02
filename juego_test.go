@@ -1,6 +1,7 @@
 package truco
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/filevich/truco/deco"
@@ -1864,19 +1865,19 @@ func TestFixNacho(t *testing.T) {
 	p.Cmd("alvaro mazo")
 	p.Cmd("roro quiero")
 
-	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.ID == "Adolfo", func() {
+	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.ID == "Adolfo", func() {
 		t.Error(`no hay nada que querer`)
 	})
 	p.Cmd("roro retruco") // syntaxis invalida
 	p.Cmd("roro re-truco")
 
-	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.ID == "Adolfo", func() {
+	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.ID == "Adolfo", func() {
 		t.Error(`no debe permitir ya que su equipo no tiene la potestad del truco`)
 	})
 
 	p.Cmd("alvaro re-truco")
 
-	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.ID == "Adolfo", func() {
+	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.ID == "Adolfo", func() {
 		t.Error(`no deberia dejarlo porque se fue al mazo`)
 	})
 
@@ -1892,7 +1893,7 @@ func TestFixNacho(t *testing.T) {
 		t.Error(`no deberia dejarlo porque se fue al mazo`)
 	})
 
-	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.ID == "Renzo", func() {
+	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.ID == "Renzo", func() {
 		t.Error(`no deberia dejarlo porque se fue al mazo`)
 	})
 
@@ -1904,7 +1905,7 @@ func TestFixNacho(t *testing.T) {
 
 	p.Cmd("adolfo re-truco") // no deberia dejarlo
 
-	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.ID == "Renzo", func() {
+	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.ID == "Renzo", func() {
 		t.Error(`no deberia dejarlo porque el re-truco ya fue cantado`)
 	})
 
@@ -2931,7 +2932,7 @@ func TestFixRondaNueva(t *testing.T) {
 		t.Error(`Deberia dejarlo cantar truco`)
 	})
 
-	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Rojo, func() {
+	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo == pdt.Rojo, func() {
 		t.Error(`El equipo rojo deberia tener la potestad del truco`)
 	})
 
@@ -2941,7 +2942,7 @@ func TestFixRondaNueva(t *testing.T) {
 		t.Error(`Deberia dejarlo cantar re-truco`)
 	})
 
-	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul, func() {
+	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo == pdt.Azul, func() {
 		t.Error(`El equipo azul deberia tener la potestad del truco`)
 	})
 
@@ -2951,7 +2952,7 @@ func TestFixRondaNueva(t *testing.T) {
 		t.Error(`Deberia dejarlo cantar vale-3`)
 	})
 
-	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Rojo, func() {
+	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo == pdt.Rojo, func() {
 		t.Error(`El equipo rojo deberia tener la potestad del truco`)
 	})
 
@@ -2961,7 +2962,7 @@ func TestFixRondaNueva(t *testing.T) {
 		t.Error(`Deberia dejarlo responder quiero al vale-4`)
 	})
 
-	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul, func() {
+	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo == pdt.Azul, func() {
 		t.Error(`El equipo azul deberia tener la potestad del truco`)
 	})
 
@@ -3182,7 +3183,7 @@ func TestFixDecirQuiero(t *testing.T) {
 		t.Error(`Como no tiene la potestad, no deberia poder aumentar la apuesta`)
 	})
 
-	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Rojo, func() {
+	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo == pdt.Rojo, func() {
 		t.Error(`El equpo Rojo deberia de seguir manteniendo la potestad`)
 	})
 
@@ -3199,7 +3200,7 @@ func TestFixDecirQuiero(t *testing.T) {
 		t.Error(`No puede auto-querse`)
 	})
 
-	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul, func() {
+	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo == pdt.Azul, func() {
 		t.Error(`El equpo azul deberia tener la potestad`)
 	})
 
@@ -3209,7 +3210,7 @@ func TestFixDecirQuiero(t *testing.T) {
 		t.Error(`No deberia cambiar el estado del truco`)
 	})
 
-	util.Assert(p.Ronda.Truco.CantadoPor.Jugador.Equipo == pdt.Azul, func() {
+	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo == pdt.Azul, func() {
 		t.Error(`El equpo azul deberia de seguir manteniendo la potestad`)
 	})
 
@@ -3688,4 +3689,31 @@ func TestFixFlorNoCantada(t *testing.T) {
 	// })
 
 	t.Log(p)
+}
+
+func TestUpdateJSONs(t *testing.T) {
+	// data := `{"cantJugadores":6,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":3,"Rojo":3},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null,"JugadoresConFlor":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":3},{"palo":"Espada","valor":11},{"palo":"Espada","valor":4}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}],"JugadoresConFlorQueNoCantaron222":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":3},{"palo":"Espada","valor":11},{"palo":"Espada","valor":4}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}]},"truco":{"cantadoPor":null,"estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":6},{"palo":"Basto","valor":12},{"palo":"Oro","valor":2}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":5},{"palo":"Basto","valor":10},{"palo":"Oro","valor":4}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":10},{"palo":"Copa","valor":10},{"palo":"Basto","valor":2}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":6},{"palo":"Espada","valor":10},{"palo":"Basto","valor":3}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Copa","valor":3},{"palo":"Espada","valor":1}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Andres","nombre":"Andres","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":3},{"palo":"Espada","valor":11},{"palo":"Espada","valor":4}],"cartasNoJugadas":[true,true,true],"ultimaTirada":0,"jugador":{"id":"Richard","nombre":"Richard","equipo":"Rojo"}}],"muestra":{"palo":"Oro","valor":1},"manos":[{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null}]}}`
+	// // p, _, _ := NuevaPartida(pdt.A30, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	// // p.Partida.FromJSON([]byte(data))
+	// p, _ := pdt.Parse(data)
+	// // p.Ronda.Envite.SinCantar = make([]string, 0)
+	// json, _ := p.MarshalJSON()
+	// fmt.Println(string(json))
+
+	// if true {
+	// 	return
+	// }
+
+	datas := []string{
+		`{"Jugadores": [{"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}, {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}, {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}, {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}], "cantJugadores": 4, "puntuacion": 20, "puntajes": {"Azul": 7, "Rojo": 0}, "ronda": {"manoEnJuego": 0, "cantJugadoresEnJuego": {"Azul": 2, "Rojo": 1}, "elMano": 1, "turno": 1, "pies": [0, 0], "envite": {"estado": "noCantadoAun", "puntaje": 0, "cantadoPor": null}, "truco": {"cantadoPor": null, "estado": "noCantado"}, "manojos": [{"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 11}, {"palo": "Copa", "valor": 7}, {"palo": "Copa", "valor": 3}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 10}, {"palo": "Copa", "valor": 2}, {"palo": "Basto", "valor": 7}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Espada", "valor": 11}, {"palo": "Basto", "valor": 4}, {"palo": "Oro", "valor": 10}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}}, {"seFueAlMazo": true, "cartas": [{"palo": "Basto", "valor": 6}, {"palo": "Oro", "valor": 4}, {"palo": "Oro", "valor": 3}], "cartasNoJugadas": [true, true, true], "ultimaTirada": 0, "jugador": {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}}], "muestra": {"palo": "Espada", "valor": 1}, "manos": [{"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": null, "cartasTiradas": null}]}}`,
+	}
+
+	// OJO que ahora usa cachearFlores(false) ->
+	// los sinCantar quedan en null si es que no tenia ese atributo en el json
+
+	for _, data := range datas {
+		p, _ := pdt.Parse(data)
+		json, _ := p.MarshalJSON()
+		fmt.Println(string(json))
+	}
 }

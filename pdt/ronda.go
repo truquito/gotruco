@@ -72,7 +72,7 @@ func (e *EstadoTruco) UnmarshalJSON(b []byte) error {
 
 // Truco :
 type Truco struct {
-	CantadoPor *Manojo     `json:"cantadoPor"`
+	CantadoPor string      `json:"cantadoPor"`
 	Estado     EstadoTruco `json:"estado"`
 }
 
@@ -713,7 +713,7 @@ func (r *Ronda) nuevaRonda(elMano JugadorIdx) {
 	r.ElMano = elMano
 	r.Turno = elMano
 	r.Envite = Envite{Estado: NOCANTADOAUN, Puntaje: 0}
-	r.Truco = Truco{CantadoPor: nil, Estado: NOCANTADO}
+	r.Truco = Truco{CantadoPor: "", Estado: NOCANTADO}
 	r.Manos = make([]Mano, 3)
 
 	for i := range r.Manojos {
@@ -748,7 +748,7 @@ func MakeRonda(equipoAzul, equipoRojo []string) Ronda {
 		ElMano:  0,
 		Turno:   0,
 		Envite:  Envite{Estado: NOCANTADOAUN, Puntaje: 0},
-		Truco:   Truco{CantadoPor: nil, Estado: NOCANTADO},
+		Truco:   Truco{CantadoPor: "", Estado: NOCANTADO},
 		Manojos: make([]Manojo, cantJugadores),
 		Manojo:  make(map[string]*Manojo),
 		Manos:   make([]Mano, 3),

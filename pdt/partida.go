@@ -226,7 +226,7 @@ func (p *Partida) CantarContraFlorAlResto(m *Manojo) {
 
 // GritarTruco ..
 func (p *Partida) GritarTruco(m *Manojo) {
-	p.Ronda.Truco.CantadoPor = m
+	p.Ronda.Truco.CantadoPor = m.Jugador.ID
 	p.Ronda.Truco.Estado = TRUCO
 	// p.Ronda.Envite.Estado = DESHABILITADO // <-- esto esta mal
 }
@@ -234,7 +234,7 @@ func (p *Partida) GritarTruco(m *Manojo) {
 // QuererTruco incrementa el estado del truco a querido segun corresponda
 // y setea a m como el que lo canto
 func (p *Partida) QuererTruco(m *Manojo) {
-	p.Ronda.Truco.CantadoPor = m
+	p.Ronda.Truco.CantadoPor = m.Jugador.ID
 	switch p.Ronda.Truco.Estado {
 	case TRUCO:
 		p.Ronda.Truco.Estado = TRUCOQUERIDO
@@ -247,14 +247,14 @@ func (p *Partida) QuererTruco(m *Manojo) {
 
 // GritarReTruco ..
 func (p *Partida) GritarReTruco(m *Manojo) {
-	p.Ronda.Truco.CantadoPor = m
+	p.Ronda.Truco.CantadoPor = m.Jugador.ID
 	p.Ronda.Truco.Estado = RETRUCO
 	// p.Ronda.Envite.Estado = DESHABILITADO // <-- esto esta mal
 }
 
 // GritarVale4 ..
 func (p *Partida) GritarVale4(m *Manojo) {
-	p.Ronda.Truco.CantadoPor = m
+	p.Ronda.Truco.CantadoPor = m.Jugador.ID
 	p.Ronda.Truco.Estado = VALE4
 	// p.Ronda.Envite.Estado = DESHABILITADO // <-- esto esta mal
 }
@@ -455,31 +455,31 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 	}
 
 	// hay ganador -> ya se que al final voy a retornar un true
-	var ganador *Manojo
+	var ganador string
 
 	if !hayJugadoresEnAmbos { // caso particular: todos abandonaron
 
 		// enonces como antes paso por evaluar mano
 		// y seteo a ganador de la ultima mano jugada (la "actual")
 		// al equipo que no abandono -> lo sacao de ahi
-		ganador = p.Ronda.GetManoActual().Ganador
+		ganador = p.Ronda.GetManoActual().Ganador.Jugador.ID
 
 		// primero el caso clasico: un equipo gano 2 o mas manos
 	} else if cantManosGanadas[Rojo] >= 2 {
 		// agarro cualquier manojo de los rojos
 		// o bien es la Primera o bien la Segunda
 		if p.Ronda.Manos[0].Ganador.Jugador.Equipo == Rojo {
-			ganador = p.Ronda.Manos[0].Ganador
+			ganador = p.Ronda.Manos[0].Ganador.Jugador.ID
 		} else {
-			ganador = p.Ronda.Manos[1].Ganador
+			ganador = p.Ronda.Manos[1].Ganador.Jugador.ID
 		}
 	} else if cantManosGanadas[Azul] >= 2 {
 		// agarro cualquier manojo de los azules
 		// o bien es la Primera o bien la Segunda
 		if p.Ronda.Manos[0].Ganador.Jugador.Equipo == Azul {
-			ganador = p.Ronda.Manos[0].Ganador
+			ganador = p.Ronda.Manos[0].Ganador.Jugador.ID
 		} else {
-			ganador = p.Ronda.Manos[1].Ganador
+			ganador = p.Ronda.Manos[1].Ganador.Jugador.ID
 		}
 
 	} else {
@@ -500,19 +500,19 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 		caso5 := pardaPrimera && pardaSegunda && pardaTercera
 
 		if caso1 {
-			ganador = p.Ronda.Manos[Segunda].Ganador
+			ganador = p.Ronda.Manos[Segunda].Ganador.Jugador.ID
 
 		} else if caso2 {
-			ganador = p.Ronda.Manos[Primera].Ganador
+			ganador = p.Ronda.Manos[Primera].Ganador.Jugador.ID
 
 		} else if caso3 {
-			ganador = p.Ronda.Manos[Primera].Ganador
+			ganador = p.Ronda.Manos[Primera].Ganador.Jugador.ID
 
 		} else if caso4 {
-			ganador = p.Ronda.Manos[Tercera].Ganador
+			ganador = p.Ronda.Manos[Tercera].Ganador.Jugador.ID
 
 		} else if caso5 {
-			ganador = p.Ronda.GetElMano()
+			ganador = p.Ronda.GetElMano().Jugador.ID
 		}
 
 	}
@@ -538,7 +538,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.RondaGanada, ganador.Jugador.ID, int(enco.SeFueronAlMazo)),
+			enco.Msg(enco.RondaGanada, ganador, int(enco.SeFueronAlMazo)),
 			// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado`
 		))
 
@@ -558,7 +558,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.RondaGanada, ganador.Jugador.ID, int(razon)),
+			enco.Msg(enco.RondaGanada, ganador, int(razon)),
 			// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s no querido`
 		))
 
@@ -576,17 +576,17 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.RondaGanada, ganador.Jugador.ID, int(razon)),
+			enco.Msg(enco.RondaGanada, ganador, int(razon)),
 			// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado`
 		))
 
 	}
 
-	p.SumarPuntos(ganador.Jugador.Equipo, totalPts)
+	p.SumarPuntos(p.Ronda.Manojo[ganador].Jugador.Equipo, totalPts)
 
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.SumaPts, ganador.Jugador.ID, enco.TrucoQuerido, totalPts),
+		enco.Msg(enco.SumaPts, ganador, enco.TrucoQuerido, totalPts),
 	))
 
 	return true, pkts // porque se empezo una nueva ronda
