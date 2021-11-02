@@ -238,6 +238,17 @@ func (r *Ronda) getManojo(jIdx JugadorIdx) *Manojo {
 
 /* PREDICADOS */
 
+// ver documentacion cambio de variable
+func cv(x, mano JugadorIdx, cantJugadores int) (y JugadorIdx) {
+	if x >= mano {
+		y = x - mano
+	} else {
+		c := JugadorIdx(cantJugadores) - mano
+		y = x + c
+	}
+	return y
+}
+
 // leGanaDeMano devuelve `true` sii
 // `i` "le gana de mano" a `j`
 func (r Ronda) leGanaDeMano(i, j JugadorIdx) bool {

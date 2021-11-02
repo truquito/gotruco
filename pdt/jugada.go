@@ -1573,6 +1573,23 @@ func (jugada IrseAlMazo) Ok(p *Partida) ([]*enco.Packet, bool) {
 	return pkts, true
 }
 
+// Eliminar .
+func Eliminar(manojos []*Manojo, manojo *Manojo) []*Manojo {
+	var i int
+	// primero encuentro el elemento
+	for i = 0; i <= len(manojos); i++ {
+		noLoContiene := i == len(manojos)
+		if noLoContiene {
+			return manojos
+		}
+		if manojos[i] == manojo {
+			break
+		}
+	}
+	manojos[i] = manojos[len(manojos)-1] // Copy last element to index i.
+	return manojos[:len(manojos)-1]      // Truncate slice.
+}
+
 func (jugada IrseAlMazo) Hacer(p *Partida) []*enco.Packet {
 
 	pkts := make([]*enco.Packet, 0)
