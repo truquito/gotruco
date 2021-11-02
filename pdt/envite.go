@@ -100,7 +100,7 @@ func (e *Envite) cantoFlor(j string) {
 type Envite struct {
 	Estado           EstadoEnvite `json:"estado"`
 	Puntaje          int          `json:"puntaje"`
-	CantadoPor       *Manojo      `json:"cantadoPor"`
+	CantadoPor       string       `json:"cantadoPor"`
 	JugadoresConFlor []*Manojo    `json:"-"`
 	SinCantar        []string     `json:"sinCantar"`
 }

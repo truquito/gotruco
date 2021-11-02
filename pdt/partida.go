@@ -157,10 +157,10 @@ func (p *Partida) TocarEnvido(m *Manojo) {
 	if yaSeHabiaCantadoElEnvido {
 		// se aumenta el puntaje del envido en +2
 		p.Ronda.Envite.Puntaje += 2
-		p.Ronda.Envite.CantadoPor = m
+		p.Ronda.Envite.CantadoPor = m.Jugador.ID
 
 	} else { // no se habia jugado aun
-		p.Ronda.Envite.CantadoPor = m
+		p.Ronda.Envite.CantadoPor = m.Jugador.ID
 		p.Ronda.Envite.Estado = ENVIDO
 		p.Ronda.Envite.Puntaje = 2
 	}
@@ -168,7 +168,7 @@ func (p *Partida) TocarEnvido(m *Manojo) {
 
 // TocarRealEnvido ..
 func (p *Partida) TocarRealEnvido(m *Manojo) {
-	p.Ronda.Envite.CantadoPor = m
+	p.Ronda.Envite.CantadoPor = m.Jugador.ID
 	// 2 opciones:
 	// o bien el envido no se jugo aun,
 	// o bien ya estabamos en envido
@@ -183,7 +183,7 @@ func (p *Partida) TocarRealEnvido(m *Manojo) {
 // TocarFaltaEnvido ..
 func (p *Partida) TocarFaltaEnvido(m *Manojo) {
 	p.Ronda.Envite.Estado = FALTAENVIDO
-	p.Ronda.Envite.CantadoPor = m
+	p.Ronda.Envite.CantadoPor = m.Jugador.ID
 }
 
 // CantarFlor ..
@@ -194,7 +194,7 @@ func (p *Partida) CantarFlor(m *Manojo) {
 	if yaEstabamosEnFlor {
 
 		p.Ronda.Envite.Puntaje += 3
-		p.Ronda.Envite.CantadoPor = m
+		p.Ronda.Envite.CantadoPor = m.Jugador.ID
 
 	} else {
 
@@ -202,7 +202,7 @@ func (p *Partida) CantarFlor(m *Manojo) {
 		// al que pertenece el que la canto en un principio para
 		// poder sumarle los puntos correspondientes
 		p.Ronda.Envite.Puntaje = 3
-		p.Ronda.Envite.CantadoPor = m
+		p.Ronda.Envite.CantadoPor = m.Jugador.ID
 		p.Ronda.Envite.Estado = FLOR
 
 	}
@@ -211,7 +211,7 @@ func (p *Partida) CantarFlor(m *Manojo) {
 // CantarContraFlor ..
 func (p *Partida) CantarContraFlor(m *Manojo) {
 	p.Ronda.Envite.Estado = CONTRAFLOR
-	p.Ronda.Envite.CantadoPor = m
+	p.Ronda.Envite.CantadoPor = m.Jugador.ID
 	// ahora la flor pasa a jugarse por 4 puntos
 	p.Ronda.Envite.Puntaje = 4
 }
@@ -219,7 +219,7 @@ func (p *Partida) CantarContraFlor(m *Manojo) {
 // CantarContraFlorAlResto ..
 func (p *Partida) CantarContraFlorAlResto(m *Manojo) {
 	p.Ronda.Envite.Estado = CONTRAFLORALRESTO
-	p.Ronda.Envite.CantadoPor = m
+	p.Ronda.Envite.CantadoPor = m.Jugador.ID
 	// ahora la flor pasa a jugarse por 4 puntos
 	p.Ronda.Envite.Puntaje = 4 // <- eso es al pedo, es independiente
 }

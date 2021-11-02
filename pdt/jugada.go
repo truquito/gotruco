@@ -245,7 +245,7 @@ func (jugada TocarEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 	esPrimeraMano := p.Ronda.ManoEnJuego == Primera
 	esSuTurno := p.Ronda.GetElTurno() == jugada.Manojo
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
-	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.Manojo.Jugador.Equipo
+	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	envidoHabilitado := (p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.Estado == ENVIDO)
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == ENVIDO
 	// apuestaSaturada := p.Ronda.Envite.Puntaje >= p.CalcPtsFalta()
@@ -373,7 +373,7 @@ func (jugada TocarRealEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 	esSuTurno := p.Ronda.GetElTurno() == jugada.Manojo
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
 	realEnvidoHabilitado := (p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.Estado == ENVIDO)
-	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.Manojo.Jugador.Equipo
+	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == ENVIDO
 	trucoNoCantado := p.Ronda.Truco.Estado == NOCANTADO
 
@@ -469,7 +469,7 @@ func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 	esPrimeraMano := p.Ronda.ManoEnJuego == Primera
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
 	faltaEnvidoHabilitado := p.Ronda.Envite.Estado >= NOCANTADOAUN && p.Ronda.Envite.Estado < FALTAENVIDO
-	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.Manojo.Jugador.Equipo
+	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado >= ENVIDO
 	trucoNoCantado := p.Ronda.Truco.Estado == NOCANTADO
 
@@ -701,7 +701,7 @@ func evalFlor(p *Partida) []*enco.Packet {
 
 	// cual es la flor ganadora?
 	// empieza cantando el autor del envite no el que "quizo"
-	autorIdx := p.Ronda.GetIdx(*p.Ronda.Envite.CantadoPor)
+	autorIdx := p.Ronda.GetIdx(*p.Ronda.Manojo[p.Ronda.Envite.CantadoPor])
 	manojoConLaFlorMasAlta, _, res := p.Ronda.ExecLaFlores(JugadorIdx(autorIdx))
 
 	pkts = append(pkts, res...)
@@ -757,7 +757,7 @@ func (jugada CantarContraFlor) Ok(p *Partida) ([]*enco.Packet, bool) {
 	// es esto verdad?
 	seFueAlMazo := jugada.Manojo.SeFueAlMazo
 	contraFlorHabilitada := p.Ronda.Envite.Estado == FLOR && p.Ronda.ManoEnJuego == Primera
-	esDelEquipoContrario := contraFlorHabilitada && p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.Manojo.Jugador.Equipo
+	esDelEquipoContrario := contraFlorHabilitada && p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
 	noCantoFlorAun := p.Ronda.Envite.noCantoFlorAun(jugada.Manojo.Jugador.ID)
 	ok := !seFueAlMazo && contraFlorHabilitada && tieneFlor && esDelEquipoContrario && noCantoFlorAun
@@ -811,7 +811,7 @@ func (jugada CantarContraFlorAlResto) Ok(p *Partida) ([]*enco.Packet, bool) {
 	// es esto verdad?
 	seFueAlMazo := jugada.Manojo.SeFueAlMazo
 	contraFlorHabilitada := (p.Ronda.Envite.Estado == FLOR || p.Ronda.Envite.Estado == CONTRAFLOR) && p.Ronda.ManoEnJuego == Primera
-	esDelEquipoContrario := contraFlorHabilitada && p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.Manojo.Jugador.Equipo
+	esDelEquipoContrario := contraFlorHabilitada && p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
 	noCantoFlorAun := p.Ronda.Envite.noCantoFlorAun(jugada.Manojo.Jugador.ID)
 	ok := !seFueAlMazo && contraFlorHabilitada && tieneFlor && esDelEquipoContrario && noCantoFlorAun
@@ -1125,7 +1125,7 @@ func (jugada ResponderQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 	elEnvidoEsRespondible := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO)
 	// ojo: solo a la contraflor+ se le puede decir quiero; a la flor sola no
-	laContraFlorEsRespondible := p.Ronda.Envite.Estado >= CONTRAFLOR && p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.Manojo.Jugador.Equipo
+	laContraFlorEsRespondible := p.Ronda.Envite.Estado >= CONTRAFLOR && p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	elTrucoEsRespondible := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado) && p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 
 	ok := elEnvidoEsRespondible || laContraFlorEsRespondible || elTrucoEsRespondible
@@ -1143,7 +1143,7 @@ func (jugada ResponderQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 	if elEnvidoEsRespondible {
 
-		esDelEquipoContrario := jugada.Manojo.Jugador.Equipo != p.Ronda.Envite.CantadoPor.Jugador.Equipo
+		esDelEquipoContrario := jugada.Manojo.Jugador.Equipo != p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo
 		if !esDelEquipoContrario {
 
 			pkts = append(pkts, enco.Pkt(
@@ -1158,7 +1158,7 @@ func (jugada ResponderQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 	} else if laContraFlorEsRespondible {
 		// tengo que verificar si efectivamente tiene flor
 		tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
-		esDelEquipoContrario := jugada.Manojo.Jugador.Equipo != p.Ronda.Envite.CantadoPor.Jugador.Equipo
+		esDelEquipoContrario := jugada.Manojo.Jugador.Equipo != p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo
 		ok := tieneFlor && esDelEquipoContrario
 
 		if !ok {
@@ -1194,7 +1194,7 @@ func (jugada ResponderQuiero) Hacer(p *Partida) []*enco.Packet {
 
 	elEnvidoEsRespondible := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO)
 	// ojo: solo a la contraflor+ se le puede decir quiero; a la flor sola no
-	laContraFlorEsRespondible := p.Ronda.Envite.Estado >= CONTRAFLOR && p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.Manojo.Jugador.Equipo
+	laContraFlorEsRespondible := p.Ronda.Envite.Estado >= CONTRAFLOR && p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	elTrucoEsRespondible := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado) && p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 
 	if elEnvidoEsRespondible {
@@ -1222,7 +1222,7 @@ func (jugada ResponderQuiero) Hacer(p *Partida) []*enco.Packet {
 		))
 
 		// empieza cantando el autor del envite no el que "quizo"
-		autorIdx := p.Ronda.GetIdx(*p.Ronda.Envite.CantadoPor)
+		autorIdx := p.Ronda.GetIdx(*p.Ronda.Manojo[p.Ronda.Envite.CantadoPor])
 		manojoConLaFlorMasAlta, _, res := p.Ronda.ExecLaFlores(JugadorIdx(autorIdx))
 
 		pkts = append(pkts, res...)
@@ -1300,7 +1300,7 @@ func (jugada ResponderNoQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 	// FALSO porque el no quiero lo estoy contando como un "con flor me achico"
 	// todo: agregar la jugada: "con flor me achico" y editar la variale:
 	// AHORA:
-	// laFlorEsRespondible := p.Ronda.Flor >= FLOR && p.Ronda.Envite.CantadoPor.Jugador.equipo != jugada.Manojo.Jugador.Equipo
+	// laFlorEsRespondible := p.Ronda.Flor >= FLOR && p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.equipo != jugada.Manojo.Jugador.Equipo
 	// LUEGO DE AGREGAR LA JUGADA "con flor me achico"
 	// laFlorEsRespondible := p.Ronda.Flor > FLOR
 	// FALSO ---> directamente se va la posibilidad de reponderle
@@ -1311,8 +1311,8 @@ func (jugada ResponderNoQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 	// - CASO II: se grito el truco (o similar)
 	// en caso contrario, es incorrecto -> error
 
-	elEnvidoEsRespondible := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO) && p.Ronda.Envite.CantadoPor != jugada.Manojo
-	laFlorEsRespondible := p.Ronda.Envite.Estado >= FLOR && p.Ronda.Envite.CantadoPor != jugada.Manojo
+	elEnvidoEsRespondible := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO) && p.Ronda.Envite.CantadoPor != jugada.Manojo.Jugador.ID
+	laFlorEsRespondible := p.Ronda.Envite.Estado >= FLOR && p.Ronda.Envite.CantadoPor != jugada.Manojo.Jugador.ID
 	elTrucoEsRespondible := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado) && p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 
 	ok := elEnvidoEsRespondible || laFlorEsRespondible || elTrucoEsRespondible
@@ -1330,7 +1330,7 @@ func (jugada ResponderNoQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 	if elEnvidoEsRespondible {
 
-		esDelEquipoContrario := jugada.Manojo.Jugador.Equipo != p.Ronda.Envite.CantadoPor.Jugador.Equipo
+		esDelEquipoContrario := jugada.Manojo.Jugador.Equipo != p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo
 		if !esDelEquipoContrario {
 
 			pkts = append(pkts, enco.Pkt(
@@ -1346,7 +1346,7 @@ func (jugada ResponderNoQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		// tengo que verificar si efectivamente tiene flor
 		tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
-		esDelEquipoContrario := jugada.Manojo.Jugador.Equipo != p.Ronda.Envite.CantadoPor.Jugador.Equipo
+		esDelEquipoContrario := jugada.Manojo.Jugador.Equipo != p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo
 		ok := tieneFlor && esDelEquipoContrario
 
 		if !ok {
@@ -1375,8 +1375,8 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []*enco.Packet {
 		return pkts
 	}
 
-	elEnvidoEsRespondible := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO) && p.Ronda.Envite.CantadoPor != jugada.Manojo
-	laFlorEsRespondible := p.Ronda.Envite.Estado >= FLOR && p.Ronda.Envite.CantadoPor != jugada.Manojo
+	elEnvidoEsRespondible := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO) && p.Ronda.Envite.CantadoPor != jugada.Manojo.Jugador.ID
+	laFlorEsRespondible := p.Ronda.Envite.Estado >= FLOR && p.Ronda.Envite.CantadoPor != jugada.Manojo.Jugador.ID
 	elTrucoEsRespondible := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado) && p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 
 	if elEnvidoEsRespondible {
@@ -1405,12 +1405,12 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []*enco.Packet {
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
 			enco.Msg(enco.SumaPts,
-				p.Ronda.Envite.CantadoPor.Jugador.ID,
+				p.Ronda.Envite.CantadoPor,
 				enco.EnviteNoQuerido,
 				totalPts),
 		))
 
-		p.SumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
+		p.SumarPuntos(p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo, totalPts)
 
 	} else if laFlorEsRespondible {
 
@@ -1431,7 +1431,7 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []*enco.Packet {
 		totalPts := 0
 
 		for _, m := range p.Ronda.Manojos {
-			esDelEquipoContrario := p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.Manojo.Jugador.Equipo
+			esDelEquipoContrario := p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 			tieneFlor, _ := m.TieneFlor(p.Ronda.Muestra)
 			if tieneFlor && esDelEquipoContrario {
 				totalPts += 3
@@ -1449,12 +1449,12 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []*enco.Packet {
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
 			enco.Msg(enco.SumaPts,
-				p.Ronda.Envite.CantadoPor.Jugador.ID,
+				p.Ronda.Envite.CantadoPor,
 				enco.FlorAchicada,
 				totalPts),
 		))
 
-		p.SumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
+		p.SumarPuntos(p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo, totalPts)
 
 	} else if elTrucoEsRespondible {
 
@@ -1540,7 +1540,7 @@ func (jugada IrseAlMazo) Ok(p *Partida) ([]*enco.Packet, bool) {
 	// 3. tampoco se puede ir al mazo si el grito el truco
 
 	// envidoPropuesto := Contains([]EstadoEnvite{ENVIDO, REALENVIDO, FALTAENVIDO}, p.Ronda.Envite.Estado)
-	// envidoPropuestoPorSuEquipo := p.Ronda.Envite.CantadoPor.Jugador.Equipo == jugada.Manojo.Jugador.Equipo
+	// envidoPropuestoPorSuEquipo := p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo == jugada.Manojo.Jugador.Equipo
 	// trucoPropuesto := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
 	// trucoPropuestoPorSuEquipo := p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo == jugada.Manojo.Jugador.Equipo
 	// condicionDelBobo := (envidoPropuesto && envidoPropuestoPorSuEquipo) || (trucoPropuesto && trucoPropuestoPorSuEquipo)
@@ -1556,7 +1556,7 @@ func (jugada IrseAlMazo) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 	// }
 
-	noSePuedeIrPorElEnvite := (seEstabaJugandoElEnvido || seEstabaJugandoLaFlor) && p.Ronda.Envite.CantadoPor == jugada.Manojo
+	noSePuedeIrPorElEnvite := (seEstabaJugandoElEnvido || seEstabaJugandoLaFlor) && p.Ronda.Envite.CantadoPor == jugada.Manojo.Jugador.ID
 	// la de la flor es igual al del envido; porque es un envite
 	noSePuedeIrPorElTruco := seEstabaJugandoElTruco && p.Ronda.Truco.CantadoPor == jugada.Manojo.Jugador.ID
 	if noSePuedeIrPorElEnvite || noSePuedeIrPorElTruco {
@@ -1642,12 +1642,12 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []*enco.Packet {
 			pkts = append(pkts, enco.Pkt(
 				enco.Dest("ALL"),
 				enco.Msg(enco.SumaPts,
-					e.CantadoPor.Jugador.ID,
+					e.CantadoPor,
 					enco.EnviteNoQuerido,
 					totalPts),
 			))
 
-			p.SumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
+			p.SumarPuntos(p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo, totalPts)
 
 		}
 
@@ -1663,7 +1663,7 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []*enco.Packet {
 			totalPts := 0
 
 			for _, m := range p.Ronda.Manojos {
-				esDelEquipoContrario := p.Ronda.Envite.CantadoPor.Jugador.Equipo != jugada.Manojo.Jugador.Equipo
+				esDelEquipoContrario := p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 				tieneFlor, _ := m.TieneFlor(p.Ronda.Muestra)
 				if tieneFlor && esDelEquipoContrario {
 					totalPts += 3
@@ -1681,12 +1681,12 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []*enco.Packet {
 			pkts = append(pkts, enco.Pkt(
 				enco.Dest("ALL"),
 				enco.Msg(enco.SumaPts,
-					p.Ronda.Envite.CantadoPor.Jugador.ID,
+					p.Ronda.Envite.CantadoPor,
 					enco.FlorAchicada,
 					totalPts),
 			))
 
-			p.SumarPuntos(p.Ronda.Envite.CantadoPor.Jugador.Equipo, totalPts)
+			p.SumarPuntos(p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo, totalPts)
 
 		}
 	}
