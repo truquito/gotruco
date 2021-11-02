@@ -1,26 +1,5 @@
 package pdt
 
-import (
-	"reflect"
-)
-
-// Contains .
-func Contains(slice interface{}, item interface{}) bool {
-	s := reflect.ValueOf(slice)
-
-	if s.Kind() != reflect.Slice {
-		panic("Invalid data-type")
-	}
-
-	for i := 0; i < s.Len(); i++ {
-		if s.Index(i).Interface() == item {
-			return true
-		}
-	}
-
-	return false
-}
-
 // Eliminar .
 func Eliminar(manojos []*Manojo, manojo *Manojo) []*Manojo {
 	var i int

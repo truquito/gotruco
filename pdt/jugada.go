@@ -117,7 +117,7 @@ func (jugada TirarCarta) Ok(p *Partida) ([]*enco.Packet, bool) {
 	}
 
 	// cambio: ahora no puede tirar carta si el grito truco
-	trucoGritado := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
+	trucoGritado := p.Ronda.Truco.Estado.esTrucoRespondible()
 	unoDelEquipoContrarioGritoTruco := trucoGritado && p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	yoGiteElTruco := trucoGritado && jugada.Manojo.Jugador.ID == p.Ronda.Truco.CantadoPor
 	elTrucoEsRespondible := trucoGritado && unoDelEquipoContrarioGritoTruco && !yoGiteElTruco
@@ -1126,7 +1126,7 @@ func (jugada ResponderQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 	elEnvidoEsRespondible := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO)
 	// ojo: solo a la contraflor+ se le puede decir quiero; a la flor sola no
 	laContraFlorEsRespondible := p.Ronda.Envite.Estado >= CONTRAFLOR && p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
-	elTrucoEsRespondible := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado) && p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
+	elTrucoEsRespondible := p.Ronda.Truco.Estado.esTrucoRespondible() && p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 
 	ok := elEnvidoEsRespondible || laContraFlorEsRespondible || elTrucoEsRespondible
 	if !ok {
@@ -1195,7 +1195,7 @@ func (jugada ResponderQuiero) Hacer(p *Partida) []*enco.Packet {
 	elEnvidoEsRespondible := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO)
 	// ojo: solo a la contraflor+ se le puede decir quiero; a la flor sola no
 	laContraFlorEsRespondible := p.Ronda.Envite.Estado >= CONTRAFLOR && p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
-	elTrucoEsRespondible := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado) && p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
+	elTrucoEsRespondible := p.Ronda.Truco.Estado.esTrucoRespondible() && p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 
 	if elEnvidoEsRespondible {
 
@@ -1313,7 +1313,7 @@ func (jugada ResponderNoQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 	elEnvidoEsRespondible := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO) && p.Ronda.Envite.CantadoPor != jugada.Manojo.Jugador.ID
 	laFlorEsRespondible := p.Ronda.Envite.Estado >= FLOR && p.Ronda.Envite.CantadoPor != jugada.Manojo.Jugador.ID
-	elTrucoEsRespondible := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado) && p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
+	elTrucoEsRespondible := p.Ronda.Truco.Estado.esTrucoRespondible() && p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 
 	ok := elEnvidoEsRespondible || laFlorEsRespondible || elTrucoEsRespondible
 
@@ -1377,7 +1377,7 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []*enco.Packet {
 
 	elEnvidoEsRespondible := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO) && p.Ronda.Envite.CantadoPor != jugada.Manojo.Jugador.ID
 	laFlorEsRespondible := p.Ronda.Envite.Estado >= FLOR && p.Ronda.Envite.CantadoPor != jugada.Manojo.Jugador.ID
-	elTrucoEsRespondible := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado) && p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
+	elTrucoEsRespondible := p.Ronda.Truco.Estado.esTrucoRespondible() && p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 
 	if elEnvidoEsRespondible {
 
@@ -1533,7 +1533,7 @@ func (jugada IrseAlMazo) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 	seEstabaJugandoElEnvido := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO)
 	seEstabaJugandoLaFlor := p.Ronda.Envite.Estado >= FLOR
-	seEstabaJugandoElTruco := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
+	seEstabaJugandoElTruco := p.Ronda.Truco.Estado.esTrucoRespondible()
 	// no se puede ir al mazo sii:
 	// 1. el fue el que canto el envido (y el envido esta en juego)
 	// 2. tampoco se puede ir al mazo si el canto la flor o similar
@@ -1541,7 +1541,7 @@ func (jugada IrseAlMazo) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 	// envidoPropuesto := Contains([]EstadoEnvite{ENVIDO, REALENVIDO, FALTAENVIDO}, p.Ronda.Envite.Estado)
 	// envidoPropuestoPorSuEquipo := p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo == jugada.Manojo.Jugador.Equipo
-	// trucoPropuesto := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
+	// trucoPropuesto := p.Ronda.Truco.Estado.esTrucoRespondible()
 	// trucoPropuestoPorSuEquipo := p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo == jugada.Manojo.Jugador.Equipo
 	// condicionDelBobo := (envidoPropuesto && envidoPropuestoPorSuEquipo) || (trucoPropuesto && trucoPropuestoPorSuEquipo)
 

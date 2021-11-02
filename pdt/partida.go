@@ -401,7 +401,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 
 	// o bien que en la primera mano hayan cantado truco y uno no lo quizo
 	manoActual := p.Ronda.ManoEnJuego.ToInt() - 1
-	elTrucoNoTuvoRespuesta := Contains([]EstadoTruco{TRUCO, RETRUCO, VALE4}, p.Ronda.Truco.Estado)
+	elTrucoNoTuvoRespuesta := p.Ronda.Truco.Estado.esTrucoRespondible()
 	noFueParda := p.Ronda.Manos[manoActual].Resultado != Empardada
 	estaManoYaTieneGanador := noFueParda && p.Ronda.Manos[manoActual].Ganador != ""
 	elTrucoFueNoQuerido := elTrucoNoTuvoRespuesta && estaManoYaTieneGanador
@@ -696,7 +696,7 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 
 	mismaCantidadDeJugadores := len(equipoRojo) == len(equipoAzul)
 	cantJugadores := len(equipoRojo) + len(equipoAzul)
-	cantidadCorrecta := Contains([]int{2, 4, 6}, cantJugadores) // puede ser 2, 4 o 6
+	cantidadCorrecta := cantJugadores == 2 || cantJugadores == 4 || cantJugadores == 6
 	ok := mismaCantidadDeJugadores && cantidadCorrecta
 
 	if !ok {

@@ -94,6 +94,14 @@ type Carta struct {
 	Valor int  `json:"valor"`
 }
 
+func (c Carta) esNumericamentePieza() bool {
+	return c.Valor == 2 ||
+		c.Valor == 4 ||
+		c.Valor == 5 ||
+		c.Valor == 10 ||
+		c.Valor == 11
+}
+
 // devulve `true` si la carta es pieza
 // segun la el parametro `muestra`
 func (c Carta) esPieza(muestra Carta) bool {
@@ -104,14 +112,12 @@ func (c Carta) esPieza(muestra Carta) bool {
 	// CASO II: es 12 de la muestra & la muestra es (2|4|5|10|11)
 
 	// CASO I:
-	esNumericamentePieza := Contains([]int{2, 4, 5, 10, 11}, c.Valor)
 	esDeLaMuestra := c.Palo == muestra.Palo
-	esPiezaCasoI := esNumericamentePieza && esDeLaMuestra
+	esPiezaCasoI := c.esNumericamentePieza() && esDeLaMuestra
 
 	// CASO II:
 	esDoce := c.Valor == 12
-	muestraEsNumericamentePieza := Contains([]int{2, 4, 5, 10, 11}, muestra.Valor)
-	esPiezaCasoII := esDoce && esDeLaMuestra && muestraEsNumericamentePieza
+	esPiezaCasoII := esDoce && esDeLaMuestra && muestra.esNumericamentePieza()
 
 	return esPiezaCasoI || esPiezaCasoII
 }
@@ -275,7 +281,9 @@ func ParseCarta(valorStr, paloStr string) (*Carta, error) {
 	if err != nil {
 		return nil, fmt.Errorf("no se pudo reconocer el valor de la carta")
 	}
-	ok := Contains([]int{1, 2, 3, 4, 5, 6, 7, 10, 11, 12}, valor)
+	// valor in {1,2,3,4,5,6,7,10,11,12} iif
+	ok := valor >= 1 && valor <= 12 && valor != 8 && valor != 9
+
 	if !ok {
 		return nil, fmt.Errorf("el valor de esa carta es incorrecto")
 	}

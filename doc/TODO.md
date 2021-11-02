@@ -1,10 +1,6 @@
 # TODO
-- usar mapas para mapear str a manojos <- na xq primero tengo que verificar que 
-  esta la key: eos es o(n) -> igual q como esta ahora.
 - URGENTE: LOS CONTAINS USAN REFLECT, SUPER ANTI PERFORMANTE!!
 - [?] enco.TrucoQuerido -> enco.TrucoQuerido, enco.RetrucoQuerido, enco.Vale4Querido
-- SetNextTurnoPosMano siempre se usa luego de un p.Ronda.ManoEnJuego++ ?
-  fusionarlo o bien hacer un r.incManoEnJuego
 
   **cli CMD**
     - cli: mini commandos con menu: t -> truco, e -> envido fe -> falta envido

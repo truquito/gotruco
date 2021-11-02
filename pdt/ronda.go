@@ -31,6 +31,10 @@ var toEstadoTruco = map[string]EstadoTruco{
 	"vale4Querido":   VALE4QUERIDO,
 }
 
+func (e EstadoTruco) esTrucoRespondible() bool {
+	return e == TRUCO || e == RETRUCO || e == VALE4
+}
+
 func (e EstadoTruco) String() string {
 	estados := []string{
 		"noCantado",
