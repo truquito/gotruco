@@ -217,38 +217,10 @@ func (c Carta) calcPoder(muestra Carta) int {
 	return poder
 }
 
-type comparacion int
-
-const (
-	menor comparacion = iota
-	iguales
-	mayor
-)
-
-func (c Carta) comparar(c2, muestra Carta) comparacion {
-	p1 := c.calcPoder(muestra)
-	p2 := c2.calcPoder(muestra)
-	if p1 == p2 {
-		return iguales
-	} else if p1 < p2 {
-		return menor
-	}
-	return mayor
-}
-
 // String .
 func (c Carta) String() string {
 	return strconv.Itoa(c.Valor) + " de " + c.Palo.String()
 }
-
-/*
-	Cada palo tiene 10 cartas
-	#{1, 2, 3, 4, 5, 6, 7, 10, 11, 12} = 10
-*/
-const tamanoPalo = 10
-
-// Basto, Copa, Espada, Oro
-const cantPalos = 4
 
 // CartaID abstraccion *no-relativa* de carta
 type CartaID int
@@ -301,11 +273,11 @@ func ParseCarta(valorStr, paloStr string) (*Carta, error) {
 	)
 	valor, err := strconv.Atoi(valorStr)
 	if err != nil {
-		return nil, fmt.Errorf("No se pudo reconocer el valor de la carta")
+		return nil, fmt.Errorf("no se pudo reconocer el valor de la carta")
 	}
 	ok := Contains([]int{1, 2, 3, 4, 5, 6, 7, 10, 11, 12}, valor)
 	if !ok {
-		return nil, fmt.Errorf("El valor de esa carta es incorrecto")
+		return nil, fmt.Errorf("el valor de esa carta es incorrecto")
 	}
 	paloLower := strings.ToLower(paloStr)
 
@@ -319,7 +291,7 @@ func ParseCarta(valorStr, paloStr string) (*Carta, error) {
 	case "espada":
 		palo = Espada
 	default:
-		return nil, fmt.Errorf("El palo de esa carta es incorrecto")
+		return nil, fmt.Errorf("el palo de esa carta es incorrecto")
 	}
 
 	return &Carta{palo, valor}, nil

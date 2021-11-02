@@ -60,7 +60,7 @@ func (manojo Manojo) GetCartaIdx(carta Carta) (int, error) {
 	}
 	noTieneEsaCarta := idx == cantCartasManojo
 	if noTieneEsaCarta {
-		return -1, fmt.Errorf("Esa carta no se encuentra en este manojo")
+		return -1, fmt.Errorf("esa carta no se encuentra en este manojo")
 	}
 	return idx, nil
 }
@@ -130,7 +130,7 @@ func (manojo *Manojo) calcFlor(muestra Carta) (int, error) {
 	)
 
 	if !tieneFlor {
-		return -1, fmt.Errorf("Este manojo no tiene flor")
+		return -1, fmt.Errorf("este manojo no tiene flor")
 	}
 
 	switch tipoFlor {

@@ -182,7 +182,7 @@ func (r Ronda) GetSigHabilitado(m Manojo) *Manojo {
 	for i = 0; i < cantJugadores; i++ {
 		sig = r.GetSiguiente(*sig)
 		// checkeos
-		noSeFueAlMazo := sig.SeFueAlMazo == false
+		noSeFueAlMazo := !sig.SeFueAlMazo
 		yaTiroCartaEnEstaMano := sig.yaTiroCarta(r.ManoEnJuego)
 		noEsEl := sig.Jugador.ID != m.Jugador.ID
 		ok := noSeFueAlMazo && !yaTiroCartaEnEstaMano && noEsEl
@@ -538,7 +538,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts []*
 	for i := range r.Manojos {
 		flores[i], _ = r.Manojos[i].calcFlor(r.Muestra)
 		tieneFlor := flores[i] > 0
-		seFueAlMazo := r.Manojos[i].SeFueAlMazo == true
+		seFueAlMazo := r.Manojos[i].SeFueAlMazo
 		if tieneFlor && !seFueAlMazo {
 			yaDijeron[i] = false
 		} else {
