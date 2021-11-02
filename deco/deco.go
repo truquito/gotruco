@@ -79,6 +79,8 @@ func Razon2str(r int) string {
 		str = "el truco no querido"
 	case enco.TrucoQuerido:
 		str = "el truco ganado"
+	case enco.SeFueronAlMazo:
+		str = "se fueron al mazo"
 	}
 	return str
 }

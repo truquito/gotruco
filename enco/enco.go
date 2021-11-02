@@ -81,6 +81,8 @@ const (
 
 	TrucoNoQuerido
 	TrucoQuerido
+
+	SeFueronAlMazo
 )
 
 func (r Razon) String() string {

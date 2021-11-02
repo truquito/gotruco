@@ -534,7 +534,16 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 		totalPts = 4
 	}
 
-	if elTrucoNoTuvoRespuesta {
+	if !hayJugadoresEnAmbos {
+
+		pkts = append(pkts, enco.Pkt(
+			enco.Dest("ALL"),
+			enco.Msg(enco.RondaGanada, ganador.Jugador.ID, int(enco.SeFueronAlMazo)),
+			// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado`
+		))
+
+	} else if elTrucoNoTuvoRespuesta {
+
 		ganador = p.Ronda.Truco.CantadoPor
 
 		var razon enco.Razon
@@ -554,6 +563,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 		))
 
 	} else {
+
 		var razon enco.Razon
 		switch p.Ronda.Truco.Estado {
 		case TRUCO:
@@ -569,6 +579,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 			enco.Msg(enco.RondaGanada, ganador.Jugador.ID, int(razon)),
 			// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado`
 		))
+
 	}
 
 	p.SumarPuntos(ganador.Jugador.Equipo, totalPts)
