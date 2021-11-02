@@ -40,10 +40,6 @@
 # PERFORMANCE
 - lo mas eficiente al momento de hacer las PerspectivaCacheFlors es usar la misma struct
   y temporalmente setear algunas cartas a null (hacer benchmark comparando ambas)
-- que es mas rapido para saber si un jugador tiene flor:
-    * jugada.autor.tieneFlor(p.Ronda.Muestra)
-    * o fijarse en un array de jugadores con flor y la op contains
-    * un mapa de booleanos o similar
 
 # DUDAS
 
