@@ -76,7 +76,7 @@ func (jugada TirarCarta) Ok(p *Partida) ([]*enco.Packet, bool) {
 	}
 
 	// ya jugo esa carta?
-	todaviaNoLaTiro := jugada.Manojo.CartasNoTiradas[idx]
+	todaviaNoLaTiro := !jugada.Manojo.Tiradas[idx]
 	if !todaviaNoLaTiro {
 
 		pkts = append(pkts, enco.Pkt(

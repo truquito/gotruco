@@ -656,8 +656,8 @@ func (p *Partida) PerspectivaCacheFlor(manojo *Manojo) *Partida {
 		noEsDeSuEquipo := m.Jugador.Equipo != manojo.Jugador.Equipo
 		if noEsDeSuEquipo {
 			// oculto solo las cartas que no tiro
-			for j, noTirada := range m.CartasNoTiradas {
-				if noTirada {
+			for j, tirada := range m.Tiradas {
+				if !tirada {
 					copia.Ronda.Manojos[i].Cartas[j] = nil
 				}
 			}
@@ -684,7 +684,7 @@ func (p *Partida) Manojo(j string) *Manojo {
 
 // TirarCarta tira una carta
 func (p *Partida) TirarCarta(manojo *Manojo, idx int) {
-	manojo.CartasNoTiradas[idx] = false
+	manojo.Tiradas[idx] = true
 	manojo.UltimaTirada = idx
 	carta := manojo.Cartas[idx]
 	tirada := cartaTirada{manojo.Jugador.ID, *carta}

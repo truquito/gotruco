@@ -174,7 +174,7 @@ func (pr impresora) dibujarPosesiones(manojos []Manojo) {
 
 		var cartasEnPosesion []*Carta
 		for j, c := range manojo.Cartas {
-			if manojo.CartasNoTiradas[j] {
+			if !manojo.Tiradas[j] {
 				cartasEnPosesion = append(cartasEnPosesion, c)
 			}
 		}

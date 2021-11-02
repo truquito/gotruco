@@ -690,7 +690,7 @@ func (r *Ronda) repartirCartas() {
 			cartaID := CartaID(randomCards[3*idxJugador+idxCarta])
 			carta := nuevaCarta(cartaID)
 			r.Manojos[idxJugador].Cartas[idxCarta] = &carta
-			r.Manojos[idxJugador].CartasNoTiradas[idxCarta] = true
+			r.Manojos[idxJugador].Tiradas[idxCarta] = false
 		}
 	}
 
@@ -723,7 +723,7 @@ func (r *Ronda) nuevaRonda(elMano JugadorIdx) {
 	for i := range r.Manojos {
 		r.Manojos[i].SeFueAlMazo = false
 		// r.Manojos[i].Cartas
-		r.Manojos[i].CartasNoTiradas = [cantCartasManojo]bool{true, true, true}
+		r.Manojos[i].Tiradas = [cantCartasManojo]bool{false, false, false}
 	}
 
 	// reparto 3 cartas al azar a cada jugador

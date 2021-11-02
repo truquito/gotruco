@@ -1,7 +1,4 @@
 # TODO
-- URGENTE: LOS CONTAINS USAN REFLECT, SUPER ANTI PERFORMANTE!!
-- [?] enco.TrucoQuerido -> enco.TrucoQuerido, enco.RetrucoQuerido, enco.Vale4Querido
-
   **cli CMD**
     - cli: mini commandos con menu: t -> truco, e -> envido fe -> falta envido
     - los mensajes de info en realidad actualizan el resultado de la mano
@@ -13,11 +10,7 @@
 
 
 # LIMPIEZA DE CODIGO
-- cartasNoJugadas (que usa [true, true, true]) deberia ser tiradas [false, false, false]
-  jugadores podria ir adentro de manojo.jugador.
-  notar que ambos cambios hacen que dejen de andar los tests cargados como json/
-  habria que re-generarlos a todos.
-  O MEJOR: DEJAR JUGADORES COMO PRIVADO EN JSON EXPORT ;)
+  
 - el eval de la flor esta dividido: el eval solo se llama cuando se juega flor comun
   mientras que los quiero/noquiero se llaman desde ahi mismo
   para el eval de contraflor/contrafloralresto no hay case (ya que se implementan
@@ -27,9 +20,6 @@
 - hay redundancia entre p.Ronda.GetLaFlorMasAlta y 
     manojoConLaFlorGanadora, _, _ := p.Ronda.execCantarFlores(aPartirDe)
 - ??? esta duplicado el codigo de irse al mazo con el de "no quiero"
-- [ESTO PUEDE SER VIEJO(?)] hacer getElEnvido() con indices
-- ??? - Eliminar los metodos .eval() que se usan en los .quiero() y ponerlos 
-    directamente ahi
 
 # SEGURIDAD
 - que en los writes se use el id no el nombre ni el nick etc...
