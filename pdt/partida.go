@@ -285,7 +285,7 @@ func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
 
 	for i, tirada := range tiradas {
 		poder := tirada.Carta.calcPoder(p.Ronda.Muestra)
-		equipo := tirada.autor.Jugador.Equipo
+		equipo := p.Ronda.Manojo[tirada.Jugador].Jugador.Equipo
 		if poder > maxPoder[equipo] {
 			maxPoder[equipo] = poder
 			max[equipo] = &tiradas[i]
@@ -350,7 +350,7 @@ func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
 
 		// el turno pasa a ser el del mano.ganador
 		// pero se setea despues de evaluar la ronda
-		mano.Ganador = tiradaGanadora.autor.Jugador.ID
+		mano.Ganador = p.Ronda.Manojo[tiradaGanadora.Jugador].Jugador.ID
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
@@ -448,7 +448,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 	n := len(p.Ronda.Manos[p.Ronda.ManoEnJuego].CartasTiradas)
 	actual := p.Ronda.GetElTurno().Jugador.ID
 	mix := p.Ronda.ManoEnJuego
-	ultimaCartaTiradaPerteneceAlTurnoActual := n > 0 && p.Ronda.Manos[mix].CartasTiradas[n-1].autor.Jugador.ID == actual
+	ultimaCartaTiradaPerteneceAlTurnoActual := n > 0 && p.Ronda.Manos[mix].CartasTiradas[n-1].Jugador == actual
 	vengoDeTirarCarta := ultimaCartaTiradaPerteneceAlTurnoActual
 	if segundaManoIndefinida && hayJugadoresEnAmbos && vengoDeTirarCarta {
 		return false, nil
@@ -621,42 +621,6 @@ func (p *Partida) FromJSON(data []byte) error {
 
 	p.Ronda.cachearFlores(false) // sin reset
 
-	// cargo los autores de las tiradas de cada una de las 3 manos
-	/*
-		para cada mano i:
-			si i no tiene cartas tiradas break
-			j = 0
-			para tirada t:
-				count = p.cantJugadores
-				mientras que j no sea quien tiene la carta t.c:
-					j.sig()
-					count--
-					if count == 0 return err
-				t.c.autor = j
-				j.sigManojo_NOSE()
-	*/
-	for mix, mano := range p.Ronda.Manos {
-		if len(mano.CartasTiradas) == 0 {
-			break
-		}
-		jix := 0
-		for tix, t := range mano.CartasTiradas {
-			count := len(p.Ronda.Manojos)
-			for {
-				if count--; count == -1 {
-					return fmt.Errorf("los datos no son consistentes")
-				}
-				if _, err := p.Ronda.Manojos[jix].GetCartaIdx(t.Carta); err == nil {
-					break // bingo
-				} else {
-					jix = int(p.Ronda.getSig(JugadorIdx(jix))) // no tiene la carta, siguiente
-				}
-			}
-			p.Ronda.Manos[mix].CartasTiradas[tix].autor = &p.Ronda.Manojos[jix]
-			jix = int(p.Ronda.getSig(JugadorIdx(jix)))
-		}
-	}
-
 	return nil
 }
 
@@ -723,7 +687,7 @@ func (p *Partida) TirarCarta(manojo *Manojo, idx int) {
 	manojo.CartasNoTiradas[idx] = false
 	manojo.UltimaTirada = idx
 	carta := manojo.Cartas[idx]
-	tirada := cartaTirada{manojo, *carta}
+	tirada := cartaTirada{manojo.Jugador.ID, *carta}
 	p.Ronda.GetManoActual().agregarTirada(tirada)
 }
 

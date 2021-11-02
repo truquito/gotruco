@@ -306,8 +306,8 @@ func (r *Ronda) SetNextTurnoPosMano() {
 			for _, tirada := range r.GetManoAnterior().CartasTiradas {
 				poder := tirada.Carta.calcPoder(r.Muestra)
 				if poder == max {
-					if !tirada.autor.SeFueAlMazo {
-						r.Turno = JugadorIdx(r.GetIdx(*tirada.autor))
+					if !r.Manojo[tirada.Jugador].SeFueAlMazo {
+						r.Turno = JugadorIdx(r.GetIdx(*r.Manojo[tirada.Jugador]))
 						return
 					}
 				}

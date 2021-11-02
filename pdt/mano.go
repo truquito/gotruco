@@ -94,8 +94,8 @@ func (n NumMano) String() string {
 }
 
 type cartaTirada struct {
-	autor *Manojo
-	Carta
+	Jugador string `json:"jugador"`
+	Carta   `json:"carta"`
 }
 
 // Mano :
