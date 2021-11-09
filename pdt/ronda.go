@@ -86,9 +86,8 @@ type Ronda struct {
 	CantJugadoresEnJuego map[Equipo]int `json:"cantJugadoresEnJuego"`
 
 	/* Indices */
-	ElMano JIX    `json:"elMano"`
-	Turno  JIX    `json:"turno"`
-	Pies   [2]JIX `json:"pies"`
+	ElMano JIX `json:"elMano"`
+	Turno  JIX `json:"turno"`
 
 	/* toques, gritos y cantos */
 	Envite Envite `json:"envite"`
