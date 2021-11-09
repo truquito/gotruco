@@ -1,8 +1,6 @@
 package pdt
 
 import (
-	"fmt"
-
 	"github.com/filevich/truco/enco"
 )
 
@@ -1319,10 +1317,10 @@ func (jugada ResponderNoQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 	if !ok {
 		// si no, esta respondiendo al pedo
-
+		err := jugada.Manojo.Jugador.ID + ` esta respondiendo al pedo; no hay nada respondible`
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(jugada.Manojo.Jugador.ID),
-			enco.Msg(enco.Error, fmt.Sprintf(`%s esta respondiendo al pedo; no hay nada respondible`, jugada.Manojo.Jugador.ID)),
+			enco.Msg(enco.Error, err),
 		))
 
 		return pkts, false
