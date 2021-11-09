@@ -86,9 +86,9 @@ type Ronda struct {
 	CantJugadoresEnJuego map[Equipo]int `json:"cantJugadoresEnJuego"`
 
 	/* Indices */
-	ElMano JugadorIdx    `json:"elMano"`
-	Turno  JugadorIdx    `json:"turno"`
-	Pies   [2]JugadorIdx `json:"pies"`
+	ElMano JIX    `json:"elMano"`
+	Turno  JIX    `json:"turno"`
+	Pies   [2]JIX `json:"pies"`
 
 	/* toques, gritos y cantos */
 	Envite Envite `json:"envite"`
@@ -110,8 +110,8 @@ func (r Ronda) GetElMano() *Manojo {
 }
 
 // GetSigElMano retorna el id del que deberia ser el siguiente mano
-func (r Ronda) GetSigElMano() JugadorIdx {
-	return JugadorIdx(r.GetIdx(*r.GetSiguiente(*r.GetElMano())))
+func (r Ronda) GetSigElMano() JIX {
+	return JIX(r.GetIdx(*r.GetSiguiente(*r.GetElMano())))
 }
 
 // GetElTurno .
@@ -144,7 +144,7 @@ func (r Ronda) GetIdx(m Manojo) int {
 
 // getSig devuelve el `JugadorIdx` del
 // jugador siguiente a j
-func (r *Ronda) getSig(j JugadorIdx) JugadorIdx {
+func (r *Ronda) getSig(j JIX) JIX {
 	cantJugadores := len(r.Manojos)
 	esElUltimo := int(j) == cantJugadores-1
 	if esElUltimo {
@@ -232,18 +232,18 @@ func (r *Ronda) GetLaFlorMasAlta() (*Manojo, int) {
 	return &r.Manojos[maxIdx], maxFlor
 }
 
-func (r *Ronda) getManojo(jIdx JugadorIdx) *Manojo {
+func (r *Ronda) getManojo(jIdx JIX) *Manojo {
 	return &r.Manojos[jIdx]
 }
 
 /* PREDICADOS */
 
 // ver documentacion cambio de variable
-func cv(x, mano JugadorIdx, cantJugadores int) (y JugadorIdx) {
+func cv(x, mano JIX, cantJugadores int) (y JIX) {
 	if x >= mano {
 		y = x - mano
 	} else {
-		c := JugadorIdx(cantJugadores) - mano
+		c := JIX(cantJugadores) - mano
 		y = x + c
 	}
 	return y
@@ -251,7 +251,7 @@ func cv(x, mano JugadorIdx, cantJugadores int) (y JugadorIdx) {
 
 // leGanaDeMano devuelve `true` sii
 // `i` "le gana de mano" a `j`
-func (r Ronda) leGanaDeMano(i, j JugadorIdx) bool {
+func (r Ronda) leGanaDeMano(i, j JIX) bool {
 	cantJugadores := len(r.Manojos)
 	// cambios de variables
 	p := cv(i, r.ElMano, cantJugadores)
@@ -276,7 +276,7 @@ func (r *Ronda) hayEquipoSinCantar(equipo Equipo) bool {
 func (r *Ronda) SetNextTurno() {
 	manojoTurnoActual := r.Manojos[r.Turno]
 	manojoSigTurno := r.GetSigHabilitado(manojoTurnoActual)
-	r.Turno = JugadorIdx(r.GetIdx(*manojoSigTurno))
+	r.Turno = JIX(r.GetIdx(*manojoSigTurno))
 }
 
 // nextTurnoPosMano: setea el turno siguiente *segun el resultado de
@@ -304,7 +304,7 @@ func (r *Ronda) SetNextTurnoPosMano() {
 		// solo si la mano anterior no fue parda
 		// si fue parda busco la que empardo mas cercano al mano
 		if r.GetManoAnterior().Resultado != Empardada {
-			r.Turno = JugadorIdx(r.GetIdx(*r.Manojo[r.GetManoAnterior().Ganador]))
+			r.Turno = JIX(r.GetIdx(*r.Manojo[r.GetManoAnterior().Ganador]))
 		} else {
 			// 1. obtengo la carta de maximo valor de la mano anterior
 			// 2. busco a partir de la mano quien es el primero en tener
@@ -322,7 +322,7 @@ func (r *Ronda) SetNextTurnoPosMano() {
 				poder := tirada.Carta.calcPoder(r.Muestra)
 				if poder == max {
 					if !r.Manojo[tirada.Jugador].SeFueAlMazo {
-						r.Turno = JugadorIdx(r.GetIdx(*r.Manojo[tirada.Jugador]))
+						r.Turno = JIX(r.GetIdx(*r.Manojo[tirada.Jugador]))
 						return
 					}
 				}
@@ -330,7 +330,7 @@ func (r *Ronda) SetNextTurnoPosMano() {
 			// si llegue aca es porque los vejigas que empardaron se fueron
 			// entonces agarro al primero a partir del mano que aun
 			// no se haya ido
-			r.Turno = JugadorIdx(r.GetIdx(*r.GetSigHabilitado(*r.GetElMano())))
+			r.Turno = JIX(r.GetIdx(*r.GetSigHabilitado(*r.GetElMano())))
 		}
 	}
 }
@@ -373,7 +373,7 @@ func (r *Ronda) SetMuestra(muestra Carta) {
 *		`pkts[3] = Juan dice: "33 son mejores!"`
 *
  */
-func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*enco.Packet) {
+func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts []*enco.Packet) {
 
 	cantJugadores := len(r.Manojos)
 
@@ -517,7 +517,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JugadorIdx, max int, pkts []*enco.Packet) {
 *	`pkts[3] = Juan dice: "33 son mejores!"`
 *
  */
-func (r *Ronda) ExecLaFlores(aPartirDe JugadorIdx) (j *Manojo, max int, pkts []*enco.Packet) {
+func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts []*enco.Packet) {
 
 	// si solo un equipo tiene flor, entonces se saltea esta parte
 	soloUnEquipoTieneFlores := true
@@ -718,7 +718,7 @@ func (r *Ronda) indexarManojos() {
 	}
 }
 
-func (r *Ronda) nuevaRonda(elMano JugadorIdx) {
+func (r *Ronda) nuevaRonda(elMano JIX) {
 	cantJugadores := len(r.Manojos)
 	cantJugadoresPorEquipo := cantJugadores / 2
 

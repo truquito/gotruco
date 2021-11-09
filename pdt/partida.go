@@ -593,7 +593,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 }
 
 // NuevaRonda .
-func (p *Partida) NuevaRonda(elMano JugadorIdx) {
+func (p *Partida) NuevaRonda(elMano JIX) {
 	p.Ronda.nuevaRonda(elMano)
 }
 

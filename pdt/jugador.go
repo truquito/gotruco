@@ -1,7 +1,7 @@
 package pdt
 
-// JugadorIdx :
-type JugadorIdx int
+// JIX :
+type JIX uint8
 
 // Jugador :
 type Jugador struct {
