@@ -734,7 +734,7 @@ func TestFixCodificacionCarta(t *testing.T) {
 }
 
 func TestCreadorDeEscenario(t *testing.T) {
-	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0},"truco":{"estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":3},{"palo":"Oro","valor":5},{"palo":"Espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":1},"manos":[{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null}]}}`
+	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":19,"Rojo":19},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":null},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":3},{"palo":"Oro","valor":5},{"palo":"Espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":1},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
 	p, err := Parse(partidaJSON)
 	if err != nil {
 		t.Error(err)
@@ -744,26 +744,34 @@ func TestCreadorDeEscenario(t *testing.T) {
 	// p.Cmd("Alvaro flor")
 
 	// TRUCO
-	// p.Cmd("Alvaro truco")
-	// p.Cmd("Roro re-truco")
-	// p.Cmd("Alvaro vale-4")
-	// p.Cmd("Roro quiero")
+	p.Cmd("Alvaro truco")
+	p.Cmd("Roro re-truco")
+	p.Cmd("Alvaro vale-4")
+	p.Cmd("Roro quiero")
 
-	// PRIMERA mano la gana Alvaro
-	// p.Cmd("Alvaro 7 copa")
-	// p.Cmd("Roro 6 espada")
+	// PRIMERA mano
+	p.Cmd("Alvaro 6 copa")
+	p.Cmd("Roro 3 copa")
 
-	// SEGUNDA mano la gana Roro
-	// p.Cmd("Alvaro 5 copa")
-	// p.Cmd("Roro 2 oro")
+	// SEGUNDA mano
+	p.Cmd("Roro 5 oro")
+	p.Cmd("Alvaro 3 oro")
+
+	// TERCERA mano
+	p.Cmd("Alvaro 2 copa")
 
 	// p.Cmd("Roro mazo") // <- hace que empiece una ronda nueva
 
+	envidoDeshabilitado := p.Ronda.Envite.Estado == DESHABILITADO
+	vale4EnJuego := p.Ronda.Truco.Estado == VALE4QUERIDO
+	roroTieneLaPalabra := p.Ronda.Truco.CantadoPor == "Roro"
+	ultimaManoEnJuego := p.Ronda.ManoEnJuego == Tercera
+
 	ok := util.All(
-	// p.Ronda.Envite.Estado == DESHABILITADO,
-	// p.Ronda.Truco.Estado == VALE4QUERIDO,
-	// p.Ronda.Truco.CantadoPor.Jugador.ID == "Roro",
-	// p.Ronda.ManoEnJuego == Tercera,
+		envidoDeshabilitado,
+		vale4EnJuego,
+		roroTieneLaPalabra,
+		ultimaManoEnJuego,
 	)
 
 	if !ok {
@@ -771,6 +779,11 @@ func TestCreadorDeEscenario(t *testing.T) {
 	}
 
 	json, _ := p.MarshalJSON()
+
+	// opcional: renderizado
+	t.Log(Renderizar(p))
+
+	// json
 	t.Log(string(json))
 
 }

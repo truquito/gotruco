@@ -165,6 +165,12 @@ func (jugada TirarCarta) Hacer(p *Partida) []*enco.Packet {
 
 		if !empiezaNuevaRonda {
 
+			seTerminoLaPrimeraMano := p.Ronda.ManoEnJuego == Primera
+			nadieCantoEnvite := p.Ronda.Envite.Estado == NOCANTADOAUN
+			if seTerminoLaPrimeraMano && nadieCantoEnvite {
+				p.Ronda.Envite.Estado = DESHABILITADO
+			}
+
 			// actualizo el mano
 			p.Ronda.ManoEnJuego++
 			p.Ronda.SetNextTurnoPosMano()
@@ -1741,6 +1747,9 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []*enco.Packet {
 		pkts = append(pkts, res...)
 
 		if !empiezaNuevaRonda {
+
+			// esta parte no tiene sentido: si se fue al mazo se sabe que va a
+			// empezar una nueva ronda. Este `if` es codigo muerto
 
 			// actualizo el mano
 			p.Ronda.ManoEnJuego++
