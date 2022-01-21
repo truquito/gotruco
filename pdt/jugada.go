@@ -236,21 +236,29 @@ func (jugada TocarEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 	// checkeo flor en juego
 	florEnJuego := p.Ronda.Envite.Estado >= FLOR
 	if florEnJuego {
-
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(jugada.Manojo.Jugador.ID),
 			enco.Msg(enco.Error, "No es posible tocar el envido ahora porque la flor esta en juego"),
 		))
 
 		return pkts, false
-
 	}
 	seFueAlMazo := jugada.Manojo.SeFueAlMazo
 	esPrimeraMano := p.Ronda.ManoEnJuego == Primera
 	esSuTurno := p.Ronda.GetElTurno() == jugada.Manojo
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
-	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	envidoHabilitado := (p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.Estado == ENVIDO)
+
+	if !envidoHabilitado {
+		pkts = append(pkts, enco.Pkt(
+			enco.Dest(jugada.Manojo.Jugador.ID),
+			enco.Msg(enco.Error, "No es posible tocar envido ahora"),
+		))
+
+		return pkts, false
+	}
+
+	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == ENVIDO
 	// apuestaSaturada := p.Ronda.Envite.Puntaje >= p.CalcPtsFalta()
 	apuestaSaturada := p.Ronda.Envite.Puntaje >= 4
@@ -377,6 +385,16 @@ func (jugada TocarRealEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 	esSuTurno := p.Ronda.GetElTurno() == jugada.Manojo
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
 	realEnvidoHabilitado := (p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.Estado == ENVIDO)
+
+	if !realEnvidoHabilitado {
+		pkts = append(pkts, enco.Pkt(
+			enco.Dest(jugada.Manojo.Jugador.ID),
+			enco.Msg(enco.Error, "No es posible tocar real-envido ahora"),
+		))
+
+		return pkts, false
+	}
+
 	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == ENVIDO
 	trucoNoCantado := p.Ronda.Truco.Estado == NOCANTADO
@@ -473,6 +491,16 @@ func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 	esPrimeraMano := p.Ronda.ManoEnJuego == Primera
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
 	faltaEnvidoHabilitado := p.Ronda.Envite.Estado >= NOCANTADOAUN && p.Ronda.Envite.Estado < FALTAENVIDO
+
+	if !faltaEnvidoHabilitado {
+		pkts = append(pkts, enco.Pkt(
+			enco.Dest(jugada.Manojo.Jugador.ID),
+			enco.Msg(enco.Error, "No es posible tocar real-envido ahora"),
+		))
+
+		return pkts, false
+	}
+
 	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Manojo[p.Ronda.Envite.CantadoPor].Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado >= ENVIDO
 	trucoNoCantado := p.Ronda.Truco.Estado == NOCANTADO
