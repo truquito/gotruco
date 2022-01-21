@@ -338,6 +338,23 @@ func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
 		// no se cambia el turno
 
 	} else {
+
+		// esto quedo arreglado en la funcion IrseAlMazo.Ok para evitar que pueda
+		// llegar hasta aca
+
+		/*
+			caso especial:
+				2 jugadores, 1 tiro carta y enseguida se fue al mazo
+
+			para 4 o 6 jugadores:
+				si era el primero de mi equipo y de todos en tirar:
+				todos los de mi equipo se van
+				yo tiro y me voy (sin dejar chance que los otros tiren)
+				gana mi equipo
+
+			 -> no se puede ir al mazo si mi equipo llego a tirar carta y los otros no llegaron a tirar al menos una carta
+		*/
+
 		var tiradaGanadora *cartaTirada
 
 		if maxPoder[Rojo] > maxPoder[Azul] {

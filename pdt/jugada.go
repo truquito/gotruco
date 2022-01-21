@@ -1568,6 +1568,28 @@ func (jugada IrseAlMazo) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 	}
 
+	// por como esta hecho el algoritmo EvaluarMano:
+
+	esPrimeraMano := p.Ronda.ManoEnJuego == Primera
+	tiradas := p.Ronda.GetManoActual().CartasTiradas
+	n := len(tiradas)
+
+	soloMiEquipoTiro := n == 1 && p.Ronda.Manojo[tiradas[n-1].Jugador].Jugador.Equipo == jugada.Manojo.Jugador.Equipo
+
+	equipoDelJugador := jugada.Manojo.Jugador.Equipo
+	soyElUnicoDeMiEquipo := p.Ronda.CantJugadoresEnJuego[equipoDelJugador] == 1
+	noSePuedeIr := esPrimeraMano && soloMiEquipoTiro && soyElUnicoDeMiEquipo
+
+	// que pasa si alguien dice truco y se va al mazo?
+
+	if noSePuedeIr {
+		pkts = append(pkts, enco.Pkt(
+			enco.Dest(jugada.Manojo.Jugador.ID),
+			enco.Msg(enco.Error, "No es posible irse al mazo ahora"),
+		))
+		return pkts, false
+	}
+
 	return pkts, true
 }
 

@@ -133,7 +133,7 @@ func TestFixNoLePermiteTocarEnvido(t *testing.T) {
 }
 
 func TestFixNoLePermiteGritarTruco(t *testing.T) {
-	data := `{"Jugadores": [{"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}, {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}, {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}, {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}], "cantJugadores": 4, "puntuacion": 20, "puntajes": {"Azul": 0, "Rojo": 0}, "ronda": {"manoEnJuego": 0, "cantJugadoresEnJuego": {"Azul": 2, "Rojo": 2}, "elMano": 0, "turno": 0, "pies": [0, 0], "envite": {"estado": "noCantadoAun", "puntaje": 0, "cantadoPor": null}, "truco": {"cantadoPor": "", "estado": "noCantado"}, "manojos": [{"seFueAlMazo": false, "cartas": [{"palo": "Espada", "valor": 3}, {"palo": "Oro", "valor": 7}, {"palo": "Copa", "valor": 7}], "tiradas": [false,false,false], "ultimaTirada": 0, "jugador": {"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 10}, {"palo": "Basto", "valor": 5}, {"palo": "Oro", "valor": 6}], "tiradas": [false,false,false], "ultimaTirada": 0, "jugador": {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 2}, {"palo": "Oro", "valor": 3}, {"palo": "Espada", "valor": 7}], "tiradas": [false,false,false], "ultimaTirada": 0, "jugador": {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Espada", "valor": 1}, {"palo": "Espada", "valor": 6}, {"palo": "Espada", "valor": 10}], "tiradas": [false,false,false], "ultimaTirada": 0, "jugador": {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}}], "muestra": {"palo": "Copa", "valor": 3}, "manos": [{"resultado": "ganoRojo", "ganador": "", "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": "", "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": "", "cartasTiradas": null}]}} `
+	data := `{"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":3},{"palo":"Oro","valor":7},{"palo":"Copa","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":10},{"palo":"Basto","valor":5},{"palo":"Oro","valor":6}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":2},{"palo":"Oro","valor":3},{"palo":"Espada","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":1},{"palo":"Espada","valor":6},{"palo":"Espada","valor":10}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":3},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
 	p, err := Parse(data)
 	if err != nil {
 		t.Error(err)
@@ -207,7 +207,7 @@ func TestFixLePermiteCFAR(t *testing.T) {
 }
 
 func TestFixNoLeDebePermitirTocarEnvidoSiGritoTruco(t *testing.T) {
-	data := `{"Jugadores": [{"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}, {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}, {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}, {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}], "cantJugadores": 4, "puntuacion": 20, "puntajes": {"Azul": 0, "Rojo": 0}, "ronda": {"manoEnJuego": 0, "cantJugadoresEnJuego": {"Azul": 2, "Rojo": 2}, "elMano": 0, "turno": 0, "pies": [0, 0], "envite": {"estado": "noCantadoAun", "puntaje": 0, "cantadoPor": null}, "truco": {"cantadoPor": "", "estado": "noCantado"}, "manojos": [{"seFueAlMazo": false, "cartas": [{"palo": "Espada", "valor": 3}, {"palo": "Oro", "valor": 7}, {"palo": "Copa", "valor": 7}], "tiradas": [false,false,false], "ultimaTirada": 0, "jugador": {"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 10}, {"palo": "Basto", "valor": 5}, {"palo": "Oro", "valor": 6}], "tiradas": [false,false,false], "ultimaTirada": 0, "jugador": {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 2}, {"palo": "Oro", "valor": 3}, {"palo": "Espada", "valor": 7}], "tiradas": [false,false,false], "ultimaTirada": 0, "jugador": {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Espada", "valor": 1}, {"palo": "Espada", "valor": 6}, {"palo": "Espada", "valor": 10}], "tiradas": [false,false,false], "ultimaTirada": 0, "jugador": {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}}], "muestra": {"palo": "Copa", "valor": 3}, "manos": [{"resultado": "ganoRojo", "ganador": "", "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": "", "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": "", "cartasTiradas": null}]}} `
+	data := `{"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":3},{"palo":"Oro","valor":7},{"palo":"Copa","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":10},{"palo":"Basto","valor":5},{"palo":"Oro","valor":6}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":2},{"palo":"Oro","valor":3},{"palo":"Espada","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":1},{"palo":"Espada","valor":6},{"palo":"Espada","valor":10}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":3},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
 	p, err := Parse(data)
 	if err != nil {
 		t.Error(err)
@@ -242,7 +242,7 @@ func TestFixNoLeDebePermitirTocarEnvidoSiGritoTruco(t *testing.T) {
 }
 
 func TestFixNoLeDeberiaResponderDesdeUltratumba(t *testing.T) {
-	data := `{"Jugadores": [{"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}, {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}, {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}, {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}], "cantJugadores": 4, "puntuacion": 20, "puntajes": {"Azul": 5, "Rojo": 6}, "ronda": {"manoEnJuego": 0, "cantJugadoresEnJuego": {"Azul": 2, "Rojo": 2}, "elMano": 2, "turno": 2, "pies": [0, 0], "envite": {"estado": "noCantadoAun", "puntaje": 0, "cantadoPor": null}, "truco": {"cantadoPor": "", "estado": "noCantado"}, "manojos": [{"seFueAlMazo": false, "cartas": [{"palo": "Basto", "valor": 2}, {"palo": "Basto", "valor": 6}, {"palo": "Espada", "valor": 5}], "tiradas": [false,false,false], "ultimaTirada": 0, "jugador": {"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 6}, {"palo": "Espada", "valor": 11}, {"palo": "Copa", "valor": 12}], "tiradas": [false,false,false], "ultimaTirada": 0, "jugador": {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Oro", "valor": 3}, {"palo": "Espada", "valor": 10}, {"palo": "Oro", "valor": 10}], "tiradas": [false,false,false], "ultimaTirada": 0, "jugador": {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 1}, {"palo": "Basto", "valor": 11}, {"palo": "Espada", "valor": 3}], "tiradas": [false,false,false], "ultimaTirada": 0, "jugador": {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}}], "muestra": {"palo": "Copa", "valor": 5}, "manos": [{"resultado": "ganoRojo", "ganador": "", "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": "", "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": "", "cartasTiradas": null}]}}`
+	data := `{"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":5,"Rojo":6},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":2,"turno":2,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":2},{"palo":"Basto","valor":6},{"palo":"Espada","valor":5}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Espada","valor":11},{"palo":"Copa","valor":12}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":3},{"palo":"Espada","valor":10},{"palo":"Oro","valor":10}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":1},{"palo":"Basto","valor":11},{"palo":"Espada","valor":3}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":5},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
 	p, err := Parse(data)
 	if err != nil {
 		t.Error(err)
@@ -290,7 +290,7 @@ func TestFixNoLeDeberiaResponderDesdeUltratumba(t *testing.T) {
 }
 
 func TestFixDebioHaberTerminado(t *testing.T) {
-	data := `{"Jugadores":[{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"},{"id":"Roro","nombre":"Roro","equipo":"Rojo"},{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"},{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}],"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":3},"ronda":{"manoEnJuego":1,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":3,"pies":[0,0],"envite":{"estado":"deshabilitado","puntaje":3,"cantadoPor":"Renzo"},"truco":{"cantadoPor":"Alvaro","estado":"trucoQuerido"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":11},{"palo":"Oro","valor":3},{"palo":"Copa","valor":6}],"tiradas":[false,false,true],"ultimaTirada":2,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":true,"cartas":[{"palo":"Basto","valor":4},{"palo":"Espada","valor":10},{"palo":"Copa","valor":1}],"tiradas":[false,true,true],"ultimaTirada":1,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":true,"cartas":[{"palo":"Oro","valor":1},{"palo":"Espada","valor":12},{"palo":"Basto","valor":10}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":5},{"palo":"Oro","valor":6},{"palo":"Espada","valor":7}],"tiradas":[true,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Espada","valor":1},"manos":[{"resultado":"ganoRojo","ganador":"Roro","cartasTiradas":[{"jugador":"Alvaro","carta":{"palo":"Copa","valor":6}},{"jugador":"Roro","carta":{"palo":"Copa","valor":1}},{"jugador":"Renzo","carta":{"palo":"Copa","valor":5}}]},{"resultado":"ganoRojo","ganador":"","cartasTiradas":[{"jugador":"Roro","carta":{"palo":"Espada","valor":10}}]},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
+	data := `{"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":3},"ronda":{"manoEnJuego":1,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":3,"pies":[0,0],"envite":{"estado":"deshabilitado","puntaje":3,"cantadoPor":"Renzo"},"truco":{"cantadoPor":"Alvaro","estado":"trucoQuerido"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":11},{"palo":"Oro","valor":3},{"palo":"Copa","valor":6}],"tiradas":[false,false,true],"ultimaTirada":2,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":true,"cartas":[{"palo":"Basto","valor":4},{"palo":"Espada","valor":10},{"palo":"Copa","valor":1}],"tiradas":[false,true,true],"ultimaTirada":1,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":true,"cartas":[{"palo":"Oro","valor":1},{"palo":"Espada","valor":12},{"palo":"Basto","valor":10}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":5},{"palo":"Oro","valor":6},{"palo":"Espada","valor":7}],"tiradas":[true,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Espada","valor":1},"manos":[{"resultado":"ganoRojo","ganador":"Roro","cartasTiradas":[{"jugador":"Alvaro","carta":{"palo":"Copa","valor":6}},{"jugador":"Roro","carta":{"palo":"Copa","valor":1}},{"jugador":"Renzo","carta":{"palo":"Copa","valor":5}}]},{"resultado":"ganoRojo","ganador":"","cartasTiradas":[{"jugador":"Roro","carta":{"palo":"Espada","valor":10}}]},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
 	p, err := Parse(data)
 	if err != nil {
 		t.Error(err)
@@ -440,7 +440,7 @@ func TestFixDecirSonBuenasDesdeUltratumba(t *testing.T) {
 }
 
 func TestFixLoadJsonCartasTiradasAutorNil(t *testing.T) {
-	data := `{"Jugadores":[{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"},{"id":"Roro","nombre":"Roro","equipo":"Rojo"},{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"},{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}],"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":6,"Rojo":6},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":2},"elMano":2,"turno":1,"pies":[0,0],"envite":{"estado":"deshabilitado","puntaje":3,"cantadoPor":"Adolfo"},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":true,"cartas":[{"palo":"Oro","valor":12},{"palo":"Oro","valor":1},{"palo":"Espada","valor":11}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Copa","valor":2},{"palo":"Espada","valor":1}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":7},{"palo":"Oro","valor":10},{"palo":"Espada","valor":3}],"tiradas":[false,true,false],"ultimaTirada":1,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":4}],"tiradas":[true,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Basto","valor":10},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":[{"jugador":"Adolfo","carta":{"palo":"Oro","valor":10}},{"jugador":"Renzo","carta":{"palo":"Basto","valor":6}}]},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
+	data := `{"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":6,"Rojo":6},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":2},"elMano":2,"turno":1,"pies":[0,0],"envite":{"estado":"deshabilitado","puntaje":3,"cantadoPor":"Adolfo"},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":true,"cartas":[{"palo":"Oro","valor":12},{"palo":"Oro","valor":1},{"palo":"Espada","valor":11}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Copa","valor":2},{"palo":"Espada","valor":1}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":7},{"palo":"Oro","valor":10},{"palo":"Espada","valor":3}],"tiradas":[false,true,false],"ultimaTirada":1,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":4}],"tiradas":[true,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Basto","valor":10},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":[{"jugador":"Adolfo","carta":{"palo":"Oro","valor":10}},{"jugador":"Renzo","carta":{"palo":"Basto","valor":6}}]},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
 	p, _ := Parse(data)
 
 	ok := util.All(
@@ -454,7 +454,7 @@ func TestFixLoadJsonCartasTiradasAutorNil(t *testing.T) {
 }
 
 func TestFixPorQueDejaARoroTirarCarta(t *testing.T) {
-	data := `{"Jugadores":[{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"},{"id":"Roro","nombre":"Roro","equipo":"Rojo"},{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"},{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}],"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":6,"Rojo":6},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":2},"elMano":2,"turno":1,"pies":[0,0],"envite":{"estado":"deshabilitado","puntaje":3,"cantadoPor":"Adolfo"},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":true,"cartas":[{"palo":"Oro","valor":12},{"palo":"Oro","valor":1},{"palo":"Espada","valor":11}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Copa","valor":2},{"palo":"Espada","valor":1}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":7},{"palo":"Oro","valor":10},{"palo":"Espada","valor":3}],"tiradas":[false,true,false],"ultimaTirada":1,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":4}],"tiradas":[true,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Basto","valor":10},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":[{"jugador":"Adolfo","carta":{"palo":"Oro","valor":10}},{"jugador":"Renzo","carta":{"palo":"Basto","valor":6}}]},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
+	data := `{"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":6,"Rojo":6},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":2},"elMano":2,"turno":1,"pies":[0,0],"envite":{"estado":"deshabilitado","puntaje":3,"cantadoPor":"Adolfo"},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":true,"cartas":[{"palo":"Oro","valor":12},{"palo":"Oro","valor":1},{"palo":"Espada","valor":11}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Copa","valor":2},{"palo":"Espada","valor":1}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":7},{"palo":"Oro","valor":10},{"palo":"Espada","valor":3}],"tiradas":[false,true,false],"ultimaTirada":1,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":4}],"tiradas":[true,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Basto","valor":10},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":[{"jugador":"Adolfo","carta":{"palo":"Oro","valor":10}},{"jugador":"Renzo","carta":{"palo":"Basto","valor":6}}]},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
 	p, _ := Parse(data)
 
 	t.Log(Renderizar(p))
@@ -487,7 +487,7 @@ func TestFixPorQueDejaARoroTirarCarta(t *testing.T) {
 }
 
 func TestFixRespuestaNadaQueVer(t *testing.T) {
-	data := `{"Jugadores": [{"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}, {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}, {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}, {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}], "cantJugadores": 4, "puntuacion": 20, "puntajes": {"Azul": 15, "Rojo": 6}, "ronda": {"manoEnJuego": 0, "cantJugadoresEnJuego": {"Azul": 2, "Rojo": 2}, "elMano": 0, "turno": 1, "pies": [0, 0], "envite": {"estado": "noCantadoAun", "puntaje": 0, "cantadoPor": null}, "truco": {"cantadoPor": "", "estado": "noCantado"}, "manojos": [{"seFueAlMazo": false, "cartas": [{"palo": "Espada", "valor": 7}, {"palo": "Oro", "valor": 2}, {"palo": "Copa", "valor": 1}], "tiradas": [false,true,false], "ultimaTirada": 1, "jugador": {"id": "Alvaro", "nombre": "Alvaro", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Copa", "valor": 4}, {"palo": "Basto", "valor": 11}, {"palo": "Oro", "valor": 12}], "tiradas": [false,false,false], "ultimaTirada": 0, "jugador": {"id": "Roro", "nombre": "Roro", "equipo": "Rojo"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Basto", "valor": 12}, {"palo": "Espada", "valor": 10}, {"palo": "Oro", "valor": 4}], "tiradas": [false,false,false], "ultimaTirada": 0, "jugador": {"id": "Adolfo", "nombre": "Adolfo", "equipo": "Azul"}}, {"seFueAlMazo": false, "cartas": [{"palo": "Basto", "valor": 7}, {"palo": "Copa", "valor": 2}, {"palo": "Copa", "valor": 7}], "tiradas": [false,false,false], "ultimaTirada": 0, "jugador": {"id": "Renzo", "nombre": "Renzo", "equipo": "Rojo"}}], "muestra": {"palo": "Oro", "valor": 7}, "manos": [{"resultado": "ganoRojo", "ganador": "", "cartasTiradas": [{"palo": "Oro", "valor": 2}]}, {"resultado": "ganoRojo", "ganador": "", "cartasTiradas": null}, {"resultado": "ganoRojo", "ganador": "", "cartasTiradas": null}]}}`
+	data := `{"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":15,"Rojo":6},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":0,"turno":1,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":""},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":7},{"palo":"Oro","valor":2},{"palo":"Copa","valor":1}],"tiradas":[false,true,false],"ultimaTirada":1,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":4},{"palo":"Basto","valor":11},{"palo":"Oro","valor":12}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":12},{"palo":"Espada","valor":10},{"palo":"Oro","valor":4}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":7},{"palo":"Copa","valor":2},{"palo":"Copa","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Oro","valor":7},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":[{"jugador":"Alvaro","carta":{"palo":"Oro","valor":2}}]},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
 	p, _ := Parse(data)
 
 	t.Log(Renderizar(p))
@@ -514,7 +514,7 @@ func TestFixRespuestaNadaQueVer(t *testing.T) {
 }
 
 func TestFixError39(t *testing.T) {
-	data := `{"Jugadores":[{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"},{"id":"Roro","nombre":"Roro","equipo":"Rojo"}],"cantJugadores":2,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"envido","puntaje":2,"cantadoPor":"Alvaro"},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":3},{"palo":"Oro","valor":5},{"palo":"Espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":1},"manos":[{"resultado":"ganoRojo","ganador": "","cartasTiradas":null},{"resultado":"ganoRojo","ganador": "","cartasTiradas":null},{"resultado":"ganoRojo","ganador": "","cartasTiradas":null}]}}`
+	data := `{"cantJugadores":2,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"envido","puntaje":2,"cantadoPor":"Alvaro"},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":3},{"palo":"Oro","valor":5},{"palo":"Espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":1},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
 	p, _ := Parse(data)
 
 	ok := util.All(
@@ -536,7 +536,7 @@ func TestFixError39(t *testing.T) {
 		t.Error("Roro deberia ser quien canto el 2do envite")
 	})
 
-	data = `{"Jugadores":[{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"},{"id":"Roro","nombre":"Roro","equipo":"Rojo"}],"cantJugadores":2,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"envido","puntaje":2,"cantadoPor":"Alvaro"},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":3},{"palo":"Oro","valor":5},{"palo":"Espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":1},"manos":[{"resultado":"ganoRojo","ganador": "","cartasTiradas":null},{"resultado":"ganoRojo","ganador": "","cartasTiradas":null},{"resultado":"ganoRojo","ganador": "","cartasTiradas":null}]}}`
+	data = `{"cantJugadores":2,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"envido","puntaje":2,"cantadoPor":"Alvaro"},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":3},{"palo":"Oro","valor":5},{"palo":"Espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":1},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
 	p, _ = Parse(data)
 	// p.FromJSON([]byte(data))
 
@@ -665,37 +665,72 @@ func TestFixRazonErronea(t *testing.T) {
 
 }
 
+func TestFixGanadorErroneo(t *testing.T) {
+	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":19,"Rojo":19},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":null},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":3},{"palo":"Oro","valor":5},{"palo":"Espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":1},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
+	p, err := Parse(partidaJSON)
+	if err != nil {
+		t.Error(err)
+	}
+
+	p.Cmd("Alvaro 6 copa")
+	pkts, _ := p.Cmd("Alvaro mazo")
+
+	ok := p.Ronda.CantJugadoresEnJuego[Azul] > 0
+	if !ok {
+		t.Error(`la razon por que ganan la ronda deberia ser "porque se fueron al mazo"`)
+	}
+
+	countMsgRondaGanada := 0
+
+	for _, pkt := range pkts {
+
+		// obtengo el contenido del mensaje
+		var cont map[string]json.RawMessage
+		json.Unmarshal(pkt.Message.Cont, &cont)
+
+		if pkt.Message.Cod == enco.RondaGanada {
+			countMsgRondaGanada++
+		}
+	}
+
+	ok = countMsgRondaGanada == 0
+	if !ok {
+		t.Error(`No deberia retornar "RondaGanada"`)
+	}
+
+}
+
 func TestCreadorDeEscenario(t *testing.T) {
-	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null,"sinCantar":["Alvaro"]},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":11},{"palo":"Copa","valor":5},{"palo":"Copa","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":2},{"palo":"Espada","valor":6},{"palo":"Copa","valor":11}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Oro","valor":10},"manos":[{"resultado":"ganoRojo","ganador": "","cartasTiradas":null},{"resultado":"ganoRojo","ganador": "","cartasTiradas":null},{"resultado":"ganoRojo","ganador": "","cartasTiradas":null}]}}`
+	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0},"truco":{"estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":3},{"palo":"Oro","valor":5},{"palo":"Espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":1},"manos":[{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null}]}}`
 	p, err := Parse(partidaJSON)
 	if err != nil {
 		t.Error(err)
 	}
 
 	// ENVITE
-	p.Cmd("Alvaro flor")
+	// p.Cmd("Alvaro flor")
 
 	// TRUCO
-	p.Cmd("Alvaro truco")
-	p.Cmd("Roro re-truco")
-	p.Cmd("Alvaro vale-4")
-	p.Cmd("Roro quiero")
+	// p.Cmd("Alvaro truco")
+	// p.Cmd("Roro re-truco")
+	// p.Cmd("Alvaro vale-4")
+	// p.Cmd("Roro quiero")
 
 	// PRIMERA mano la gana Alvaro
-	p.Cmd("Alvaro 7 copa")
-	p.Cmd("Roro 6 espada")
+	// p.Cmd("Alvaro 7 copa")
+	// p.Cmd("Roro 6 espada")
 
 	// SEGUNDA mano la gana Roro
-	p.Cmd("Alvaro 5 copa")
-	p.Cmd("Roro 2 oro")
+	// p.Cmd("Alvaro 5 copa")
+	// p.Cmd("Roro 2 oro")
 
 	// p.Cmd("Roro mazo") // <- hace que empiece una ronda nueva
 
 	ok := util.All(
-		p.Ronda.Envite.Estado == DESHABILITADO,
-		// p.Ronda.Truco.Estado == VALE4QUERIDO,
-		// p.Ronda.Truco.CantadoPor.Jugador.ID == "Roro",
-		// p.Ronda.ManoEnJuego == Tercera,
+	// p.Ronda.Envite.Estado == DESHABILITADO,
+	// p.Ronda.Truco.Estado == VALE4QUERIDO,
+	// p.Ronda.Truco.CantadoPor.Jugador.ID == "Roro",
+	// p.Ronda.ManoEnJuego == Tercera,
 	)
 
 	if !ok {
