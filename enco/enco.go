@@ -125,7 +125,7 @@ type Tipo1 struct {
 // Tipo2 .
 type Tipo2 struct {
 	Autor string `json:"autor"`
-	Palo  int    `json:"palo"`
+	Palo  string `json:"palo"`
 	Valor int    `json:"valor"`
 }
 
@@ -239,7 +239,7 @@ func Msg(t CodMsg, data ...interface{}) *Message {
 		TirarCarta:
 
 		autor := data[0].(string)
-		palo := data[1].(int)
+		palo := data[1].(string)
 		valor := data[2].(int)
 
 		bs, _ := json.Marshal(&Tipo2{autor, palo, valor})

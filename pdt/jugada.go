@@ -148,7 +148,7 @@ func (jugada TirarCarta) Hacer(p *Partida) []*enco.Packet {
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
 		enco.Msg(enco.TirarCarta,
-			jugada.Manojo.Jugador.ID, int(jugada.Carta.Palo), jugada.Carta.Valor),
+			jugada.Manojo.Jugador.ID, jugada.Carta.Palo.String(), jugada.Carta.Valor),
 	))
 
 	idx, _ := jugada.Manojo.GetCartaIdx(jugada.Carta)

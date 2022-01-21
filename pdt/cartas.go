@@ -45,7 +45,7 @@ const (
 	Oro    Palo = 3 // [30..39]
 )
 
-var toPalo = map[string]Palo{
+var ToPalo = map[string]Palo{
 	"Basto":  Basto,
 	"Copa":   Copa,
 	"Espada": Espada,
@@ -60,7 +60,7 @@ func (p Palo) String() string {
 		"Oro",
 	}
 
-	ok := p >= 0 || int(p) < len(toPalo)
+	ok := p >= 0 || int(p) < len(ToPalo)
 	if !ok {
 		return "Unknown"
 	}
@@ -84,7 +84,7 @@ func (p *Palo) UnmarshalJSON(b []byte) error {
 		return err
 	}
 	// Note that if the string cannot be found then it will be set to the zero value, 'Created' in this case.
-	*p = toPalo[j]
+	*p = ToPalo[j]
 	return nil
 }
 

@@ -6,24 +6,13 @@ import (
 	"testing"
 )
 
-// foo enum
-type foo int
-
-// 4 palos
-const (
-	_Basto  foo = 0 // [00..09]
-	_Copa   foo = 1 // [10..19]
-	_Espada foo = 2 // [20..29]
-	_Oro    foo = 3 // [30..39]
-)
-
 func TestCast(t *testing.T) {
 
 	var buff *bytes.Buffer = new(bytes.Buffer)
 
 	Write(buff, Pkt(
 		Dest("Alvaro", "Roro"),
-		Msg(TirarCarta, "Alvaro", int(_Basto), 6),
+		Msg(TirarCarta, "Alvaro", "Basto", 6),
 	))
 
 	Write(buff, Pkt(

@@ -42,7 +42,7 @@ func Tipo1(p *pdt.Partida, m *enco.Message) (*pdt.Manojo, int) {
 func Tipo2(p *pdt.Partida, m *enco.Message) (*pdt.Manojo, pdt.Palo, int) {
 	var t2 enco.Tipo2
 	json.Unmarshal(m.Cont, &t2)
-	palo := pdt.Palo(t2.Palo)
+	palo := pdt.ToPalo[t2.Palo]
 	return p.Manojo(t2.Autor), palo, t2.Valor
 }
 

@@ -700,6 +700,39 @@ func TestFixGanadorErroneo(t *testing.T) {
 
 }
 
+func TestFixCodificacionCarta(t *testing.T) {
+	// el json del contenido del paquete "cartaTirada"
+	// debe decir palo "copa" y no "6"
+
+	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":19,"Rojo":19},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":null},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":3},{"palo":"Oro","valor":5},{"palo":"Espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":1},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
+	p, err := Parse(partidaJSON)
+	if err != nil {
+		t.Error(err)
+	}
+
+	pkts, _ := p.Cmd("Alvaro 6 copa")
+
+	for _, pkt := range pkts {
+		if pkt.Message.Cod == enco.TirarCarta {
+			var t2 enco.Tipo2
+			json.Unmarshal(pkt.Message.Cont, &t2)
+
+			ok := util.All(
+				t2.Palo == Copa.String(),
+				t2.Valor == 6,
+				t2.Autor == "Alvaro",
+			)
+
+			util.Assert(ok, func() {
+				t.Error("Alguna condicion no se cumplio")
+			})
+
+			break
+		}
+	}
+
+}
+
 func TestCreadorDeEscenario(t *testing.T) {
 	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0},"truco":{"estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":3},{"palo":"Oro","valor":5},{"palo":"Espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":1},"manos":[{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null},{"resultado":"ganoRojo","ganador":null,"cartasTiradas":null}]}}`
 	p, err := Parse(partidaJSON)
