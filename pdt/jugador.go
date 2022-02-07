@@ -6,6 +6,7 @@ type JIX int
 // Jugador :
 type Jugador struct {
 	ID     string `json:"id"`
+	jix    JIX    `json:"-"`
 	Equipo Equipo `json:"equipo"`
 }
 

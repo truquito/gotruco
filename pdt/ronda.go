@@ -130,15 +130,16 @@ func (r Ronda) GetManoActual() *Mano {
 
 // GetIdx retorna el indice de un manojo
 func (r Ronda) GetIdx(m Manojo) int {
-	var idx int
-	cantJugadores := len(r.Manojos)
-	for idx = 0; idx < cantJugadores; idx++ {
-		esEse := r.Manojos[idx].Jugador.ID == m.Jugador.ID
-		if esEse {
-			break
-		}
-	}
-	return idx
+	return int(m.Jugador.jix)
+	// var idx int
+	// cantJugadores := len(r.Manojos)
+	// for idx = 0; idx < cantJugadores; idx++ {
+	// 	esEse := r.Manojos[idx].Jugador.ID == m.Jugador.ID
+	// 	if esEse {
+	// 		break
+	// 	}
+	// }
+	// return idx
 }
 
 // getSig devuelve el `JugadorIdx` del
@@ -714,6 +715,7 @@ func (r *Ronda) indexarManojos() {
 	for i := range r.Manojos {
 		id := r.Manojos[i].Jugador.ID
 		r.Manojo[id] = &r.Manojos[i]
+		r.Manojo[id].Jugador.jix = JIX(i)
 	}
 }
 
@@ -769,8 +771,9 @@ func MakeRonda(equipoAzul, equipoRojo []string) Ronda {
 	}
 
 	for i := 0; i < cantJugadoresPorEquipo; i++ {
-		ronda.Manojos[i*2].Jugador = &Jugador{equipoAzul[i], Azul}
-		ronda.Manojos[i*2+1].Jugador = &Jugador{equipoRojo[i], Rojo}
+		ix := i << 1
+		ronda.Manojos[ix].Jugador = &Jugador{equipoAzul[i], JIX(ix), Azul}
+		ronda.Manojos[ix+1].Jugador = &Jugador{equipoRojo[i], JIX(ix + 1), Rojo}
 	}
 
 	ronda.indexarManojos()
