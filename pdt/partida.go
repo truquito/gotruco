@@ -636,7 +636,7 @@ func (p *Partida) FromJSON(data []byte) error {
 	p.Ronda.Manojo = make(map[string]*Manojo)
 	p.Ronda.indexarManojos()
 
-	p.Ronda.cachearFlores(false) // sin reset
+	p.Ronda.CachearFlores(false) // sin reset
 
 	return nil
 }
@@ -664,7 +664,7 @@ func (p *Partida) Perspectiva(j string) (*Partida, error) {
 	return p.PerspectivaCacheFlor(manojo), nil
 }
 
-// PerspectivaCacheFlor cache las flores
+// PerspectivaCacheFlor cache las flores (no re-calcula las flores)
 func (p *Partida) PerspectivaCacheFlor(manojo *Manojo) *Partida {
 	copia := cheepCopy(p)
 
@@ -724,9 +724,10 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 		Puntuacion: puntuacion,
 	}
 
-	p.Puntajes = make(map[Equipo]int)
-	p.Puntajes[Rojo] = 0
-	p.Puntajes[Azul] = 0
+	p.Puntajes = map[Equipo]int{
+		Rojo: 0,
+		Azul: 0,
+	}
 
 	p.Ronda = MakeRonda(equipoAzul, equipoRojo)
 

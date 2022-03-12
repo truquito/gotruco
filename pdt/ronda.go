@@ -130,7 +130,7 @@ func (r Ronda) GetManoActual() *Mano {
 
 // GetIdx retorna el indice de un manojo
 func (r Ronda) GetIdx(m Manojo) int {
-	return int(m.Jugador.jix)
+	return m.Jugador.Jix
 	// var idx int
 	// cantJugadores := len(r.Manojos)
 	// for idx = 0; idx < cantJugadores; idx++ {
@@ -203,7 +203,7 @@ func (r Ronda) GetSigHabilitado(m Manojo) *Manojo {
 }
 
 // retorna todos los manojos que tienen flor
-func (r Ronda) getFlores() (hayFlor bool, manojosConFlor []*Manojo) {
+func (r Ronda) GetFlores() (hayFlor bool, manojosConFlor []*Manojo) {
 	for i, manojo := range r.Manojos {
 		tieneFlor, _ := manojo.TieneFlor(r.Muestra)
 		if tieneFlor {
@@ -344,13 +344,13 @@ func (r *Ronda) SetManojos(manojos []Manojo) {
 		}
 	}
 	// flores
-	r.cachearFlores(true)
+	r.CachearFlores(true)
 }
 
 // SetMuestra .
 func (r *Ronda) SetMuestra(muestra Carta) {
 	r.Muestra = muestra
-	r.cachearFlores(true)
+	r.CachearFlores(true)
 }
 
 /* EDITORES */
@@ -673,9 +673,9 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts []*enco.Pa
 
 /* INICIALIZADORES */
 
-func (r *Ronda) cachearFlores(reset bool) {
+func (r *Ronda) CachearFlores(reset bool) {
 	// flores
-	_, JugadoresConFlor := r.getFlores()
+	_, JugadoresConFlor := r.GetFlores()
 	r.Envite.JugadoresConFlor = JugadoresConFlor
 
 	if reset {
@@ -715,7 +715,7 @@ func (r *Ronda) indexarManojos() {
 	for i := range r.Manojos {
 		id := r.Manojos[i].Jugador.ID
 		r.Manojo[id] = &r.Manojos[i]
-		r.Manojo[id].Jugador.jix = JIX(i)
+		r.Manojo[id].Jugador.Jix = i
 	}
 }
 
@@ -743,7 +743,7 @@ func (r *Ronda) nuevaRonda(elMano JIX) {
 	r.repartirCartas()
 
 	// flores
-	r.cachearFlores(true)
+	r.CachearFlores(true)
 }
 
 /* CONSTRUCTOR */
@@ -772,8 +772,8 @@ func MakeRonda(equipoAzul, equipoRojo []string) Ronda {
 
 	for i := 0; i < cantJugadoresPorEquipo; i++ {
 		ix := i << 1
-		ronda.Manojos[ix].Jugador = &Jugador{equipoAzul[i], JIX(ix), Azul}
-		ronda.Manojos[ix+1].Jugador = &Jugador{equipoRojo[i], JIX(ix + 1), Rojo}
+		ronda.Manojos[ix].Jugador = &Jugador{equipoAzul[i], ix, Azul}
+		ronda.Manojos[ix+1].Jugador = &Jugador{equipoRojo[i], ix + 1, Rojo}
 	}
 
 	ronda.indexarManojos()
@@ -783,7 +783,7 @@ func MakeRonda(equipoAzul, equipoRojo []string) Ronda {
 	ronda.repartirCartas()
 
 	// flores
-	ronda.cachearFlores(true)
+	ronda.CachearFlores(true)
 
 	return ronda
 }
