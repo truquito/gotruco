@@ -102,5 +102,5 @@ type Envite struct {
 	Puntaje          int          `json:"puntaje"`
 	CantadoPor       string       `json:"cantadoPor"`
 	JugadoresConFlor []*Manojo    `json:"-"`
-	SinCantar        []string     `json:"sinCantar"`
+	SinCantar        []string     `json:"sinCantar"` // <- LA FLOR
 }
