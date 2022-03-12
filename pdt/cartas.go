@@ -29,6 +29,10 @@ import (
  *  ----------------------------------------------------------
  */
 
+var primes = [...]int{2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47,
+	53, 59, 61, 67, 71, 73, 79, 83, 89, 97, 101, 103, 107, 109, 113, 127, 131, 137,
+	139, 149, 151, 157, 163, 167, 173}
+
 const (
 	minCartaID = 0
 	maxCartaID = 40
@@ -93,6 +97,53 @@ type Carta struct {
 	Palo  Palo `json:"palo"`
 	Valor int  `json:"valor"`
 }
+
+func (c Carta) ID() CartaID {
+	id := 10 * int(c.Palo)
+	id += int(c.Valor) - 1
+
+	if c.Valor >= 10 {
+		id -= 2
+	}
+
+	return CartaID(id)
+}
+
+func (c Carta) PUID() int {
+	return primes[c.ID()]
+}
+
+// func (i CartaID) getPalo() Palo {
+// 	var palo Palo
+
+// 	// [00..09]
+// 	if 0 <= i && i <= 9 {
+// 		palo = Basto
+// 		// [10..19]
+// 	} else if 10 <= i && i <= 19 {
+// 		palo = Copa
+// 		// [20..29]
+// 	} else if 20 <= i && i <= 29 {
+// 		palo = Espada
+// 		// [30..39]
+// 	} else /* if 30 <= i && i <= 39 */ {
+// 		palo = Oro
+// 	}
+
+// 	return palo
+// }
+
+// func (i CartaID) getValor() int {
+// 	var valor int
+// 	ultimoDigito := i % 10
+// 	if ultimoDigito <= 6 {
+// 		valor = int(ultimoDigito) + 1
+// 	} else /* if ultimoDigito >= 7 */ {
+// 		valor = 10 + int(ultimoDigito) - 7
+// 	}
+
+// 	return valor
+// }
 
 func (c Carta) esNumericamentePieza() bool {
 	return c.Valor == 2 ||
@@ -310,6 +361,7 @@ func ParseCarta(valorStr, paloStr string) (*Carta, error) {
  */
 func getCartasRandom(n int) []int {
 	rand.Seed(time.Now().UnixNano())
+	// obtengo una permutacion random del array [0..39]
 	p := rand.Perm(maxCartaID)
 	randomSample := make([]int, n)
 
