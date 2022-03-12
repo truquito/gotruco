@@ -285,7 +285,7 @@ func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
 
 	for i, tirada := range tiradas {
 		poder := tirada.Carta.calcPoder(p.Ronda.Muestra)
-		equipo := p.Ronda.Manojo[tirada.Jugador].Jugador.Equipo
+		equipo := p.Ronda.Manojo(tirada.Jugador).Jugador.Equipo
 		if poder > maxPoder[equipo] {
 			maxPoder[equipo] = poder
 			max[equipo] = &tiradas[i]
@@ -367,7 +367,7 @@ func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
 
 		// el turno pasa a ser el del mano.ganador
 		// pero se setea despues de evaluar la ronda
-		mano.Ganador = p.Ronda.Manojo[tiradaGanadora.Jugador].Jugador.ID
+		mano.Ganador = p.Ronda.Manojo(tiradaGanadora.Jugador).Jugador.ID
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
@@ -439,7 +439,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 	for i := 0; i < p.Ronda.ManoEnJuego.ToInt(); i++ {
 		mano := p.Ronda.Manos[i]
 		if mano.Resultado != Empardada {
-			cantManosGanadas[p.Ronda.Manojo[mano.Ganador].Jugador.Equipo]++
+			cantManosGanadas[p.Ronda.Manojo(mano.Ganador).Jugador.Equipo]++
 		}
 	}
 
@@ -485,7 +485,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 	} else if cantManosGanadas[Rojo] >= 2 {
 		// agarro cualquier manojo de los rojos
 		// o bien es la Primera o bien la Segunda
-		if p.Ronda.Manojo[p.Ronda.Manos[0].Ganador].Jugador.Equipo == Rojo {
+		if p.Ronda.Manojo(p.Ronda.Manos[0].Ganador).Jugador.Equipo == Rojo {
 			ganador = p.Ronda.Manos[0].Ganador
 		} else {
 			ganador = p.Ronda.Manos[1].Ganador
@@ -493,7 +493,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 	} else if cantManosGanadas[Azul] >= 2 {
 		// agarro cualquier manojo de los azules
 		// o bien es la Primera o bien la Segunda
-		if p.Ronda.Manojo[p.Ronda.Manos[0].Ganador].Jugador.Equipo == Azul {
+		if p.Ronda.Manojo(p.Ronda.Manos[0].Ganador).Jugador.Equipo == Azul {
 			ganador = p.Ronda.Manos[0].Ganador
 		} else {
 			ganador = p.Ronda.Manos[1].Ganador
@@ -599,7 +599,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 
 	}
 
-	p.SumarPuntos(p.Ronda.Manojo[ganador].Jugador.Equipo, totalPts)
+	p.SumarPuntos(p.Ronda.Manojo(ganador).Jugador.Equipo, totalPts)
 
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
@@ -633,7 +633,7 @@ func (p *Partida) FromJSON(data []byte) error {
 	// Manos:   make([]Mano, 3)
 
 	// este lo tengo que hacer a mano porque no esta en el JSON
-	p.Ronda.Manojo = make(map[string]*Manojo)
+	p.Ronda.MIXS = make(map[string]JIX)
 	p.Ronda.indexarManojos()
 
 	p.Ronda.CachearFlores(false) // sin reset
@@ -685,13 +685,13 @@ func (p *Partida) PerspectivaCacheFlor(manojo *Manojo) *Partida {
 }
 
 func (p *Partida) Manojo(j string) *Manojo {
-	m, ok := p.Ronda.Manojo[j]
-	if ok {
+	m := p.Ronda.Manojo(j)
+	if m != nil {
 		return m
 	}
 	// segundo intento
-	m, ok = p.Ronda.Manojo[strings.Title(j)]
-	if ok {
+	m = p.Ronda.Manojo(strings.Title(j))
+	if m != nil {
 		return m
 	}
 	return nil

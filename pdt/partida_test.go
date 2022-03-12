@@ -734,8 +734,24 @@ func TestFixCodificacionCarta(t *testing.T) {
 }
 
 func TestCreadorDeEscenario(t *testing.T) {
-	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":19,"Rojo":19},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":null},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":3},{"palo":"Oro","valor":5},{"palo":"Espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":1},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	p, err := Parse(partidaJSON)
+	// por json
+	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":3,"Rojo":0},"ronda":{"manoEnJuego":2,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":1,"envite":{"estado":"deshabilitado","puntaje":3,"cantadoPor":"Alvaro","sinCantar":[]},"truco":{"cantadoPor":"Roro","estado":"vale4Querido"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":11},{"palo":"Copa","valor":5},{"palo":"Copa","valor":7}],"tiradas":[false,true,true],"ultimaTirada":1,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":2},{"palo":"Espada","valor":6},{"palo":"Copa","valor":11}],"tiradas":[true,true,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Oro","valor":10},"manos":[{"resultado":"ganoAzul","ganador":"Alvaro","cartasTiradas":[{"jugador":"Alvaro","carta":{"palo":"Copa","valor":7}},{"jugador":"Roro","carta":{"palo":"Espada","valor":6}}]},{"resultado":"ganoRojo","ganador":"Roro","cartasTiradas":[{"jugador":"Alvaro","carta":{"palo":"Copa","valor":5}},{"jugador":"Roro","carta":{"palo":"Oro","valor":2}}]},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
+	q, err := Parse(partidaJSON)
+	if err != nil {
+		t.Error(err)
+	}
+
+	t.Log(Renderizar(q))
+
+	qjson, _ := q.MarshalJSON()
+	t.Log(string(qjson))
+
+	for _, x := range GetAA(q) {
+		t.Log(x.String())
+	}
+
+	// random
+	p, err := NuevaPartida(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
 	if err != nil {
 		t.Error(err)
 	}
@@ -744,34 +760,34 @@ func TestCreadorDeEscenario(t *testing.T) {
 	// p.Cmd("Alvaro flor")
 
 	// TRUCO
-	p.Cmd("Alvaro truco")
-	p.Cmd("Roro re-truco")
-	p.Cmd("Alvaro vale-4")
-	p.Cmd("Roro quiero")
+	// p.Cmd("Alvaro truco")
+	// p.Cmd("Roro re-truco")
+	// p.Cmd("Alvaro vale-4")
+	// p.Cmd("Roro quiero")
 
 	// PRIMERA mano
-	p.Cmd("Alvaro 6 copa")
-	p.Cmd("Roro 3 copa")
+	// p.Cmd("Alvaro 6 copa")
+	// p.Cmd("Roro 3 copa")
 
 	// SEGUNDA mano
-	p.Cmd("Roro 5 oro")
-	p.Cmd("Alvaro 3 oro")
+	// p.Cmd("Roro 5 oro")
+	// p.Cmd("Alvaro 3 oro")
 
 	// TERCERA mano
-	p.Cmd("Alvaro 2 copa")
+	// p.Cmd("Alvaro 2 copa")
 
 	// p.Cmd("Roro mazo") // <- hace que empiece una ronda nueva
 
-	envidoDeshabilitado := p.Ronda.Envite.Estado == DESHABILITADO
-	vale4EnJuego := p.Ronda.Truco.Estado == VALE4QUERIDO
-	roroTieneLaPalabra := p.Ronda.Truco.CantadoPor == "Roro"
-	ultimaManoEnJuego := p.Ronda.ManoEnJuego == Tercera
+	estadoEnviteOK := p.Ronda.Envite.Estado == NOCANTADOAUN
+	estadoTrucoOK := p.Ronda.Truco.Estado == NOCANTADO
+	tieneLaPalabraOK := p.Ronda.Truco.CantadoPor == ""
+	ultimaManoEnJuegoOK := p.Ronda.ManoEnJuego == Primera
 
 	ok := util.All(
-		envidoDeshabilitado,
-		vale4EnJuego,
-		roroTieneLaPalabra,
-		ultimaManoEnJuego,
+		estadoEnviteOK,
+		estadoTrucoOK,
+		tieneLaPalabraOK,
+		ultimaManoEnJuegoOK,
 	)
 
 	if !ok {

@@ -1863,19 +1863,19 @@ func TestFixNacho(t *testing.T) {
 	p.Cmd("alvaro mazo")
 	p.Cmd("roro quiero")
 
-	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.ID == "Adolfo", func() {
+	util.Assert(p.Ronda.Manojo(p.Ronda.Truco.CantadoPor).Jugador.ID == "Adolfo", func() {
 		t.Error(`no hay nada que querer`)
 	})
 	p.Cmd("roro retruco") // syntaxis invalida
 	p.Cmd("roro re-truco")
 
-	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.ID == "Adolfo", func() {
+	util.Assert(p.Ronda.Manojo(p.Ronda.Truco.CantadoPor).Jugador.ID == "Adolfo", func() {
 		t.Error(`no debe permitir ya que su equipo no tiene la potestad del truco`)
 	})
 
 	p.Cmd("alvaro re-truco")
 
-	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.ID == "Adolfo", func() {
+	util.Assert(p.Ronda.Manojo(p.Ronda.Truco.CantadoPor).Jugador.ID == "Adolfo", func() {
 		t.Error(`no deberia dejarlo porque se fue al mazo`)
 	})
 
@@ -1891,7 +1891,7 @@ func TestFixNacho(t *testing.T) {
 		t.Error(`no deberia dejarlo porque se fue al mazo`)
 	})
 
-	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.ID == "Renzo", func() {
+	util.Assert(p.Ronda.Manojo(p.Ronda.Truco.CantadoPor).Jugador.ID == "Renzo", func() {
 		t.Error(`no deberia dejarlo porque se fue al mazo`)
 	})
 
@@ -1903,7 +1903,7 @@ func TestFixNacho(t *testing.T) {
 
 	p.Cmd("adolfo re-truco") // no deberia dejarlo
 
-	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.ID == "Renzo", func() {
+	util.Assert(p.Ronda.Manojo(p.Ronda.Truco.CantadoPor).Jugador.ID == "Renzo", func() {
 		t.Error(`no deberia dejarlo porque el re-truco ya fue cantado`)
 	})
 
@@ -2930,7 +2930,7 @@ func TestFixRondaNueva(t *testing.T) {
 		t.Error(`Deberia dejarlo cantar truco`)
 	})
 
-	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo == pdt.Rojo, func() {
+	util.Assert(p.Ronda.Manojo(p.Ronda.Truco.CantadoPor).Jugador.Equipo == pdt.Rojo, func() {
 		t.Error(`El equipo rojo deberia tener la potestad del truco`)
 	})
 
@@ -2940,7 +2940,7 @@ func TestFixRondaNueva(t *testing.T) {
 		t.Error(`Deberia dejarlo cantar re-truco`)
 	})
 
-	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo == pdt.Azul, func() {
+	util.Assert(p.Ronda.Manojo(p.Ronda.Truco.CantadoPor).Jugador.Equipo == pdt.Azul, func() {
 		t.Error(`El equipo azul deberia tener la potestad del truco`)
 	})
 
@@ -2950,7 +2950,7 @@ func TestFixRondaNueva(t *testing.T) {
 		t.Error(`Deberia dejarlo cantar vale-3`)
 	})
 
-	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo == pdt.Rojo, func() {
+	util.Assert(p.Ronda.Manojo(p.Ronda.Truco.CantadoPor).Jugador.Equipo == pdt.Rojo, func() {
 		t.Error(`El equipo rojo deberia tener la potestad del truco`)
 	})
 
@@ -2960,7 +2960,7 @@ func TestFixRondaNueva(t *testing.T) {
 		t.Error(`Deberia dejarlo responder quiero al vale-4`)
 	})
 
-	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo == pdt.Azul, func() {
+	util.Assert(p.Ronda.Manojo(p.Ronda.Truco.CantadoPor).Jugador.Equipo == pdt.Azul, func() {
 		t.Error(`El equipo azul deberia tener la potestad del truco`)
 	})
 
@@ -3000,7 +3000,7 @@ func TestFixRondaNueva(t *testing.T) {
 		t.Error(`deberia dejarlo tirar la carta`)
 	})
 
-	util.Assert(p.Ronda.Manojo[p.Ronda.Manos[0].Ganador].Jugador.Equipo == pdt.Rojo, func() {
+	util.Assert(p.Ronda.Manojo(p.Ronda.Manos[0].Ganador).Jugador.Equipo == pdt.Rojo, func() {
 		t.Error(`La primera mano la debio de haber ganado el equipo de richard: el rojo`)
 	})
 
@@ -3181,7 +3181,7 @@ func TestFixDecirQuiero(t *testing.T) {
 		t.Error(`Como no tiene la potestad, no deberia poder aumentar la apuesta`)
 	})
 
-	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo == pdt.Rojo, func() {
+	util.Assert(p.Ronda.Manojo(p.Ronda.Truco.CantadoPor).Jugador.Equipo == pdt.Rojo, func() {
 		t.Error(`El equpo Rojo deberia de seguir manteniendo la potestad`)
 	})
 
@@ -3198,7 +3198,7 @@ func TestFixDecirQuiero(t *testing.T) {
 		t.Error(`No puede auto-querse`)
 	})
 
-	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo == pdt.Azul, func() {
+	util.Assert(p.Ronda.Manojo(p.Ronda.Truco.CantadoPor).Jugador.Equipo == pdt.Azul, func() {
 		t.Error(`El equpo azul deberia tener la potestad`)
 	})
 
@@ -3208,7 +3208,7 @@ func TestFixDecirQuiero(t *testing.T) {
 		t.Error(`No deberia cambiar el estado del truco`)
 	})
 
-	util.Assert(p.Ronda.Manojo[p.Ronda.Truco.CantadoPor].Jugador.Equipo == pdt.Azul, func() {
+	util.Assert(p.Ronda.Manojo(p.Ronda.Truco.CantadoPor).Jugador.Equipo == pdt.Azul, func() {
 		t.Error(`El equpo azul deberia de seguir manteniendo la potestad`)
 	})
 
@@ -3238,7 +3238,7 @@ func TestFixPanicNoQuiero(t *testing.T) {
 	p.Cmd("andres 7 espada")
 	p.Cmd("richard 10 copa")
 
-	util.Assert(p.Ronda.Manojo[p.Ronda.Manos[0].Ganador].Jugador.Equipo == pdt.Rojo, func() {
+	util.Assert(p.Ronda.Manojo(p.Ronda.Manos[0].Ganador).Jugador.Equipo == pdt.Rojo, func() {
 		t.Error(`La primera mano la debio de haber ganado el equipo de renzo: el rojo`)
 	})
 
@@ -3249,7 +3249,7 @@ func TestFixPanicNoQuiero(t *testing.T) {
 	p.Cmd("roro 6 espada")
 	p.Cmd("adolfo 5 copa")
 
-	util.Assert(p.Ronda.Manojo[p.Ronda.Manos[1].Ganador].Jugador.Equipo == pdt.Azul, func() {
+	util.Assert(p.Ronda.Manojo(p.Ronda.Manos[1].Ganador).Jugador.Equipo == pdt.Azul, func() {
 		t.Error(`La segunda mano la debio de haber ganado el equipo de andres: el Azul`)
 	})
 

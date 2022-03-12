@@ -94,14 +94,23 @@ type Ronda struct {
 	Truco  Truco  `json:"truco"`
 
 	/* cartas */
-	Manojos []Manojo           `json:"manojos"`
-	Manojo  map[string]*Manojo `json:"-"` // index/hash de jugadores
-	Muestra Carta              `json:"muestra"`
+	Manojos []Manojo       `json:"manojos"`
+	MIXS    map[string]JIX `json:"-"` // index de manojos
+	Muestra Carta          `json:"muestra"`
 
 	Manos []Mano `json:"manos"`
 }
 
 /* GETERS */
+
+// El remplazo al antiguo p.Ronda.Manojo["pepe"] .
+func (r Ronda) Manojo(jid string) *Manojo {
+	jix, ok := r.MIXS[jid]
+	if !ok {
+		return nil
+	}
+	return &r.Manojos[jix]
+}
 
 // GetElMano .
 func (r Ronda) GetElMano() *Manojo {
@@ -261,7 +270,7 @@ func (r Ronda) leGanaDeMano(i, j JIX) bool {
 
 func (r *Ronda) hayEquipoSinCantar(equipo Equipo) bool {
 	for _, jid := range r.Envite.SinCantar {
-		mismoEquipo := r.Manojo[jid].Jugador.Equipo == equipo
+		mismoEquipo := r.Manojo(jid).Jugador.Equipo == equipo
 		if mismoEquipo {
 			return true
 		}
@@ -304,7 +313,7 @@ func (r *Ronda) SetNextTurnoPosMano() {
 		// solo si la mano anterior no fue parda
 		// si fue parda busco la que empardo mas cercano al mano
 		if r.GetManoAnterior().Resultado != Empardada {
-			r.Turno = JIX(r.GetIdx(*r.Manojo[r.GetManoAnterior().Ganador]))
+			r.Turno = JIX(r.GetIdx(*r.Manojo(r.GetManoAnterior().Ganador)))
 		} else {
 			// 1. obtengo la carta de maximo valor de la mano anterior
 			// 2. busco a partir de la mano quien es el primero en tener
@@ -321,8 +330,8 @@ func (r *Ronda) SetNextTurnoPosMano() {
 			for _, tirada := range r.GetManoAnterior().CartasTiradas {
 				poder := tirada.Carta.calcPoder(r.Muestra)
 				if poder == max {
-					if !r.Manojo[tirada.Jugador].SeFueAlMazo {
-						r.Turno = JIX(r.GetIdx(*r.Manojo[tirada.Jugador]))
+					if !r.Manojo(tirada.Jugador).SeFueAlMazo {
+						r.Turno = JIX(r.GetIdx(*r.Manojo(tirada.Jugador)))
 						return
 					}
 				}
@@ -713,9 +722,9 @@ func (r *Ronda) repartirCartas() {
 func (r *Ronda) indexarManojos() {
 	// indexo los manojos
 	for i := range r.Manojos {
-		id := r.Manojos[i].Jugador.ID
-		r.Manojo[id] = &r.Manojos[i]
-		r.Manojo[id].Jugador.Jix = i
+		jid := r.Manojos[i].Jugador.ID
+		r.MIXS[jid] = JIX(i)
+		r.Manojo(jid).Jugador.Jix = i
 	}
 }
 
@@ -766,7 +775,7 @@ func MakeRonda(equipoAzul, equipoRojo []string) Ronda {
 		Envite:  Envite{Estado: NOCANTADOAUN, Puntaje: 0},
 		Truco:   Truco{CantadoPor: "", Estado: NOCANTADO},
 		Manojos: make([]Manojo, cantJugadores),
-		Manojo:  make(map[string]*Manojo),
+		MIXS:    make(map[string]JIX),
 		Manos:   make([]Mano, 3),
 	}
 
