@@ -733,7 +733,7 @@ func evalFlor(p *Partida) []*enco.Packet {
 
 	// cual es la flor ganadora?
 	// empieza cantando el autor del envite no el que "quizo"
-	autorIdx := p.Ronda.GetIdx(*p.Ronda.Manojo(p.Ronda.Envite.CantadoPor))
+	autorIdx := p.Ronda.JIX(p.Ronda.Manojo(p.Ronda.Envite.CantadoPor).Jugador.ID)
 	manojoConLaFlorMasAlta, _, res := p.Ronda.ExecLaFlores(JIX(autorIdx))
 
 	pkts = append(pkts, res...)
@@ -1254,7 +1254,7 @@ func (jugada ResponderQuiero) Hacer(p *Partida) []*enco.Packet {
 		))
 
 		// empieza cantando el autor del envite no el que "quizo"
-		autorIdx := p.Ronda.GetIdx(*p.Ronda.Manojo(p.Ronda.Envite.CantadoPor))
+		autorIdx := p.Ronda.JIX(p.Ronda.Manojo(p.Ronda.Envite.CantadoPor).Jugador.ID)
 		manojoConLaFlorMasAlta, _, res := p.Ronda.ExecLaFlores(JIX(autorIdx))
 
 		pkts = append(pkts, res...)

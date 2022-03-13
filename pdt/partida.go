@@ -633,7 +633,7 @@ func (p *Partida) FromJSON(data []byte) error {
 	// Manos:   make([]Mano, 3)
 
 	// este lo tengo que hacer a mano porque no esta en el JSON
-	p.Ronda.MIXS = make(map[string]JIX)
+	p.Ronda.MIXS = make(map[string]int)
 	p.Ronda.indexarManojos()
 
 	p.Ronda.CachearFlores(false) // sin reset

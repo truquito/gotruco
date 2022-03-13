@@ -95,7 +95,7 @@ type Ronda struct {
 
 	/* cartas */
 	Manojos []Manojo       `json:"manojos"`
-	MIXS    map[string]JIX `json:"mixs,omitempty"` // index de manojos
+	MIXS    map[string]int `json:"mixs,omitempty"` // index de manojos
 	Muestra Carta          `json:"muestra"`
 
 	Manos []Mano `json:"manos"`
@@ -123,7 +123,7 @@ func (r Ronda) GetElMano() *Manojo {
 
 // GetSigElMano retorna el id del que deberia ser el siguiente mano
 func (r Ronda) GetSigElMano() JIX {
-	return JIX(r.GetIdx(*r.GetSiguiente(*r.GetElMano())))
+	return JIX(r.JIX(r.GetSiguiente(*r.GetElMano()).Jugador.ID))
 }
 
 // GetElTurno .
@@ -142,9 +142,9 @@ func (r Ronda) GetManoActual() *Mano {
 }
 
 // GetIdx retorna el indice de un manojo
-func (r Ronda) GetIdx(m Manojo) int {
+func (r Ronda) GetIdx(m *Manojo) int {
 	// v3
-	return int(r.MIXS[m.Jugador.ID])
+	return r.MIXS[m.Jugador.ID]
 
 	// v2
 	// return m.Jugador.Jix
@@ -178,7 +178,7 @@ func (r *Ronda) getSig(j JIX) JIX {
 // eg porque se fue al mazo
 // getSiguiente devuelve el puntero al manojo que le sigue
 func (r Ronda) GetSiguiente(m Manojo) *Manojo {
-	idx := r.GetIdx(m)
+	idx := r.JIX(m.Jugador.ID)
 	cantJugadores := len(r.Manojos)
 	esElUltimo := idx == cantJugadores-1
 	if esElUltimo {
@@ -295,7 +295,7 @@ func (r *Ronda) hayEquipoSinCantar(equipo Equipo) bool {
 func (r *Ronda) SetNextTurno() {
 	manojoTurnoActual := r.Manojos[r.Turno]
 	manojoSigTurno := r.GetSigHabilitado(manojoTurnoActual)
-	r.Turno = JIX(r.GetIdx(*manojoSigTurno))
+	r.Turno = JIX(r.JIX(manojoSigTurno.Jugador.ID))
 }
 
 // nextTurnoPosMano: setea el turno siguiente *segun el resultado de
@@ -323,7 +323,7 @@ func (r *Ronda) SetNextTurnoPosMano() {
 		// solo si la mano anterior no fue parda
 		// si fue parda busco la que empardo mas cercano al mano
 		if r.GetManoAnterior().Resultado != Empardada {
-			r.Turno = JIX(r.GetIdx(*r.Manojo(r.GetManoAnterior().Ganador)))
+			r.Turno = JIX(r.JIX(r.Manojo(r.GetManoAnterior().Ganador).Jugador.ID))
 		} else {
 			// 1. obtengo la carta de maximo valor de la mano anterior
 			// 2. busco a partir de la mano quien es el primero en tener
@@ -341,7 +341,7 @@ func (r *Ronda) SetNextTurnoPosMano() {
 				poder := tirada.Carta.calcPoder(r.Muestra)
 				if poder == max {
 					if !r.Manojo(tirada.Jugador).SeFueAlMazo {
-						r.Turno = JIX(r.GetIdx(*r.Manojo(tirada.Jugador)))
+						r.Turno = JIX(r.JIX(r.Manojo(tirada.Jugador).Jugador.ID))
 						return
 					}
 				}
@@ -349,7 +349,7 @@ func (r *Ronda) SetNextTurnoPosMano() {
 			// si llegue aca es porque los vejigas que empardaron se fueron
 			// entonces agarro al primero a partir del mano que aun
 			// no se haya ido
-			r.Turno = JIX(r.GetIdx(*r.GetSigHabilitado(*r.GetElMano())))
+			r.Turno = JIX(r.JIX(r.GetSigHabilitado(*r.GetElMano()).Jugador.ID))
 		}
 	}
 }
@@ -733,8 +733,7 @@ func (r *Ronda) indexarManojos() {
 	// indexo los manojos
 	for i := range r.Manojos {
 		jid := r.Manojos[i].Jugador.ID
-		r.MIXS[jid] = JIX(i)
-		r.Manojo(jid).Jugador.Jix = i
+		r.MIXS[jid] = i
 	}
 }
 
@@ -785,14 +784,14 @@ func MakeRonda(equipoAzul, equipoRojo []string) Ronda {
 		Envite:  Envite{Estado: NOCANTADOAUN, Puntaje: 0},
 		Truco:   Truco{CantadoPor: "", Estado: NOCANTADO},
 		Manojos: make([]Manojo, cantJugadores),
-		MIXS:    make(map[string]JIX),
+		MIXS:    make(map[string]int),
 		Manos:   make([]Mano, 3),
 	}
 
 	for i := 0; i < cantJugadoresPorEquipo; i++ {
 		ix := i << 1
-		ronda.Manojos[ix].Jugador = &Jugador{equipoAzul[i], ix, Azul}
-		ronda.Manojos[ix+1].Jugador = &Jugador{equipoRojo[i], ix + 1, Rojo}
+		ronda.Manojos[ix].Jugador = &Jugador{equipoAzul[i], Azul}
+		ronda.Manojos[ix+1].Jugador = &Jugador{equipoRojo[i], Rojo}
 	}
 
 	ronda.indexarManojos()
