@@ -95,7 +95,7 @@ type Ronda struct {
 
 	/* cartas */
 	Manojos []Manojo       `json:"manojos"`
-	MIXS    map[string]JIX `json:"-"` // index de manojos
+	MIXS    map[string]JIX `json:"mixs,omitempty"` // index de manojos
 	Muestra Carta          `json:"muestra"`
 
 	Manos []Mano `json:"manos"`
@@ -139,7 +139,13 @@ func (r Ronda) GetManoActual() *Mano {
 
 // GetIdx retorna el indice de un manojo
 func (r Ronda) GetIdx(m Manojo) int {
-	return m.Jugador.Jix
+	// v3
+	return int(r.MIXS[m.Jugador.ID])
+
+	// v2
+	// return m.Jugador.Jix
+
+	// v1
 	// var idx int
 	// cantJugadores := len(r.Manojos)
 	// for idx = 0; idx < cantJugadores; idx++ {
