@@ -112,6 +112,10 @@ func (r Ronda) Manojo(jid string) *Manojo {
 	return &r.Manojos[jix]
 }
 
+func (r Ronda) JIX(jid string) int {
+	return int(r.MIXS[jid])
+}
+
 // GetElMano .
 func (r Ronda) GetElMano() *Manojo {
 	return &r.Manojos[r.ElMano]
