@@ -155,7 +155,7 @@ func (c Carta) esNumericamentePieza() bool {
 
 // devulve `true` si la carta es pieza
 // segun la el parametro `muestra`
-func (c Carta) esPieza(muestra Carta) bool {
+func (c Carta) EsPieza(muestra Carta) bool {
 
 	// es pieza sii: (CASO I || CASO II)
 	// donde,
@@ -173,6 +173,17 @@ func (c Carta) esPieza(muestra Carta) bool {
 	return esPiezaCasoI || esPiezaCasoII
 }
 
+func (c *Carta) EsMata() bool {
+	if (c.Palo == Espada || c.Palo == Basto) && (c.Valor == 1) {
+		return true
+
+	} else if (c.Palo == Espada || c.Palo == Basto) && (c.Valor == 7) {
+		return true
+	}
+
+	return false
+}
+
 // Devuelve el puntaje
 // no confundir el puntaje con "Poder"
 // ojo con Puntaje(7,Espada) == Puntaje(7,Oro) PERO
@@ -183,7 +194,7 @@ func (c Carta) calcPuntaje(muestra Carta) int {
 	var puntaje int
 
 	// Piezas
-	if c.esPieza(muestra) {
+	if c.EsPieza(muestra) {
 		switch c.Valor {
 		case 2:
 			puntaje = 30
@@ -199,10 +210,8 @@ func (c Carta) calcPuntaje(muestra Carta) int {
 		}
 
 		// Matas
-	} else if (c.Palo == Espada || c.Palo == Basto) && (c.Valor == 1) {
-		puntaje = 1
-	} else if (c.Palo == Espada || c.Palo == Basto) && (c.Valor == 7) {
-		puntaje = 7
+	} else if c.EsMata() {
+		puntaje = c.Valor
 
 		// Chicas
 	} else if c.Valor <= 3 {
@@ -223,7 +232,7 @@ func (c Carta) calcPuntaje(muestra Carta) int {
 func (c Carta) calcPoder(muestra Carta) int {
 	var poder int
 
-	if c.esPieza(muestra) {
+	if c.EsPieza(muestra) {
 		switch c.Valor {
 		case 2:
 			poder = 34

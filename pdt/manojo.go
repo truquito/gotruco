@@ -93,7 +93,7 @@ func (manojo Manojo) TieneFlor(muestra Carta) (res bool, CASO int) {
 	// esta variable guarda uno su indice (usado en el caso III)
 	piezaIdx := -1
 	for i, carta := range manojo.Cartas {
-		if carta.esPieza(muestra) {
+		if carta.EsPieza(muestra) {
 			numPiezas++
 			piezaIdx = i
 		}
