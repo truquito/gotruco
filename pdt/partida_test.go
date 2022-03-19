@@ -2,6 +2,7 @@ package pdt
 
 import (
 	"encoding/json"
+	"math/rand"
 	"testing"
 
 	"github.com/filevich/truco/enco"
@@ -801,5 +802,115 @@ func TestCreadorDeEscenario(t *testing.T) {
 
 	// json
 	t.Log(string(json))
+
+}
+
+type Tuple struct {
+	jix int
+	aix int
+}
+
+func random_action(aa []A) Tuple {
+	// hago un flatten del vector aa
+	n := len(aa) * len(aa[0])
+	flatten := make([]Tuple, 0, n)
+
+	// i := 0
+	for jix, aaj := range aa {
+		for aix, a := range aaj {
+			if a {
+				flatten = append(flatten, Tuple{jix, aix})
+				// flatten[i] = Tuple{jix, aix}
+				// i++
+			}
+		}
+	}
+
+	// elijo a un (jugador,jugada) al azar
+	rfix := rand.Intn(len(flatten))
+
+	return flatten[rfix]
+}
+
+func isDone(pkts []*enco.Packet) bool {
+	for _, pkt := range pkts {
+		if pkt.Message.Cod == enco.NuevaPartida ||
+			pkt.Message.Cod == enco.NuevaRonda ||
+			pkt.Message.Cod == enco.RondaGanada {
+			return true
+		}
+	}
+	return false
+}
+
+func ActionToString(a A, aix int, jix int, p *Partida) string {
+	codigos := []string{
+		// cartas
+		"primera",
+		"segunda",
+		"tercera",
+		// envite
+		"envido",
+		"real-envido",
+		"falta-envido",
+		"flor",
+		"contra-flor",
+		"contra-flor-al-resto",
+		// truco
+		"truco",
+		"re-truco",
+		"vale-4",
+		// respuestas
+		"quiero",
+		"no-Quiero",
+		"mazo",
+	}
+
+	if aix <= 2 {
+		return p.Ronda.Manojos[jix].Cartas[aix].String()
+	}
+
+	return codigos[aix]
+}
+
+func TestRandomWalk(t *testing.T) {
+
+	for i := 0; i < 1000; i++ {
+		// for i := 0; i < 1; i++ {
+		// p, _ := NuevaPartida(A20, []string{"Alvaro"}, []string{"Roro"})
+		// p = nil
+
+		// t.Log(i)
+		var p *Partida = nil
+		p, _ = NuevaPartida(A20, []string{"Alvaro", "Andres"}, []string{"Roro", "Richard"})
+
+		p.Ronda.MIXS = make(map[string]int)
+		p.Ronda.indexarManojos()
+		p.Ronda.CachearFlores(false) // sin reset
+
+		// bs, _ := p.MarshalJSON()
+		// t.Log(string(bs))
+
+		for {
+			// (nueva ronda o nueva partida, etc...)
+			aa := GetAA(p)
+
+			// elijo a un jugador al azar
+			r := random_action(aa)
+
+			// s := ActionToString(aa[r.jix], r.aix, r.jix, p)
+			// t.Logf("%s %s", p.Ronda.Manojos[r.jix].Jugador.ID, s)
+
+			// la juego
+			pkts := aa[r.jix].ToJugada(p, r.jix, r.aix).Hacer(p)
+
+			// analizo los paquetes
+			if isDone(pkts) {
+				p = nil
+				break
+			}
+		}
+
+	}
 
 }
