@@ -472,14 +472,31 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 	}
 
 	// hay ganador -> ya se que al final voy a retornar un true
-	var ganador string
+	var ganador string = ""
 
 	if !hayJugadoresEnAmbos { // caso particular: todos abandonaron
 
 		// enonces como antes paso por evaluar mano
 		// y seteo a ganador de la ultima mano jugada (la "actual")
 		// al equipo que no abandono -> lo sacao de ahi
-		ganador = p.Ronda.GetManoActual().Ganador
+
+		// caso particular: la mano resulto "empardada pero uno abandono"
+		if noFueParda && estaManoYaTieneGanador {
+			ganador = p.Ronda.GetManoActual().Ganador
+		} else {
+			// el ganador es el primer jugador que no se haya ido al mazo del equipo
+			// que sigue en pie
+			equipoGanador := Azul
+			if !hayJugadoresAzul {
+				equipoGanador = Rojo
+			}
+			for _, m := range p.Ronda.Manojos {
+				if !m.SeFueAlMazo && m.Jugador.Equipo == equipoGanador {
+					ganador = m.Jugador.ID
+					break
+				}
+			}
+		}
 
 		// primero el caso clasico: un equipo gano 2 o mas manos
 	} else if cantManosGanadas[Rojo] >= 2 {

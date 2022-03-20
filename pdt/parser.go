@@ -10,10 +10,8 @@ import (
 
 // regexps
 var (
-	regexps = map[string]*regexp.Regexp{
-		"jugadaSimple": regexp.MustCompile(`(?i)^([a-zA-Z0-9_-]+) ([a-zA-Z0-9_-]+)$`),
-		"jugadaTirada": regexp.MustCompile(`(?i)^([a-zA-Z0-9_-]+) (1|2|3|4|5|6|7|10|11|12) (oro|copa|basto|espada)$`),
-	}
+	jugadaSimple = regexp.MustCompile(`(?i)^([a-zA-Z0-9_-]+) ([a-zA-Z0-9_-]+)$`)
+	jugadaTirada = regexp.MustCompile(`(?i)^([a-zA-Z0-9_-]+) (1|2|3|4|5|6|7|10|11|12) (oro|copa|basto|espada)$`)
 )
 
 func checkeoSemantico(p *Partida, cmd string) (IJugada, error) {
@@ -22,7 +20,7 @@ func checkeoSemantico(p *Partida, cmd string) (IJugada, error) {
 
 	// comando simple son
 	// jugadas sin parametro del tipo `$autor $jugada`
-	match := regexps["jugadaSimple"].FindAllStringSubmatch(cmd, 1)
+	match := jugadaSimple.FindAllStringSubmatch(cmd, 1)
 
 	if match != nil {
 
@@ -83,7 +81,7 @@ func checkeoSemantico(p *Partida, cmd string) (IJugada, error) {
 
 	} else {
 
-		match = regexps["jugadaTirada"].FindAllStringSubmatch(cmd, 1)
+		match = jugadaTirada.FindAllStringSubmatch(cmd, 1)
 		if match == nil {
 			return nil, fmt.Errorf("no existe esa jugada")
 		}

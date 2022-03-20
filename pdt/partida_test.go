@@ -3,7 +3,9 @@ package pdt
 import (
 	"encoding/json"
 	"math/rand"
+	"strconv"
 	"testing"
+	"time"
 
 	"github.com/filevich/truco/enco"
 	"github.com/filevich/truco/util"
@@ -867,50 +869,66 @@ func ActionToString(a A, aix int, jix int, p *Partida) string {
 	}
 
 	if aix <= 2 {
-		return p.Ronda.Manojos[jix].Cartas[aix].String()
+		// este string no lo agarra la regex de p.Cmd(.)
+		// return p.Ronda.Manojos[jix].Cartas[aix].String()
+		c := p.Ronda.Manojos[jix].Cartas[aix]
+		return strconv.Itoa(c.Valor) + " " + c.Palo.String()
 	}
 
 	return codigos[aix]
 }
 
 func TestRandomWalk(t *testing.T) {
+	rand.Seed(time.Now().Unix())
 
-	for i := 0; i < 1000; i++ {
-		// for i := 0; i < 1; i++ {
+	for i := 0; i < 10000; i++ {
 		// p, _ := NuevaPartida(A20, []string{"Alvaro"}, []string{"Roro"})
-		// p = nil
+		p, _ := NuevaPartida(A20, []string{"Alvaro", "Andres"}, []string{"Roro", "Richard"})
 
-		// t.Log(i)
-		var p *Partida = nil
-		p, _ = NuevaPartida(A20, []string{"Alvaro", "Andres"}, []string{"Roro", "Richard"})
-
-		p.Ronda.MIXS = make(map[string]int)
-		p.Ronda.indexarManojos()
-		p.Ronda.CachearFlores(false) // sin reset
-
+		// partida
 		// bs, _ := p.MarshalJSON()
-		// t.Log(string(bs))
 
 		for {
-			// (nueva ronda o nueva partida, etc...)
 			aa := GetAA(p)
 
 			// elijo a un jugador al azar
 			r := random_action(aa)
 
-			// s := ActionToString(aa[r.jix], r.aix, r.jix, p)
-			// t.Logf("%s %s", p.Ronda.Manojos[r.jix].Jugador.ID, s)
-
-			// la juego
+			// v1
 			pkts := aa[r.jix].ToJugada(p, r.jix, r.aix).Hacer(p)
+			if p.Terminada() {
+				pkts = append(pkts, p.byeBye()...)
+			}
 
-			// analizo los paquetes
+			// v2
+			// s := ActionToString(aa[r.jix], r.aix, r.jix, p)
+			// cmd := fmt.Sprintf("%s %s", p.Ronda.Manojos[r.jix].Jugador.ID, s)
+			// pkts, _ := p.Cmd(cmd)
+
 			if isDone(pkts) {
-				p = nil
 				break
 			}
+
+			util.Assert(!enco.Contains(pkts, enco.Error), func() {
+				t.Error("NO PUEDE HABER JUGADAS INVALIDAS!")
+			})
 		}
 
 	}
+}
 
+func TestNil(t *testing.T) {
+	p, _ := Parse(`{"puntuacion":20,"puntajes":{"Azul":5,"Rojo":6},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":2,"turno":2,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":null},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":2},{"palo":"Basto","valor":6},{"palo":"Espada","valor":5}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Espada","valor":11},{"palo":"Copa","valor":12}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":3},{"palo":"Espada","valor":10},{"palo":"Oro","valor":10}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":1},{"palo":"Basto","valor":11},{"palo":"Espada","valor":3}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","equipo":"Rojo"}}],"mixs":{"Adolfo":2,"Alvaro":0,"Renzo":3,"Roro":1},"muestra":{"palo":"Copa","valor":5},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`)
+	t.Log(Renderizar(p))
+
+	p.Cmd("Adolfo falta-envido")
+	p.Cmd("Alvaro mazo")
+	p.Cmd("Renzo no-Quiero")
+	p.Cmd("Adolfo 3 Oro")
+	p.Cmd("Renzo 3 Espada")
+	p.Cmd("Roro truco")
+	p.Cmd("Adolfo quiero")
+	p.Cmd("Adolfo mazo")
+
+	t.Log(Renderizar(p))
 }
