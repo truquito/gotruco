@@ -280,11 +280,11 @@ func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
 	// una carta con el mismo poder -> se queda con la Primera
 	// es decir, la que "gana de mano"
 	maxPoder := map[Equipo]int{Rojo: -1, Azul: -1}
-	max := map[Equipo]*cartaTirada{Rojo: nil, Azul: nil}
+	max := map[Equipo]*CartaTirada{Rojo: nil, Azul: nil}
 	tiradas := p.Ronda.GetManoActual().CartasTiradas
 
 	for i, tirada := range tiradas {
-		poder := tirada.Carta.calcPoder(p.Ronda.Muestra)
+		poder := tirada.Carta.CalcPoder(p.Ronda.Muestra)
 		equipo := p.Ronda.Manojo(tirada.Jugador).Jugador.Equipo
 		if poder > maxPoder[equipo] {
 			maxPoder[equipo] = poder
@@ -355,7 +355,7 @@ func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
 			 -> no se puede ir al mazo si mi equipo llego a tirar carta y los otros no llegaron a tirar al menos una carta
 		*/
 
-		var tiradaGanadora *cartaTirada
+		var tiradaGanadora *CartaTirada
 
 		if maxPoder[Rojo] > maxPoder[Azul] {
 			tiradaGanadora = max[Rojo]
@@ -721,7 +721,7 @@ func (p *Partida) TirarCarta(manojo *Manojo, idx int) {
 	manojo.Tiradas[idx] = true
 	manojo.UltimaTirada = idx
 	carta := manojo.Cartas[idx]
-	tirada := cartaTirada{manojo.Jugador.ID, *carta}
+	tirada := CartaTirada{manojo.Jugador.ID, *carta}
 	p.Ronda.GetManoActual().agregarTirada(tirada)
 }
 

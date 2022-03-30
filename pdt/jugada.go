@@ -1,6 +1,8 @@
 package pdt
 
 import (
+	"fmt"
+
 	"github.com/filevich/truco/enco"
 )
 
@@ -8,11 +10,20 @@ import (
 type IJugada interface {
 	Ok(p *Partida) ([]*enco.Packet, bool)
 	Hacer(p *Partida) []*enco.Packet
+	String() string
 }
 
 type TirarCarta struct {
 	Manojo *Manojo
 	Carta  Carta
+}
+
+func (jugada TirarCarta) String() string {
+	return fmt.Sprintf("%s %d %s",
+		jugada.Manojo.Jugador.ID,
+		jugada.Carta.Valor,
+		jugada.Carta.Palo.String(),
+	)
 }
 
 // Retorna true si la jugada es valida
@@ -230,6 +241,10 @@ type TocarEnvido struct {
 	Manojo *Manojo
 }
 
+func (jugada TocarEnvido) String() string {
+	return jugada.Manojo.Jugador.ID + " envido"
+}
+
 func (jugada TocarEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 	pkts := make([]*enco.Packet, 0)
 
@@ -257,6 +272,26 @@ func (jugada TocarEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		return pkts, false
 	}
+
+	// supuestamente esto que sigue no es posible.
+	// pero en el randomWalker me parecio haberlo visto.
+	// lo dejo comentado por las dudas.
+	// Tal vez fue error de codificacion del randomWalker.
+
+	// puede cantar envite (desde 0; es decir, empezar un envido) solo si no tirno
+	// niguna carta aun;
+	// pero si puede responder a un envido incluso si ya tiro
+
+	// yaTiroAlgunaCarta := jugada.Manojo.yaTiroCarta(Primera)
+	// estaIniciandoElEnvite := p.Ronda.Envite.Estado == NOCANTADOAUN
+	// envidoHabilitado = !(yaTiroAlgunaCarta && estaIniciandoElEnvite)
+	// if !envidoHabilitado {
+	// 	pkts = append(pkts, enco.Pkt(
+	// 		enco.Dest(jugada.Manojo.Jugador.ID),
+	// 		enco.Msg(enco.Error, "No es posible tocar envido ahora"),
+	// 	))
+	// 	return pkts, false
+	// }
 
 	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Manojo(p.Ronda.Envite.CantadoPor).Jugador.Equipo != jugada.Manojo.Jugador.Equipo
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == ENVIDO
@@ -365,6 +400,10 @@ type TocarRealEnvido struct {
 	Manojo *Manojo
 }
 
+func (jugada TocarRealEnvido) String() string {
+	return jugada.Manojo.Jugador.ID + " real-envido"
+}
+
 func (jugada TocarRealEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 	pkts := make([]*enco.Packet, 0)
 
@@ -469,6 +508,10 @@ func (jugada TocarRealEnvido) Hacer(p *Partida) []*enco.Packet {
 
 type TocarFaltaEnvido struct {
 	Manojo *Manojo
+}
+
+func (jugada TocarFaltaEnvido) String() string {
+	return jugada.Manojo.Jugador.ID + " falta-envido"
 }
 
 func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
@@ -630,6 +673,10 @@ se pase a calcular el resultado solo de las flores acumuladas
 se necesita timer
 
 */
+func (jugada CantarFlor) String() string {
+	return jugada.Manojo.Jugador.ID + " flor"
+}
+
 func (jugada CantarFlor) Ok(p *Partida) ([]*enco.Packet, bool) {
 	pkts := make([]*enco.Packet, 0)
 
@@ -782,6 +829,10 @@ type CantarContraFlor struct {
 	Manojo *Manojo
 }
 
+func (jugada CantarContraFlor) String() string {
+	return jugada.Manojo.Jugador.ID + " contra-flor"
+}
+
 func (jugada CantarContraFlor) Ok(p *Partida) ([]*enco.Packet, bool) {
 	pkts := make([]*enco.Packet, 0)
 
@@ -834,6 +885,10 @@ func (jugada CantarContraFlor) Hacer(p *Partida) []*enco.Packet {
 
 type CantarContraFlorAlResto struct {
 	Manojo *Manojo
+}
+
+func (jugada CantarContraFlorAlResto) String() string {
+	return jugada.Manojo.Jugador.ID + " contra-floar-al-resto"
 }
 
 func (jugada CantarContraFlorAlResto) Ok(p *Partida) ([]*enco.Packet, bool) {
@@ -911,6 +966,10 @@ type GritarTruco struct {
 // 		quiero -> no debe poder si uno de su equipo tiene flor
 // 		si dice flor -> debe resetear el Truco
 
+func (jugada GritarTruco) String() string {
+	return jugada.Manojo.Jugador.ID + " truco"
+}
+
 func (jugada GritarTruco) Ok(p *Partida) ([]*enco.Packet, bool) {
 	pkts := make([]*enco.Packet, 0)
 
@@ -961,6 +1020,10 @@ func (jugada GritarTruco) Hacer(p *Partida) []*enco.Packet {
 
 type GritarReTruco struct {
 	Manojo *Manojo
+}
+
+func (jugada GritarReTruco) String() string {
+	return jugada.Manojo.Jugador.ID + " re-truco"
 }
 
 func (jugada GritarReTruco) Ok(p *Partida) ([]*enco.Packet, bool) {
@@ -1034,6 +1097,10 @@ type GritarVale4 struct {
 	Manojo *Manojo
 }
 
+func (jugada GritarVale4) String() string {
+	return jugada.Manojo.Jugador.ID + " vale-4"
+}
+
 func (jugada GritarVale4) Ok(p *Partida) ([]*enco.Packet, bool) {
 	pkts := make([]*enco.Packet, 0)
 
@@ -1102,6 +1169,10 @@ func (jugada GritarVale4) Hacer(p *Partida) []*enco.Packet {
 
 type ResponderQuiero struct {
 	Manojo *Manojo
+}
+
+func (jugada ResponderQuiero) String() string {
+	return jugada.Manojo.Jugador.ID + " quiero"
 }
 
 func (jugada ResponderQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
@@ -1310,6 +1381,10 @@ func (jugada ResponderQuiero) Hacer(p *Partida) []*enco.Packet {
 
 type ResponderNoQuiero struct {
 	Manojo *Manojo
+}
+
+func (jugada ResponderNoQuiero) String() string {
+	return jugada.Manojo.Jugador.ID + " no-quiero"
 }
 
 func (jugada ResponderNoQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
@@ -1544,6 +1619,10 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []*enco.Packet {
 
 type IrseAlMazo struct {
 	Manojo *Manojo
+}
+
+func (jugada IrseAlMazo) String() string {
+	return jugada.Manojo.Jugador.ID + " mazo"
 }
 
 func (jugada IrseAlMazo) Ok(p *Partida) ([]*enco.Packet, bool) {

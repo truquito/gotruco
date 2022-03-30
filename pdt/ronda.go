@@ -332,13 +332,13 @@ func (r *Ronda) SetNextTurnoPosMano() {
 			//    vieja confiable (302)
 			max := -1
 			for _, tirada := range r.GetManoAnterior().CartasTiradas {
-				poder := tirada.Carta.calcPoder(r.Muestra)
+				poder := tirada.Carta.CalcPoder(r.Muestra)
 				if poder > max {
 					max = poder
 				}
 			}
 			for _, tirada := range r.GetManoAnterior().CartasTiradas {
-				poder := tirada.Carta.calcPoder(r.Muestra)
+				poder := tirada.Carta.CalcPoder(r.Muestra)
 				if poder == max {
 					if !r.Manojo(tirada.Jugador).SeFueAlMazo {
 						r.Turno = JIX(r.JIX(r.Manojo(tirada.Jugador).Jugador.ID))
