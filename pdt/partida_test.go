@@ -932,3 +932,124 @@ func TestNil(t *testing.T) {
 
 	t.Log(Renderizar(p))
 }
+
+func TestFixNoPasaDeTurno(t *testing.T) {
+	// 1. Deberia pasar el turno (de Alvaro a Roro)
+	// 2. Deberia sumar puntos
+	p, _ := NuevaPartida(A20, []string{"Alvaro", "Andres"}, []string{"Roro", "Richard"})
+	p.Ronda.SetMuestra(Carta{Palo: Espada, Valor: 1})
+	p.Puntajes[Rojo] = 0
+	p.Puntajes[Azul] = 0
+	p.Ronda.ManoEnJuego = Primera
+	p.Ronda.ElMano = 0 // Richard
+	p.Ronda.Turno = 0  // Richard
+	p.Ronda.SetManojos(
+		[]Manojo{
+			{
+				Cartas: [3]*Carta{ // cartas de Alvaro
+					{Palo: Espada, Valor: 4},
+					{Palo: Basto, Valor: 11},
+					{Palo: Espada, Valor: 3},
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // cartas Roro
+					{Palo: Espada, Valor: 12},
+					{Palo: Oro, Valor: 1},
+					{Palo: Copa, Valor: 3},
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // cartas de Andres
+					{Palo: Basto, Valor: 5},
+					{Palo: Espada, Valor: 5},
+					{Palo: Copa, Valor: 12},
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // cartas de Richard
+					{Palo: Oro, Valor: 2},
+					{Palo: Basto, Valor: 12},
+					{Palo: Oro, Valor: 7},
+				},
+			},
+		},
+	)
+
+	p.Cmd("Alvaro envido")
+	p.Cmd("Richard real-envido")
+	p.Cmd("Andres mazo")
+	p.Cmd("Roro mazo")
+	p.Cmd("Alvaro falta-envido")
+	pkts, _ := p.Cmd("Richard quiero")
+
+	util.Assert(enco.Contains(pkts, enco.SumaPts), func() {
+		t.Error("No debio de haberle dejado tocar envido")
+	})
+
+	pkts, _ = p.Cmd("Alvaro mazo")
+
+	util.Assert(!enco.Contains(pkts, enco.Error), func() {
+		t.Error("No deberia ocurrir errores")
+	})
+
+	util.Assert(p.Puntajes[Rojo] > 0, func() {
+		t.Error("El puntaje del equipo rojo deberia ser mayor a cero")
+	})
+
+	util.Assert(p.Ronda.Turno > 0, func() {
+		t.Error("El turno ya no lo deberia de tener Alvaro")
+	})
+}
+
+func TestFixEnvidoHabilitado(t *testing.T) {
+	// Deberia dejar cantar envido luego de que tiro carta? NO.
+	// a menos que uno de mi mismo equipo tenga el turno (?)
+	p, _ := NuevaPartida(A20, []string{"Alvaro", "Andres"}, []string{"Roro", "Richard"})
+	p.Ronda.SetMuestra(Carta{Palo: Espada, Valor: 1})
+	p.Puntajes[Rojo] = 0
+	p.Puntajes[Azul] = 0
+	p.Ronda.ManoEnJuego = Primera
+	p.Ronda.ElMano = 0 // Richard
+	p.Ronda.Turno = 0  // Richard
+	p.Ronda.SetManojos(
+		[]Manojo{
+			{
+				Cartas: [3]*Carta{ // cartas de Alvaro
+					{Palo: Espada, Valor: 4},
+					{Palo: Basto, Valor: 11},
+					{Palo: Espada, Valor: 3},
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // cartas Roro
+					{Palo: Espada, Valor: 12},
+					{Palo: Oro, Valor: 1},
+					{Palo: Copa, Valor: 3},
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // cartas de Andres
+					{Palo: Basto, Valor: 5},
+					{Palo: Espada, Valor: 5},
+					{Palo: Copa, Valor: 12},
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // cartas de Richard
+					{Palo: Oro, Valor: 2},
+					{Palo: Basto, Valor: 12},
+					{Palo: Oro, Valor: 7},
+				},
+			},
+		},
+	)
+
+	p.Cmd("Alvaro 4 espada")
+	pkts, _ := p.Cmd("Alvaro envido")
+
+	util.Assert(enco.Contains(pkts, enco.Error), func() {
+		t.Error("No deberia dejarlo arrancar un envido despues de tirar carta")
+	})
+
+}
