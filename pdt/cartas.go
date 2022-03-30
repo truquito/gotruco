@@ -229,7 +229,7 @@ func (c Carta) calcPuntaje(muestra Carta) int {
 
 // guarismo ficticio y abstracto para simplificar
 // las comparaciones
-func (c Carta) calcPoder(muestra Carta) int {
+func (c Carta) CalcPoder(muestra Carta) int {
 	var poder int
 
 	if c.EsPieza(muestra) {
@@ -246,7 +246,7 @@ func (c Carta) calcPoder(muestra Carta) int {
 			poder = 30
 		case 12:
 			valeComo := Carta{Palo: c.Palo, Valor: muestra.Valor}
-			poder = valeComo.calcPoder(muestra)
+			poder = valeComo.CalcPoder(muestra)
 		}
 
 	} else if c.Palo == Espada && c.Valor == 1 {
