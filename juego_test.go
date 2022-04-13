@@ -3676,7 +3676,11 @@ func TestFixFlorNoCantada(t *testing.T) {
 	})
 
 	roro := p.Manojo("Roro")
-	aa := pdt.GetA(p.Partida, roro)
+
+	// ANTES (deprecated, pero anda):
+	// aa := pdt.GetA(p.Partida, roro)
+	// AHORA:
+	aa := pdt.Chi(p.Partida, roro)
 
 	t.Log(aa)
 

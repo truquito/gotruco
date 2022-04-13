@@ -1,5 +1,7 @@
 package pdt
 
+import "strconv"
+
 // A es el conjunto de acciones posibles para el manojo `m`
 /*
 Gritos
@@ -23,6 +25,78 @@ Cantos
 Respuestas
 	Quiero
 	No quiero
+
+*/
+
+/*
+
+NUEVO SISTEMA:
+
+*/
+
+// Retorna TODAS las jugadas posibles de cada jugador
+func Chis(p *Partida) [][]IJugada {
+	n := len(p.Ronda.Manojos)
+	res := make([][]IJugada, n)
+	for i := range p.Ronda.Manojos {
+		res[i] = Chi(p, &p.Ronda.Manojos[i])
+	}
+	return res
+}
+
+// Retorna todas las acciones posibles para un jugador `m` dado
+func Chi(p *Partida, m *Manojo) []IJugada {
+
+	chi := make([]IJugada, 0, 15)
+
+	// tirada de cartas
+	for _, c := range m.Cartas {
+		j := TirarCarta{Manojo: m, Carta: *c}
+		_, ok := j.Ok(p)
+		if ok {
+			chi = append(chi, j)
+		}
+	}
+
+	// ijugada debe tener metodo ToCod
+	js := []IJugada{
+		// TirarCarta{},
+
+		// envite
+		TocarEnvido{Manojo: m},
+		TocarRealEnvido{Manojo: m},
+		TocarFaltaEnvido{Manojo: m},
+		CantarFlor{Manojo: m},
+		CantarContraFlor{Manojo: m},
+		CantarContraFlorAlResto{Manojo: m},
+		// { CantarConFlorMeAchico{Manojo: m}, enco.new },
+
+		// truco
+		GritarTruco{Manojo: m},
+		GritarReTruco{Manojo: m},
+		GritarVale4{Manojo: m},
+
+		// respuestas
+		ResponderQuiero{Manojo: m},
+		ResponderNoQuiero{Manojo: m},
+
+		// mazo
+		IrseAlMazo{Manojo: m},
+	}
+
+	for _, j := range js {
+		_, ok := j.Ok(p)
+		if ok {
+			chi = append(chi, j)
+		}
+	}
+
+	return chi
+}
+
+/*
+
+DEPRECADO:
 
 */
 
@@ -109,6 +183,39 @@ func (A A) String() string {
 	return s
 }
 
+func ActionToString(a A, aix int, jix int, p *Partida) string {
+	codigos := []string{
+		// cartas
+		"primera",
+		"segunda",
+		"tercera",
+		// envite
+		"envido",
+		"real-envido",
+		"falta-envido",
+		"flor",
+		"contra-flor",
+		"contra-flor-al-resto",
+		// truco
+		"truco",
+		"re-truco",
+		"vale-4",
+		// respuestas
+		"quiero",
+		"no-Quiero",
+		"mazo",
+	}
+
+	if aix <= 2 {
+		// este string no lo agarra la regex de p.Cmd(.)
+		// return p.Ronda.Manojos[jix].Cartas[aix].String()
+		c := p.Ronda.Manojos[jix].Cartas[aix]
+		return strconv.Itoa(c.Valor) + " " + c.Palo.String()
+	}
+
+	return codigos[aix]
+}
+
 // Retorna todas las acciones posibles para un jugador `m` dado
 func GetA(p *Partida, m *Manojo) A {
 
@@ -165,54 +272,4 @@ func GetAA(p *Partida) []A {
 		res[i] = GetA(p, &p.Ronda.Manojos[i])
 	}
 	return res
-}
-
-// Retorna todas las acciones posibles para un jugador `m` dado
-func Chi(p *Partida, m *Manojo) []IJugada {
-
-	chi := make([]IJugada, 0, 15)
-
-	// tirada de cartas
-	for _, c := range m.Cartas {
-		j := TirarCarta{Manojo: m, Carta: *c}
-		_, ok := j.Ok(p)
-		if ok {
-			chi = append(chi, j)
-		}
-	}
-
-	// ijugada debe tener metodo ToCod
-	js := []IJugada{
-		// TirarCarta{},
-
-		// envite
-		TocarEnvido{Manojo: m},
-		TocarRealEnvido{Manojo: m},
-		TocarFaltaEnvido{Manojo: m},
-		CantarFlor{Manojo: m},
-		CantarContraFlor{Manojo: m},
-		CantarContraFlorAlResto{Manojo: m},
-		// { CantarConFlorMeAchico{Manojo: m}, enco.new },
-
-		// truco
-		GritarTruco{Manojo: m},
-		GritarReTruco{Manojo: m},
-		GritarVale4{Manojo: m},
-
-		// respuestas
-		ResponderQuiero{Manojo: m},
-		ResponderNoQuiero{Manojo: m},
-
-		// mazo
-		IrseAlMazo{Manojo: m},
-	}
-
-	for _, j := range js {
-		_, ok := j.Ok(p)
-		if ok {
-			chi = append(chi, j)
-		}
-	}
-
-	return chi
 }

@@ -3,7 +3,6 @@ package pdt
 import (
 	"encoding/json"
 	"math/rand"
-	"strconv"
 	"testing"
 	"time"
 
@@ -749,8 +748,10 @@ func TestCreadorDeEscenario(t *testing.T) {
 	qjson, _ := q.MarshalJSON()
 	t.Log(string(qjson))
 
-	for _, x := range GetAA(q) {
-		t.Log(x.String())
+	for _, chi := range Chis(q) {
+		for _, a := range chi {
+			t.Log(a.String())
+		}
 	}
 
 	// random
@@ -834,6 +835,26 @@ func random_action(aa []A) Tuple {
 	return flatten[rfix]
 }
 
+func random_action_chi(chis [][]IJugada) (rmix, raix int) {
+	// hago un cambio de variable:
+	// tomo en cuenta solo aquellos chi's que tengan al menos una accion habilitada
+	// lo almaceno como un slice de mix's
+	habilitados := make([]int, 0, len(chis))
+	i := 0
+	for mix, chi := range chis {
+		if len(chi) > 0 {
+			habilitados = append(habilitados, mix)
+			i++
+		}
+	}
+
+	r_habilitado_ix := rand.Intn(len(habilitados))
+	rmix = habilitados[r_habilitado_ix]
+	raix = rand.Intn(len(chis[rmix]))
+
+	return rmix, raix
+}
+
 func isDone(pkts []*enco.Packet) bool {
 	for _, pkt := range pkts {
 		if pkt.Message.Cod == enco.NuevaPartida ||
@@ -845,40 +866,7 @@ func isDone(pkts []*enco.Packet) bool {
 	return false
 }
 
-func ActionToString(a A, aix int, jix int, p *Partida) string {
-	codigos := []string{
-		// cartas
-		"primera",
-		"segunda",
-		"tercera",
-		// envite
-		"envido",
-		"real-envido",
-		"falta-envido",
-		"flor",
-		"contra-flor",
-		"contra-flor-al-resto",
-		// truco
-		"truco",
-		"re-truco",
-		"vale-4",
-		// respuestas
-		"quiero",
-		"no-Quiero",
-		"mazo",
-	}
-
-	if aix <= 2 {
-		// este string no lo agarra la regex de p.Cmd(.)
-		// return p.Ronda.Manojos[jix].Cartas[aix].String()
-		c := p.Ronda.Manojos[jix].Cartas[aix]
-		return strconv.Itoa(c.Valor) + " " + c.Palo.String()
-	}
-
-	return codigos[aix]
-}
-
-func TestRandomWalk(t *testing.T) {
+func TestRandomWalk_AA(t *testing.T) {
 	rand.Seed(time.Now().Unix())
 
 	for i := 0; i < 10000; i++ {
@@ -896,6 +884,42 @@ func TestRandomWalk(t *testing.T) {
 
 			// v1
 			pkts := aa[r.jix].ToJugada(p, r.jix, r.aix).Hacer(p)
+			if p.Terminada() {
+				pkts = append(pkts, p.byeBye()...)
+			}
+
+			// v2
+			// s := ActionToString(aa[r.jix], r.aix, r.jix, p)
+			// cmd := fmt.Sprintf("%s %s", p.Ronda.Manojos[r.jix].Jugador.ID, s)
+			// pkts, _ := p.Cmd(cmd)
+
+			if isDone(pkts) {
+				break
+			}
+
+			util.Assert(!enco.Contains(pkts, enco.Error), func() {
+				t.Error("NO PUEDE HABER JUGADAS INVALIDAS!")
+			})
+		}
+
+	}
+}
+
+func TestRandomWalk_Chi(t *testing.T) {
+	rand.Seed(time.Now().Unix())
+
+	for i := 0; i < 10000; i++ {
+		// p, _ := NuevaPartida(A20, []string{"Alvaro"}, []string{"Roro"})
+		p, _ := NuevaPartida(A20, []string{"Alvaro", "Andres"}, []string{"Roro", "Richard"})
+
+		for {
+			chis := Chis(p)
+
+			// elijo a un jugador al azar
+			rmix, raix := random_action_chi(chis)
+
+			// v1
+			pkts := chis[rmix][raix].Hacer(p)
 			if p.Terminada() {
 				pkts = append(pkts, p.byeBye()...)
 			}

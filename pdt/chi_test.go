@@ -15,7 +15,7 @@ func TestAcciones(t *testing.T) {
 	t.Log(Renderizar(p))
 
 	// t.Log(GetA(p, alvaro))
-	as := GetAA(p)
+	as := Chis(p)
 	t.Log(Renderizar(p))
 	for i, a := range as {
 		t.Logf("%s : %v", p.Ronda.Manojos[i].Jugador.ID, a)
@@ -24,7 +24,7 @@ func TestAcciones(t *testing.T) {
 
 func TestTodasLasAcciones(t *testing.T) {
 	p, _ := NuevaPartida(A20, []string{"Alvaro"}, []string{"Roro"})
-	as := GetAA(p)
+	as := Chis(p)
 	t.Log(Renderizar(p))
 	for i, a := range as {
 		t.Logf("%s : %v", p.Ronda.Manojos[i].Jugador.ID, a)

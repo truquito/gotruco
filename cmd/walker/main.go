@@ -25,16 +25,13 @@ func rec_play(p *pdt.Partida) {
 	bs, _ := p.MarshalJSON()
 
 	// para la partida dada, todas las jugadas posibles
-	aa := pdt.GetAA(p)
+	chis := pdt.Chis(p)
 
 	// las juego
-	for mix := range aa {
-		for aix := range aa[mix] {
-			if !aa[mix][aix] {
-				continue
-			}
+	for mix := range chis {
+		for aix := range chis[mix] {
 			p, _ = pdt.Parse(string(bs))
-			pkts := aa[mix].ToJugada(p, mix, aix).Hacer(p)
+			pkts := chis[mix][aix].Hacer(p)
 			if isDone(pkts) {
 				terminals++
 			} else {
