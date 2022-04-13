@@ -863,7 +863,7 @@ func TestRandomWalk_AA(t *testing.T) {
 			// cmd := fmt.Sprintf("%s %s", p.Ronda.Manojos[r.jix].Jugador.ID, s)
 			// pkts, _ := p.Cmd(cmd)
 
-			if isDone(pkts) {
+			if IsDone(pkts) {
 				break
 			}
 
@@ -886,7 +886,7 @@ func TestRandomWalk_Chi(t *testing.T) {
 			chis := Chis(p)
 
 			// elijo a un jugador al azar
-			rmix, raix := random_action_chi(chis)
+			rmix, raix := Random_action_chi(chis)
 
 			// v1
 			pkts := chis[rmix][raix].Hacer(p)
@@ -899,7 +899,7 @@ func TestRandomWalk_Chi(t *testing.T) {
 			// cmd := fmt.Sprintf("%s %s", p.Ronda.Manojos[r.jix].Jugador.ID, s)
 			// pkts, _ := p.Cmd(cmd)
 
-			if isDone(pkts) {
+			if IsDone(pkts) {
 				break
 			}
 

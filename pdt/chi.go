@@ -13,7 +13,7 @@ NUEVO SISTEMA:
 
 */
 
-func isDone(pkts []*enco.Packet) bool {
+func IsDone(pkts []*enco.Packet) bool {
 	for _, pkt := range pkts {
 		if pkt.Message.Cod == enco.NuevaPartida ||
 			pkt.Message.Cod == enco.NuevaRonda ||
@@ -24,7 +24,7 @@ func isDone(pkts []*enco.Packet) bool {
 	return false
 }
 
-func random_action_chi(chis [][]IJugada) (rmix, raix int) {
+func Random_action_chi(chis [][]IJugada) (rmix, raix int) {
 	// hago un cambio de variable:
 	// tomo en cuenta solo aquellos chi's que tengan al menos una accion habilitada
 	// lo almaceno como un slice de mix's
