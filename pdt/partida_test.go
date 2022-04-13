@@ -808,12 +808,13 @@ func TestCreadorDeEscenario(t *testing.T) {
 
 }
 
-type Tuple struct {
-	jix int
-	aix int
-}
+func random_action(aa []A) (jix, aix int) {
 
-func random_action(aa []A) Tuple {
+	type Tuple struct {
+		jix int
+		aix int
+	}
+
 	// hago un flatten del vector aa
 	n := len(aa) * len(aa[0])
 	flatten := make([]Tuple, 0, n)
@@ -832,38 +833,7 @@ func random_action(aa []A) Tuple {
 	// elijo a un (jugador,jugada) al azar
 	rfix := rand.Intn(len(flatten))
 
-	return flatten[rfix]
-}
-
-func random_action_chi(chis [][]IJugada) (rmix, raix int) {
-	// hago un cambio de variable:
-	// tomo en cuenta solo aquellos chi's que tengan al menos una accion habilitada
-	// lo almaceno como un slice de mix's
-	habilitados := make([]int, 0, len(chis))
-	i := 0
-	for mix, chi := range chis {
-		if len(chi) > 0 {
-			habilitados = append(habilitados, mix)
-			i++
-		}
-	}
-
-	r_habilitado_ix := rand.Intn(len(habilitados))
-	rmix = habilitados[r_habilitado_ix]
-	raix = rand.Intn(len(chis[rmix]))
-
-	return rmix, raix
-}
-
-func isDone(pkts []*enco.Packet) bool {
-	for _, pkt := range pkts {
-		if pkt.Message.Cod == enco.NuevaPartida ||
-			pkt.Message.Cod == enco.NuevaRonda ||
-			pkt.Message.Cod == enco.RondaGanada {
-			return true
-		}
-	}
-	return false
+	return flatten[rfix].jix, flatten[rfix].aix
 }
 
 func TestRandomWalk_AA(t *testing.T) {
@@ -880,10 +850,10 @@ func TestRandomWalk_AA(t *testing.T) {
 			aa := GetAA(p)
 
 			// elijo a un jugador al azar
-			r := random_action(aa)
+			rjix, raix := random_action(aa)
 
 			// v1
-			pkts := aa[r.jix].ToJugada(p, r.jix, r.aix).Hacer(p)
+			pkts := aa[rjix].ToJugada(p, rjix, raix).Hacer(p)
 			if p.Terminada() {
 				pkts = append(pkts, p.byeBye()...)
 			}

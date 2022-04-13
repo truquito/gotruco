@@ -1,38 +1,48 @@
 package pdt
 
-import "strconv"
+import (
+	"math/rand"
+	"strconv"
 
-// A es el conjunto de acciones posibles para el manojo `m`
-/*
-Gritos
-	Truco    // 1/2
-	Re-truco // 2/3
-	Vale 4   // 3/4
-
-Toques
-	Envido
-	Real envido
-	Falta envido
-
-Cantos
-	Flor                 // 2pts (tanto o el-primero)
-	Contra flor          // 3 pts
-	Contra flor al resto // 4 pts
-
-	// Con flor me achico ~ quiero
-	// Con flor quiero ~ no quiero
-
-Respuestas
-	Quiero
-	No quiero
-
-*/
+	"github.com/filevich/truco/enco"
+)
 
 /*
 
 NUEVO SISTEMA:
 
 */
+
+func isDone(pkts []*enco.Packet) bool {
+	for _, pkt := range pkts {
+		if pkt.Message.Cod == enco.NuevaPartida ||
+			pkt.Message.Cod == enco.NuevaRonda ||
+			pkt.Message.Cod == enco.RondaGanada {
+			return true
+		}
+	}
+	return false
+}
+
+func random_action_chi(chis [][]IJugada) (rmix, raix int) {
+	// hago un cambio de variable:
+	// tomo en cuenta solo aquellos chi's que tengan al menos una accion habilitada
+	// lo almaceno como un slice de mix's
+	habilitados := make([]int, 0, len(chis))
+	i := 0
+	for mix, chi := range chis {
+		if len(chi) > 0 {
+			habilitados = append(habilitados, mix)
+			i++
+		}
+	}
+
+	r_habilitado_ix := rand.Intn(len(habilitados))
+	rmix = habilitados[r_habilitado_ix]
+	raix = rand.Intn(len(chis[rmix]))
+
+	return rmix, raix
+}
 
 // Retorna TODAS las jugadas posibles de cada jugador
 func Chis(p *Partida) [][]IJugada {
@@ -97,6 +107,32 @@ func Chi(p *Partida, m *Manojo) []IJugada {
 /*
 
 DEPRECADO:
+
+*/
+
+// A es el conjunto de acciones posibles para el manojo `m`
+/*
+Gritos
+	Truco    // 1/2
+	Re-truco // 2/3
+	Vale 4   // 3/4
+
+Toques
+	Envido
+	Real envido
+	Falta envido
+
+Cantos
+	Flor                 // 2pts (tanto o el-primero)
+	Contra flor          // 3 pts
+	Contra flor al resto // 4 pts
+
+	// Con flor me achico ~ quiero
+	// Con flor quiero ~ no quiero
+
+Respuestas
+	Quiero
+	No quiero
 
 */
 
