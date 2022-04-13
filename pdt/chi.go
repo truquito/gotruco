@@ -24,7 +24,11 @@ func IsDone(pkts []*enco.Packet) bool {
 	return false
 }
 
-func Random_action_chi(chis [][]IJugada) (rmix, raix int) {
+func Random_action_chi(chi []IJugada) (raix int) {
+	return rand.Intn(len(chi))
+}
+
+func Random_action_chis(chis [][]IJugada) (rmix, raix int) {
 	// hago un cambio de variable:
 	// tomo en cuenta solo aquellos chi's que tengan al menos una accion habilitada
 	// lo almaceno como un slice de mix's

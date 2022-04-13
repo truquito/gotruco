@@ -886,7 +886,7 @@ func TestRandomWalk_Chi(t *testing.T) {
 			chis := Chis(p)
 
 			// elijo a un jugador al azar
-			rmix, raix := Random_action_chi(chis)
+			rmix, raix := Random_action_chis(chis)
 
 			// v1
 			pkts := chis[rmix][raix].Hacer(p)
