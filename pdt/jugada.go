@@ -180,6 +180,7 @@ func (jugada TirarCarta) Hacer(p *Partida) []*enco.Packet {
 			nadieCantoEnvite := p.Ronda.Envite.Estado == NOCANTADOAUN
 			if seTerminoLaPrimeraMano && nadieCantoEnvite {
 				p.Ronda.Envite.Estado = DESHABILITADO
+				p.Ronda.Envite.SinCantar = []string{}
 			}
 
 			// actualizo el mano
@@ -380,6 +381,7 @@ func (jugada TocarEnvido) Eval(p *Partida) []*enco.Packet {
 	pkts := make([]*enco.Packet, 0)
 
 	p.Ronda.Envite.Estado = DESHABILITADO
+	p.Ronda.Envite.SinCantar = []string{}
 	jIdx, _, res := p.Ronda.ExecElEnvido()
 
 	pkts = append(pkts, res...)
@@ -631,6 +633,7 @@ func (jugada TocarFaltaEnvido) Eval(p *Partida) []*enco.Packet {
 	pkts := make([]*enco.Packet, 0)
 
 	p.Ronda.Envite.Estado = DESHABILITADO
+	p.Ronda.Envite.SinCantar = []string{}
 
 	// computar envidos
 	jIdx, _, res := p.Ronda.ExecElEnvido()
@@ -821,6 +824,7 @@ func evalFlor(p *Partida) []*enco.Packet {
 	}
 
 	p.Ronda.Envite.Estado = DESHABILITADO
+	p.Ronda.Envite.SinCantar = []string{}
 
 	return pkts
 }
@@ -1364,6 +1368,7 @@ func (jugada ResponderQuiero) Hacer(p *Partida) []*enco.Packet {
 		}
 
 		p.Ronda.Envite.Estado = DESHABILITADO
+		p.Ronda.Envite.SinCantar = []string{}
 
 	} else if elTrucoEsRespondible {
 
@@ -1507,6 +1512,7 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []*enco.Packet {
 		}
 
 		p.Ronda.Envite.Estado = DESHABILITADO
+		p.Ronda.Envite.SinCantar = []string{}
 		p.Ronda.Envite.Puntaje = totalPts
 
 		pkts = append(pkts, enco.Pkt(
@@ -1552,6 +1558,7 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []*enco.Packet {
 		}
 
 		p.Ronda.Envite.Estado = DESHABILITADO
+		p.Ronda.Envite.SinCantar = []string{}
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
@@ -1787,6 +1794,7 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []*enco.Packet {
 				totalPts = e.Puntaje + 1
 			}
 			e.Estado = DESHABILITADO
+			p.Ronda.Envite.SinCantar = []string{}
 			e.Puntaje = totalPts
 
 			pkts = append(pkts, enco.Pkt(
@@ -1827,6 +1835,7 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []*enco.Packet {
 			}
 
 			p.Ronda.Envite.Estado = DESHABILITADO
+			p.Ronda.Envite.SinCantar = []string{}
 
 			pkts = append(pkts, enco.Pkt(
 				enco.Dest("ALL"),
