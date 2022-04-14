@@ -260,10 +260,21 @@ func (p *Partida) GritarVale4(m *Manojo) {
 }
 
 // IrAlMazo manda el manojo al mazo
+// todo: esto podria ser un metodo de Ronda, no de partida
 func (p *Partida) IrAlMazo(manojo *Manojo) {
 	manojo.SeFueAlMazo = true
 	equipoDelJugador := manojo.Jugador.Equipo
 	p.Ronda.CantJugadoresEnJuego[equipoDelJugador]--
+	// lo elimino de los jugadores que tenian flor (si es que tenia)
+	xs := p.Ronda.Envite.SinCantar
+	for i, jid := range p.Ronda.Envite.SinCantar {
+		if manojo.Jugador.ID == jid {
+			xs[i] = xs[len(xs)-1]
+			xs = xs[:len(xs)-1]
+			p.Ronda.Envite.SinCantar = xs
+			break
+		}
+	}
 }
 
 // EvaluarMano evalua todas las cartas y decide que equipo gano
