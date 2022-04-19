@@ -132,9 +132,16 @@ func maxOf3(cartas [3]*Carta) int {
 	return max
 }
 
+func max_int(x, y int) int {
+	if x >= y {
+		return x
+	}
+	return y
+}
+
 // retorna el valor de la flor de un manojo
 // si no tiene flor retorna 0 y error
-func (manojo *Manojo) calcFlor(muestra Carta) (int, error) {
+func (manojo *Manojo) CalcFlor(muestra Carta) (int, error) {
 	var (
 		puntajeFlor         int
 		tieneFlor, tipoFlor = manojo.TieneFlor(muestra)
@@ -144,24 +151,29 @@ func (manojo *Manojo) calcFlor(muestra Carta) (int, error) {
 		return -1, fmt.Errorf("este manojo no tiene flor")
 	}
 
+	ptjs := []int{
+		manojo.Cartas[0].calcPuntaje(muestra),
+		manojo.Cartas[1].calcPuntaje(muestra),
+		manojo.Cartas[2].calcPuntaje(muestra),
+	}
+
 	switch tipoFlor {
 	// CASO I: (al menos) dos piezas
 	case 1:
-		max := maxOf3(manojo.Cartas)
-		for _, carta := range manojo.Cartas {
-			puntaje := carta.calcPuntaje(muestra)
-			if puntaje == max {
-				puntajeFlor += puntaje
+		max := max_int(ptjs[0], max_int(ptjs[1], ptjs[2]))
+		yaSumoLaMaxima := false
+		for _, ptj := range ptjs {
+			if ptj == max && !yaSumoLaMaxima {
+				puntajeFlor += ptj
+				yaSumoLaMaxima = true
 			} else {
-				puntajeFlor += puntaje % 10 // ultimo digito
+				puntajeFlor += ptj % 10 // ultimo digito
 			}
 		}
 	// CASO II una pieza y dos cartas del mismo palo;
 	// CASO III: tres cartas del mismo palo,
 	case 2, 3:
-		for _, carta := range manojo.Cartas {
-			puntajeFlor += carta.calcPuntaje(muestra)
-		}
+		puntajeFlor = ptjs[0] + ptjs[1] + ptjs[2]
 	}
 	return puntajeFlor, nil
 }
