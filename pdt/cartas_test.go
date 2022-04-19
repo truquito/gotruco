@@ -4,6 +4,25 @@ import (
 	"testing"
 )
 
+func TestFlor(t *testing.T) {
+	muestra := Carta{Palo: Oro, Valor: 11}
+	m := &Manojo{
+		Cartas: [3]*Carta{
+			{Palo: Oro, Valor: 2},
+			{Palo: Oro, Valor: 4},
+			{Palo: Oro, Valor: 5},
+		},
+	}
+
+	if tiene, _ := m.TieneFlor(muestra); !tiene {
+		t.Error("Deberia tener flor")
+	}
+
+	if ptsFlor, err := m.CalcFlor(muestra); ptsFlor != 47 || err != nil {
+		t.Error("Deberia tener 47 de flor")
+	}
+}
+
 func TestCartaID(t *testing.T) {
 	t.Log(len(primes))
 
