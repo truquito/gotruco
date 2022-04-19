@@ -3,20 +3,8 @@ package main
 import (
 	"fmt"
 
-	"github.com/filevich/truco/enco"
 	"github.com/filevich/truco/pdt"
 )
-
-func isDone(pkts []*enco.Packet) bool {
-	for _, pkt := range pkts {
-		if pkt.Message.Cod == enco.NuevaPartida ||
-			pkt.Message.Cod == enco.NuevaRonda ||
-			pkt.Message.Cod == enco.RondaGanada {
-			return true
-		}
-	}
-	return false
-}
 
 var terminals uint = 0
 
@@ -32,7 +20,7 @@ func rec_play(p *pdt.Partida) {
 		for aix := range chis[mix] {
 			p, _ = pdt.Parse(string(bs))
 			pkts := chis[mix][aix].Hacer(p)
-			if isDone(pkts) {
+			if pdt.IsDone(pkts) {
 				terminals++
 			} else {
 				rec_play(p)
