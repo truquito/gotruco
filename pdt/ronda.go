@@ -242,7 +242,7 @@ func (r *Ronda) GetLaFlorMasAlta() (*Manojo, int) {
 		maxIdx  int = -1
 	)
 	for i := range r.Manojos {
-		valorFlor, _ := r.Manojos[i].calcFlor(r.Muestra)
+		valorFlor, _ := r.Manojos[i].CalcFlor(r.Muestra)
 		if valorFlor > maxFlor {
 			maxFlor = valorFlor
 			maxIdx = i
@@ -570,7 +570,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts []*enco.Pa
 	yaDijeron := make([]bool, cantJugadores)
 
 	for i := range r.Manojos {
-		flores[i], _ = r.Manojos[i].calcFlor(r.Muestra)
+		flores[i], _ = r.Manojos[i].CalcFlor(r.Muestra)
 		tieneFlor := flores[i] > 0
 		seFueAlMazo := r.Manojos[i].SeFueAlMazo
 		if tieneFlor && !seFueAlMazo {
