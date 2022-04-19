@@ -122,16 +122,6 @@ func (manojo Manojo) TieneFlor(muestra Carta) (res bool, CASO int) {
 	return false, -1
 }
 
-func maxOf3(cartas [3]*Carta) int {
-	max := 0
-	for _, carta := range cartas {
-		if carta.Valor > max {
-			max = int(carta.Valor)
-		}
-	}
-	return max
-}
-
 func max_int(x, y int) int {
 	if x >= y {
 		return x
