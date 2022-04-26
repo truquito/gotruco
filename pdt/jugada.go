@@ -6,16 +6,39 @@ import (
 	"github.com/filevich/truco/enco"
 )
 
+type IJUGADA_ID int
+
+const (
+	JID_TIRAR_CARTA IJUGADA_ID = iota
+	JID_ENVIDO
+	JID_REAL_ENVIDO
+	JID_FALTA_ENVIDO
+	JID_FLOR
+	JID_CONTRA_FLOR
+	JID_CONTRA_FLOR_AL_RESTO
+	JID_TRUCO
+	JID_RE_TRUCO
+	JID_VALE_4
+	JID_QUIERO
+	JID_NO_QUIERO
+	JID_MAZO
+)
+
 // IJugada Interface para las jugadas
 type IJugada interface {
 	Ok(p *Partida) ([]*enco.Packet, bool)
 	Hacer(p *Partida) []*enco.Packet
 	String() string
+	ID() IJUGADA_ID
 }
 
 type TirarCarta struct {
 	Manojo *Manojo
 	Carta  Carta
+}
+
+func (jugada TirarCarta) ID() IJUGADA_ID {
+	return JID_TIRAR_CARTA
 }
 
 func (jugada TirarCarta) String() string {
@@ -242,6 +265,10 @@ type TocarEnvido struct {
 	Manojo *Manojo
 }
 
+func (jugada TocarEnvido) ID() IJUGADA_ID {
+	return JID_ENVIDO
+}
+
 func (jugada TocarEnvido) String() string {
 	return jugada.Manojo.Jugador.ID + " envido"
 }
@@ -402,6 +429,10 @@ type TocarRealEnvido struct {
 	Manojo *Manojo
 }
 
+func (jugada TocarRealEnvido) ID() IJUGADA_ID {
+	return JID_REAL_ENVIDO
+}
+
 func (jugada TocarRealEnvido) String() string {
 	return jugada.Manojo.Jugador.ID + " real-envido"
 }
@@ -510,6 +541,10 @@ func (jugada TocarRealEnvido) Hacer(p *Partida) []*enco.Packet {
 
 type TocarFaltaEnvido struct {
 	Manojo *Manojo
+}
+
+func (jugada TocarFaltaEnvido) ID() IJUGADA_ID {
+	return JID_FALTA_ENVIDO
 }
 
 func (jugada TocarFaltaEnvido) String() string {
@@ -676,6 +711,10 @@ se pase a calcular el resultado solo de las flores acumuladas
 se necesita timer
 
 */
+func (jugada CantarFlor) ID() IJUGADA_ID {
+	return JID_FLOR
+}
+
 func (jugada CantarFlor) String() string {
 	return jugada.Manojo.Jugador.ID + " flor"
 }
@@ -833,6 +872,10 @@ type CantarContraFlor struct {
 	Manojo *Manojo
 }
 
+func (jugada CantarContraFlor) ID() IJUGADA_ID {
+	return JID_CONTRA_FLOR
+}
+
 func (jugada CantarContraFlor) String() string {
 	return jugada.Manojo.Jugador.ID + " contra-flor"
 }
@@ -889,6 +932,10 @@ func (jugada CantarContraFlor) Hacer(p *Partida) []*enco.Packet {
 
 type CantarContraFlorAlResto struct {
 	Manojo *Manojo
+}
+
+func (jugada CantarContraFlorAlResto) ID() IJUGADA_ID {
+	return JID_CONTRA_FLOR_AL_RESTO
 }
 
 func (jugada CantarContraFlorAlResto) String() string {
@@ -970,6 +1017,10 @@ type GritarTruco struct {
 // 		quiero -> no debe poder si uno de su equipo tiene flor
 // 		si dice flor -> debe resetear el Truco
 
+func (jugada GritarTruco) ID() IJUGADA_ID {
+	return JID_TRUCO
+}
+
 func (jugada GritarTruco) String() string {
 	return jugada.Manojo.Jugador.ID + " truco"
 }
@@ -1024,6 +1075,10 @@ func (jugada GritarTruco) Hacer(p *Partida) []*enco.Packet {
 
 type GritarReTruco struct {
 	Manojo *Manojo
+}
+
+func (jugada GritarReTruco) ID() IJUGADA_ID {
+	return JID_RE_TRUCO
 }
 
 func (jugada GritarReTruco) String() string {
@@ -1101,6 +1156,10 @@ type GritarVale4 struct {
 	Manojo *Manojo
 }
 
+func (jugada GritarVale4) ID() IJUGADA_ID {
+	return JID_VALE_4
+}
+
 func (jugada GritarVale4) String() string {
 	return jugada.Manojo.Jugador.ID + " vale-4"
 }
@@ -1173,6 +1232,10 @@ func (jugada GritarVale4) Hacer(p *Partida) []*enco.Packet {
 
 type ResponderQuiero struct {
 	Manojo *Manojo
+}
+
+func (jugada ResponderQuiero) ID() IJUGADA_ID {
+	return JID_QUIERO
 }
 
 func (jugada ResponderQuiero) String() string {
@@ -1386,6 +1449,10 @@ func (jugada ResponderQuiero) Hacer(p *Partida) []*enco.Packet {
 
 type ResponderNoQuiero struct {
 	Manojo *Manojo
+}
+
+func (jugada ResponderNoQuiero) ID() IJUGADA_ID {
+	return JID_NO_QUIERO
 }
 
 func (jugada ResponderNoQuiero) String() string {
@@ -1626,6 +1693,10 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []*enco.Packet {
 
 type IrseAlMazo struct {
 	Manojo *Manojo
+}
+
+func (jugada IrseAlMazo) ID() IJUGADA_ID {
+	return JID_MAZO
 }
 
 func (jugada IrseAlMazo) String() string {
