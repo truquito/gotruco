@@ -120,7 +120,7 @@ func (jugada TirarCarta) Ok(p *Partida) ([]*enco.Packet, bool) {
 	}
 
 	// luego, era su turno?
-	eraSuTurno := p.Ronda.GetElTurno() == jugada.Manojo
+	eraSuTurno := p.Ronda.GetElTurno().Jugador.ID == jugada.Manojo.Jugador.ID
 	if !eraSuTurno {
 
 		pkts = append(pkts, enco.Pkt(
@@ -288,7 +288,7 @@ func (jugada TocarEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 	}
 	seFueAlMazo := jugada.Manojo.SeFueAlMazo
 	esPrimeraMano := p.Ronda.ManoEnJuego == Primera
-	esSuTurno := p.Ronda.GetElTurno() == jugada.Manojo
+	esSuTurno := p.Ronda.GetElTurno().Jugador.ID == jugada.Manojo.Jugador.ID
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
 	envidoHabilitado := (p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.Estado == ENVIDO)
 
@@ -454,7 +454,7 @@ func (jugada TocarRealEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 	}
 	seFueAlMazo := jugada.Manojo.SeFueAlMazo
 	esPrimeraMano := p.Ronda.ManoEnJuego == Primera
-	esSuTurno := p.Ronda.GetElTurno() == jugada.Manojo
+	esSuTurno := p.Ronda.GetElTurno().Jugador.ID == jugada.Manojo.Jugador.ID
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
 	realEnvidoHabilitado := (p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.Estado == ENVIDO)
 
@@ -567,7 +567,7 @@ func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 	}
 	seFueAlMazo := jugada.Manojo.SeFueAlMazo
-	esSuTurno := p.Ronda.GetElTurno() == jugada.Manojo
+	esSuTurno := p.Ronda.GetElTurno().Jugador.ID == jugada.Manojo.Jugador.ID
 	esPrimeraMano := p.Ronda.ManoEnJuego == Primera
 	tieneFlor, _ := jugada.Manojo.TieneFlor(p.Ronda.Muestra)
 	faltaEnvidoHabilitado := p.Ronda.Envite.Estado >= NOCANTADOAUN && p.Ronda.Envite.Estado < FALTAENVIDO
@@ -1036,7 +1036,7 @@ func (jugada GritarTruco) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 	laFlorEstaPrimero := yoOUnoDeMisCompasTieneFlorYAunNoCanto
 	trucoNoSeJugoAun := p.Ronda.Truco.Estado == NOCANTADO
-	esSuTurno := p.Ronda.GetElTurno() == jugada.Manojo
+	esSuTurno := p.Ronda.GetElTurno().Jugador.ID == jugada.Manojo.Jugador.ID
 	trucoHabilitado := noSeFueAlMazo && trucoNoSeJugoAun && noSeEstaJugandoElEnvite && !laFlorEstaPrimero && esSuTurno
 
 	if !trucoHabilitado {
@@ -1793,7 +1793,7 @@ func Eliminar(manojos []*Manojo, manojo *Manojo) []*Manojo {
 		if noLoContiene {
 			return manojos
 		}
-		if manojos[i] == manojo {
+		if manojos[i].Jugador.ID == manojo.Jugador.ID {
 			break
 		}
 	}
@@ -1978,7 +1978,7 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []*enco.Packet {
 		}
 	} else {
 		// cambio de turno solo si era su turno
-		eraSuTurno := p.Ronda.GetElTurno() == jugada.Manojo
+		eraSuTurno := p.Ronda.GetElTurno().Jugador.ID == jugada.Manojo.Jugador.ID
 		if eraSuTurno {
 			p.Ronda.SetNextTurno()
 
