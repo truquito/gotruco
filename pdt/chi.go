@@ -116,6 +116,7 @@ DEPRECADO:
 
 // A es el conjunto de acciones posibles para el manojo `m`
 /*
+
 Gritos
 	Truco    // 1/2
 	Re-truco // 2/3
@@ -131,61 +132,25 @@ Cantos
 	Contra flor          // 3 pts
 	Contra flor al resto // 4 pts
 
-	// Con flor me achico ~ quiero
-	// Con flor quiero ~ no quiero
+	// Con flor me achico ~ no quiero
+	// Con flor quiero ~ quiero
 
 Respuestas
 	Quiero
 	No quiero
+	Mazo
 
 */
 
 // 3 tiradas + 12 jugadas = 15 acciones
 type A [15]bool // por default arranca en `false` todos
 
-func (A A) ToJugada(p *Partida, mix, aix int) IJugada {
-	esCarta := aix < 3
-
-	m := &p.Ronda.Manojos[mix]
-
-	if esCarta {
-		return TirarCarta{Manojo: m, Carta: *m.Cartas[aix]}
-	}
-
-	var jugada IJugada
-
-	switch aix {
-	case 3: // envido
-		jugada = TocarEnvido{Manojo: m}
-	case 4: // real-envido
-		jugada = TocarRealEnvido{Manojo: m}
-	case 5: // falta-envido
-		jugada = TocarFaltaEnvido{Manojo: m}
-	case 6: // flor
-		jugada = CantarFlor{Manojo: m}
-	case 7: // contra-flor
-		jugada = CantarContraFlor{Manojo: m}
-	case 8: // contra-flor-al-resto
-		jugada = CantarContraFlorAlResto{Manojo: m}
-	case 9: // truco
-		jugada = GritarTruco{Manojo: m}
-	case 10: // re-truco
-		jugada = GritarReTruco{Manojo: m}
-	case 11: // vale-4
-		jugada = GritarVale4{Manojo: m}
-	case 12: // quiero
-		jugada = ResponderQuiero{Manojo: m}
-	case 13: // no-Quiero
-		jugada = ResponderNoQuiero{Manojo: m}
-	case 14: // mazo
-		jugada = IrseAlMazo{Manojo: m}
-
-	}
-
-	return jugada
+// no tiene sentido que sea un metodo de A
+func (a A) ToJugada(p *Partida, mix, aix int) IJugada {
+	return ToJugada(p, mix, aix)
 }
 
-func (A A) String() string {
+func (a A) String() string {
 	s := ""
 
 	codigos := []string{
@@ -210,7 +175,7 @@ func (A A) String() string {
 		"mazo",
 	}
 
-	for i, v := range A {
+	for i, v := range a {
 		if v {
 			s += codigos[i] + ", "
 		}
@@ -312,4 +277,43 @@ func GetAA(p *Partida) []A {
 		res[i] = GetA(p, &p.Ronda.Manojos[i])
 	}
 	return res
+}
+
+func ToJugada(p *Partida, mix, aix int) IJugada {
+	m := &p.Ronda.Manojos[mix]
+
+	if esCarta := aix < 3; esCarta {
+		return TirarCarta{Manojo: m, Carta: *m.Cartas[aix]}
+	}
+
+	var jugada IJugada
+
+	switch aix {
+	case 3: // envido
+		jugada = TocarEnvido{Manojo: m}
+	case 4: // real-envido
+		jugada = TocarRealEnvido{Manojo: m}
+	case 5: // falta-envido
+		jugada = TocarFaltaEnvido{Manojo: m}
+	case 6: // flor
+		jugada = CantarFlor{Manojo: m}
+	case 7: // contra-flor
+		jugada = CantarContraFlor{Manojo: m}
+	case 8: // contra-flor-al-resto
+		jugada = CantarContraFlorAlResto{Manojo: m}
+	case 9: // truco
+		jugada = GritarTruco{Manojo: m}
+	case 10: // re-truco
+		jugada = GritarReTruco{Manojo: m}
+	case 11: // vale-4
+		jugada = GritarVale4{Manojo: m}
+	case 12: // quiero
+		jugada = ResponderQuiero{Manojo: m}
+	case 13: // no-Quiero
+		jugada = ResponderNoQuiero{Manojo: m}
+	case 14: // mazo
+		jugada = IrseAlMazo{Manojo: m}
+	}
+
+	return jugada
 }
