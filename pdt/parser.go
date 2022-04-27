@@ -40,41 +40,41 @@ func checkeoSemantico(p *Partida, cmd string) (IJugada, error) {
 		switch jugadaStr {
 		// toques
 		case "envido":
-			jugada = TocarEnvido{Manojo: m}
+			jugada = TocarEnvido{JID: m.Jugador.ID}
 		case "real-envido":
-			jugada = TocarRealEnvido{Manojo: m}
+			jugada = TocarRealEnvido{JID: m.Jugador.ID}
 		case "falta-envido":
-			jugada = TocarFaltaEnvido{Manojo: m}
+			jugada = TocarFaltaEnvido{JID: m.Jugador.ID}
 
 		// cantos
 		case "flor":
-			jugada = CantarFlor{Manojo: m}
+			jugada = CantarFlor{JID: m.Jugador.ID}
 		case "contra-flor":
-			jugada = CantarContraFlor{Manojo: m}
+			jugada = CantarContraFlor{JID: m.Jugador.ID}
 		case "contra-flor-al-resto":
-			jugada = CantarContraFlorAlResto{Manojo: m}
+			jugada = CantarContraFlorAlResto{JID: m.Jugador.ID}
 
 		// gritos
 		case "truco":
-			jugada = GritarTruco{Manojo: m}
+			jugada = GritarTruco{JID: m.Jugador.ID}
 		case "re-truco":
-			jugada = GritarReTruco{Manojo: m}
+			jugada = GritarReTruco{JID: m.Jugador.ID}
 		case "vale-4":
-			jugada = GritarVale4{Manojo: m}
+			jugada = GritarVale4{JID: m.Jugador.ID}
 
 		// respuestas
 		case "quiero":
-			jugada = ResponderQuiero{Manojo: m}
+			jugada = ResponderQuiero{JID: m.Jugador.ID}
 		case "no-quiero":
-			jugada = ResponderNoQuiero{Manojo: m}
+			jugada = ResponderNoQuiero{JID: m.Jugador.ID}
 		// case "tiene":
-		// 	jugada = responderNoQuiero{Manojo: m}
+		// 	jugada = responderNoQuiero{JID: m.Jugador.ID}
 
 		// acciones
 		case "mazo":
-			jugada = IrseAlMazo{Manojo: m}
+			jugada = IrseAlMazo{JID: m.Jugador.ID}
 		case "tirar":
-			jugada = IrseAlMazo{Manojo: m}
+			jugada = IrseAlMazo{JID: m.Jugador.ID}
 		default:
 			return nil, fmt.Errorf("no existe esa jugada")
 		}
@@ -103,8 +103,8 @@ func checkeoSemantico(p *Partida, cmd string) (IJugada, error) {
 		}
 
 		jugada = TirarCarta{
-			Manojo: m,
-			Carta:  *c,
+			JID:   m.Jugador.ID,
+			Carta: *c,
 		}
 
 	}

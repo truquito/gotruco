@@ -8,7 +8,7 @@ func TestAcciones(t *testing.T) {
 	p, _ := NuevaPartida(A20, []string{"Alvaro"}, []string{"Roro"})
 
 	alvaro := p.Ronda.GetElTurno()
-	a := TocarEnvido{Manojo: alvaro}
+	a := TocarEnvido{JID: alvaro.Jugador.ID}
 	// a := IrseAlMazo{Manojo: alvaro}
 	a.Hacer(p)
 

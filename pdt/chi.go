@@ -65,7 +65,7 @@ func Chi(p *Partida, m *Manojo) []IJugada {
 
 	// tirada de cartas
 	for _, c := range m.Cartas {
-		j := TirarCarta{Manojo: m, Carta: *c}
+		j := TirarCarta{JID: m.Jugador.ID, Carta: *c}
 		_, ok := j.Ok(p)
 		if ok {
 			chi = append(chi, j)
@@ -77,25 +77,25 @@ func Chi(p *Partida, m *Manojo) []IJugada {
 		// TirarCarta{},
 
 		// envite
-		TocarEnvido{Manojo: m},
-		TocarRealEnvido{Manojo: m},
-		TocarFaltaEnvido{Manojo: m},
-		CantarFlor{Manojo: m},
-		CantarContraFlor{Manojo: m},
-		CantarContraFlorAlResto{Manojo: m},
-		// { CantarConFlorMeAchico{Manojo: m}, enco.new },
+		TocarEnvido{JID: m.Jugador.ID},
+		TocarRealEnvido{JID: m.Jugador.ID},
+		TocarFaltaEnvido{JID: m.Jugador.ID},
+		CantarFlor{JID: m.Jugador.ID},
+		CantarContraFlor{JID: m.Jugador.ID},
+		CantarContraFlorAlResto{JID: m.Jugador.ID},
+		// { CantarConFlorMeAchico{JID: m.Jugador.ID}, enco.new },
 
 		// truco
-		GritarTruco{Manojo: m},
-		GritarReTruco{Manojo: m},
-		GritarVale4{Manojo: m},
+		GritarTruco{JID: m.Jugador.ID},
+		GritarReTruco{JID: m.Jugador.ID},
+		GritarVale4{JID: m.Jugador.ID},
 
 		// respuestas
-		ResponderQuiero{Manojo: m},
-		ResponderNoQuiero{Manojo: m},
+		ResponderQuiero{JID: m.Jugador.ID},
+		ResponderNoQuiero{JID: m.Jugador.ID},
 
 		// mazo
-		IrseAlMazo{Manojo: m},
+		IrseAlMazo{JID: m.Jugador.ID},
 	}
 
 	for _, j := range js {
@@ -228,7 +228,7 @@ func GetA(p *Partida, m *Manojo) A {
 
 	// tirada de cartas
 	for i, c := range m.Cartas {
-		j := TirarCarta{Manojo: m, Carta: *c}
+		j := TirarCarta{JID: m.Jugador.ID, Carta: *c}
 		_, ok := j.Ok(p)
 		A[i] = ok
 		// msg := enco.Msg(enco.TirarCarta, m.Jugador.ID, int(j.Carta.Palo), j.Carta.Valor)
@@ -240,25 +240,25 @@ func GetA(p *Partida, m *Manojo) A {
 		// TirarCarta{},
 
 		// envite
-		TocarEnvido{Manojo: m},
-		TocarRealEnvido{Manojo: m},
-		TocarFaltaEnvido{Manojo: m},
-		CantarFlor{Manojo: m},
-		CantarContraFlor{Manojo: m},
-		CantarContraFlorAlResto{Manojo: m},
-		// { CantarConFlorMeAchico{Manojo: m}, enco.new },
+		TocarEnvido{JID: m.Jugador.ID},
+		TocarRealEnvido{JID: m.Jugador.ID},
+		TocarFaltaEnvido{JID: m.Jugador.ID},
+		CantarFlor{JID: m.Jugador.ID},
+		CantarContraFlor{JID: m.Jugador.ID},
+		CantarContraFlorAlResto{JID: m.Jugador.ID},
+		// { CantarConFlorMeAchico{JID: m.Jugador.ID}, enco.new },
 
 		// truco
-		GritarTruco{Manojo: m},
-		GritarReTruco{Manojo: m},
-		GritarVale4{Manojo: m},
+		GritarTruco{JID: m.Jugador.ID},
+		GritarReTruco{JID: m.Jugador.ID},
+		GritarVale4{JID: m.Jugador.ID},
 
 		// respuestas
-		ResponderQuiero{Manojo: m},
-		ResponderNoQuiero{Manojo: m},
+		ResponderQuiero{JID: m.Jugador.ID},
+		ResponderNoQuiero{JID: m.Jugador.ID},
 
 		// mazo
-		IrseAlMazo{Manojo: m},
+		IrseAlMazo{JID: m.Jugador.ID},
 	}
 
 	for i, j := range js {
@@ -283,36 +283,36 @@ func ToJugada(p *Partida, mix, aix int) IJugada {
 	m := &p.Ronda.Manojos[mix]
 
 	if esCarta := aix < 3; esCarta {
-		return TirarCarta{Manojo: m, Carta: *m.Cartas[aix]}
+		return TirarCarta{JID: m.Jugador.ID, Carta: *m.Cartas[aix]}
 	}
 
 	var jugada IJugada
 
 	switch aix {
 	case 3: // envido
-		jugada = TocarEnvido{Manojo: m}
+		jugada = TocarEnvido{JID: m.Jugador.ID}
 	case 4: // real-envido
-		jugada = TocarRealEnvido{Manojo: m}
+		jugada = TocarRealEnvido{JID: m.Jugador.ID}
 	case 5: // falta-envido
-		jugada = TocarFaltaEnvido{Manojo: m}
+		jugada = TocarFaltaEnvido{JID: m.Jugador.ID}
 	case 6: // flor
-		jugada = CantarFlor{Manojo: m}
+		jugada = CantarFlor{JID: m.Jugador.ID}
 	case 7: // contra-flor
-		jugada = CantarContraFlor{Manojo: m}
+		jugada = CantarContraFlor{JID: m.Jugador.ID}
 	case 8: // contra-flor-al-resto
-		jugada = CantarContraFlorAlResto{Manojo: m}
+		jugada = CantarContraFlorAlResto{JID: m.Jugador.ID}
 	case 9: // truco
-		jugada = GritarTruco{Manojo: m}
+		jugada = GritarTruco{JID: m.Jugador.ID}
 	case 10: // re-truco
-		jugada = GritarReTruco{Manojo: m}
+		jugada = GritarReTruco{JID: m.Jugador.ID}
 	case 11: // vale-4
-		jugada = GritarVale4{Manojo: m}
+		jugada = GritarVale4{JID: m.Jugador.ID}
 	case 12: // quiero
-		jugada = ResponderQuiero{Manojo: m}
+		jugada = ResponderQuiero{JID: m.Jugador.ID}
 	case 13: // no-Quiero
-		jugada = ResponderNoQuiero{Manojo: m}
+		jugada = ResponderNoQuiero{JID: m.Jugador.ID}
 	case 14: // mazo
-		jugada = IrseAlMazo{Manojo: m}
+		jugada = IrseAlMazo{JID: m.Jugador.ID}
 	}
 
 	return jugada
