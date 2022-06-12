@@ -1047,3 +1047,59 @@ func TestFixEnvidoHabilitado(t *testing.T) {
 	})
 
 }
+
+func TestShiftPartida(t *testing.T) {
+	// dada una partida, la shiftea
+	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":["Alvaro"]},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":1},{"palo":"Oro","valor":4},{"palo":"Oro","valor":12}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":10},{"palo":"Copa","valor":1},{"palo":"Oro","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":7},{"palo":"Basto","valor":7},{"palo":"Copa","valor":6}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":7},{"palo":"Basto","valor":3},{"palo":"Oro","valor":6}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","equipo":"Rojo"}}],"mixs":{"Adolfo":2,"Alvaro":0,"Renzo":3,"Roro":1},"muestra":{"palo":"Espada","valor":1},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
+	p, _ := Parse(partidaJSON)
+
+	t.Log(Renderizar(p))
+
+	// data, _ := p.MarshalJSON()
+	t.Log("------------------------shift:---------------------------------")
+
+	// la original
+	data_manojos, _ := json.Marshal(p.Ronda.Manojos)
+
+	var manojos []Manojo
+	json.Unmarshal(data_manojos, &manojos)
+	// shift
+	manojos = append(manojos[1:], manojos[0])
+	p.Ronda.SetManojos(manojos)
+
+	t.Log(Renderizar(p))
+
+	t.Log("===============================================================")
+}
+
+func TestFipPartida(t *testing.T) {
+	// dada una partida aleatoria
+	// computa un ida-vuelta
+	p, _ := NuevaPartida(A20, []string{"Alice", "Ana"}, []string{"Bob", "Ben"})
+
+	t.Log(Renderizar(p))
+
+	// data, _ := p.MarshalJSON()
+	t.Log("------------------------shift:---------------------------------")
+
+	// la original
+	data_muestra, _ := json.Marshal(p.Ronda.Muestra)
+	data_manojos, _ := json.Marshal(p.Ronda.Manojos)
+
+	// creo una partida nueva ahora con el orden invertido
+	p, _ = NuevaPartida(A20, []string{"Bob", "Ben"}, []string{"Alice", "Ana"})
+
+	// le seteo los manojos de antes
+	var (
+		manojos []Manojo
+		muestra Carta
+	)
+	json.Unmarshal(data_muestra, &muestra)
+	json.Unmarshal(data_manojos, &manojos)
+	p.Ronda.SetManojos(manojos)
+	p.Ronda.SetMuestra(muestra)
+
+	t.Log(Renderizar(p))
+
+	t.Log("===============================================================")
+}

@@ -91,6 +91,43 @@ func (pr impresora) dibujarEstadisticas(p *Partida) {
 	puntuacion := strconv.Itoa((int(p.Puntuacion)))
 	pr.canvas.DrawAt(pr.otrasAreas["Puntuacion"].From, puntuacion)
 
+	// ------------------
+
+	// Envite
+	envite := p.Ronda.Envite.Estado.String()
+	envite = chop(envite, 6)
+	pr.canvas.DrawAt(pr.otrasAreas["Envite"].From, envite)
+
+	// Envite Autor
+	envite_por := p.Ronda.Envite.CantadoPor
+	envite_por = chop(envite_por, 6)
+	pr.canvas.DrawAt(pr.otrasAreas["EnvitePor"].From, envite_por)
+
+	// Truco
+	truco := p.Ronda.Truco.Estado.String()
+	truco = chop(truco, 8)
+	pr.canvas.DrawAt(pr.otrasAreas["Truco"].From, truco)
+
+	// Truco Autor
+	truco_por := p.Ronda.Truco.CantadoPor
+	truco_por = chop(truco_por, 9)
+	pr.canvas.DrawAt(pr.otrasAreas["TrucoPor"].From, truco_por)
+
+	// ------------------
+
+	// nombres
+	var nombreR, nombreA string
+	if p.Ronda.Manojos[0].Jugador.Equipo == Rojo {
+		nombreR = p.Ronda.Manojos[0].Jugador.ID
+		nombreA = p.Ronda.Manojos[1].Jugador.ID
+	} else {
+		nombreR = p.Ronda.Manojos[1].Jugador.ID
+		nombreA = p.Ronda.Manojos[0].Jugador.ID
+	}
+	nombreR, nombreA = chop(nombreR, 5), chop(nombreA, 5)
+	pr.canvas.DrawAt(pr.otrasAreas["nombreRojo"].From, nombreR)
+	pr.canvas.DrawAt(pr.otrasAreas["nombreAzul"].From, nombreA)
+
 	// ROJO
 	ptjRojo := strconv.Itoa((int(p.Puntajes[Rojo])))
 	pr.canvas.DrawAt(pr.otrasAreas["puntajeRojo"].From, ptjRojo)
@@ -584,32 +621,59 @@ func nuevaImpresora6() impresora6 {
 					To:   canvas.Point{X: 45, Y: 15},
 				},
 				"estadisticas": {
-					From: canvas.Point{X: 62, Y: 5},
-					To:   canvas.Point{X: 79, Y: 18},
+					From: canvas.Point{X: 62, Y: 2},
+					To:   canvas.Point{X: 79, Y: 20},
 				},
+				// -----------------------
 				"#Mano": {
-					From: canvas.Point{X: 71, Y: 6},
-					To:   canvas.Point{X: 77, Y: 6},
+					From: canvas.Point{X: 71, Y: 3},
+					To:   canvas.Point{X: 77, Y: 3},
 				},
 				"Mano": {
-					From: canvas.Point{X: 70, Y: 8},
-					To:   canvas.Point{X: 77, Y: 8},
+					From: canvas.Point{X: 70, Y: 5},
+					To:   canvas.Point{X: 77, Y: 5},
 				},
 				"Turno": {
-					From: canvas.Point{X: 71, Y: 10},
-					To:   canvas.Point{X: 77, Y: 10},
+					From: canvas.Point{X: 71, Y: 7},
+					To:   canvas.Point{X: 77, Y: 7},
 				},
 				"Puntuacion": {
-					From: canvas.Point{X: 76, Y: 12},
+					From: canvas.Point{X: 76, Y: 9},
+					To:   canvas.Point{X: 77, Y: 9},
+				},
+				// -----------------------
+				"Envite": {
+					From: canvas.Point{X: 72, Y: 12},
 					To:   canvas.Point{X: 77, Y: 12},
 				},
-				"puntajeRojo": {
-					From: canvas.Point{X: 66, Y: 17},
-					To:   canvas.Point{X: 67, Y: 17},
+				"EnvitePor": {
+					From: canvas.Point{X: 69, Y: 13},
+					To:   canvas.Point{X: 77, Y: 13},
+				},
+				"Truco": {
+					From: canvas.Point{X: 71, Y: 15},
+					To:   canvas.Point{X: 77, Y: 15},
+				},
+				"TrucoPor": {
+					From: canvas.Point{X: 69, Y: 16},
+					To:   canvas.Point{X: 77, Y: 16},
+				},
+				// -----------------------
+				"nombreAzul": {
+					From: canvas.Point{X: 64, Y: 19},
+					To:   canvas.Point{X: 77, Y: 19}, // tam 5
+				},
+				"nombreRojo": {
+					From: canvas.Point{X: 73, Y: 19},
+					To:   canvas.Point{X: 77, Y: 19},
 				},
 				"puntajeAzul": {
-					From: canvas.Point{X: 73, Y: 17},
-					To:   canvas.Point{X: 74, Y: 17},
+					From: canvas.Point{X: 66, Y: 21},
+					To:   canvas.Point{X: 67, Y: 21},
+				},
+				"puntajeRojo": {
+					From: canvas.Point{X: 75, Y: 21},
+					To:   canvas.Point{X: 76, Y: 21},
 				},
 			},
 		},

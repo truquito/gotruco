@@ -32,8 +32,8 @@ func main() {
 
 	logfile := newLogFile("/home/jp/Workspace/_tmp/truco_logs/")
 
-	// p, out, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
-	p, out, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	p, out, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	// p, out, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
 	pJSON, _ := p.MarshalJSON()
 	logfile.Write(string(pJSON))
 
