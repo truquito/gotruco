@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 
 	"github.com/filevich/truco/enco"
+	"github.com/filevich/truco/util"
 )
 
 // EstadoTruco : enum
@@ -313,17 +314,39 @@ func (r *Ronda) SetNextTurno() {
 
 // SetNextTurnoPosMano ..
 func (r *Ronda) SetNextTurnoPosMano() {
+	// checkeo: si justo el nuevo turno, resulta que se fue al mazo
+	// entonces elijo el primero que encuentre que sea de su mismo equipo
+	// que no se haya ido al mazo:
+	safety_check := func() {
+		candidato := r.Manojos[r.Turno]
+		if candidato.SeFueAlMazo {
+			n := len(r.Manojos)
+			start_from := int(r.ElMano)
+			for i := 0; i < n; i++ {
+				ix := util.Mod(start_from+i, n)
+				m := &r.Manojos[ix]
+				mismoEquipo := m.Jugador.Equipo == candidato.Jugador.Equipo
+				if mismoEquipo && !m.SeFueAlMazo {
+					r.Turno = JIX(r.JIX(m.Jugador.ID))
+					break
+				}
+			}
+		}
+	}
+
 	// si es la Primera mano que se juega
 	// entonces es el turno del mano
 	if r.ManoEnJuego == Primera {
 		r.Turno = r.ElMano
 		// si no, es turno del ganador de
 		// la mano anterior
+		safety_check()
 	} else {
 		// solo si la mano anterior no fue parda
 		// si fue parda busco la que empardo mas cercano al mano
 		if r.GetManoAnterior().Resultado != Empardada {
 			r.Turno = JIX(r.JIX(r.Manojo(r.GetManoAnterior().Ganador).Jugador.ID))
+			safety_check()
 		} else {
 			// 1. obtengo la carta de maximo valor de la mano anterior
 			// 2. busco a partir de la mano quien es el primero en tener
@@ -342,6 +365,7 @@ func (r *Ronda) SetNextTurnoPosMano() {
 				if poder == max {
 					if !r.Manojo(tirada.Jugador).SeFueAlMazo {
 						r.Turno = JIX(r.JIX(r.Manojo(tirada.Jugador).Jugador.ID))
+						safety_check()
 						return
 					}
 				}
@@ -350,8 +374,10 @@ func (r *Ronda) SetNextTurnoPosMano() {
 			// entonces agarro al primero a partir del mano que aun
 			// no se haya ido
 			r.Turno = JIX(r.JIX(r.GetSigHabilitado(*r.GetElMano()).Jugador.ID))
+			safety_check()
 		}
 	}
+
 }
 
 // SetManojos .

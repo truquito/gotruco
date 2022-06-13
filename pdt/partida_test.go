@@ -1103,3 +1103,32 @@ func TestFipPartida(t *testing.T) {
 
 	t.Log("===============================================================")
 }
+
+func TestFixTurnoDeAlguienQueSeFueAlMazo(t *testing.T) {
+	// el json del contenido del paquete "cartaTirada"
+	// debe decir palo "copa" y no "6"
+
+	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":1},{"palo":"Oro","valor":5},{"palo":"Basto","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alice","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":4},{"palo":"Oro","valor":7},{"palo":"Espada","valor":5}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Bob","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":1},{"palo":"Oro","valor":6},{"palo":"Oro","valor":10}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Ariana","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":3},{"palo":"Copa","valor":6},{"palo":"Copa","valor":11}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Ben","equipo":"Rojo"}}],"mixs":{"Alice":0,"Ariana":2,"Ben":3,"Bob":1},"muestra":{"palo":"Basto","valor":12},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
+	p, err := Parse(partidaJSON)
+	if err != nil {
+		t.Error(err)
+	}
+
+	_, _ = p.Cmd("Alice 5 Oro")
+	_, _ = p.Cmd("Bob mazo")
+	_, _ = p.Cmd("Ariana 1 Basto")
+	_, _ = p.Cmd("Ben envido")
+	_, _ = p.Cmd("Ariana envido")
+	_, _ = p.Cmd("Ben real-envido")
+	_, _ = p.Cmd("Ariana mazo")
+	_, _ = p.Cmd("Alice falta-envido")
+	_, _ = p.Cmd("Ben no-quiero")
+	_, _ = p.Cmd("Ben 3 Espada")
+
+	t.Log(Renderizar(p))
+
+	if ok := p.Ronda.GetElTurno().Jugador.ID == "Alice"; !ok {
+		t.Error("el turno no deberia ser ariana", p.Ronda.GetElTurno().Jugador.ID)
+	}
+
+}

@@ -14,3 +14,11 @@ func Assert(should bool, callback func()) {
 		callback()
 	}
 }
+
+func Mod(a, b int) int {
+	c := a % b
+	if c < 0 {
+		c += b
+	}
+	return c
+}
