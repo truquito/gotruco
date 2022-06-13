@@ -730,9 +730,17 @@ func (jugada CantarFlor) Ok(p *Partida) ([]*enco.Packet, bool) {
 	// manojo dice que puede cantar flor;
 	// es esto verdad?
 	seFueAlMazo := p.Manojo(jugada.JID).SeFueAlMazo
-	florHabilitada := (p.Ronda.Envite.Estado >= NOCANTADOAUN && p.Ronda.Envite.Estado <= FLOR) && p.Ronda.ManoEnJuego == Primera
+	florHabilitada := (p.Ronda.Envite.Estado >= NOCANTADOAUN) && p.Ronda.ManoEnJuego == Primera
 	tieneFlor, _ := p.Manojo(jugada.JID).TieneFlor(p.Ronda.Muestra)
 	noCantoFlorAun := p.Ronda.Envite.noCantoFlorAun(p.Manojo(jugada.JID).Jugador.ID)
+
+	// caso especial:
+	// tienen flor: alice bob ben.
+	// alice:flor -> bob:contra-flor -> alice:mazo => ben ??? no canto su flor
+	// entonces, puede cantar flor, (SIN disminuir su estado) si tiene flor Y NO CANTO AUN
+	// por eso le elimino la clausura:
+	// `p.Ronda.Envite.Estado <= FLOR` en la variable `florHabilitada`
+
 	ok := !seFueAlMazo && florHabilitada && tieneFlor && noCantoFlorAun
 
 	if !ok {
@@ -835,37 +843,37 @@ func evalFlor(p *Partida) []*enco.Packet {
 	equipoGanador := manojoConLaFlorMasAlta.Jugador.Equipo
 
 	// que estaba en juego?
-	switch p.Ronda.Envite.Estado {
-	case FLOR:
-		// ahora se quien es el ganador; necesito saber cuantos puntos
-		// se le va a sumar a ese equipo:
-		// los acumulados del envite hasta ahora
-		puntosASumar := p.Ronda.Envite.Puntaje
-		p.SumarPuntos(equipoGanador, puntosASumar)
-		habiaSolo1JugadorConFlor := len(p.Ronda.Envite.JugadoresConFlor) == 1
-		if habiaSolo1JugadorConFlor {
+	// switch p.Ronda.Envite.Estado {
+	// case FLOR:
+	// ahora se quien es el ganador; necesito saber cuantos puntos
+	// se le va a sumar a ese equipo:
+	// los acumulados del envite hasta ahora
+	puntosASumar := p.Ronda.Envite.Puntaje
+	p.SumarPuntos(equipoGanador, puntosASumar)
+	habiaSolo1JugadorConFlor := len(p.Ronda.Envite.JugadoresConFlor) == 1
+	if habiaSolo1JugadorConFlor {
 
-			pkts = append(pkts, enco.Pkt(
-				enco.Dest("ALL"),
-				enco.Msg(enco.SumaPts,
-					manojoConLaFlorMasAlta.Jugador.ID,
-					enco.LaUnicaFlor, puntosASumar),
-			))
+		pkts = append(pkts, enco.Pkt(
+			enco.Dest("ALL"),
+			enco.Msg(enco.SumaPts,
+				manojoConLaFlorMasAlta.Jugador.ID,
+				enco.LaUnicaFlor, puntosASumar),
+		))
 
-		} else {
+	} else {
 
-			pkts = append(pkts, enco.Pkt(
-				enco.Dest("ALL"),
-				enco.Msg(enco.SumaPts,
-					manojoConLaFlorMasAlta.Jugador.ID,
-					enco.LaFlorMasAlta,
-					puntosASumar),
-			))
+		pkts = append(pkts, enco.Pkt(
+			enco.Dest("ALL"),
+			enco.Msg(enco.SumaPts,
+				manojoConLaFlorMasAlta.Jugador.ID,
+				enco.LaFlorMasAlta,
+				puntosASumar),
+		))
 
-		}
-	case CONTRAFLOR:
-	case CONTRAFLORALRESTO:
 	}
+	// case CONTRAFLOR:
+	// case CONTRAFLORALRESTO:
+	// }
 
 	p.Ronda.Envite.Estado = DESHABILITADO
 	p.Ronda.Envite.SinCantar = []string{}
@@ -946,7 +954,7 @@ func (jugada CantarContraFlorAlResto) ID() IJUGADA_ID {
 }
 
 func (jugada CantarContraFlorAlResto) String() string {
-	return jugada.JID + " contra-floar-al-resto"
+	return jugada.JID + " contra-flor-al-resto"
 }
 
 func (jugada CantarContraFlorAlResto) Ok(p *Partida) ([]*enco.Packet, bool) {

@@ -1132,3 +1132,32 @@ func TestFixTurnoDeAlguienQueSeFueAlMazo(t *testing.T) {
 	}
 
 }
+
+func TestFixFlorColgada(t *testing.T) {
+	// ben queda sin cantar la flor...
+	// no puede decir nada, wtf... ?
+	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":["Alice","Bob","Ben"]},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":3},{"palo":"Basto","valor":11},{"palo":"Basto","valor":10}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alice","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":5}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Bob","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":1},{"palo":"Oro","valor":2},{"palo":"Copa","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Ariana","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":11},{"palo":"Copa","valor":10},{"palo":"Espada","valor":6}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Ben","equipo":"Rojo"}}],"mixs":{"Alice":0,"Ariana":2,"Ben":3,"Bob":1},"muestra":{"palo":"Copa","valor":4},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
+	p, err := Parse(partidaJSON)
+	if err != nil {
+		t.Error(err)
+	}
+
+	t.Log(Renderizar(p))
+
+	_, _ = p.Cmd("Alice flor")
+	_, _ = p.Cmd("Bob contra-flor-al-resto")
+	_, _ = p.Cmd("Alice mazo")
+
+	t.Log(Renderizar(p))
+
+	pkts, err := p.Cmd("Ben flor")
+	if ok := err == nil && enco.Contains(pkts, enco.SumaPts); !ok {
+		t.Error("Debio de haber sumado los pts de las flores")
+	}
+
+	t.Log(Renderizar(p))
+
+	if ok := p.Ronda.Envite.Estado == DESHABILITADO; !ok {
+		t.Error("ya cantaron todos; el envido deberia quedar deshabilitado")
+	}
+}

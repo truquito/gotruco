@@ -188,13 +188,16 @@ func (p *Partida) TocarFaltaEnvido(m *Manojo) {
 
 // CantarFlor ..
 func (p *Partida) CantarFlor(m *Manojo) {
-	yaEstabamosEnFlor := p.Ronda.Envite.Estado == FLOR
-	p.Ronda.Envite.Estado = FLOR
+	yaEstabamosEnFlor := p.Ronda.Envite.Estado >= FLOR
 
 	if yaEstabamosEnFlor {
 
 		p.Ronda.Envite.Puntaje += 3
-		p.Ronda.Envite.CantadoPor = m.Jugador.ID
+		// si estabamos en algo mas grande que `FLOR` -> no lo aumenta
+		if p.Ronda.Envite.Estado == FLOR {
+			p.Ronda.Envite.CantadoPor = m.Jugador.ID
+			p.Ronda.Envite.Estado = FLOR
+		}
 
 	} else {
 
