@@ -739,6 +739,19 @@ func (p *Partida) TirarCarta(manojo *Manojo, idx int) {
 	p.Ronda.GetManoActual().agregarTirada(tirada)
 }
 
+// dada una partida, intercambia los puestos 2 a 2
+func (p *Partida) Swap() {
+	n := len(p.Ronda.Manojos)
+	for i := 0; i < n/2; i++ {
+		offset := i * 2
+		aux := p.Ronda.Manojos[offset].Jugador
+		p.Ronda.Manojos[offset].Jugador = p.Ronda.Manojos[offset+1].Jugador
+		p.Ronda.Manojos[offset+1].Jugador = aux
+	}
+	// tengo que resetear los MIXS
+	p.Ronda.indexarManojos()
+}
+
 // NuevaPartida crea una nueva Partida
 func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Partida, error) {
 

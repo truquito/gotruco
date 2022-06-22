@@ -763,7 +763,8 @@ func (r *Ronda) indexarManojos() {
 	}
 }
 
-func (r *Ronda) nuevaRonda(elMano JIX) {
+// resetea una ronda
+func (r *Ronda) Reset(elMano JIX) {
 	cantJugadores := len(r.Manojos)
 	cantJugadoresPorEquipo := cantJugadores / 2
 
@@ -781,6 +782,10 @@ func (r *Ronda) nuevaRonda(elMano JIX) {
 		// r.Manojos[i].Cartas
 		r.Manojos[i].Tiradas = [cantCartasManojo]bool{false, false, false}
 	}
+}
+
+func (r *Ronda) nuevaRonda(elMano JIX) {
+	r.Reset(elMano)
 
 	// reparto 3 cartas al azar a cada jugador
 	// y ademas una muestra, tambien al azar.
