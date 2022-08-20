@@ -312,9 +312,13 @@ func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
 	// caso particular de parda:
 	// cuando nadie llego a tirar ninguna carta y se fueron todos los de 1 equipo
 	// entonces la mano es ganada por el equipo contrario al ultimo que se fue
-	noSeLlegoATirarNingunaCarta := len(p.Ronda.GetManoActual().CartasTiradas) == 0
 
-	if noSeLlegoATirarNingunaCarta {
+	// FIX: o simplemente cuando un equipo entero quedo con 0 jugadores "en pie"
+	noSeLlegoATirarNingunaCarta := len(p.Ronda.GetManoActual().CartasTiradas) == 0
+	seFueronTodos := p.Ronda.CantJugadoresEnJuego[Rojo] == 0 ||
+		p.Ronda.CantJugadoresEnJuego[Azul] == 0
+
+	if noSeLlegoATirarNingunaCarta || seFueronTodos {
 
 		var equipoGanador Equipo
 		quedanJugadoresDelRojo := p.Ronda.CantJugadoresEnJuego[Rojo] > 0

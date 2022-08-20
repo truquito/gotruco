@@ -1161,3 +1161,77 @@ func TestFixFlorColgada(t *testing.T) {
 		t.Error("ya cantaron todos; el envido deberia quedar deshabilitado")
 	}
 }
+
+func TestFixMazoPoints(t *testing.T) {
+	// el problema: aveces dice "me voy al mazo" y le suma los puntos al equipo
+	// contrario
+	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":5},{"palo":"Copa","valor":10},{"palo":"Oro","valor":11}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"ESL-0","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":11},{"palo":"Basto","valor":3},{"palo":"Espada","valor":6}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"jp","equipo":"Rojo"}}],"mixs":{"ESL-0":0,"jp":1},"muestra":{"palo":"Espada","valor":10},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
+	p, err := Parse(partidaJSON)
+	if err != nil {
+		t.Error(err)
+	}
+
+	t.Log("estado inicial")
+	t.Log(Renderizar(p))
+
+	p.Cmd("ESL-0 real-envido")
+	p.Cmd("jp no-quiero")
+
+	// muestra 10 espada
+
+	// 1era mano gana ESL
+	p.Cmd("ESL-0 11 Oro")
+	p.Cmd("jp 11 copa")
+
+	// 2da mano queda sin definirse PERO NOTAR QUE es ESL-0/Azul el que tira la carta
+	p.Cmd("ESL-0 10 Copa")
+	p.Cmd("jp truco")
+
+	t.Log("el momento justo antes de que ESL se vaya al mazo")
+	t.Log(Renderizar(p))
+
+	p.Cmd("ESL-0 mazo")
+
+	t.Log("estado final")
+	t.Log(Renderizar(p))
+
+	equipo_jp := p.Manojo("jp").Jugador.Equipo
+	if ok := p.Puntajes[equipo_jp] > 0; !ok {
+		t.Error("los puntos los deberia ganar jp")
+	}
+}
+
+func TestFixMazoPoints_2(t *testing.T) {
+	// igual que el test anterior pero otro set
+
+	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":17,"Rojo":11},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":10},{"palo":"Copa","valor":6},{"palo":"Espada","valor":12}],"tiradas":[false,false,false],"ultimaTirada":1,"jugador":{"id":"ESL-0","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":12},{"palo":"Basto","valor":11},{"palo":"Espada","valor":10}],"tiradas":[false,false,false],"ultimaTirada":2,"jugador":{"id":"j","equipo":"Rojo"}}],"mixs":{"ESL-0":0,"j":1},"muestra":{"palo":"Oro","valor":10},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
+	p, err := Parse(partidaJSON)
+	if err != nil {
+		t.Error(err)
+	}
+
+	t.Log("estado inicial")
+	t.Log(Renderizar(p))
+
+	p.Cmd("ESL-0 real-envido")
+	p.Cmd("j quiero")
+
+	p.Cmd("ESL-0 12 Espada")
+	p.Cmd("j 10 espada")
+
+	p.Cmd("ESL-0 10 Basto")
+	p.Cmd("j truco")
+
+	t.Log("el momento justo antes de que ESL se vaya al mazo")
+	t.Log(Renderizar(p))
+
+	p.Cmd("ESL-0 mazo")
+
+	t.Log("estado final")
+	t.Log(Renderizar(p))
+
+	equipo_jp := p.Manojo("j").Jugador.Equipo
+	if ok := p.Puntajes[equipo_jp] > 0; !ok {
+		t.Error("los puntos los deberia ganar jp")
+	}
+}
