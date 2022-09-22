@@ -177,7 +177,7 @@ func (c *Carta) EsMata() bool {
 	if (c.Palo == Espada || c.Palo == Basto) && (c.Valor == 1) {
 		return true
 
-	} else if (c.Palo == Espada || c.Palo == Basto) && (c.Valor == 7) {
+	} else if (c.Palo == Espada || c.Palo == Oro) && (c.Valor == 7) {
 		return true
 	}
 
