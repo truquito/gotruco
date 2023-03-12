@@ -33,11 +33,14 @@ func main() {
 
 	logfile := newLogFile("/home/jp/Workspace/_tmp/truco_logs/")
 
-	// p, out, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
-	// p, out, _ := truco.NuevaPartida(20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
-	p, out, _ := truco.NuevaPartida(20, []string{"Alice", "Ariana"}, []string{"Bob", "Ben"})
+	n := 2 // <-- num. of players
+	azules := []string{"Alice", "Ariana", "Annie"}
+	rojos := []string{"Bob", "Ben", "Bill"}
+	p, out, _ := truco.NuevaPartida(20, azules[:n>>1], rojos[:n>>1])
+
 	pJSON, _ := p.MarshalJSON()
 	logfile.Write(string(pJSON))
+	fmt.Println(string(pJSON))
 
 	fmt.Println(p)
 	enco.Consume(out, func(pkt *enco.Packet) {
