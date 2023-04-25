@@ -33,11 +33,9 @@ func Random_action_chis(chis [][]IJugada) (rmix, raix int) {
 	// tomo en cuenta solo aquellos chi's que tengan al menos una accion habilitada
 	// lo almaceno como un slice de mix's
 	habilitados := make([]int, 0, len(chis))
-	i := 0
 	for mix, chi := range chis {
 		if len(chi) > 0 {
 			habilitados = append(habilitados, mix)
-			i++
 		}
 	}
 
