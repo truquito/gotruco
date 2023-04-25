@@ -73,8 +73,6 @@ func checkeoSemantico(p *Partida, cmd string) (IJugada, error) {
 		// acciones
 		case "mazo":
 			jugada = IrseAlMazo{JID: m.Jugador.ID}
-		case "tirar":
-			jugada = IrseAlMazo{JID: m.Jugador.ID}
 		default:
 			return nil, fmt.Errorf("no existe esa jugada")
 		}

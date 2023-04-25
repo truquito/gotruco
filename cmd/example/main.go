@@ -31,7 +31,9 @@ var ioCh chan string = make(chan string, 1)
 
 func main() {
 
-	logfile := newLogFile("/home/jp/Workspace/_tmp/truco_logs/")
+	logfile_path := "/home/jp/Workspace/_tmp/truco_logs/"
+	os.MkdirAll(logfile_path, os.ModePerm)
+	logfile := newLogFile(logfile_path)
 
 	n := 2 // <-- num. of players
 	azules := []string{"Alice", "Ariana", "Annie"}
@@ -40,7 +42,6 @@ func main() {
 
 	pJSON, _ := p.MarshalJSON()
 	logfile.Write(string(pJSON))
-	fmt.Println(string(pJSON))
 
 	fmt.Println(p)
 	enco.Consume(out, func(pkt *enco.Packet) {

@@ -97,6 +97,7 @@ func (jugada TirarCarta) Ok(p *Partida) ([]*enco.Packet, bool) {
 	}
 
 	// primero que nada: tiene esa carta?
+	// pide por un error, pero p.Manojo NO retorna error alguno !
 	idx, err := p.Manojo(jugada.JID).GetCartaIdx(jugada.Carta)
 	if err != nil {
 
