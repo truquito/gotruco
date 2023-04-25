@@ -374,9 +374,10 @@ func getCartasRandom(n int) []int {
 	p := rand.Perm(maxCartaID)
 	randomSample := make([]int, n)
 
-	for i, r := range p[:n] {
-		randomSample[i] = r
-	}
+	copy(randomSample, p[:n])
+	// for i, r := range p[:n] {
+	// 	randomSample[i] = r
+	// }
 
 	return randomSample
 }

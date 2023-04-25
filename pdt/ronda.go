@@ -384,9 +384,10 @@ func (r *Ronda) SetNextTurnoPosMano() {
 func (r *Ronda) SetManojos(manojos []Manojo) {
 	// cargo los manojos
 	for m, manojo := range manojos {
-		for c, carta := range manojo.Cartas {
-			r.Manojos[m].Cartas[c] = carta
-		}
+		copy(r.Manojos[m].Cartas[:], manojo.Cartas[:])
+		// for c, carta := range manojo.Cartas {
+		// 	r.Manojos[m].Cartas[c] = carta
+		// }
 	}
 	// flores
 	r.CachearFlores(true)
