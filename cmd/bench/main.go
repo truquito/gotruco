@@ -65,7 +65,7 @@ func worker(
 func main() {
 
 	var wg sync.WaitGroup
-	t := 16
+	t := 3
 	wg.Add(t)
 	start := time.Now()
 	totalRunTime := time.Minute * 10
@@ -86,6 +86,22 @@ func main() {
 	for x := range c {
 		sum += x
 	}
+
+	// In unbuffered channel writing to channel will not happen until there must
+	// be some receiver which is waiting to receive the data
+	// no espero a que terminen los goroutines, sino no pueden escribir
+	// the waiting for the channel output (ie, "subscribe") must occur BEFORE the
+	// write attemps
+	// sum := 0
+	// for {
+	// 	val, ok := <-c
+	// 	if ok {
+	// 		sum += val
+	// 	} else {
+	// 		break
+	// 	}
+	// }
+	// close(c)
 
 	fmt.Println("total", sum, time.Since(start).Round(time.Second))
 }
