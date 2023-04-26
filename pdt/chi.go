@@ -46,18 +46,18 @@ func Random_action_chis(chis [][]IJugada) (rmix, raix int) {
 	return rmix, raix
 }
 
+// Retorna todas las acciones posibles para un jugador `m` dado
+func Chi(p *Partida, m *Manojo) []IJugada {
+	return MetaChi(p, m, true)
+}
+
 // Retorna TODAS las jugadas posibles de cada jugador
 func Chis(p *Partida) [][]IJugada {
-	n := len(p.Ronda.Manojos)
-	res := make([][]IJugada, n)
-	for i := range p.Ronda.Manojos {
-		res[i] = Chi(p, &p.Ronda.Manojos[i])
-	}
-	return res
+	return MetaChis(p, true)
 }
 
 // Retorna todas las acciones posibles para un jugador `m` dado
-func Chi(p *Partida, m *Manojo) []IJugada {
+func MetaChi(p *Partida, m *Manojo, allowMazo bool) []IJugada {
 
 	chi := make([]IJugada, 0, 15)
 
@@ -96,6 +96,10 @@ func Chi(p *Partida, m *Manojo) []IJugada {
 		IrseAlMazo{JID: m.Jugador.ID},
 	}
 
+	if !allowMazo {
+		js = js[:len(js)-1]
+	}
+
 	for _, j := range js {
 		_, ok := j.Ok(p)
 		if ok {
@@ -104,6 +108,16 @@ func Chi(p *Partida, m *Manojo) []IJugada {
 	}
 
 	return chi
+}
+
+// Retorna TODAS las jugadas posibles de cada jugador
+func MetaChis(p *Partida, allowMazo bool) [][]IJugada {
+	n := len(p.Ronda.Manojos)
+	res := make([][]IJugada, n)
+	for i := range p.Ronda.Manojos {
+		res[i] = MetaChi(p, &p.Ronda.Manojos[i], allowMazo)
+	}
+	return res
 }
 
 /*
