@@ -19,7 +19,7 @@ func worker(
 	id int,
 	start time.Time,
 	totalRunningTime time.Duration,
-	c chan int,
+	c chan<- int,
 
 ) {
 	// telemetry
@@ -63,16 +63,15 @@ func worker(
 }
 
 func main() {
+
+	var wg sync.WaitGroup
+	t := 16
+	wg.Add(t)
 	start := time.Now()
 	totalRunTime := time.Minute * 10
-	t := 16
-	wg := &sync.WaitGroup{}
-	wg.Add(t)
-	c := make(chan int)
+	c := make(chan int, t)
 
-	fmt.Printf("Running %d workers for %s...\n", t, totalRunTime)
-
-	for i := 0; i < t; i++ {
+	for i := 1; i <= t; i++ {
 		i := i
 		go func() {
 			defer wg.Done()
@@ -80,10 +79,13 @@ func main() {
 		}()
 	}
 
-	total := 0
-	for i := 0; i < t; i++ {
-		total += <-c
+	wg.Wait()
+	close(c)
+
+	sum := 0
+	for x := range c {
+		sum += x
 	}
 
-	fmt.Println(total, time.Since(start).Round(time.Second))
+	fmt.Println("total", sum, time.Since(start).Round(time.Second))
 }
