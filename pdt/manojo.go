@@ -107,7 +107,7 @@ func (manojo Manojo) TieneFlor(muestra Carta) (res bool, CASO int) {
 		return true, 2
 	}
 
-	// CASO II una pieza y dos cartas del mismo palo
+	// CASO III una pieza y dos cartas del mismo palo
 	// Y ESAS DOS DIFERENTES DE LA PIEZA (piezaIdx)!
 	tieneDosDelMismoPalo :=
 		(manojo.Cartas[0].Palo == manojo.Cartas[1].Palo && piezaIdx == 2) ||

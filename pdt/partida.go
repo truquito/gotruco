@@ -386,6 +386,9 @@ func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
 		// el turno pasa a ser el del mano.ganador
 		// pero se setea despues de evaluar la ronda
 		mano.Ganador = p.Ronda.Manojo(tiradaGanadora.Jugador).Jugador.ID
+		// la variable tiradaGAnadora la uso solo para almacenar el jugador
+		// despues le pido el id, y depues se lo vluevlo a preguntar.
+		// esta al pedo
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),

@@ -3735,3 +3735,106 @@ func TestUpdateJSONs(t *testing.T) {
 		fmt.Println(string(json))
 	}
 }
+
+func TestChiBugfixRust(t *testing.T) {
+	data := `{"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":"primera","cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"valor":5,"palo":"Oro"},{"valor":10,"palo":"Copa"},{"valor":2,"palo":"Copa"}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"alice","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"valor":11,"palo":"Copa"},{"valor":1,"palo":"Basto"},{"valor":7,"palo":"Oro"}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"bob","equipo":"Rojo"}}],"mixs": {"alice": 0, "bob": 1},"muestra":{"valor":12,"palo":"Espada"},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
+	p, _ := pdt.Parse(data)
+	t.Log(pdt.Renderizar(p))
+
+	defer func() {
+		t.Log(pdt.Renderizar(p))
+	}()
+
+	// var (
+	// 	err  error
+	// 	pkts []*enco.Packet
+	// )
+
+	// if !(len(p.Ronda.MIXS) > 0) {
+	// 	t.Error(`el len del mixs deberia ser positivo`)
+	// 	t.Fail()
+	// }
+
+	// err_msg := func(t *testing.T, p *pdt.Partida, i int, err error, pkts []*enco.Packet) {
+	// 	t.Logf("no deberia ocurrir %d", i)
+	// 	if err != nil {
+	// 		t.Logf("\nerr: %s\n", err)
+	// 	}
+	// }
+
+	// check := func(err error, pkts []*enco.Packet) bool {
+	// 	return err != nil || enco.Contains(pkts, enco.Error)
+	// }
+
+	// cmds := []string{
+	// 	"alice 10 copa",
+	// 	// "bob falta-envido",
+	// 	// "alice no-quiero",
+	// 	"bob 11 copa",
+	// 	"alice 5 oro", // no debe ocurrir porque es turno de bob
+	// 	"alice truco",
+	// 	"bob re-truco",
+	// 	"alice quiero",
+	// 	"alice vale-4",
+	// 	"alice 2 copa",
+	// }
+
+	// for i, cmd := range cmds {
+	// 	pkts, err = p.Cmd(cmd)
+	// 	t.Logf("%d: %s", i, cmd)
+	// 	if check(err, pkts) {
+	// 		err_msg(t, p, i, err, pkts)
+	// 		break
+	// 	}
+	// }
+
+	// if !(p.Ronda.GetElTurno().Jugador.ID == "bob") {
+	// 	t.Error("deberia ser el turno de bob")
+	// }
+
+	// muestra: 12 espada
+	p.Cmd("alice 2 Copa")
+	p.Cmd("bob 11 Copa") // 2>11 --> 1era mano: gana alice
+	p.Cmd("alice 5 Oro")
+	p.Cmd("bob truco")
+	p.Cmd("alice re-truco")
+	p.Cmd("bob quiero")
+	p.Cmd("bob vale-4")
+	p.Cmd("alice quiero") // vale4querido
+	p.Cmd("bob 7 Oro")    // 5o<7o --> 2da mano: gana bob
+	p.Cmd("bob 1 Basto")
+	p.Cmd("alice 10 Copa") // 10c < 1b --> 3era mano gana bob --> +4
+
+	if !(p.Puntajes[pdt.Azul] == 0 && p.Puntajes[pdt.Rojo] == 4) {
+		t.Error("los puntajes no son los esperados")
+	}
+
+	if !(p.Ronda.ManoEnJuego == pdt.Primera) {
+		t.Error("se deberia de estar jugando la primera mano")
+	}
+
+	// random gameplay
+	// for {
+	// 	chis := pdt.MetaChis(p, false)
+	// 	rmix, raix := pdt.Random_action_chis(chis)
+	// 	j := chis[rmix][raix]
+	// 	t.Log(j)
+	// 	pkts := j.Hacer(p)
+	// 	if pdt.IsDone(pkts) {
+	// 		break
+	// 	}
+	// }
+}
+
+func TestChiBugfixRust2(t *testing.T) {
+	data := `{"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":"primera","cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"valor":2,"palo":"Oro"},{"valor":4,"palo":"Espada"},{"valor":12,"palo":"Copa"}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"alice","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"valor":7,"palo":"Copa"},{"valor":10,"palo":"Copa"},{"valor":6,"palo":"Espada"}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"bob","equipo":"Rojo"}}],"mixs":{"alice":0,"bob":1},"muestra":{"valor":10,"palo":"Basto"},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
+	p, _ := pdt.Parse(data)
+	t.Log(pdt.Renderizar(p))
+
+	defer func() {
+		t.Log(pdt.Renderizar(p))
+	}()
+
+	p.Cmd("alice envido")
+	p.Cmd("bob quiero")
+}
