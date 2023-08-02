@@ -18,25 +18,31 @@ const VERSION = "0.1.0"
 type Juego struct {
 	*pdt.Partida
 	mu    *sync.Mutex
-	Out   []enco.Packet `json:"-"`
+	out   []enco.Packet `json:"-"`
 	ErrCh chan bool     `json:"-"`
 }
 
 func (j *Juego) Consume() []enco.Packet {
 	j.mu.Lock()
 	defer j.mu.Unlock()
-	return j.Out[:]
+
+	res := j.out
+	j.out = make([]enco.Packet, 0, len(res))
+
+	return res
 }
 
 // Cmd nexo capa presentacion con capa logica
 func (j *Juego) Cmd(cmd string) error {
+	j.mu.Lock()
+	defer j.mu.Unlock()
 
 	pkts, err := j.Partida.Cmd(cmd)
 	if err != nil {
 		return err
 	}
 
-	j.Out = append(j.Out, pkts...)
+	j.out = append(j.out, pkts...)
 
 	return nil
 }
@@ -47,6 +53,8 @@ func (j *Juego) String() string {
 }
 
 func (j *Juego) Notify() {
+	j.mu.Lock()
+	defer j.mu.Unlock()
 
 	// deprecated: ojo primero hay que grabar el buff, luego avisar
 	pkt := enco.Pkt(
@@ -54,13 +62,16 @@ func (j *Juego) Notify() {
 		enco.TimeOut("INTERRUMPING!! Roro tardo demasiado en jugar. Mano ganada por Rojo"),
 	)
 
-	j.Out = append(j.Out, pkt)
+	j.out = append(j.out, pkt)
 
 	j.ErrCh <- true
 }
 
 // Abandono da por ganada la partida al equipo contario
 func (j *Juego) Abandono(jugador string) error {
+	j.mu.Lock()
+	defer j.mu.Unlock()
+
 	// encuentra al jugador
 	manojo := j.Partida.Manojo(jugador)
 	// doy por ganador al equipo contrario
@@ -73,7 +84,7 @@ func (j *Juego) Abandono(jugador string) error {
 		enco.Abandono(manojo.Jugador.ID),
 	)
 
-	j.Out = append(j.Out, pkt)
+	j.out = append(j.out, pkt)
 
 	return nil
 }
@@ -90,7 +101,7 @@ func NuevoJuego(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*Ju
 	j := Juego{
 		Partida: p,
 		mu:      &sync.Mutex{},
-		Out:     make([]enco.Packet, 0),
+		out:     make([]enco.Packet, 0),
 		ErrCh:   make(chan bool, 1),
 	}
 
@@ -102,7 +113,7 @@ func NuevoJuego(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*Ju
 				Perspectiva: j.Partida.PerspectivaCacheFlor(&m),
 			},
 		)
-		j.Out = append(j.Out, pkt)
+		j.out = append(j.out, pkt)
 	}
 
 	return &j, nil
