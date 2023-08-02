@@ -5,7 +5,7 @@ import (
 )
 
 func TestAcciones(t *testing.T) {
-	p, _ := NuevaPartida(A20, []string{"Alvaro"}, []string{"Roro"})
+	p, _ := NuevaPartida(A20, []string{"Alvaro"}, []string{"Roro"}, true)
 
 	alvaro := p.Ronda.GetElTurno()
 	a := TocarEnvido{JID: alvaro.Jugador.ID}
@@ -23,7 +23,7 @@ func TestAcciones(t *testing.T) {
 }
 
 func TestTodasLasAcciones(t *testing.T) {
-	p, _ := NuevaPartida(A20, []string{"Alvaro"}, []string{"Roro"})
+	p, _ := NuevaPartida(A20, []string{"Alvaro"}, []string{"Roro"}, true)
 	as := Chis(p)
 	t.Log(Renderizar(p))
 	for i, a := range as {

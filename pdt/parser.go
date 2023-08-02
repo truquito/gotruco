@@ -128,6 +128,10 @@ func ParseJugada(p *Partida, cmd string) (IJugada, error) {
 }
 
 func (p *Partida) byeBye() []enco.Packet {
+	if !p.Verbose {
+		return nil
+	}
+
 	pkts2 := make([]enco.Packet, 0)
 
 	if p.Terminada() {

@@ -419,7 +419,7 @@ func (r *Ronda) SetMuestra(muestra Carta) {
 *		`pkts[3] = Juan dice: "33 son mejores!"`
 *
  */
-func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts2 []enco.Packet) {
+func (r *Ronda) ExecElEnvido(verbose bool) (jIdx JIX, max int, pkts2 []enco.Packet) {
 
 	cantJugadores := len(r.Manojos)
 
@@ -455,13 +455,15 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts2 []enco.Packet) {
 
 	yaDijeron[jIdx] = true
 
-	pkts2 = append(pkts2, enco.Pkt(
-		enco.ALL,
-		enco.DiceTengo{
-			Autor: r.Manojos[jIdx].Jugador.ID,
-			Valor: envidos[jIdx],
-		},
-	))
+	if verbose {
+		pkts2 = append(pkts2, enco.Pkt(
+			enco.ALL,
+			enco.DiceTengo{
+				Autor: r.Manojos[jIdx].Jugador.ID,
+				Valor: envidos[jIdx],
+			},
+		))
+	}
 
 	// `todaviaNoDijeronSonMejores` se usa para
 	// no andar repitiendo "son bueanas" "son buenas"
@@ -498,13 +500,15 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts2 []enco.Packet) {
 			if sonMejores {
 				if esDeEquipoContrario {
 
-					pkts2 = append(pkts2, enco.Pkt(
-						enco.ALL,
-						enco.DiceSonMejores{
-							Autor: r.Manojos[i].Jugador.ID,
-							Valor: envidos[i],
-						},
-					))
+					if verbose {
+						pkts2 = append(pkts2, enco.Pkt(
+							enco.ALL,
+							enco.DiceSonMejores{
+								Autor: r.Manojos[i].Jugador.ID,
+								Valor: envidos[i],
+							},
+						))
+					}
 
 					jIdx = i
 					yaDijeron[i] = true
@@ -523,11 +527,13 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts2 []enco.Packet) {
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
 
-						pkts2 = append(pkts2, enco.Pkt(
-							enco.ALL,
-							enco.DiceSonBuenas(r.Manojos[i].Jugador.ID),
-							// valor de su envido es `envidos[i]` pero no corresponde decirlo
-						))
+						if verbose {
+							pkts2 = append(pkts2, enco.Pkt(
+								enco.ALL,
+								enco.DiceSonBuenas(r.Manojos[i].Jugador.ID),
+								// valor de su envido es `envidos[i]` pero no corresponde decirlo
+							))
+						}
 
 						yaDijeron[i] = true
 						// pasa al siguiente
@@ -569,7 +575,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts2 []enco.Packet) {
 *	`pkts[3] = Juan dice: "33 son mejores!"`
 *
  */
-func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts2 []enco.Packet) {
+func (r *Ronda) ExecLaFlores(aPartirDe JIX, verbose bool) (j *Manojo, max int, pkts2 []enco.Packet) {
 
 	// si solo un equipo tiene flor, entonces se saltea esta parte
 	soloUnEquipoTieneFlores := true
@@ -619,13 +625,15 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts2 []enco.Pa
 	if flores[aPartirDe] > 0 {
 		yaDijeron[aPartirDe] = true
 
-		pkts2 = append(pkts2, enco.Pkt(
-			enco.ALL,
-			enco.DiceTengo{
-				Autor: r.Manojos[aPartirDe].Jugador.ID,
-				Valor: flores[aPartirDe],
-			},
-		))
+		if verbose {
+			pkts2 = append(pkts2, enco.Pkt(
+				enco.ALL,
+				enco.DiceTengo{
+					Autor: r.Manojos[aPartirDe].Jugador.ID,
+					Valor: flores[aPartirDe],
+				},
+			))
+		}
 
 	}
 
@@ -656,13 +664,15 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts2 []enco.Pa
 			if sonMejores {
 				if esDeEquipoContrario {
 
-					pkts2 = append(pkts2, enco.Pkt(
-						enco.ALL,
-						enco.DiceSonMejores{
-							Autor: r.Manojos[i].Jugador.ID,
-							Valor: flores[i],
-						},
-					))
+					if verbose {
+						pkts2 = append(pkts2, enco.Pkt(
+							enco.ALL,
+							enco.DiceSonMejores{
+								Autor: r.Manojos[i].Jugador.ID,
+								Valor: flores[i],
+							},
+						))
+					}
 
 					jIdx = i
 					yaDijeron[i] = true
@@ -681,10 +691,12 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts2 []enco.Pa
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
 
-						pkts2 = append(pkts2, enco.Pkt(
-							enco.ALL,
-							enco.DiceSonBuenas(r.Manojos[i].Jugador.ID),
-						))
+						if verbose {
+							pkts2 = append(pkts2, enco.Pkt(
+								enco.ALL,
+								enco.DiceSonBuenas(r.Manojos[i].Jugador.ID),
+							))
+						}
 
 						yaDijeron[i] = true
 						// pasa al siguiente

@@ -42,7 +42,9 @@ func (j *Juego) Cmd(cmd string) error {
 		return err
 	}
 
-	j.out = append(j.out, pkts...)
+	if j.Partida.Verbose {
+		j.out = append(j.out, pkts...)
+	}
 
 	return nil
 }
@@ -57,12 +59,13 @@ func (j *Juego) Notify() {
 	defer j.mu.Unlock()
 
 	// deprecated: ojo primero hay que grabar el buff, luego avisar
-	pkt := enco.Pkt(
-		enco.Dest("ALL"),
-		enco.TimeOut("INTERRUMPING!! Roro tardo demasiado en jugar. Mano ganada por Rojo"),
-	)
-
-	j.out = append(j.out, pkt)
+	if j.Partida.Verbose {
+		pkt := enco.Pkt(
+			enco.Dest("ALL"),
+			enco.TimeOut("INTERRUMPING!! Roro tardo demasiado en jugar. Mano ganada por Rojo"),
+		)
+		j.out = append(j.out, pkt)
+	}
 
 	j.ErrCh <- true
 }
@@ -79,20 +82,29 @@ func (j *Juego) Abandono(jugador string) error {
 	ptsFaltantes := int(j.Puntuacion) - j.Puntajes[equipoContrario]
 	j.SumarPuntos(equipoContrario, ptsFaltantes)
 
-	pkt := enco.Pkt(
-		enco.Dest("ALL"),
-		enco.Abandono(manojo.Jugador.ID),
-	)
+	if j.Partida.Verbose {
+		pkt := enco.Pkt(
+			enco.Dest("ALL"),
+			enco.Abandono(manojo.Jugador.ID),
+		)
 
-	j.out = append(j.out, pkt)
+		j.out = append(j.out, pkt)
+	}
 
 	return nil
 }
 
 // NuevoJuego retorna nueva partida; error si hubo
-func NuevoJuego(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*Juego, error) {
+func NuevoJuego(
 
-	p, err := pdt.NuevaPartida(puntuacion, equipoAzul, equipoRojo)
+	puntuacion pdt.Puntuacion,
+	equipoAzul,
+	equipoRojo []string,
+	verbose bool,
+
+) (*Juego, error) {
+
+	p, err := pdt.NuevaPartida(puntuacion, equipoAzul, equipoRojo, verbose)
 
 	if err != nil {
 		return nil, err
@@ -106,14 +118,16 @@ func NuevoJuego(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*Ju
 	}
 
 	// pongo en el buffer un mensaje de Partida{} para cada jugador
-	for _, m := range j.Ronda.Manojos {
-		pkt := enco.Pkt(
-			enco.Dest(m.Jugador.ID),
-			enco.NuevaPartida{
-				Perspectiva: j.Partida.PerspectivaCacheFlor(&m),
-			},
-		)
-		j.out = append(j.out, pkt)
+	if j.Partida.Verbose {
+		for _, m := range j.Ronda.Manojos {
+			pkt := enco.Pkt(
+				enco.Dest(m.Jugador.ID),
+				enco.NuevaPartida{
+					Perspectiva: j.Partida.PerspectivaCacheFlor(&m),
+				},
+			)
+			j.out = append(j.out, pkt)
+		}
 	}
 
 	return &j, nil

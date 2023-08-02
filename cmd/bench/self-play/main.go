@@ -45,7 +45,7 @@ func worker(
 	}()
 
 	for time.Since(start) < totalRunningTime {
-		p, _ := pdt.NuevaPartida(20, azules[:*n>>1], rojos[:*n>>1])
+		p, _ := pdt.NuevaPartida(20, azules[:*n>>1], rojos[:*n>>1], true)
 		last_snapshot, _ = p.MarshalJSON()
 		actions = []string{}
 		for !p.Terminada() {

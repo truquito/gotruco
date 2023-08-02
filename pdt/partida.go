@@ -69,6 +69,7 @@ type Partida struct {
 	Puntuacion Puntuacion     `json:"puntuacion"`
 	Puntajes   map[Equipo]int `json:"puntajes"`
 	Ronda      Ronda          `json:"ronda"`
+	Verbose    bool           `json:"-"`
 }
 
 // GetMaxPuntaje .
@@ -348,10 +349,12 @@ func (p *Partida) EvaluarMano() (bool, []enco.Packet) {
 		mano.Resultado = Empardada
 		mano.Ganador = ""
 
-		pkts2 = append(pkts2, enco.Pkt(
-			enco.Dest("ALL"),
-			enco.LaManoResultaParda{},
-		))
+		if p.Verbose {
+			pkts2 = append(pkts2, enco.Pkt(
+				enco.Dest("ALL"),
+				enco.LaManoResultaParda{},
+			))
+		}
 
 		// no se cambia el turno
 
@@ -390,20 +393,24 @@ func (p *Partida) EvaluarMano() (bool, []enco.Packet) {
 		// despues le pido el id, y depues se lo vluevlo a preguntar.
 		// esta al pedo
 
-		pkts2 = append(pkts2, enco.Pkt(
-			enco.Dest("ALL"),
-			enco.ManoGanada{
-				Autor: mano.Ganador,
-				Valor: int(p.Ronda.ManoEnJuego),
-			},
-		))
+		if p.Verbose {
+			pkts2 = append(pkts2, enco.Pkt(
+				enco.Dest("ALL"),
+				enco.ManoGanada{
+					Autor: mano.Ganador,
+					Valor: int(p.Ronda.ManoEnJuego),
+				},
+			))
+		}
 
 	}
 
 	// se termino la ronda?
 	empiezaNuevaRonda, pkt22 := p.EvaluarRonda()
 
-	pkts2 = append(pkts2, pkt22...)
+	if p.Verbose {
+		pkts2 = append(pkts2, pkt22...)
+	}
 
 	// cuando termina la mano (y no se empieza una ronda) -> cambia de TRUNO
 	// cuando termina la ronda -> cambia de MANO
@@ -593,15 +600,16 @@ func (p *Partida) EvaluarRonda() (bool, []enco.Packet) {
 	}
 
 	if !hayJugadoresEnAmbos {
-
-		pkts2 = append(pkts2, enco.Pkt(
-			enco.Dest("ALL"),
-			enco.RondaGanada{
-				Autor: ganador,
-				Razon: enco.SeFueronAlMazo,
-			},
-			// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado`
-		))
+		if p.Verbose {
+			pkts2 = append(pkts2, enco.Pkt(
+				enco.Dest("ALL"),
+				enco.RondaGanada{
+					Autor: ganador,
+					Razon: enco.SeFueronAlMazo,
+				},
+				// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado`
+			))
+		}
 
 	} else if elTrucoNoTuvoRespuesta {
 
@@ -617,13 +625,15 @@ func (p *Partida) EvaluarRonda() (bool, []enco.Packet) {
 			razon = enco.TrucoNoQuerido
 		}
 
-		pkts2 = append(pkts2, enco.Pkt(
-			enco.Dest("ALL"),
-			enco.RondaGanada{
-				Autor: ganador,
-				Razon: razon,
-			},
-		))
+		if p.Verbose {
+			pkts2 = append(pkts2, enco.Pkt(
+				enco.Dest("ALL"),
+				enco.RondaGanada{
+					Autor: ganador,
+					Razon: razon,
+				},
+			))
+		}
 
 	} else {
 
@@ -637,26 +647,30 @@ func (p *Partida) EvaluarRonda() (bool, []enco.Packet) {
 			razon = enco.TrucoQuerido
 		}
 
-		pkts2 = append(pkts2, enco.Pkt(
-			enco.Dest("ALL"),
-			enco.RondaGanada{
-				Autor: ganador,
-				Razon: razon,
-			},
-		))
+		if p.Verbose {
+			pkts2 = append(pkts2, enco.Pkt(
+				enco.Dest("ALL"),
+				enco.RondaGanada{
+					Autor: ganador,
+					Razon: razon,
+				},
+			))
+		}
 
 	}
 
 	p.SumarPuntos(p.Ronda.Manojo(ganador).Jugador.Equipo, totalPts)
 
-	pkts2 = append(pkts2, enco.Pkt(
-		enco.Dest("ALL"),
-		enco.SumaPts{
-			Autor:  ganador,
-			Razon:  enco.TrucoQuerido,
-			Puntos: totalPts,
-		},
-	))
+	if p.Verbose {
+		pkts2 = append(pkts2, enco.Pkt(
+			enco.Dest("ALL"),
+			enco.SumaPts{
+				Autor:  ganador,
+				Razon:  enco.TrucoQuerido,
+				Puntos: totalPts,
+			},
+		))
+	}
 
 	return true, pkts2 // porque se empezo una nueva ronda
 }
@@ -693,11 +707,10 @@ func (p *Partida) FromJSON(data []byte) error {
 	return nil
 }
 
-func Parse(data string) (*Partida, error) {
+func Parse(data string, verbose bool) (*Partida, error) {
 	p := new(Partida)
-
 	err := p.FromJSON([]byte(data))
-
+	p.Verbose = verbose
 	return p, err
 }
 
@@ -774,7 +787,14 @@ func (p *Partida) Swap() {
 }
 
 // NuevaPartida crea una nueva Partida
-func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Partida, error) {
+func NuevaPartida(
+
+	puntuacion Puntuacion,
+	equipoAzul,
+	equipoRojo []string,
+	verbose bool,
+
+) (*Partida, error) {
 
 	mismaCantidadDeJugadores := len(equipoRojo) == len(equipoAzul)
 	cantJugadores := len(equipoRojo) + len(equipoAzul)
@@ -787,6 +807,7 @@ func NuevaPartida(puntuacion Puntuacion, equipoAzul, equipoRojo []string) (*Part
 
 	p := Partida{
 		Puntuacion: puntuacion,
+		Verbose:    verbose,
 	}
 
 	p.Puntajes = map[Equipo]int{

@@ -12,7 +12,7 @@ import (
 
 func TestNoStruct(t *testing.T) {
 	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":3,"Rojo":3},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null,"sinCantar":["Renzo","Richard"]},"truco":{"cantadoPor":"","estado":"truco"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":6},{"palo":"Basto","valor":12},{"palo":"Oro","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":5},{"palo":"Basto","valor":10},{"palo":"Oro","valor":4}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":10},{"palo":"Copa","valor":10},{"palo":"Basto","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":6},{"palo":"Espada","valor":10},{"palo":"Basto","valor":3}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Copa","valor":3},{"palo":"Espada","valor":1}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Andres","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":3},{"palo":"Espada","valor":11},{"palo":"Espada","valor":4}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Richard","equipo":"Rojo"}}],"muestra":{"palo":"Espada","valor":6},"manos":[{"resultado":"ganoRojo","ganador": "","cartasTiradas":null},{"resultado":"ganoRojo","ganador": "","cartasTiradas":null},{"resultado":"ganoRojo","ganador": "","cartasTiradas":null}]}}`
-	p, err := Parse(partidaJSON)
+	p, err := Parse(partidaJSON, true)
 	if err != nil {
 		t.Error(err)
 	}
@@ -43,7 +43,7 @@ func TestNoStruct(t *testing.T) {
 }
 
 func TestFixPanic(t *testing.T) {
-	p, _ := NuevaPartida(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	p, _ := NuevaPartida(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"}, true)
 	p.Ronda.SetMuestra(Carta{Palo: Basto, Valor: 4})
 	p.Puntajes[Rojo] = 17
 	p.Puntajes[Azul] = 10
@@ -87,7 +87,7 @@ func TestFixPanic(t *testing.T) {
 }
 
 func TestFixNoLePermiteTocarEnvido(t *testing.T) {
-	p, _ := NuevaPartida(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	p, _ := NuevaPartida(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"}, true)
 	p.Ronda.SetMuestra(Carta{Palo: Basto, Valor: 4})
 	p.Puntajes[Rojo] = 0
 	p.Puntajes[Azul] = 0
@@ -136,7 +136,7 @@ func TestFixNoLePermiteTocarEnvido(t *testing.T) {
 
 func TestFixNoLePermiteGritarTruco(t *testing.T) {
 	data := `{"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":3},{"palo":"Oro","valor":7},{"palo":"Copa","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":10},{"palo":"Basto","valor":5},{"palo":"Oro","valor":6}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":2},{"palo":"Oro","valor":3},{"palo":"Espada","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":1},{"palo":"Espada","valor":6},{"palo":"Espada","valor":10}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":3},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	p, err := Parse(data)
+	p, err := Parse(data, true)
 	if err != nil {
 		t.Error(err)
 	}
@@ -149,7 +149,7 @@ func TestFixNoLePermiteGritarTruco(t *testing.T) {
 }
 
 func TestFixLePermiteCFAR(t *testing.T) {
-	p, _ := NuevaPartida(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	p, _ := NuevaPartida(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"}, true)
 	p.Ronda.SetMuestra(Carta{Palo: Copa, Valor: 3})
 	p.Puntajes[Rojo] = 1
 	p.Puntajes[Azul] = 6
@@ -210,7 +210,7 @@ func TestFixLePermiteCFAR(t *testing.T) {
 
 func TestFixNoLeDebePermitirTocarEnvidoSiGritoTruco(t *testing.T) {
 	data := `{"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":3},{"palo":"Oro","valor":7},{"palo":"Copa","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":10},{"palo":"Basto","valor":5},{"palo":"Oro","valor":6}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":2},{"palo":"Oro","valor":3},{"palo":"Espada","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":1},{"palo":"Espada","valor":6},{"palo":"Espada","valor":10}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":3},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	p, err := Parse(data)
+	p, err := Parse(data, true)
 	if err != nil {
 		t.Error(err)
 	}
@@ -245,7 +245,7 @@ func TestFixNoLeDebePermitirTocarEnvidoSiGritoTruco(t *testing.T) {
 
 func TestFixNoLeDeberiaResponderDesdeUltratumba(t *testing.T) {
 	data := `{"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":5,"Rojo":6},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":2,"turno":2,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":2},{"palo":"Basto","valor":6},{"palo":"Espada","valor":5}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Espada","valor":11},{"palo":"Copa","valor":12}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":3},{"palo":"Espada","valor":10},{"palo":"Oro","valor":10}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":1},{"palo":"Basto","valor":11},{"palo":"Espada","valor":3}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":5},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	p, err := Parse(data)
+	p, err := Parse(data, true)
 	if err != nil {
 		t.Error(err)
 	}
@@ -303,7 +303,7 @@ func TestFixNoLeDeberiaResponderDesdeUltratumba(t *testing.T) {
 
 func TestFixDebioHaberTerminado(t *testing.T) {
 	data := `{"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":3},"ronda":{"manoEnJuego":1,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":3,"pies":[0,0],"envite":{"estado":"deshabilitado","puntaje":3,"cantadoPor":"Renzo"},"truco":{"cantadoPor":"Alvaro","estado":"trucoQuerido"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":11},{"palo":"Oro","valor":3},{"palo":"Copa","valor":6}],"tiradas":[false,false,true],"ultimaTirada":2,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":true,"cartas":[{"palo":"Basto","valor":4},{"palo":"Espada","valor":10},{"palo":"Copa","valor":1}],"tiradas":[false,true,true],"ultimaTirada":1,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":true,"cartas":[{"palo":"Oro","valor":1},{"palo":"Espada","valor":12},{"palo":"Basto","valor":10}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":5},{"palo":"Oro","valor":6},{"palo":"Espada","valor":7}],"tiradas":[true,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Espada","valor":1},"manos":[{"resultado":"ganoRojo","ganador":"Roro","cartasTiradas":[{"jugador":"Alvaro","carta":{"palo":"Copa","valor":6}},{"jugador":"Roro","carta":{"palo":"Copa","valor":1}},{"jugador":"Renzo","carta":{"palo":"Copa","valor":5}}]},{"resultado":"ganoRojo","ganador":"","cartasTiradas":[{"jugador":"Roro","carta":{"palo":"Espada","valor":10}}]},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	p, err := Parse(data)
+	p, err := Parse(data, true)
 	if err != nil {
 		t.Error(err)
 	}
@@ -340,7 +340,7 @@ func TestFixNoCantarPuntajeFlorCuandoNoEsNecesario(t *testing.T) {
 	// ninguno de los 2 deberia decir al resto cuanto tienen porque
 	// son de el mismo equipo
 	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null,"sinCantar":["Alvaro","Adolfo"]},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":10},{"palo":"Copa","valor":4},{"palo":"Copa","valor":11}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":2},{"palo":"Basto","valor":3},{"palo":"Oro","valor":6}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":3},{"palo":"Espada","valor":6},{"palo":"Espada","valor":12}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":5},{"palo":"Espada","valor":10},{"palo":"Copa","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Oro","valor":12},"manos":[{"resultado":"ganoRojo","ganador": "","cartasTiradas":null},{"resultado":"ganoRojo","ganador": "","cartasTiradas":null},{"resultado":"ganoRojo","ganador": "","cartasTiradas":null}]}}`
-	p, _ := Parse(partidaJSON)
+	p, _ := Parse(partidaJSON, true)
 
 	p.Ronda.Turno = 1
 	p.Cmd("Roro truco")
@@ -367,7 +367,7 @@ func TestFixNoCantarPuntajeFlorCuandoNoEsNecesario(t *testing.T) {
 
 	// ejemplo con 1 solo jugador; tampoco deberia
 	partidaJSON = `{"puntuacion":20,"puntajes":{"Azul":10,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":1},"elMano":1,"turno":1,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null,"sinCantar":["Alvaro"]},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":11},{"palo":"Copa","valor":7},{"palo":"Copa","valor":3}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":10},{"palo":"Copa","valor":2},{"palo":"Basto","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":11},{"palo":"Basto","valor":4},{"palo":"Oro","valor":10}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":true,"cartas":[{"palo":"Basto","valor":6},{"palo":"Oro","valor":4},{"palo":"Oro","valor":3}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Espada","valor":1},"manos":[{"resultado":"ganoRojo","ganador": "","cartasTiradas":null},{"resultado":"ganoRojo","ganador": "","cartasTiradas":null},{"resultado":"ganoRojo","ganador": "","cartasTiradas":null}]}}`
-	p, _ = Parse(partidaJSON)
+	p, _ = Parse(partidaJSON, true)
 
 	t.Log(Renderizar(p))
 
@@ -392,7 +392,7 @@ func TestFixNoCantarPuntajeFlorCuandoNoEsNecesario(t *testing.T) {
 }
 
 func TestFixDecirSonBuenasDesdeUltratumba(t *testing.T) {
-	p, _ := NuevaPartida(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	p, _ := NuevaPartida(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"}, true)
 	p.Ronda.SetMuestra(Carta{Palo: Espada, Valor: 12})
 	p.Ronda.ManoEnJuego = Primera
 	p.Ronda.ElMano = 0 // alvaro
@@ -454,7 +454,7 @@ func TestFixDecirSonBuenasDesdeUltratumba(t *testing.T) {
 
 func TestFixLoadJsonCartasTiradasAutorNil(t *testing.T) {
 	data := `{"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":6,"Rojo":6},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":2},"elMano":2,"turno":1,"pies":[0,0],"envite":{"estado":"deshabilitado","puntaje":3,"cantadoPor":"Adolfo"},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":true,"cartas":[{"palo":"Oro","valor":12},{"palo":"Oro","valor":1},{"palo":"Espada","valor":11}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Copa","valor":2},{"palo":"Espada","valor":1}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":7},{"palo":"Oro","valor":10},{"palo":"Espada","valor":3}],"tiradas":[false,true,false],"ultimaTirada":1,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":4}],"tiradas":[true,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Basto","valor":10},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":[{"jugador":"Adolfo","carta":{"palo":"Oro","valor":10}},{"jugador":"Renzo","carta":{"palo":"Basto","valor":6}}]},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	p, _ := Parse(data)
+	p, _ := Parse(data, true)
 
 	ok := util.All(
 		len(p.Ronda.Manos[0].CartasTiradas) == 2,
@@ -468,7 +468,7 @@ func TestFixLoadJsonCartasTiradasAutorNil(t *testing.T) {
 
 func TestFixPorQueDejaARoroTirarCarta(t *testing.T) {
 	data := `{"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":6,"Rojo":6},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":2},"elMano":2,"turno":1,"pies":[0,0],"envite":{"estado":"deshabilitado","puntaje":3,"cantadoPor":"Adolfo"},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":true,"cartas":[{"palo":"Oro","valor":12},{"palo":"Oro","valor":1},{"palo":"Espada","valor":11}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Copa","valor":2},{"palo":"Espada","valor":1}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":7},{"palo":"Oro","valor":10},{"palo":"Espada","valor":3}],"tiradas":[false,true,false],"ultimaTirada":1,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":4}],"tiradas":[true,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Basto","valor":10},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":[{"jugador":"Adolfo","carta":{"palo":"Oro","valor":10}},{"jugador":"Renzo","carta":{"palo":"Basto","valor":6}}]},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	p, _ := Parse(data)
+	p, _ := Parse(data, true)
 
 	t.Log(Renderizar(p))
 
@@ -501,7 +501,7 @@ func TestFixPorQueDejaARoroTirarCarta(t *testing.T) {
 
 func TestFixRespuestaNadaQueVer(t *testing.T) {
 	data := `{"cantJugadores":4,"puntuacion":20,"puntajes":{"Azul":15,"Rojo":6},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":0,"turno":1,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":""},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":7},{"palo":"Oro","valor":2},{"palo":"Copa","valor":1}],"tiradas":[false,true,false],"ultimaTirada":1,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":4},{"palo":"Basto","valor":11},{"palo":"Oro","valor":12}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":12},{"palo":"Espada","valor":10},{"palo":"Oro","valor":4}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","nombre":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":7},{"palo":"Copa","valor":2},{"palo":"Copa","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","nombre":"Renzo","equipo":"Rojo"}}],"muestra":{"palo":"Oro","valor":7},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":[{"jugador":"Alvaro","carta":{"palo":"Oro","valor":2}}]},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	p, _ := Parse(data)
+	p, _ := Parse(data, true)
 
 	t.Log(Renderizar(p))
 
@@ -528,7 +528,7 @@ func TestFixRespuestaNadaQueVer(t *testing.T) {
 
 func TestFixError39(t *testing.T) {
 	data := `{"cantJugadores":2,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"envido","puntaje":2,"cantadoPor":"Alvaro"},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":3},{"palo":"Oro","valor":5},{"palo":"Espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":1},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	p, _ := Parse(data)
+	p, _ := Parse(data, true)
 
 	ok := util.All(
 		p.Ronda.Envite.Estado == ENVIDO,
@@ -550,7 +550,7 @@ func TestFixError39(t *testing.T) {
 	})
 
 	data = `{"cantJugadores":2,"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"envido","puntaje":2,"cantadoPor":"Alvaro"},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":3},{"palo":"Oro","valor":5},{"palo":"Espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":1},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	p, _ = Parse(data)
+	p, _ = Parse(data, true)
 	// p.FromJSON([]byte(data))
 
 	ok = util.All(
@@ -565,7 +565,7 @@ func TestFixError39(t *testing.T) {
 
 func TestFixBadParsing(t *testing.T) {
 	data := `{"puntuacion":20,"puntajes":{"Azul":3,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"deshabilitado","puntaje":3,"cantadoPor":"Alvaro","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":11},{"palo":"Copa","valor":5},{"palo":"Copa","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":2},{"palo":"Espada","valor":6},{"palo":"Copa","valor":11}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Oro","valor":10},"manos":[{"resultado":"ganoRojo","ganador": "","cartasTiradas":null},{"resultado":"ganoRojo","ganador": "","cartasTiradas":null},{"resultado":"ganoRojo","ganador": "","cartasTiradas":null}]}}`
-	p, _ := Parse(data)
+	p, _ := Parse(data, true)
 
 	ok := util.All(
 		p.Ronda.Envite.Estado == DESHABILITADO,
@@ -579,7 +579,7 @@ func TestFixBadParsing(t *testing.T) {
 
 func TestFixRazonErronea(t *testing.T) {
 	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":null,"sinCantar":["Alvaro"]},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":11},{"palo":"Copa","valor":5},{"palo":"Copa","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":2},{"palo":"Espada","valor":6},{"palo":"Copa","valor":11}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Oro","valor":10},"manos":[{"resultado":"ganoRojo","ganador": "","cartasTiradas":null},{"resultado":"ganoRojo","ganador": "","cartasTiradas":null},{"resultado":"ganoRojo","ganador": "","cartasTiradas":null}]}}`
-	p, err := Parse(partidaJSON)
+	p, err := Parse(partidaJSON, true)
 	if err != nil {
 		t.Error(err)
 	}
@@ -635,7 +635,7 @@ func TestFixRazonErronea(t *testing.T) {
 	}
 
 	// lo mismo pero con truco -> no-quiero
-	p, _ = Parse(partidaJSON)
+	p, _ = Parse(partidaJSON, true)
 	p.Cmd("Alvaro flor")
 	p.Cmd("Alvaro truco")
 	pkts, _ = p.Cmd("Roro no-quiero")
@@ -686,7 +686,7 @@ func TestFixRazonErronea(t *testing.T) {
 
 func TestFixGanadorErroneo(t *testing.T) {
 	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":19,"Rojo":19},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":null},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":3},{"palo":"Oro","valor":5},{"palo":"Espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":1},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	p, err := Parse(partidaJSON)
+	p, err := Parse(partidaJSON, true)
 	if err != nil {
 		t.Error(err)
 	}
@@ -724,7 +724,7 @@ func TestFixCodificacionCarta(t *testing.T) {
 	// debe decir palo "copa" y no "6"
 
 	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":19,"Rojo":19},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":null},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":3},{"palo":"Oro","valor":5},{"palo":"Espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Copa","valor":1},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	p, err := Parse(partidaJSON)
+	p, err := Parse(partidaJSON, true)
 	if err != nil {
 		t.Error(err)
 	}
@@ -756,7 +756,7 @@ func TestFixCodificacionCarta(t *testing.T) {
 func TestCreadorDeEscenario(t *testing.T) {
 	// por json
 	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":3,"Rojo":0},"ronda":{"manoEnJuego":2,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":1,"envite":{"estado":"deshabilitado","puntaje":3,"cantadoPor":"Alvaro","sinCantar":[]},"truco":{"cantadoPor":"Roro","estado":"vale4Querido"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":11},{"palo":"Copa","valor":5},{"palo":"Copa","valor":7}],"tiradas":[false,true,true],"ultimaTirada":1,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":2},{"palo":"Espada","valor":6},{"palo":"Copa","valor":11}],"tiradas":[true,true,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}}],"muestra":{"palo":"Oro","valor":10},"manos":[{"resultado":"ganoAzul","ganador":"Alvaro","cartasTiradas":[{"jugador":"Alvaro","carta":{"palo":"Copa","valor":7}},{"jugador":"Roro","carta":{"palo":"Espada","valor":6}}]},{"resultado":"ganoRojo","ganador":"Roro","cartasTiradas":[{"jugador":"Alvaro","carta":{"palo":"Copa","valor":5}},{"jugador":"Roro","carta":{"palo":"Oro","valor":2}}]},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	q, err := Parse(partidaJSON)
+	q, err := Parse(partidaJSON, true)
 	if err != nil {
 		t.Error(err)
 	}
@@ -773,7 +773,7 @@ func TestCreadorDeEscenario(t *testing.T) {
 	}
 
 	// random
-	p, err := NuevaPartida(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"})
+	p, err := NuevaPartida(A20, []string{"Alvaro", "Adolfo"}, []string{"Roro", "Renzo"}, true)
 	if err != nil {
 		t.Error(err)
 	}
@@ -859,7 +859,7 @@ func TestRandomWalk_AA(t *testing.T) {
 
 	for i := 0; i < 10000; i++ {
 		// p, _ := NuevaPartida(A20, []string{"Alvaro"}, []string{"Roro"})
-		p, _ := NuevaPartida(A20, []string{"Alvaro", "Andres"}, []string{"Roro", "Richard"})
+		p, _ := NuevaPartida(A20, []string{"Alvaro", "Andres"}, []string{"Roro", "Richard"}, true)
 
 		// partida
 		// bs, _ := p.MarshalJSON()
@@ -899,7 +899,7 @@ func TestRandomWalk_Chi(t *testing.T) {
 
 	for i := 0; i < 10000; i++ {
 		// p, _ := NuevaPartida(A20, []string{"Alvaro"}, []string{"Roro"})
-		p, _ := NuevaPartida(A20, []string{"Alvaro", "Andres"}, []string{"Roro", "Richard"})
+		p, _ := NuevaPartida(A20, []string{"Alvaro", "Andres"}, []string{"Roro", "Richard"}, true)
 
 		for {
 			chis := Chis(p)
@@ -932,7 +932,7 @@ func TestRandomWalk_Chi(t *testing.T) {
 }
 
 func TestNil(t *testing.T) {
-	p, _ := Parse(`{"puntuacion":20,"puntajes":{"Azul":5,"Rojo":6},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":2,"turno":2,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":null},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":2},{"palo":"Basto","valor":6},{"palo":"Espada","valor":5}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Espada","valor":11},{"palo":"Copa","valor":12}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":3},{"palo":"Espada","valor":10},{"palo":"Oro","valor":10}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":1},{"palo":"Basto","valor":11},{"palo":"Espada","valor":3}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","equipo":"Rojo"}}],"mixs":{"Adolfo":2,"Alvaro":0,"Renzo":3,"Roro":1},"muestra":{"palo":"Copa","valor":5},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`)
+	p, _ := Parse(`{"puntuacion":20,"puntajes":{"Azul":5,"Rojo":6},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":2,"turno":2,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":null},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":2},{"palo":"Basto","valor":6},{"palo":"Espada","valor":5}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":6},{"palo":"Espada","valor":11},{"palo":"Copa","valor":12}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":3},{"palo":"Espada","valor":10},{"palo":"Oro","valor":10}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":1},{"palo":"Basto","valor":11},{"palo":"Espada","valor":3}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","equipo":"Rojo"}}],"mixs":{"Adolfo":2,"Alvaro":0,"Renzo":3,"Roro":1},"muestra":{"palo":"Copa","valor":5},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`, true)
 	t.Log(Renderizar(p))
 
 	p.Cmd("Adolfo falta-envido")
@@ -950,7 +950,7 @@ func TestNil(t *testing.T) {
 func TestFixNoPasaDeTurno(t *testing.T) {
 	// 1. Deberia pasar el turno (de Alvaro a Roro)
 	// 2. Deberia sumar puntos
-	p, _ := NuevaPartida(A20, []string{"Alvaro", "Andres"}, []string{"Roro", "Richard"})
+	p, _ := NuevaPartida(A20, []string{"Alvaro", "Andres"}, []string{"Roro", "Richard"}, true)
 	p.Ronda.SetMuestra(Carta{Palo: Espada, Valor: 1})
 	p.Puntajes[Rojo] = 0
 	p.Puntajes[Azul] = 0
@@ -1019,7 +1019,7 @@ func TestFixNoPasaDeTurno(t *testing.T) {
 func TestFixEnvidoHabilitado(t *testing.T) {
 	// Deberia dejar cantar envido luego de que tiro carta? NO.
 	// a menos que uno de mi mismo equipo tenga el turno (?)
-	p, _ := NuevaPartida(A20, []string{"Alvaro", "Andres"}, []string{"Roro", "Richard"})
+	p, _ := NuevaPartida(A20, []string{"Alvaro", "Andres"}, []string{"Roro", "Richard"}, true)
 	p.Ronda.SetMuestra(Carta{Palo: Espada, Valor: 1})
 	p.Puntajes[Rojo] = 0
 	p.Puntajes[Azul] = 0
@@ -1071,7 +1071,7 @@ func TestFixEnvidoHabilitado(t *testing.T) {
 func TestShiftPartida(t *testing.T) {
 	// dada una partida, la shiftea
 	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":["Alvaro"]},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":1},{"palo":"Oro","valor":4},{"palo":"Oro","valor":12}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":10},{"palo":"Copa","valor":1},{"palo":"Oro","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":7},{"palo":"Basto","valor":7},{"palo":"Copa","valor":6}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Adolfo","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":7},{"palo":"Basto","valor":3},{"palo":"Oro","valor":6}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Renzo","equipo":"Rojo"}}],"mixs":{"Adolfo":2,"Alvaro":0,"Renzo":3,"Roro":1},"muestra":{"palo":"Espada","valor":1},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	p, _ := Parse(partidaJSON)
+	p, _ := Parse(partidaJSON, true)
 
 	t.Log(Renderizar(p))
 
@@ -1095,7 +1095,7 @@ func TestShiftPartida(t *testing.T) {
 func TestFipPartida(t *testing.T) {
 	// dada una partida aleatoria
 	// computa un ida-vuelta
-	p, _ := NuevaPartida(A20, []string{"Alice", "Ana"}, []string{"Bob", "Ben"})
+	p, _ := NuevaPartida(A20, []string{"Alice", "Ana"}, []string{"Bob", "Ben"}, true)
 
 	t.Log(Renderizar(p))
 
@@ -1107,7 +1107,7 @@ func TestFipPartida(t *testing.T) {
 	data_manojos, _ := json.Marshal(p.Ronda.Manojos)
 
 	// creo una partida nueva ahora con el orden invertido
-	p, _ = NuevaPartida(A20, []string{"Bob", "Ben"}, []string{"Alice", "Ana"})
+	p, _ = NuevaPartida(A20, []string{"Bob", "Ben"}, []string{"Alice", "Ana"}, true)
 
 	// le seteo los manojos de antes
 	var (
@@ -1129,7 +1129,7 @@ func TestFixTurnoDeAlguienQueSeFueAlMazo(t *testing.T) {
 	// debe decir palo "copa" y no "6"
 
 	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":1},{"palo":"Oro","valor":5},{"palo":"Basto","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alice","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":4},{"palo":"Oro","valor":7},{"palo":"Espada","valor":5}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Bob","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":1},{"palo":"Oro","valor":6},{"palo":"Oro","valor":10}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Ariana","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":3},{"palo":"Copa","valor":6},{"palo":"Copa","valor":11}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Ben","equipo":"Rojo"}}],"mixs":{"Alice":0,"Ariana":2,"Ben":3,"Bob":1},"muestra":{"palo":"Basto","valor":12},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	p, err := Parse(partidaJSON)
+	p, err := Parse(partidaJSON, true)
 	if err != nil {
 		t.Error(err)
 	}
@@ -1157,7 +1157,7 @@ func TestFixFlorColgada(t *testing.T) {
 	// ben queda sin cantar la flor...
 	// no puede decir nada, wtf... ?
 	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":2,"Rojo":2},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":["Alice","Bob","Ben"]},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":3},{"palo":"Basto","valor":11},{"palo":"Basto","valor":10}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alice","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":6},{"palo":"Oro","valor":3},{"palo":"Copa","valor":5}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Bob","equipo":"Rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":1},{"palo":"Oro","valor":2},{"palo":"Copa","valor":7}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Ariana","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Espada","valor":11},{"palo":"Copa","valor":10},{"palo":"Espada","valor":6}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Ben","equipo":"Rojo"}}],"mixs":{"Alice":0,"Ariana":2,"Ben":3,"Bob":1},"muestra":{"palo":"Copa","valor":4},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	p, err := Parse(partidaJSON)
+	p, err := Parse(partidaJSON, true)
 	if err != nil {
 		t.Error(err)
 	}
@@ -1186,7 +1186,7 @@ func TestFixMazoPoints(t *testing.T) {
 	// el problema: aveces dice "me voy al mazo" y le suma los puntos al equipo
 	// contrario
 	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":0,"Rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":5},{"palo":"Copa","valor":10},{"palo":"Oro","valor":11}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"ESL-0","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Copa","valor":11},{"palo":"Basto","valor":3},{"palo":"Espada","valor":6}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"jp","equipo":"Rojo"}}],"mixs":{"ESL-0":0,"jp":1},"muestra":{"palo":"Espada","valor":10},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	p, err := Parse(partidaJSON)
+	p, err := Parse(partidaJSON, true)
 	if err != nil {
 		t.Error(err)
 	}
@@ -1225,7 +1225,7 @@ func TestFixMazoPoints_2(t *testing.T) {
 	// igual que el test anterior pero otro set
 
 	partidaJSON := `{"puntuacion":20,"puntajes":{"Azul":17,"Rojo":11},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"Azul":1,"Rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noCantado"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"Basto","valor":10},{"palo":"Copa","valor":6},{"palo":"Espada","valor":12}],"tiradas":[false,false,false],"ultimaTirada":1,"jugador":{"id":"ESL-0","equipo":"Azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"Oro","valor":12},{"palo":"Basto","valor":11},{"palo":"Espada","valor":10}],"tiradas":[false,false,false],"ultimaTirada":2,"jugador":{"id":"j","equipo":"Rojo"}}],"mixs":{"ESL-0":0,"j":1},"muestra":{"palo":"Oro","valor":10},"manos":[{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null},{"resultado":"ganoRojo","ganador":"","cartasTiradas":null}]}}`
-	p, err := Parse(partidaJSON)
+	p, err := Parse(partidaJSON, true)
 	if err != nil {
 		t.Error(err)
 	}
@@ -1260,7 +1260,7 @@ func TestPardaSigTurno3(t *testing.T) {
 	// igual que el anterior pero ahora todos los que empardaron se van al mazo
 	// si va parda, el siguiente turno deberia ser del mano
 	// o del mas cercano a este
-	p, _ := NuevaPartida(A20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	p, _ := NuevaPartida(A20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"}, true)
 	p.Ronda.SetMuestra(Carta{Palo: Espada, Valor: 1})
 	p.Ronda.SetManojos(
 		[]Manojo{
