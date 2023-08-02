@@ -38,7 +38,7 @@ func main() {
 	n := 2 // <-- num. of players
 	azules := []string{"Alice", "Ariana", "Annie"}
 	rojos := []string{"Bob", "Ben", "Bill"}
-	p, out, _ := truco.NuevaPartida(20, azules[:n>>1], rojos[:n>>1])
+	p, out, _ := truco.NuevoJuego(20, azules[:n>>1], rojos[:n>>1])
 
 	pJSON, _ := p.MarshalJSON()
 	logfile.Write(string(pJSON))

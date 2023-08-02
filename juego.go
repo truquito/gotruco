@@ -18,7 +18,7 @@ const VERSION = "0.1.0"
 // Juego :
 type Juego struct {
 	*pdt.Partida
-	out   io.Writer `json:"-"`
+	Out   io.Writer `json:"-"`
 	ErrCh chan bool `json:"-"`
 }
 
@@ -31,7 +31,7 @@ func (j *Juego) Cmd(cmd string) error {
 	}
 
 	for _, pkt := range pkts {
-		enco.Write(j.out, pkt)
+		enco.Write(j.Out, pkt)
 	}
 
 	return nil
@@ -45,7 +45,7 @@ func (j *Juego) String() string {
 func (j *Juego) Notify() {
 
 	// ojo primero hay que grabar el buff, luego avisar
-	enco.Write(j.out, enco.Pkt(
+	enco.Write(j.Out, enco.Pkt(
 		enco.Dest("ALL"),
 		enco.TimeOut("INTERRUMPING!! Roro tardo demasiado en jugar. Mano ganada por Rojo"),
 	))
@@ -62,7 +62,7 @@ func (j *Juego) Abandono(jugador string) error {
 	ptsFaltantes := int(j.Puntuacion) - j.Puntajes[equipoContrario]
 	j.SumarPuntos(equipoContrario, ptsFaltantes)
 
-	enco.Write(j.out, enco.Pkt(
+	enco.Write(j.Out, enco.Pkt(
 		enco.Dest("ALL"),
 		enco.Abandono(manojo.Jugador.ID),
 	))
@@ -70,31 +70,31 @@ func (j *Juego) Abandono(jugador string) error {
 	return nil
 }
 
-// NuevaPartida retorna nueva partida; error si hubo
-func NuevaPartida(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*Juego, io.Reader, error) {
+// NuevoJuego retorna nueva partida; error si hubo
+func NuevoJuego(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*Juego, io.Reader, error) {
 
-	Partida, err := pdt.NuevaPartida(puntuacion, equipoAzul, equipoRojo)
+	p, err := pdt.NuevaPartida(puntuacion, equipoAzul, equipoRojo)
 
 	if err != nil {
 		return nil, nil, err
 	}
 
+	buff := new(bytes.Buffer)
+
 	j := Juego{
-		Partida: Partida,
+		Partida: p,
+		Out:     buff,
+		ErrCh:   make(chan bool, 1),
 	}
 
-	buff := new(bytes.Buffer)
-	j.out = buff
-	j.ErrCh = make(chan bool, 1)
-
+	// pongo en el buffer un mensaje de Partida{} para cada jugador
 	for _, m := range j.Ronda.Manojos {
-		enco.Write(j.out, enco.Pkt(
+		enco.Write(j.Out, enco.Pkt(
 			enco.Dest(m.Jugador.ID),
 			enco.NuevaPartida{
 				Perspectiva: j.Partida.PerspectivaCacheFlor(&m),
 			},
 		))
-
 	}
 
 	return &j, buff, nil
