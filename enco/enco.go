@@ -9,7 +9,7 @@ type IMessage interface {
 	Cod() CodMsg
 }
 
-type Packet2 struct {
+type Packet struct {
 	Destination []string `json:"destination"`
 	Message     IMessage `json:"message"`
 }
@@ -138,12 +138,14 @@ type Tipo4 struct {
 	Razon Razon  `json:"razon"`
 }
 
-func Pkt2(dest []string, m IMessage) Packet2 {
-	return Packet2{
+func Pkt2(dest []string, m IMessage) Packet {
+	return Packet{
 		Destination: dest,
 		Message:     m,
 	}
 }
+
+var ALL = []string{"ALL"}
 
 // Dest Dest maker
 func Dest(ds ...string) []string {
@@ -383,7 +385,7 @@ func (m SumaPts) Cod() CodMsg {
 //
 //
 
-func Msg2(t CodMsg, data ...interface{}) IMessage {
+func Msg(t CodMsg, data ...interface{}) IMessage {
 	var m IMessage = nil
 
 	switch t {

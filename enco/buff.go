@@ -7,15 +7,15 @@ import (
 )
 
 // Write .
-func Write(w io.Writer, d Packet2) error {
+func Write(w io.Writer, d Packet) error {
 	enc := gob.NewEncoder(w)
 	err := enc.Encode(d)
 	return err
 }
 
 // Read retorna el pkt mas antiguo sin leer
-func Read(r io.Reader) (*Packet2, error) {
-	e := new(Packet2)
+func Read(r io.Reader) (*Packet, error) {
+	e := new(Packet)
 	dec := gob.NewDecoder(r)
 	err := dec.Decode(e)
 	if err != nil {
@@ -25,7 +25,7 @@ func Read(r io.Reader) (*Packet2, error) {
 }
 
 // Consume consume el buffer
-func Consume(r io.Reader, callback func(*Packet2)) {
+func Consume(r io.Reader, callback func(*Packet)) {
 	for {
 		e, err := Read(r)
 		if err == io.EOF {
@@ -39,7 +39,7 @@ func Consume(r io.Reader, callback func(*Packet2)) {
 }
 
 // Collect pasa de buffer a slice
-func Collect(r io.Reader) (res []Packet2) {
+func Collect(r io.Reader) (res []Packet) {
 	for {
 		e, err := Read(r)
 		if err == io.EOF {
@@ -55,7 +55,7 @@ func Collect(r io.Reader) (res []Packet2) {
 
 // contains dado un buffer se fija si contiene un mensaje
 // con ese codigo (y string de ser no-nulo)
-func Contains(pkts []Packet2, cod CodMsg) bool {
+func Contains(pkts []Packet, cod CodMsg) bool {
 	for _, pkt := range pkts {
 		if pkt.Message.Cod() == cod {
 			return true

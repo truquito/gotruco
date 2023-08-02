@@ -95,7 +95,7 @@ func Razon2str(r string) string {
 
 // Stringify parsea un pkt
 // de momento solo su contenido (el msg)
-func Stringify(pkt *enco.Packet2, p *pdt.Partida) string {
+func Stringify(pkt *enco.Packet, p *pdt.Partida) string {
 	// todo:
 	return ""
 	// s := Parse(p, pkt.Message)

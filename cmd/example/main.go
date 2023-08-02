@@ -44,7 +44,7 @@ func main() {
 	logfile.Write(string(pJSON))
 
 	fmt.Println(p)
-	enco.Consume(out, func(pkt *enco.Packet2) {
+	enco.Consume(out, func(pkt *enco.Packet) {
 		fmt.Println(deco.Stringify(pkt, p.Partida))
 	})
 
@@ -63,13 +63,13 @@ func main() {
 				if err != nil {
 					fmt.Println("<< " + err.Error())
 				}
-				enco.Consume(out, func(pkt *enco.Packet2) {
+				enco.Consume(out, func(pkt *enco.Packet) {
 					fmt.Println(deco.Stringify(pkt, p.Partida))
 				})
 				fmt.Println(p)
 			}
 		case <-p.ErrCh:
-			enco.Consume(out, func(pkt *enco.Packet2) {
+			enco.Consume(out, func(pkt *enco.Packet) {
 				fmt.Println(deco.Stringify(pkt, p.Partida))
 			})
 			fmt.Printf(">> ")

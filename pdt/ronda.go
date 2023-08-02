@@ -419,7 +419,7 @@ func (r *Ronda) SetMuestra(muestra Carta) {
 *		`pkts[3] = Juan dice: "33 son mejores!"`
 *
  */
-func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts2 []enco.Packet2) {
+func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts2 []enco.Packet) {
 
 	cantJugadores := len(r.Manojos)
 
@@ -456,7 +456,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts2 []enco.Packet2) {
 	yaDijeron[jIdx] = true
 
 	pkts2 = append(pkts2, enco.Pkt2(
-		[]string{"ALL"},
+		enco.ALL,
 		enco.DiceTengo{
 			Autor: r.Manojos[jIdx].Jugador.ID,
 			Valor: envidos[jIdx],
@@ -499,7 +499,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts2 []enco.Packet2) {
 				if esDeEquipoContrario {
 
 					pkts2 = append(pkts2, enco.Pkt2(
-						[]string{"ALL"},
+						enco.ALL,
 						enco.DiceSonMejores{
 							Autor: r.Manojos[i].Jugador.ID,
 							Valor: envidos[i],
@@ -524,7 +524,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts2 []enco.Packet2) {
 					if todaviaNoDijeronSonMejores {
 
 						pkts2 = append(pkts2, enco.Pkt2(
-							[]string{"ALL"},
+							enco.ALL,
 							enco.DiceSonBuenas(r.Manojos[i].Jugador.ID),
 							// valor de su envido es `envidos[i]` pero no corresponde decirlo
 						))
@@ -569,7 +569,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts2 []enco.Packet2) {
 *	`pkts[3] = Juan dice: "33 son mejores!"`
 *
  */
-func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts2 []enco.Packet2) {
+func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts2 []enco.Packet) {
 
 	// si solo un equipo tiene flor, entonces se saltea esta parte
 	soloUnEquipoTieneFlores := true
@@ -620,7 +620,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts2 []enco.Pa
 		yaDijeron[aPartirDe] = true
 
 		pkts2 = append(pkts2, enco.Pkt2(
-			[]string{"ALL"},
+			enco.ALL,
 			enco.DiceTengo{
 				Autor: r.Manojos[aPartirDe].Jugador.ID,
 				Valor: flores[aPartirDe],
@@ -657,7 +657,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts2 []enco.Pa
 				if esDeEquipoContrario {
 
 					pkts2 = append(pkts2, enco.Pkt2(
-						[]string{"ALL"},
+						enco.ALL,
 						enco.DiceSonMejores{
 							Autor: r.Manojos[i].Jugador.ID,
 							Valor: flores[i],
@@ -682,7 +682,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts2 []enco.Pa
 					if todaviaNoDijeronSonMejores {
 
 						pkts2 = append(pkts2, enco.Pkt2(
-							[]string{"ALL"},
+							enco.ALL,
 							enco.DiceSonBuenas(r.Manojos[i].Jugador.ID),
 						))
 
