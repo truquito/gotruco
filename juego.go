@@ -1,8 +1,7 @@
 package truco
 
 import (
-	"bytes"
-	"io"
+	"sync"
 
 	"github.com/filevich/truco/enco"
 	"github.com/filevich/truco/pdt"
@@ -18,8 +17,15 @@ const VERSION = "0.1.0"
 // Juego :
 type Juego struct {
 	*pdt.Partida
-	Out   io.ReadWriter `json:"-"`
+	mu    *sync.Mutex
+	Out   []enco.Packet `json:"-"`
 	ErrCh chan bool     `json:"-"`
+}
+
+func (j *Juego) Consume() []enco.Packet {
+	j.mu.Lock()
+	defer j.mu.Unlock()
+	return j.Out[:]
 }
 
 // Cmd nexo capa presentacion con capa logica
@@ -30,9 +36,7 @@ func (j *Juego) Cmd(cmd string) error {
 		return err
 	}
 
-	for _, pkt := range pkts {
-		enco.Write(j.Out, pkt)
-	}
+	j.Out = append(j.Out, pkts...)
 
 	return nil
 }
@@ -44,11 +48,13 @@ func (j *Juego) String() string {
 
 func (j *Juego) Notify() {
 
-	// ojo primero hay que grabar el buff, luego avisar
-	enco.Write(j.Out, enco.Pkt(
+	// deprecated: ojo primero hay que grabar el buff, luego avisar
+	pkt := enco.Pkt(
 		enco.Dest("ALL"),
 		enco.TimeOut("INTERRUMPING!! Roro tardo demasiado en jugar. Mano ganada por Rojo"),
-	))
+	)
+
+	j.Out = append(j.Out, pkt)
 
 	j.ErrCh <- true
 }
@@ -62,10 +68,12 @@ func (j *Juego) Abandono(jugador string) error {
 	ptsFaltantes := int(j.Puntuacion) - j.Puntajes[equipoContrario]
 	j.SumarPuntos(equipoContrario, ptsFaltantes)
 
-	enco.Write(j.Out, enco.Pkt(
+	pkt := enco.Pkt(
 		enco.Dest("ALL"),
 		enco.Abandono(manojo.Jugador.ID),
-	))
+	)
+
+	j.Out = append(j.Out, pkt)
 
 	return nil
 }
@@ -79,22 +87,22 @@ func NuevoJuego(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*Ju
 		return nil, err
 	}
 
-	buff := new(bytes.Buffer)
-
 	j := Juego{
 		Partida: p,
-		Out:     buff,
+		mu:      &sync.Mutex{},
+		Out:     make([]enco.Packet, 0),
 		ErrCh:   make(chan bool, 1),
 	}
 
 	// pongo en el buffer un mensaje de Partida{} para cada jugador
 	for _, m := range j.Ronda.Manojos {
-		enco.Write(j.Out, enco.Pkt(
+		pkt := enco.Pkt(
 			enco.Dest(m.Jugador.ID),
 			enco.NuevaPartida{
 				Perspectiva: j.Partida.PerspectivaCacheFlor(&m),
 			},
-		))
+		)
+		j.Out = append(j.Out, pkt)
 	}
 
 	return &j, nil

@@ -9,7 +9,6 @@ import (
 
 	"github.com/filevich/truco"
 	"github.com/filevich/truco/deco"
-	"github.com/filevich/truco/enco"
 )
 
 var reader = bufio.NewReader(os.Stdin)
@@ -44,9 +43,10 @@ func main() {
 	logfile.Write(string(pJSON))
 
 	fmt.Println(p)
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		fmt.Println(deco.Stringify(pkt, p.Partida))
-	})
+
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 
 	// hago una gorutine (y channel para avisar) para el io
 	go handleIO()
@@ -63,15 +63,15 @@ func main() {
 				if err != nil {
 					fmt.Println("<< " + err.Error())
 				}
-				enco.Consume(p.Out, func(pkt *enco.Packet) {
-					fmt.Println(deco.Stringify(pkt, p.Partida))
-				})
+				for _, pkt := range p.Consume() {
+					fmt.Println(deco.Stringify(&pkt, p.Partida))
+				}
 				fmt.Println(p)
 			}
 		case <-p.ErrCh:
-			enco.Consume(p.Out, func(pkt *enco.Packet) {
-				fmt.Println(deco.Stringify(pkt, p.Partida))
-			})
+			for _, pkt := range p.Consume() {
+				fmt.Println(deco.Stringify(&pkt, p.Partida))
+			}
 			fmt.Printf(">> ")
 		}
 

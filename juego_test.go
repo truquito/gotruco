@@ -1257,9 +1257,9 @@ func TestFlorFlorContraFlorQuiero(t *testing.T) {
 	p.Cmd("Adolfo Contra-flor-al-resto")
 	p.Cmd("Richard Quiero")
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 
 	util.Assert(p.Ronda.Envite.Estado == pdt.DESHABILITADO, func() {
 		t.Error(`El estado del envido deberia ser 'deshabilitado'`)
@@ -1409,9 +1409,9 @@ func TestFixContraFlor(t *testing.T) {
 
 	t.Log(p)
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 
 	util.Assert(p.Puntajes[pdt.Rojo] > p.Puntajes[pdt.Azul], func() {
 		t.Error(`El equipo rojo deberia de tener mas pts que el azul`)
@@ -1487,9 +1487,9 @@ func TestTirada1(t *testing.T) {
 
 	t.Log(p)
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 
 	// como la muestra es Palo: pdt.Oro, Valor: 3 -> gana alvaro
 	if !(len(p.Ronda.Manos[pdt.Primera].CartasTiradas) == 6) {
@@ -1856,9 +1856,9 @@ func TestFixNacho(t *testing.T) {
 		t.Error(`Deberia ser el turno de Richard ya que 11 (perico) > 10 (perica)`)
 	})
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 
 	t.Log(p)
 
@@ -1932,9 +1932,9 @@ func TestFixNacho(t *testing.T) {
 
 	p.Cmd("andres mazo")
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 
 }
@@ -2001,9 +2001,9 @@ func TestFixNoFlor(t *testing.T) {
 	p.Cmd("adolfo re-truco")
 	// << Adolfo grita re-truco
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 
 	p.Cmd("richard quiero")
@@ -2460,9 +2460,9 @@ func TestFixPierdeTurno(t *testing.T) {
 	p.Cmd("alvaro 5 espada")
 	p.Cmd("adolfo mazo")
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 
 	util.Assert(p.Ronda.GetElTurno().Jugador.ID == "Roro", func() {
@@ -2501,9 +2501,9 @@ func Test2FloresSeVaAlMazo(t *testing.T) {
 		t.Error(`deberia dejarlo irse al mazo`)
 	})
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 }
 
@@ -2567,9 +2567,9 @@ func TestTodoTienenFlor(t *testing.T) {
 	p.Cmd("Roro Mazo")
 	p.Cmd("Adolfo Flor")
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 }
 
@@ -2602,9 +2602,9 @@ func TestFixTopeEnvido(t *testing.T) {
 
 	p.Cmd("Roro quiero")
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 }
 
@@ -2644,9 +2644,9 @@ func TestAutoQuererse(t *testing.T) {
 		t.Error(`no lo deberia dejar porque el envite lo propuso el equipo rojo`)
 	})
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 }
 
@@ -2676,9 +2676,9 @@ func TestFixEnvidoManoEsElUltimo(t *testing.T) {
 		t.Error(`la sequencia de toques era valida`)
 	})
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 }
 
@@ -2697,9 +2697,9 @@ func TestEnvidoManoSeFue(t *testing.T) {
 		t.Error(`la sequencia de toques era valida`)
 	})
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 }
 
@@ -2732,9 +2732,9 @@ func TestFlorBlucle(t *testing.T) {
 		t.Error(`la flor se debio de haber jugado`)
 	})
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 }
 
@@ -2808,9 +2808,9 @@ func TestQuieroContraflorDesdeMazo(t *testing.T) {
 		t.Error(`El estado del envite no debio de haber sido modificado`)
 	})
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 }
 
@@ -2838,9 +2838,9 @@ func TestFixSeVaAlMazoYTeniaFlor(t *testing.T) {
 		t.Error(`Deberia dejarlo cantar truco`)
 	})
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 }
 
@@ -2858,9 +2858,9 @@ func TestFixDesconcertante(t *testing.T) {
 	})
 	p.Cmd("roro truco")
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 }
 
@@ -2908,9 +2908,9 @@ func TestMalaAsignacionPts(t *testing.T) {
 	p.Cmd("roro 1 oro") // <- gana roro
 	p.Cmd("alvaro 5 espada")
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 
 	// pts Vale4 Ganado = 4
@@ -3084,9 +3084,9 @@ func TestFixRondaNueva(t *testing.T) {
 		t.Error(`el puntaje para el equipo azul deberia ser 0 porque no ganaron nada`)
 	})
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 }
 
@@ -3164,9 +3164,9 @@ func TestFixIrseAlMazo2(t *testing.T) {
 		t.Error(`deberia dejarlo irse al mazo`)
 	})
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 
 	t.Log(p)
 
@@ -3228,9 +3228,9 @@ func TestFixDecirQuiero(t *testing.T) {
 		t.Error(`El equpo azul deberia de seguir manteniendo la potestad`)
 	})
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 
 }
@@ -3282,9 +3282,9 @@ func TestFixPanicNoQuiero(t *testing.T) {
 		t.Error(`Deberian gana 3 puntines por el vale-4 no querido`)
 	})
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 
 }
@@ -3308,9 +3308,9 @@ func TestFixCartaYaJugada(t *testing.T) {
 		t.Error(`Deberia ser el turno de Richard`)
 	})
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 
 }
@@ -3328,10 +3328,12 @@ func TestFixTrucoNoQuiero(t *testing.T) {
 		t.Error(`La ronda deberia de haber sido ganado por Azul`)
 	})
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
-	t.Log(enco.Collect(p.Out))
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
+	for _, pkt := range p.Consume() {
+		t.Log(deco.Stringify(&pkt, p.Partida))
+	}
 	t.Log(p)
 
 }
@@ -3506,7 +3508,7 @@ func TestFixTrucoDeshabilitaEnvido(t *testing.T) {
 	// el envido esta primero!!
 	p.Cmd("Roro envido")
 
-	util.Assert(!enco.Contains(enco.Collect(p.Out), enco.TError), func() {
+	util.Assert(!enco.Contains(p.Consume(), enco.TError), func() {
 		t.Error("No deberia resultar en un error tocar envido ahora")
 	})
 
@@ -3540,9 +3542,9 @@ func TestAbandono(t *testing.T) {
 		t.Error(`El equipo rojo debio de haber completado los pts`)
 	})
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 
 }
 
@@ -3577,9 +3579,9 @@ func TestFixTester2(t *testing.T) {
 	p.Cmd("Roro 7 Oro")
 	p.Cmd("Alvaro flor")
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 
 }
 
@@ -3593,9 +3595,9 @@ func TestFixFlorNoCantada(t *testing.T) {
 
 	p.Cmd("Alvaro 2 Basto")
 
-	enco.Consume(p.Out, func(pkt *enco.Packet) {
-		t.Log(deco.Stringify(pkt, p.Partida))
-	})
+	for _, pkt := range p.Consume() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 
 	roro := p.Manojo("Roro")
 
