@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/filevich/truco"
 	"github.com/filevich/truco/deco"
@@ -37,7 +38,7 @@ func main() {
 	n := 2 // <-- num. of players
 	azules := []string{"Alice", "Ariana", "Annie"}
 	rojos := []string{"Bob", "Ben", "Bill"}
-	p, _ := truco.NuevoJuego(20, azules[:n>>1], rojos[:n>>1], true)
+	p, _ := truco.NuevoJuego(20, azules[:n>>1], rojos[:n>>1], true, time.Second*10)
 
 	pJSON, _ := p.MarshalJSON()
 	logfile.Write(string(pJSON))
@@ -78,7 +79,7 @@ func main() {
 			// de momento, el unico error posible
 			if p.Expirado() {
 				m, _ := p.Err.Message.(enco.TimeOut)
-				fmt.Printf("el juego terminó debido a que `%s` no realizó niguna jugada en %s\n", m, p.DurTurno)
+				fmt.Printf("el juego terminó debido a que `%s` no realizó niguna jugada en %s.\n", m, p.DurTurno)
 			}
 			// fmt.Printf(">> ")
 		}

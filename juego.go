@@ -170,6 +170,7 @@ func NuevoJuego(
 	equipoAzul,
 	equipoRojo []string,
 	verbose bool,
+	maxTiempoPorTurno time.Duration,
 
 ) (*Juego, error) {
 
@@ -178,8 +179,6 @@ func NuevoJuego(
 	if err != nil {
 		return nil, err
 	}
-
-	timeout := time.Second * 10
 
 	j := Juego{
 		Partida: p,
@@ -190,7 +189,7 @@ func NuevoJuego(
 		Err:   nil,
 		// tiempo
 		contador: make(chan c_SIGNAL, 1),
-		DurTurno: timeout,
+		DurTurno: maxTiempoPorTurno,
 		tic:      nil,
 	}
 
