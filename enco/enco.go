@@ -14,6 +14,37 @@ type Packet struct {
 	Message     IMessage `json:"message"`
 }
 
+// en vez de retornar `{"autor":"pepe","valor":123}`
+// retorna `{"cod":"DiceTengo","cont":{"autor":"pepe","valor":123}}`
+func Dumps(m IMessage) ([]byte, error) {
+	type msg struct {
+		Cod  CodMsg          `json:"cod"`
+		Cont json.RawMessage `json:"cont"`
+	}
+
+	bs, _ := json.Marshal(m)
+
+	return json.Marshal(msg{
+		Cod:  m.Cod(),
+		Cont: bs,
+	})
+}
+
+func (p Packet) MarshalJSON() ([]byte, error) {
+	bs, err := Dumps(p.Message)
+	if err != nil {
+		return nil, err
+	}
+
+	return json.Marshal(struct {
+		Destination []string        `json:"destination"`
+		Message     json.RawMessage `json:"message"`
+	}{
+		Destination: p.Destination,
+		Message:     bs,
+	})
+}
+
 // CodMsg ..
 type CodMsg string
 

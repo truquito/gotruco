@@ -45,12 +45,27 @@ func TestPacket(t *testing.T) {
 	t.Log("----------------------------------")
 
 	{
-		m := DiceTengo{
-			"pepe",
-			123,
-		}
+		pkt := Pkt(
+			ALL,
+			DiceTengo{
+				"pepe",
+				123,
+			},
+		)
 
-		bs, _ := json.Marshal(m)
+		bs, _ := json.Marshal(pkt)
+		t.Log(string(bs))
+	}
+
+	t.Log("----------------------------------")
+
+	{
+		pkt := Pkt(
+			ALL,
+			QuieroTruco("romualdo"),
+		)
+
+		bs, _ := json.Marshal(pkt)
 		t.Log(string(bs))
 	}
 
