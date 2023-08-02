@@ -2,9 +2,74 @@ package enco
 
 import (
 	"bytes"
+	"encoding/json"
 	"io"
 	"testing"
 )
+
+func TestPacket(t *testing.T) {
+	/*
+		voy a armar el packet
+
+		{ <- Packet
+			dest: ["pepe"],
+			msg: { <- Message::DiceSonBuenas
+				cod: "DiceSonBuenas",
+				cont: "miguel"
+			}
+		}
+	*/
+	var cont json.RawMessage
+	bs, _ := json.Marshal("miguel")
+	cont = bs
+	packet1 := Packet{
+		Destination: []string{"pepe"},
+		Message: Message{
+			Cod:  TDiceSonBuenas,
+			Cont: cont,
+		},
+	}
+
+	t.Log(packet1) // contiene 2 punteros
+	// recordar que un slice es un puntero a un array.
+	// fmt.Println(packet1.Destination)
+
+	// t.Log("----------------------------------")
+
+	// a := A{
+	// 	"pepe",
+	// 	333,
+	// }
+
+	// bs3, _ := json.Marshal(a)
+	// t.Log(string(bs3))
+
+	t.Log("----------------------------------")
+
+	{
+		m := DiceTengo{
+			"pepe",
+			123,
+		}
+
+		bs, _ := json.Marshal(m)
+		t.Log(string(bs))
+	}
+
+	t.Log("----------------------------------")
+
+	{
+		m := NuevaPartida{
+			"yada yada",
+		}
+
+		bs, _ := json.Marshal(m)
+		t.Log(string(bs))
+	}
+
+	m := DiceSonBuenas("asdasd")
+	t.Log(m.Cod(), m)
+}
 
 func TestCast(t *testing.T) {
 

@@ -10,21 +10,21 @@ import (
 )
 
 // Str .
-func Str(m *enco.Message) string {
+func Str(m enco.Message) string {
 	var str string
 	json.Unmarshal(m.Cont, &str)
 	return str
 }
 
 // Int .
-func Int(m *enco.Message) int {
+func Int(m enco.Message) int {
 	var num int
 	json.Unmarshal(m.Cont, &num)
 	return num
 }
 
 // Autor .
-func Autor(p *pdt.Partida, m *enco.Message) *pdt.Manojo {
+func Autor(p *pdt.Partida, m enco.Message) *pdt.Manojo {
 	var jid string
 	json.Unmarshal(m.Cont, &jid)
 
@@ -32,14 +32,14 @@ func Autor(p *pdt.Partida, m *enco.Message) *pdt.Manojo {
 }
 
 // Tipo1 .
-func Tipo1(p *pdt.Partida, m *enco.Message) (*pdt.Manojo, int) {
+func Tipo1(p *pdt.Partida, m enco.Message) (*pdt.Manojo, int) {
 	var t1 enco.Tipo1
 	json.Unmarshal(m.Cont, &t1)
 	return p.Manojo(t1.Autor), t1.Valor
 }
 
 // Tipo2 .
-func Tipo2(p *pdt.Partida, m *enco.Message) (*pdt.Manojo, pdt.Palo, int) {
+func Tipo2(p *pdt.Partida, m enco.Message) (*pdt.Manojo, pdt.Palo, int) {
 	var t2 enco.Tipo2
 	json.Unmarshal(m.Cont, &t2)
 	palo := pdt.ToPalo[t2.Palo]
@@ -47,13 +47,13 @@ func Tipo2(p *pdt.Partida, m *enco.Message) (*pdt.Manojo, pdt.Palo, int) {
 }
 
 // Tipo3 .
-func Tipo3(p *pdt.Partida, m *enco.Message) (*pdt.Manojo, enco.Razon, int) {
+func Tipo3(p *pdt.Partida, m enco.Message) (*pdt.Manojo, enco.Razon, int) {
 	var t3 enco.Tipo3
 	json.Unmarshal(m.Cont, &t3)
 	return p.Manojo(t3.Autor), t3.Razon, t3.Puntos
 }
 
-func Tipo4(p *pdt.Partida, m *enco.Message) (*pdt.Manojo, enco.Razon) {
+func Tipo4(p *pdt.Partida, m enco.Message) (*pdt.Manojo, enco.Razon) {
 	var t1 enco.Tipo4
 	json.Unmarshal(m.Cont, &t1)
 	return p.Manojo(t1.Autor), t1.Razon
@@ -101,7 +101,7 @@ func Stringify(pkt *enco.Packet, p *pdt.Partida) string {
 }
 
 // Parse parsea un mensaje de salida y retorna su string correspondiente
-func Parse(p *pdt.Partida, m *enco.Message) string {
+func Parse(p *pdt.Partida, m enco.Message) string {
 
 	var decoded string
 

@@ -14,12 +14,12 @@ type IMessage interface {
 
 // Packet ..
 type Packet struct {
-	Destination *[]string `json:"destination"`
-	Message     *Message  `json:"message"`
+	Destination []string `json:"destination"`
+	Message     Message  `json:"message"`
 }
 
 func (pkt *Packet) String() string {
-	return fmt.Sprintf("[%v] ", strings.Join(*pkt.Destination, ":"))
+	return fmt.Sprintf("[%v] ", strings.Join(pkt.Destination, ":"))
 }
 
 // Message .
@@ -147,7 +147,7 @@ type Tipo4 struct {
 }
 
 // Pkt Packet maker
-func Pkt(dest *[]string, m *Message) *Packet {
+func Pkt(dest []string, m Message) *Packet {
 	return &Packet{
 		Destination: dest,
 		Message:     m,
@@ -155,12 +155,12 @@ func Pkt(dest *[]string, m *Message) *Packet {
 }
 
 // Dest Dest maker
-func Dest(ds ...string) *[]string {
-	return &ds
+func Dest(ds ...string) []string {
+	return ds
 }
 
 // Msg Message maker
-func Msg(t CodMsg, data ...interface{}) *Message {
+func Msg(t CodMsg, data ...interface{}) Message {
 
 	var cont json.RawMessage
 
@@ -267,7 +267,7 @@ func Msg(t CodMsg, data ...interface{}) *Message {
 
 	}
 
-	return &Message{
+	return Message{
 		Cod:  t,
 		Cont: cont,
 	}
