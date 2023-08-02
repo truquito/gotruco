@@ -419,7 +419,7 @@ func (r *Ronda) SetMuestra(muestra Carta) {
 *		`pkts[3] = Juan dice: "33 son mejores!"`
 *
  */
-func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts []*enco.Packet) {
+func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts2 []enco.Packet2) {
 
 	cantJugadores := len(r.Manojos)
 
@@ -455,9 +455,12 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts []*enco.Packet) {
 
 	yaDijeron[jIdx] = true
 
-	pkts = append(pkts, enco.Pkt(
-		enco.Dest("ALL"),
-		enco.Msg(enco.TDiceTengo, r.Manojos[jIdx].Jugador.ID, envidos[jIdx]),
+	pkts2 = append(pkts2, enco.Pkt2(
+		[]string{"ALL"},
+		enco.DiceTengo{
+			Autor: r.Manojos[jIdx].Jugador.ID,
+			Valor: envidos[jIdx],
+		},
 	))
 
 	// `todaviaNoDijeronSonMejores` se usa para
@@ -495,9 +498,12 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts []*enco.Packet) {
 			if sonMejores {
 				if esDeEquipoContrario {
 
-					pkts = append(pkts, enco.Pkt(
-						enco.Dest("ALL"),
-						enco.Msg(enco.TDiceSonMejores, r.Manojos[i].Jugador.ID, envidos[i]),
+					pkts2 = append(pkts2, enco.Pkt2(
+						[]string{"ALL"},
+						enco.DiceSonMejores{
+							Autor: r.Manojos[i].Jugador.ID,
+							Valor: envidos[i],
+						},
 					))
 
 					jIdx = i
@@ -517,9 +523,9 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts []*enco.Packet) {
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
 
-						pkts = append(pkts, enco.Pkt(
-							enco.Dest("ALL"),
-							enco.Msg(enco.TDiceSonBuenas, r.Manojos[i].Jugador.ID),
+						pkts2 = append(pkts2, enco.Pkt2(
+							[]string{"ALL"},
+							enco.DiceSonBuenas(r.Manojos[i].Jugador.ID),
 							// valor de su envido es `envidos[i]` pero no corresponde decirlo
 						))
 
@@ -545,7 +551,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts []*enco.Packet) {
 
 	max = envidos[jIdx]
 
-	return jIdx, max, pkts
+	return jIdx, max, pkts2
 }
 
 // ExecLaFlores computa los cantos de la flor
@@ -563,7 +569,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts []*enco.Packet) {
 *	`pkts[3] = Juan dice: "33 son mejores!"`
 *
  */
-func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts []*enco.Packet) {
+func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts2 []enco.Packet2) {
 
 	// si solo un equipo tiene flor, entonces se saltea esta parte
 	soloUnEquipoTieneFlores := true
@@ -613,10 +619,14 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts []*enco.Pa
 	if flores[aPartirDe] > 0 {
 		yaDijeron[aPartirDe] = true
 
-		pkts = append(pkts, enco.Pkt(
-			enco.Dest("ALL"),
-			enco.Msg(enco.TDiceTengo, r.Manojos[aPartirDe].Jugador.ID, flores[aPartirDe]),
+		pkts2 = append(pkts2, enco.Pkt2(
+			[]string{"ALL"},
+			enco.DiceTengo{
+				Autor: r.Manojos[aPartirDe].Jugador.ID,
+				Valor: flores[aPartirDe],
+			},
 		))
+
 	}
 
 	// `todaviaNoDijeronSonMejores` se usa para
@@ -646,9 +656,12 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts []*enco.Pa
 			if sonMejores {
 				if esDeEquipoContrario {
 
-					pkts = append(pkts, enco.Pkt(
-						enco.Dest("ALL"),
-						enco.Msg(enco.TDiceSonMejores, r.Manojos[i].Jugador.ID, flores[i]),
+					pkts2 = append(pkts2, enco.Pkt2(
+						[]string{"ALL"},
+						enco.DiceSonMejores{
+							Autor: r.Manojos[i].Jugador.ID,
+							Valor: flores[i],
+						},
 					))
 
 					jIdx = i
@@ -668,10 +681,9 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts []*enco.Pa
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
 
-						pkts = append(pkts, enco.Pkt(
-							enco.Dest("ALL"),
-							enco.Msg(enco.TDiceSonBuenas, r.Manojos[i].Jugador.ID),
-							// valor de su envido es `flores[i]` pero no corresponde decirlo
+						pkts2 = append(pkts2, enco.Pkt2(
+							[]string{"ALL"},
+							enco.DiceSonBuenas(r.Manojos[i].Jugador.ID),
 						))
 
 						yaDijeron[i] = true
@@ -696,7 +708,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts []*enco.Pa
 
 	max = flores[jIdx]
 
-	return r.getManojo(jIdx), max, pkts
+	return r.getManojo(jIdx), max, pkts2
 }
 
 // los anteriores a `aPartirDe` (incluido este) no

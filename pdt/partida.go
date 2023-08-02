@@ -282,9 +282,9 @@ func (p *Partida) IrAlMazo(manojo *Manojo) {
 
 // EvaluarMano evalua todas las cartas y decide que equipo gano
 // de ese ganador se setea el siguiente turno
-func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
+func (p *Partida) EvaluarMano() (bool, []enco.Packet2) {
 
-	var pkts []*enco.Packet
+	var pkts2 []enco.Packet2
 
 	// cual es la tirada-carta que gano la mano?
 	// ojo que puede salir parda
@@ -348,9 +348,9 @@ func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
 		mano.Resultado = Empardada
 		mano.Ganador = ""
 
-		pkts = append(pkts, enco.Pkt(
+		pkts2 = append(pkts2, enco.Pkt2(
 			enco.Dest("ALL"),
-			enco.Msg(enco.TLaManoResultaParda),
+			enco.LaManoResultaParda{},
 		))
 
 		// no se cambia el turno
@@ -390,24 +390,27 @@ func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
 		// despues le pido el id, y depues se lo vluevlo a preguntar.
 		// esta al pedo
 
-		pkts = append(pkts, enco.Pkt(
+		pkts2 = append(pkts2, enco.Pkt2(
 			enco.Dest("ALL"),
-			enco.Msg(enco.TManoGanada, mano.Ganador, int(p.Ronda.ManoEnJuego)),
+			enco.ManoGanada{
+				Autor: mano.Ganador,
+				Valor: int(p.Ronda.ManoEnJuego),
+			},
 		))
 
 	}
 
 	// se termino la ronda?
-	empiezaNuevaRonda, pkt2 := p.EvaluarRonda()
+	empiezaNuevaRonda, pkt22 := p.EvaluarRonda()
 
-	pkts = append(pkts, pkt2...)
+	pkts2 = append(pkts2, pkt22...)
 
 	// cuando termina la mano (y no se empieza una ronda) -> cambia de TRUNO
 	// cuando termina la ronda -> cambia de MANO
 	// para usar esto, antes se debe primero incrementar el turno
 	// incremento solo si no se empezo una nueva ronda
 
-	return empiezaNuevaRonda, pkts
+	return empiezaNuevaRonda, pkts2
 }
 
 // EvaluarRonda tener siempre en cuenta que evaluar la ronda es sinonimo de
@@ -415,7 +418,7 @@ func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
 // se acabo la ronda?
 // si se empieza una ronda nueva -> retorna true
 // si no se termino la ronda 	 -> retorna false
-func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
+func (p *Partida) EvaluarRonda() (bool, []enco.Packet2) {
 
 	/*
 		TENER EN CUENTA:
@@ -427,7 +430,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 		por default dice "ganoRojo"
 	*/
 
-	var pkts []*enco.Packet
+	var pkts2 []enco.Packet2
 
 	// la ronda continua...
 
@@ -591,9 +594,12 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 
 	if !hayJugadoresEnAmbos {
 
-		pkts = append(pkts, enco.Pkt(
+		pkts2 = append(pkts2, enco.Pkt2(
 			enco.Dest("ALL"),
-			enco.Msg(enco.TRondaGanada, ganador, enco.SeFueronAlMazo),
+			enco.RondaGanada{
+				Autor: ganador,
+				Razon: enco.SeFueronAlMazo,
+			},
 			// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado`
 		))
 
@@ -611,10 +617,12 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 			razon = enco.TrucoNoQuerido
 		}
 
-		pkts = append(pkts, enco.Pkt(
+		pkts2 = append(pkts2, enco.Pkt2(
 			enco.Dest("ALL"),
-			enco.Msg(enco.TRondaGanada, ganador, razon),
-			// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s no querido`
+			enco.RondaGanada{
+				Autor: ganador,
+				Razon: razon,
+			},
 		))
 
 	} else {
@@ -629,22 +637,28 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 			razon = enco.TrucoQuerido
 		}
 
-		pkts = append(pkts, enco.Pkt(
+		pkts2 = append(pkts2, enco.Pkt2(
 			enco.Dest("ALL"),
-			enco.Msg(enco.TRondaGanada, ganador, razon),
-			// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado`
+			enco.RondaGanada{
+				Autor: ganador,
+				Razon: razon,
+			},
 		))
 
 	}
 
 	p.SumarPuntos(p.Ronda.Manojo(ganador).Jugador.Equipo, totalPts)
 
-	pkts = append(pkts, enco.Pkt(
+	pkts2 = append(pkts2, enco.Pkt2(
 		enco.Dest("ALL"),
-		enco.Msg(enco.TSumaPts, ganador, enco.TrucoQuerido, totalPts),
+		enco.SumaPts{
+			Autor:  ganador,
+			Razon:  enco.TrucoQuerido,
+			Puntos: totalPts,
+		},
 	))
 
-	return true, pkts // porque se empezo una nueva ronda
+	return true, pkts2 // porque se empezo una nueva ronda
 }
 
 // NuevaRonda .

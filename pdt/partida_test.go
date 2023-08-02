@@ -261,8 +261,9 @@ func TestFixNoLeDeberiaResponderDesdeUltratumba(t *testing.T) {
 
 	pkts, _ := p.Cmd("Roro quiero")
 	for _, pkt := range pkts {
-		diceSonBuenas := pkt.Message.Cod == enco.TDiceSonBuenas
-		loDijoRenzo := string(pkt.Message.Cont) == "\"Renzo\""
+		diceSonBuenas := pkt.Message.Cod() == enco.TDiceSonBuenas
+		m, _ := pkt.Message.(enco.DiceSonBuenas)
+		loDijoRenzo := m == "Renzo"
 		if diceSonBuenas && loDijoRenzo {
 			t.Error("No deberia poder responder desde ultratumba")
 		}
@@ -270,16 +271,25 @@ func TestFixNoLeDeberiaResponderDesdeUltratumba(t *testing.T) {
 
 	// debio de haber ganado el envido
 	for _, pkt := range pkts {
-		if pkt.Message.Cod == enco.TSumaPts {
-			var t3 enco.Tipo3
-			json.Unmarshal(pkt.Message.Cont, &t3)
+		if pkt.Message.Cod() == enco.TSumaPts {
 
+			m, _ := pkt.Message.(enco.SumaPts)
 			ok := util.All(
-				t3.Puntos == 4,
-				t3.Razon == enco.FaltaEnvidoGanado,
-				t3.Autor == "Roro",
+				m.Puntos == 4,
+				m.Razon == enco.FaltaEnvidoGanado,
+				m.Autor == "Roro",
 				p.Ronda.Envite.Estado == DESHABILITADO,
 			)
+
+			// var t3 enco.Tipo3
+			// json.Unmarshal(pkt.Message.Cont, &t3)
+
+			// ok := util.All(
+			// 	t3.Puntos == 4,
+			// 	t3.Razon == enco.FaltaEnvidoGanado,
+			// 	t3.Autor == "Roro",
+			// 	p.Ronda.Envite.Estado == DESHABILITADO,
+			// )
 
 			util.Assert(ok, func() {
 				t.Error("Alguna condicion no se cumplio")
@@ -429,10 +439,11 @@ func TestFixDecirSonBuenasDesdeUltratumba(t *testing.T) {
 
 	pkts, _ := p.Cmd("Renzo quiero")
 	for _, pkt := range pkts {
-		if pkt.Message.Cod == enco.TDiceSonBuenas {
-			var autor string
-			json.Unmarshal(pkt.Message.Cont, &autor)
-			if autor == "Roro" {
+		if pkt.Message.Cod() == enco.TDiceSonBuenas {
+			m, _ := pkt.Message.(enco.DiceSonBuenas)
+			// var autor string
+			// json.Unmarshal(pkt.Message.Cont, &autor)
+			if m == "Roro" {
 				t.Error("Roro no deberia poder hablar dedse ultratumba")
 				break
 			}
@@ -588,26 +599,28 @@ func TestFixRazonErronea(t *testing.T) {
 	for _, pkt := range pkts {
 
 		// obtengo el contenido del mensaje
-		var cont map[string]json.RawMessage
-		json.Unmarshal(pkt.Message.Cont, &cont)
+		// var cont map[string]json.RawMessage
+		// json.Unmarshal(pkt.Message.Cont, &cont)
 
-		if pkt.Message.Cod == enco.TRondaGanada {
+		if pkt.Message.Cod() == enco.TRondaGanada {
 			countMsgRondaGanada++
 
-			var r string
-			json.Unmarshal(cont["razon"], &r)
+			m, _ := pkt.Message.(enco.RondaGanada)
+			// var r string
+			// json.Unmarshal(cont["razon"], &r)
 
-			ok := enco.Razon(r) != enco.EnvidoGanado
+			ok := m.Razon != enco.EnvidoGanado
 			if !ok {
 				t.Error(`la razon por que ganan la ronda no deberia ser "por el envido"`)
 			}
 		}
 
-		if pkt.Message.Cod == enco.TSumaPts {
-			var r string
-			json.Unmarshal(cont["razon"], &r)
+		if pkt.Message.Cod() == enco.TSumaPts {
+			m, _ := pkt.Message.(enco.SumaPts)
+			// var r string
+			// json.Unmarshal(cont["razon"], &r)
 
-			razon := enco.Razon(r)
+			razon := m.Razon
 			ok := razon == enco.TrucoQuerido || razon == enco.TrucoNoQuerido
 			if !ok {
 				t.Error("no deberia ser la razon")
@@ -631,28 +644,32 @@ func TestFixRazonErronea(t *testing.T) {
 
 	for _, pkt := range pkts {
 
-		// obtengo el contenido del mensaje
-		var cont map[string]json.RawMessage
-		json.Unmarshal(pkt.Message.Cont, &cont)
+		// m, _ := pkt.Message.(enco.SumaPts)
 
-		if pkt.Message.Cod == enco.TRondaGanada {
+		// obtengo el contenido del mensaje
+		// var cont map[string]json.RawMessage
+		// json.Unmarshal(pkt.Message.Cont, &cont)
+
+		if pkt.Message.Cod() == enco.TRondaGanada {
 			countMsgRondaGanada++
 
-			var r string
-			json.Unmarshal(cont["razon"], &r)
+			m, _ := pkt.Message.(enco.RondaGanada)
+			// var r string
+			// json.Unmarshal(cont["razon"], &r)
 
-			ok := enco.Razon(r) != enco.EnvidoGanado
+			ok := m.Razon != enco.EnvidoGanado
 			if !ok {
 				t.Error(`la razon por que ganan la ronda no deberia ser "por el envido"`)
 			}
 		}
 
-		if pkt.Message.Cod == enco.TSumaPts {
+		if pkt.Message.Cod() == enco.TSumaPts {
 
-			var r string
-			json.Unmarshal(cont["razon"], &r)
+			m, _ := pkt.Message.(enco.SumaPts)
+			// var r string
+			// json.Unmarshal(cont["razon"], &r)
 
-			ok := enco.Razon(r) == enco.TrucoQuerido || enco.Razon(r) == enco.TrucoNoQuerido
+			ok := m.Razon == enco.TrucoQuerido || m.Razon == enco.TrucoNoQuerido
 			if !ok {
 				t.Error("no deberia ser la razon")
 			}
@@ -687,10 +704,10 @@ func TestFixGanadorErroneo(t *testing.T) {
 	for _, pkt := range pkts {
 
 		// obtengo el contenido del mensaje
-		var cont map[string]json.RawMessage
-		json.Unmarshal(pkt.Message.Cont, &cont)
+		// var cont map[string]json.RawMessage
+		// json.Unmarshal(pkt.Message.Cont, &cont)
 
-		if pkt.Message.Cod == enco.TRondaGanada {
+		if pkt.Message.Cod() == enco.TRondaGanada {
 			countMsgRondaGanada++
 		}
 	}
@@ -715,14 +732,15 @@ func TestFixCodificacionCarta(t *testing.T) {
 	pkts, _ := p.Cmd("Alvaro 6 copa")
 
 	for _, pkt := range pkts {
-		if pkt.Message.Cod == enco.TTirarCarta {
-			var t2 enco.Tipo2
-			json.Unmarshal(pkt.Message.Cont, &t2)
+		if pkt.Message.Cod() == enco.TTirarCarta {
+			m, _ := pkt.Message.(enco.TirarCarta)
+			// var t2 enco.Tipo2
+			// json.Unmarshal(pkt.Message.Cont, &t2)
 
 			ok := util.All(
-				t2.Palo == Copa.String(),
-				t2.Valor == 6,
-				t2.Autor == "Alvaro",
+				m.Palo == Copa.String(),
+				m.Valor == 6,
+				m.Autor == "Alvaro",
 			)
 
 			util.Assert(ok, func() {
@@ -853,9 +871,10 @@ func TestRandomWalk_AA(t *testing.T) {
 			rjix, raix := random_action(aa)
 
 			// v1
-			pkts := aa[rjix].ToJugada(p, rjix, raix).Hacer(p)
+			pkts2 := aa[rjix].ToJugada(p, rjix, raix).Hacer(p)
 			if p.Terminada() {
-				pkts = append(pkts, p.byeBye()...)
+				byePkts2 := p.byeBye()
+				pkts2 = append(pkts2, byePkts2...)
 			}
 
 			// v2
@@ -863,11 +882,11 @@ func TestRandomWalk_AA(t *testing.T) {
 			// cmd := fmt.Sprintf("%s %s", p.Ronda.Manojos[r.jix].Jugador.ID, s)
 			// pkts, _ := p.Cmd(cmd)
 
-			if IsDone(pkts) {
+			if IsDone(pkts2) {
 				break
 			}
 
-			util.Assert(!enco.Contains(pkts, enco.TError), func() {
+			util.Assert(!enco.Contains(pkts2, enco.TError), func() {
 				t.Error("NO PUEDE HABER JUGADAS INVALIDAS!")
 			})
 		}
@@ -889,9 +908,10 @@ func TestRandomWalk_Chi(t *testing.T) {
 			rmix, raix := Random_action_chis(chis)
 
 			// v1
-			pkts := chis[rmix][raix].Hacer(p)
+			pkts2 := chis[rmix][raix].Hacer(p)
 			if p.Terminada() {
-				pkts = append(pkts, p.byeBye()...)
+				pktsBye2 := p.byeBye()
+				pkts2 = append(pkts2, pktsBye2...)
 			}
 
 			// v2
@@ -899,11 +919,11 @@ func TestRandomWalk_Chi(t *testing.T) {
 			// cmd := fmt.Sprintf("%s %s", p.Ronda.Manojos[r.jix].Jugador.ID, s)
 			// pkts, _ := p.Cmd(cmd)
 
-			if IsDone(pkts) {
+			if IsDone(pkts2) {
 				break
 			}
 
-			util.Assert(!enco.Contains(pkts, enco.TError), func() {
+			util.Assert(!enco.Contains(pkts2, enco.TError), func() {
 				t.Error("NO PUEDE HABER JUGADAS INVALIDAS!")
 			})
 		}
@@ -1234,4 +1254,111 @@ func TestFixMazoPoints_2(t *testing.T) {
 	if ok := p.Puntajes[equipo_jp] > 0; !ok {
 		t.Error("los puntos los deberia ganar jp")
 	}
+}
+
+func TestPardaSigTurno3(t *testing.T) {
+	// igual que el anterior pero ahora todos los que empardaron se van al mazo
+	// si va parda, el siguiente turno deberia ser del mano
+	// o del mas cercano a este
+	p, _ := NuevaPartida(A20, []string{"Alvaro", "Adolfo", "Andres"}, []string{"Roro", "Renzo", "Richard"})
+	p.Ronda.SetMuestra(Carta{Palo: Espada, Valor: 1})
+	p.Ronda.SetManojos(
+		[]Manojo{
+			{
+				Cartas: [3]*Carta{ // envido: 26
+					{Palo: Copa, Valor: 7},
+					{Palo: Oro, Valor: 12},
+					{Palo: Copa, Valor: 5},
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // envido: 27
+					{Palo: Copa, Valor: 3},
+					{Palo: Copa, Valor: 4},
+					{Palo: Oro, Valor: 4},
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // envido: 28
+					{Palo: Copa, Valor: 2},
+					{Palo: Copa, Valor: 1},
+					{Palo: Espada, Valor: 6}, // <-- parda primera mano
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // envido: 25
+					{Palo: Basto, Valor: 2},
+					{Palo: Oro, Valor: 3},
+					{Palo: Oro, Valor: 6}, // <-- parda primera mano
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // envido: 33
+					{Palo: Basto, Valor: 3},
+					{Palo: Basto, Valor: 7},
+					{Palo: Copa, Valor: 6}, // <-- parda primera mano
+				},
+			},
+			{
+				Cartas: [3]*Carta{ // envido: 20
+					{Palo: Basto, Valor: 4},
+					{Palo: Copa, Valor: 11},
+					{Palo: Basto, Valor: 6}, // <-- parda primera mano
+				},
+			},
+		},
+	)
+
+	pkgs, _ := p.Cmd("Alvaro 5 Copa")
+
+	{
+		ok := false
+		for _, pkg := range pkgs {
+			if pkg.Message.Cod() == enco.TTirarCarta {
+				ok = true
+				break
+			}
+		}
+		if !ok {
+			t.Error("debio de haber tirado carta")
+		}
+	}
+
+	// util.Assert(enco.Contains(enco.Collect(pkgs), enco.TTirarCarta), func() {
+	// 	t.Error("debio de haber tirado carta")
+	// })
+
+	p.Cmd("Roro 4 Copa")
+	// los siguientes 4: todos tiran 6 -> resulta mano parda
+	p.Cmd("Adolfo 6 Espada")
+	p.Cmd("Adolfo mazo")
+	p.Cmd("Renzo 6 Oro")
+	p.Cmd("Renzo mazo")
+	p.Cmd("Andres 6 Copa")
+	p.Cmd("Andres mazo")
+	p.Cmd("Richard 4 Basto")
+	p.Cmd("Richard mazo")
+
+	// ojo no imprime nada porque la aterior ya consumio el out
+	// enco.Consume(out, func(pkt *enco.Packet2) {
+	// 	t.Log(deco.Stringify(pkt, p.Partida))
+	// })
+
+	// enco.Consume(out, func(pkt *enco.Packet2) {
+	// 	t.Log(deco.Stringify(pkt, p.Partida))
+	// })
+
+	t.Log(p)
+
+	util.Assert(p.Ronda.Manos[0].Resultado == Empardada, func() {
+		t.Error(`La mano debio ser parda`)
+	})
+
+	util.Assert(p.Ronda.GetElTurno().Jugador.ID == "Roro", func() {
+		t.Error(`Deberia ser turno de Roro, debido a que es el mas cercano del mano y qu empardo`)
+	})
+
+	util.Assert(p.Ronda.Manojos[5].SeFueAlMazo == true, func() {
+		t.Error(`deberia dejarlo irse al mazo`)
+	})
 }

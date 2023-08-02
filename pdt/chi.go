@@ -13,11 +13,11 @@ NUEVO SISTEMA:
 
 */
 
-func IsDone(pkts []*enco.Packet) bool {
+func IsDone(pkts []enco.Packet2) bool {
 	for _, pkt := range pkts {
-		if pkt.Message.Cod == enco.TNuevaPartida ||
-			pkt.Message.Cod == enco.TNuevaRonda ||
-			pkt.Message.Cod == enco.TRondaGanada {
+		if pkt.Message.Cod() == enco.TNuevaPartida ||
+			pkt.Message.Cod() == enco.TNuevaRonda ||
+			pkt.Message.Cod() == enco.TRondaGanada {
 			return true
 		}
 	}

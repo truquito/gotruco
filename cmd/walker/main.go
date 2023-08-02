@@ -19,8 +19,8 @@ func rec_play(p *pdt.Partida) {
 	for mix := range chis {
 		for aix := range chis[mix] {
 			p, _ = pdt.Parse(string(bs))
-			pkts := chis[mix][aix].Hacer(p)
-			if pdt.IsDone(pkts) {
+			pkts2 := chis[mix][aix].Hacer(p)
+			if pdt.IsDone(pkts2) {
 				terminals++
 			} else {
 				rec_play(p)

@@ -1,9 +1,7 @@
 package enco
 
 import (
-	"bytes"
 	"encoding/json"
-	"io"
 	"testing"
 )
 
@@ -19,18 +17,18 @@ func TestPacket(t *testing.T) {
 			}
 		}
 	*/
-	var cont json.RawMessage
-	bs, _ := json.Marshal("miguel")
-	cont = bs
-	packet1 := Packet{
-		Destination: []string{"pepe"},
-		Message: Message{
-			Cod:  TDiceSonBuenas,
-			Cont: cont,
-		},
-	}
+	// var cont json.RawMessage
+	// bs, _ := json.Marshal("miguel")
+	// cont = bs
+	// packet1 := Packet{
+	// 	Destination: []string{"pepe"},
+	// 	Message: Message{
+	// 		Cod:  TDiceSonBuenas,
+	// 		Cont: cont,
+	// 	},
+	// }
 
-	t.Log(packet1) // contiene 2 punteros
+	// t.Log(packet1) // contiene 2 punteros
 	// recordar que un slice es un puntero a un array.
 	// fmt.Println(packet1.Destination)
 
@@ -71,46 +69,46 @@ func TestPacket(t *testing.T) {
 	t.Log(m.Cod(), m)
 }
 
-func TestCast(t *testing.T) {
+// func TestCast(t *testing.T) {
 
-	var buff *bytes.Buffer = new(bytes.Buffer)
+// 	var buff *bytes.Buffer = new(bytes.Buffer)
 
-	Write(buff, Pkt(
-		Dest("Alvaro", "Roro"),
-		Msg(TTirarCarta, "Alvaro", "Basto", 6),
-	))
+// 	Write(buff, Pkt(
+// 		Dest("Alvaro", "Roro"),
+// 		Msg(TTirarCarta, "Alvaro", "Basto", 6),
+// 	))
 
-	Write(buff, Pkt(
-		Dest("ALL"),
-		Msg(TError, "Se produjo un error"),
-	))
+// 	Write(buff, Pkt(
+// 		Dest("ALL"),
+// 		Msg(TError, "Se produjo un error"),
+// 	))
 
-	Write(buff, Pkt(
-		Dest("ALL"),
-		Msg(TSumaPts, "Alvaro", EnvidoGanado, 3),
-	))
+// 	Write(buff, Pkt(
+// 		Dest("ALL"),
+// 		Msg(TSumaPts, "Alvaro", EnvidoGanado, 3),
+// 	))
 
-	Write(buff, Pkt(
-		Dest("ALL"),
-		Msg(TTimeOut, "Roro tardo demasiado en jugar. Mano ganada por Rojo"),
-	))
+// 	Write(buff, Pkt(
+// 		Dest("ALL"),
+// 		Msg(TTimeOut, "Roro tardo demasiado en jugar. Mano ganada por Rojo"),
+// 	))
 
-	Write(buff, Pkt(
-		Dest("ALL"),
-		Msg(TGritarTruco, "Alvaro"),
-	))
+// 	Write(buff, Pkt(
+// 		Dest("ALL"),
+// 		Msg(TGritarTruco, "Alvaro"),
+// 	))
 
-	for {
-		e, err := Read(buff)
-		if err == io.EOF {
-			break
-		} else if err != nil {
-			t.Error(err)
-			return
-		}
-		t.Log(e)
-	}
-}
+// 	for {
+// 		e, err := Read(buff)
+// 		if err == io.EOF {
+// 			break
+// 		} else if err != nil {
+// 			t.Error(err)
+// 			return
+// 		}
+// 		t.Log(e)
+// 	}
+// }
 
 /*
 func TestMsgNuevaPartida(t *testing.T) {

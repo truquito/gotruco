@@ -127,8 +127,8 @@ func ParseJugada(p *Partida, cmd string) (IJugada, error) {
 
 }
 
-func (p *Partida) byeBye() []*enco.Packet {
-	pkts := make([]*enco.Packet, 0)
+func (p *Partida) byeBye() []enco.Packet2 {
+	pkts2 := make([]enco.Packet2, 0)
 
 	if p.Terminada() {
 
@@ -140,17 +140,17 @@ func (p *Partida) byeBye() []*enco.Packet {
 			s = p.Ronda.Manojos[1].Jugador.ID
 		}
 
-		pkts = append(pkts, enco.Pkt(
-			enco.Dest("ALL"),
-			enco.Msg(enco.TByeBye, s),
+		pkts2 = append(pkts2, enco.Pkt2(
+			[]string{"ALL"},
+			enco.ByeBye(s),
 		))
 	}
 
-	return pkts
+	return pkts2
 }
 
 // Cmd nexo capa presentacion con capa logica
-func (p *Partida) Cmd(cmd string) ([]*enco.Packet, error) {
+func (p *Partida) Cmd(cmd string) ([]enco.Packet2, error) {
 
 	// checkeo semantico
 	jugada, err := ParseJugada(p, cmd)
@@ -158,12 +158,12 @@ func (p *Partida) Cmd(cmd string) ([]*enco.Packet, error) {
 		return nil, err
 	}
 
-	pkts := jugada.Hacer(p)
+	pkts2 := jugada.Hacer(p)
 
 	if p.Terminada() {
 		// AGREGARLE LoS PKTS ACA
-		pkts = append(pkts, p.byeBye()...)
+		pkts2 = append(pkts2, p.byeBye()...)
 	}
 
-	return pkts, nil
+	return pkts2, nil
 }

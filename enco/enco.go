@@ -2,9 +2,6 @@ package enco
 
 import (
 	"encoding/json"
-	"fmt"
-	"log"
-	"strings"
 )
 
 type IMessage interface {
@@ -12,14 +9,9 @@ type IMessage interface {
 	Cod() CodMsg
 }
 
-// Packet ..
-type Packet struct {
+type Packet2 struct {
 	Destination []string `json:"destination"`
-	Message     Message  `json:"message"`
-}
-
-func (pkt *Packet) String() string {
-	return fmt.Sprintf("[%v] ", strings.Join(pkt.Destination, ":"))
+	Message     IMessage `json:"message"`
 }
 
 // Message .
@@ -146,9 +138,8 @@ type Tipo4 struct {
 	Razon Razon  `json:"razon"`
 }
 
-// Pkt Packet maker
-func Pkt(dest []string, m Message) *Packet {
-	return &Packet{
+func Pkt2(dest []string, m IMessage) Packet2 {
+	return Packet2{
 		Destination: dest,
 		Message:     m,
 	}
@@ -159,126 +150,20 @@ func Dest(ds ...string) []string {
 	return ds
 }
 
-// Msg Message maker
-func Msg(t CodMsg, data ...interface{}) Message {
+//
+//
+//
+//
+//
+//
 
-	var cont json.RawMessage
+// ?????????
 
-	switch t {
-	case // (nil)
-		TLaManoResultaParda:
+type TimeOut string
 
-		var s *string = nil
-		cont, _ = json.Marshal(s)
-	case // (string)
-		TError,
-		TByeBye,
-		TDiceSonBuenas,
-		TCantarFlor,
-		TCantarContraFlor,
-		TCantarContraFlorAlResto,
-		TTocarEnvido,
-		TTocarRealEnvido,
-		TTocarFaltaEnvido,
-		TGritarTruco,
-		TGritarReTruco,
-		TGritarVale4,
-		TNoQuiero,
-		TConFlorMeAchico,
-		TQuieroTruco,
-		TQuieroEnvite,
-		TMazo,
-		TElEnvidoEstaPrimero,
-		TAbandono:
-
-		bs, err := json.Marshal(data[0])
-
-		if err != nil {
-			log.Panic(err)
-		}
-
-		cont = bs
-
-	case // (int)
-		TSigTurno,
-		TSigTurnoPosMano:
-
-		bs, err := json.Marshal(data[0])
-
-		if err != nil {
-			log.Panic(err)
-		}
-
-		cont = bs
-
-	case // (string, int)
-		TDiceTengo,
-		TDiceSonMejores,
-		TManoGanada:
-
-		autor := data[0].(string)
-		valor := data[1].(int)
-
-		bs, _ := json.Marshal(&Tipo1{autor, valor})
-
-		cont = bs
-
-	case // (string, string)
-		TRondaGanada:
-
-		autor := data[0].(string)
-		razon := data[1].(Razon)
-
-		bs, _ := json.Marshal(&Tipo4{autor, razon})
-
-		cont = bs
-
-	case // (partida)
-		TNuevaPartida,
-		TNuevaRonda:
-
-		pJSON, _ := data[0].(json.Marshaler).MarshalJSON()
-		cont = pJSON
-
-	case // (string, palo, valor)
-		TTirarCarta:
-
-		autor := data[0].(string)
-		palo := data[1].(string)
-		valor := data[2].(int)
-
-		bs, _ := json.Marshal(&Tipo2{autor, palo, valor})
-
-		cont = bs
-
-	case // (string, string, int)
-		TSumaPts:
-
-		autor := data[0].(string)
-		razon := data[1].(Razon)
-		pts := data[2].(int)
-
-		bs, _ := json.Marshal(&Tipo3{autor, razon, pts})
-
-		cont = bs
-
-	default:
-		cont = nil
-
-	}
-
-	return Message{
-		Cod:  t,
-		Cont: cont,
-	}
+func (m TimeOut) Cod() CodMsg {
+	return TTimeOut
 }
-
-//
-//
-//
-//
-//
-//
 
 type LaManoResultaParda struct{}
 
