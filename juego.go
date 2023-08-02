@@ -47,7 +47,7 @@ func (j *Juego) Notify() {
 	// ojo primero hay que grabar el buff, luego avisar
 	enco.Write(j.out, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.TimeOut, "INTERRUMPING!! Roro tardo demasiado en jugar. Mano ganada por Rojo"),
+		enco.Msg(enco.TTimeOut, "INTERRUMPING!! Roro tardo demasiado en jugar. Mano ganada por Rojo"),
 	))
 
 	j.ErrCh <- true
@@ -64,7 +64,7 @@ func (j *Juego) Abandono(jugador string) error {
 
 	enco.Write(j.out, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.Abandono, manojo.Jugador.ID),
+		enco.Msg(enco.TAbandono, manojo.Jugador.ID),
 	))
 
 	return nil
@@ -90,7 +90,7 @@ func NuevaPartida(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*
 	for _, m := range j.Ronda.Manojos {
 		enco.Write(j.out, enco.Pkt(
 			enco.Dest(m.Jugador.ID),
-			enco.Msg(enco.NuevaPartida, j.Partida.PerspectivaCacheFlor(&m)),
+			enco.Msg(enco.TNuevaPartida, j.Partida.PerspectivaCacheFlor(&m)),
 		))
 
 	}

@@ -350,7 +350,7 @@ func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.LaManoResultaParda),
+			enco.Msg(enco.TLaManoResultaParda),
 		))
 
 		// no se cambia el turno
@@ -392,7 +392,7 @@ func (p *Partida) EvaluarMano() (bool, []*enco.Packet) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.ManoGanada, mano.Ganador, int(p.Ronda.ManoEnJuego)),
+			enco.Msg(enco.TManoGanada, mano.Ganador, int(p.Ronda.ManoEnJuego)),
 		))
 
 	}
@@ -593,7 +593,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.RondaGanada, ganador, enco.SeFueronAlMazo),
+			enco.Msg(enco.TRondaGanada, ganador, enco.SeFueronAlMazo),
 			// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado`
 		))
 
@@ -613,7 +613,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.RondaGanada, ganador, razon),
+			enco.Msg(enco.TRondaGanada, ganador, razon),
 			// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s no querido`
 		))
 
@@ -631,7 +631,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.RondaGanada, ganador, razon),
+			enco.Msg(enco.TRondaGanada, ganador, razon),
 			// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado`
 		))
 
@@ -641,7 +641,7 @@ func (p *Partida) EvaluarRonda() (bool, []*enco.Packet) {
 
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.SumaPts, ganador, enco.TrucoQuerido, totalPts),
+		enco.Msg(enco.TSumaPts, ganador, enco.TrucoQuerido, totalPts),
 	))
 
 	return true, pkts // porque se empezo una nueva ronda

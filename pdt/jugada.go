@@ -61,7 +61,7 @@ func (jugada TirarCarta) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible tirar una carta porque ya te fuiste al mazo"),
+			enco.Msg(enco.TError, "No es posible tirar una carta porque ya te fuiste al mazo"),
 		))
 
 		return pkts, false
@@ -76,7 +76,7 @@ func (jugada TirarCarta) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible tirar una carta porque ya las tiraste todas"),
+			enco.Msg(enco.TError, "No es posible tirar una carta porque ya las tiraste todas"),
 		))
 
 		return pkts, false
@@ -89,7 +89,7 @@ func (jugada TirarCarta) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible tirar una carta ahora porque el envite esta en juego"),
+			enco.Msg(enco.TError, "No es posible tirar una carta ahora porque el envite esta en juego"),
 		))
 
 		return pkts, false
@@ -103,7 +103,7 @@ func (jugada TirarCarta) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, err.Error()),
+			enco.Msg(enco.TError, err.Error()),
 		))
 
 		return pkts, false
@@ -115,7 +115,7 @@ func (jugada TirarCarta) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "Ya tiraste esa carta"),
+			enco.Msg(enco.TError, "Ya tiraste esa carta"),
 		))
 
 		return pkts, false
@@ -127,7 +127,7 @@ func (jugada TirarCarta) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No era su turno, no puede tirar la carta"),
+			enco.Msg(enco.TError, "No era su turno, no puede tirar la carta"),
 		))
 
 		return pkts, false
@@ -143,7 +143,7 @@ func (jugada TirarCarta) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible tirar una carta sin antes cantar la flor"),
+			enco.Msg(enco.TError, "No es posible tirar una carta sin antes cantar la flor"),
 		))
 
 		return pkts, false
@@ -159,7 +159,7 @@ func (jugada TirarCarta) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible tirar una carta porque tu equipo debe responder la propuesta del truco"),
+			enco.Msg(enco.TError, "No es posible tirar una carta porque tu equipo debe responder la propuesta del truco"),
 		))
 
 		return pkts, false
@@ -183,7 +183,7 @@ func (jugada TirarCarta) Hacer(p *Partida) []*enco.Packet {
 	// ok la tiene y era su turno -> la juega
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.TirarCarta,
+		enco.Msg(enco.TTirarCarta,
 			p.Manojo(jugada.JID).Jugador.ID, jugada.Carta.Palo.String(), jugada.Carta.Valor),
 	))
 
@@ -214,7 +214,7 @@ func (jugada TirarCarta) Hacer(p *Partida) []*enco.Packet {
 			// lo envio
 			pkts = append(pkts, enco.Pkt(
 				enco.Dest("ALL"),
-				enco.Msg(enco.SigTurnoPosMano, int(p.Ronda.Turno)),
+				enco.Msg(enco.TSigTurnoPosMano, int(p.Ronda.Turno)),
 			))
 
 		} else {
@@ -236,7 +236,7 @@ func (jugada TirarCarta) Hacer(p *Partida) []*enco.Packet {
 				for _, m := range p.Ronda.Manojos {
 					pkts = append(pkts, enco.Pkt(
 						enco.Dest(m.Jugador.ID),
-						enco.Msg(enco.NuevaRonda, p.PerspectivaCacheFlor(&m)),
+						enco.Msg(enco.TNuevaRonda, p.PerspectivaCacheFlor(&m)),
 					))
 
 				}
@@ -253,7 +253,7 @@ func (jugada TirarCarta) Hacer(p *Partida) []*enco.Packet {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.SigTurno, int(p.Ronda.Turno)),
+			enco.Msg(enco.TSigTurno, int(p.Ronda.Turno)),
 		))
 
 	}
@@ -284,7 +284,7 @@ func (jugada TocarEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 	if florEnJuego {
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible tocar el envido ahora porque la flor esta en juego"),
+			enco.Msg(enco.TError, "No es posible tocar el envido ahora porque la flor esta en juego"),
 		))
 
 		return pkts, false
@@ -298,7 +298,7 @@ func (jugada TocarEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 	if !envidoHabilitado {
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible tocar envido ahora"),
+			enco.Msg(enco.TError, "No es posible tocar envido ahora"),
 		))
 
 		return pkts, false
@@ -342,7 +342,7 @@ func (jugada TocarEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, `No es posible cantar 'Envido'`),
+			enco.Msg(enco.TError, `No es posible cantar 'Envido'`),
 		))
 
 		return pkts, false
@@ -373,14 +373,14 @@ func (jugada TocarEnvido) Hacer(p *Partida) []*enco.Packet {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.ElEnvidoEstaPrimero, p.Manojo(jugada.JID).Jugador.ID),
+			enco.Msg(enco.TElEnvidoEstaPrimero, p.Manojo(jugada.JID).Jugador.ID),
 		))
 
 	}
 
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.TocarEnvido, p.Manojo(jugada.JID).Jugador.ID),
+		enco.Msg(enco.TTocarEnvido, p.Manojo(jugada.JID).Jugador.ID),
 	))
 
 	// ahora checkeo si alguien tiene flor
@@ -420,7 +420,7 @@ func (jugada TocarEnvido) Eval(p *Partida) []*enco.Packet {
 
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.SumaPts, jug.ID, enco.EnvidoGanado, p.Ronda.Envite.Puntaje),
+		enco.Msg(enco.TSumaPts, jug.ID, enco.EnvidoGanado, p.Ronda.Envite.Puntaje),
 	))
 
 	p.SumarPuntos(jug.Equipo, p.Ronda.Envite.Puntaje)
@@ -450,7 +450,7 @@ func (jugada TocarRealEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible tocar real envido ahora porque la flor esta en juego"),
+			enco.Msg(enco.TError, "No es posible tocar real envido ahora porque la flor esta en juego"),
 		))
 
 		return pkts, false
@@ -465,7 +465,7 @@ func (jugada TocarRealEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 	if !realEnvidoHabilitado {
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible tocar real-envido ahora"),
+			enco.Msg(enco.TError, "No es posible tocar real-envido ahora"),
 		))
 
 		return pkts, false
@@ -486,7 +486,7 @@ func (jugada TocarRealEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, `No es posible cantar 'Real Envido'`),
+			enco.Msg(enco.TError, `No es posible cantar 'Real Envido'`),
 		))
 
 		return pkts, false
@@ -517,14 +517,14 @@ func (jugada TocarRealEnvido) Hacer(p *Partida) []*enco.Packet {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.ElEnvidoEstaPrimero, p.Manojo(jugada.JID).Jugador.ID),
+			enco.Msg(enco.TElEnvidoEstaPrimero, p.Manojo(jugada.JID).Jugador.ID),
 		))
 
 	}
 
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.TocarRealEnvido, p.Manojo(jugada.JID).Jugador.ID),
+		enco.Msg(enco.TTocarRealEnvido, p.Manojo(jugada.JID).Jugador.ID),
 	))
 
 	p.TocarRealEnvido(p.Manojo(jugada.JID))
@@ -565,7 +565,7 @@ func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible tocar falta envido ahora porque la flor esta en juego"),
+			enco.Msg(enco.TError, "No es posible tocar falta envido ahora porque la flor esta en juego"),
 		))
 
 		return pkts, false
@@ -580,7 +580,7 @@ func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 	if !faltaEnvidoHabilitado {
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible tocar real-envido ahora"),
+			enco.Msg(enco.TError, "No es posible tocar real-envido ahora"),
 		))
 
 		return pkts, false
@@ -601,7 +601,7 @@ func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, `No es posible cantar 'Falta Envido'`),
+			enco.Msg(enco.TError, `No es posible cantar 'Falta Envido'`),
 		))
 
 		return pkts, false
@@ -632,14 +632,14 @@ func (jugada TocarFaltaEnvido) Hacer(p *Partida) []*enco.Packet {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.ElEnvidoEstaPrimero, p.Manojo(jugada.JID).Jugador.ID),
+			enco.Msg(enco.TElEnvidoEstaPrimero, p.Manojo(jugada.JID).Jugador.ID),
 		))
 
 	}
 
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.TocarFaltaEnvido, p.Manojo(jugada.JID).Jugador.ID),
+		enco.Msg(enco.TTocarFaltaEnvido, p.Manojo(jugada.JID).Jugador.ID),
 	))
 
 	p.TocarFaltaEnvido(p.Manojo(jugada.JID))
@@ -689,7 +689,7 @@ func (jugada TocarFaltaEnvido) Eval(p *Partida) []*enco.Packet {
 
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.SumaPts, jug.ID, enco.FaltaEnvidoGanado, p.Ronda.Envite.Puntaje),
+		enco.Msg(enco.TSumaPts, jug.ID, enco.FaltaEnvidoGanado, p.Ronda.Envite.Puntaje),
 	))
 
 	p.SumarPuntos(jug.Equipo, p.Ronda.Envite.Puntaje)
@@ -748,7 +748,7 @@ func (jugada CantarFlor) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, `No es posible cantar flor`),
+			enco.Msg(enco.TError, `No es posible cantar flor`),
 		))
 
 		return pkts, false
@@ -771,7 +771,7 @@ func (jugada CantarFlor) Hacer(p *Partida) []*enco.Packet {
 	// yo canto
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.CantarFlor, p.Manojo(jugada.JID).Jugador.ID),
+		enco.Msg(enco.TCantarFlor, p.Manojo(jugada.JID).Jugador.ID),
 	))
 
 	// corresponde que desactive el truco?
@@ -856,7 +856,7 @@ func evalFlor(p *Partida) []*enco.Packet {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.SumaPts,
+			enco.Msg(enco.TSumaPts,
 				manojoConLaFlorMasAlta.Jugador.ID,
 				enco.LaUnicaFlor, puntosASumar),
 		))
@@ -865,7 +865,7 @@ func evalFlor(p *Partida) []*enco.Packet {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.SumaPts,
+			enco.Msg(enco.TSumaPts,
 				manojoConLaFlorMasAlta.Jugador.ID,
 				enco.LaFlorMasAlta,
 				puntosASumar),
@@ -910,7 +910,7 @@ func (jugada CantarContraFlor) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, `No es posible cantar contra flor`),
+			enco.Msg(enco.TError, `No es posible cantar contra flor`),
 		))
 
 		return pkts, false
@@ -933,7 +933,7 @@ func (jugada CantarContraFlor) Hacer(p *Partida) []*enco.Packet {
 	// la canta
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.CantarContraFlor, p.Manojo(jugada.JID).Jugador.ID),
+		enco.Msg(enco.TCantarContraFlor, p.Manojo(jugada.JID).Jugador.ID),
 	))
 
 	p.CantarContraFlor(p.Manojo(jugada.JID))
@@ -973,7 +973,7 @@ func (jugada CantarContraFlorAlResto) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, `No es posible cantar contra flor al resto`),
+			enco.Msg(enco.TError, `No es posible cantar contra flor al resto`),
 		))
 
 		return pkts, false
@@ -996,7 +996,7 @@ func (jugada CantarContraFlorAlResto) Hacer(p *Partida) []*enco.Packet {
 	// la canta
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.CantarContraFlorAlResto, p.Manojo(jugada.JID).Jugador.ID),
+		enco.Msg(enco.TCantarContraFlorAlResto, p.Manojo(jugada.JID).Jugador.ID),
 	))
 
 	p.CantarContraFlorAlResto(p.Manojo(jugada.JID))
@@ -1061,7 +1061,7 @@ func (jugada GritarTruco) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible cantar truco ahora"),
+			enco.Msg(enco.TError, "No es posible cantar truco ahora"),
 		))
 
 		return pkts, false
@@ -1083,7 +1083,7 @@ func (jugada GritarTruco) Hacer(p *Partida) []*enco.Packet {
 
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.GritarTruco, p.Manojo(jugada.JID).Jugador.ID),
+		enco.Msg(enco.TGritarTruco, p.Manojo(jugada.JID).Jugador.ID),
 	))
 
 	p.GritarTruco(p.Manojo(jugada.JID))
@@ -1138,7 +1138,7 @@ func (jugada GritarReTruco) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible cantar re-truco ahora"),
+			enco.Msg(enco.TError, "No es posible cantar re-truco ahora"),
 		))
 
 		return pkts, false
@@ -1163,7 +1163,7 @@ func (jugada GritarReTruco) Hacer(p *Partida) []*enco.Packet {
 
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.GritarReTruco, p.Manojo(jugada.JID).Jugador.ID),
+		enco.Msg(enco.TGritarReTruco, p.Manojo(jugada.JID).Jugador.ID),
 	))
 
 	p.GritarReTruco(p.Manojo(jugada.JID))
@@ -1220,7 +1220,7 @@ func (jugada GritarVale4) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible cantar vale-4 ahora"),
+			enco.Msg(enco.TError, "No es posible cantar vale-4 ahora"),
 		))
 
 		return pkts, false
@@ -1242,7 +1242,7 @@ func (jugada GritarVale4) Hacer(p *Partida) []*enco.Packet {
 
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.GritarVale4, p.Manojo(jugada.JID).Jugador.ID),
+		enco.Msg(enco.TGritarVale4, p.Manojo(jugada.JID).Jugador.ID),
 	))
 
 	p.GritarVale4(p.Manojo(jugada.JID))
@@ -1271,7 +1271,7 @@ func (jugada ResponderQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "Te fuiste al mazo; no podes Hacer esta jugada"),
+			enco.Msg(enco.TError, "Te fuiste al mazo; no podes Hacer esta jugada"),
 		))
 
 		return pkts, false
@@ -1293,7 +1293,7 @@ func (jugada ResponderQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 	if florEnJuego {
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible responder quiero ahora"),
+			enco.Msg(enco.TError, "No es posible responder quiero ahora"),
 		))
 
 		return pkts, false
@@ -1304,7 +1304,7 @@ func (jugada ResponderQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 	if noHanCantadoLaFlorAun && yoOUnoDeMisCompasTieneFlorYAunNoCanto {
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible responder 'quiero' porque alguien con flor no ha cantado aun"),
+			enco.Msg(enco.TError, "No es posible responder 'quiero' porque alguien con flor no ha cantado aun"),
 		))
 
 		return pkts, false
@@ -1325,7 +1325,7 @@ func (jugada ResponderQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, `No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo`),
+			enco.Msg(enco.TError, `No hay nada "que querer"; ya que: el estado del envido no es "envido" (o mayor) y el estado del truco no es "truco" (o mayor) o bien fue cantado por uno de su equipo`),
 		))
 
 		return pkts, false
@@ -1339,7 +1339,7 @@ func (jugada ResponderQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 			pkts = append(pkts, enco.Pkt(
 				enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-				enco.Msg(enco.Error, `La jugada no es valida`),
+				enco.Msg(enco.TError, `La jugada no es valida`),
 			))
 
 			return pkts, false
@@ -1356,7 +1356,7 @@ func (jugada ResponderQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 			pkts = append(pkts, enco.Pkt(
 				enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-				enco.Msg(enco.Error, `La jugada no es valida`),
+				enco.Msg(enco.TError, `La jugada no es valida`),
 			))
 
 			return pkts, false
@@ -1392,7 +1392,7 @@ func (jugada ResponderQuiero) Hacer(p *Partida) []*enco.Packet {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.QuieroEnvite, p.Manojo(jugada.JID).Jugador.ID),
+			enco.Msg(enco.TQuieroEnvite, p.Manojo(jugada.JID).Jugador.ID),
 		))
 
 		if p.Ronda.Envite.Estado == FALTAENVIDO {
@@ -1409,7 +1409,7 @@ func (jugada ResponderQuiero) Hacer(p *Partida) []*enco.Packet {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.QuieroEnvite, p.Manojo(jugada.JID).Jugador.ID),
+			enco.Msg(enco.TQuieroEnvite, p.Manojo(jugada.JID).Jugador.ID),
 		))
 
 		// empieza cantando el autor del envite no el que "quizo"
@@ -1427,7 +1427,7 @@ func (jugada ResponderQuiero) Hacer(p *Partida) []*enco.Packet {
 
 			pkts = append(pkts, enco.Pkt(
 				enco.Dest("ALL"),
-				enco.Msg(enco.SumaPts,
+				enco.Msg(enco.TSumaPts,
 					manojoConLaFlorMasAlta.Jugador.ID,
 					enco.ContraFlorGanada,
 					puntosASumar),
@@ -1443,7 +1443,7 @@ func (jugada ResponderQuiero) Hacer(p *Partida) []*enco.Packet {
 
 			pkts = append(pkts, enco.Pkt(
 				enco.Dest("ALL"),
-				enco.Msg(enco.SumaPts,
+				enco.Msg(enco.TSumaPts,
 					manojoConLaFlorMasAlta.Jugador.ID,
 					enco.ContraFlorAlRestoGanada,
 					puntosASumar),
@@ -1458,7 +1458,7 @@ func (jugada ResponderQuiero) Hacer(p *Partida) []*enco.Packet {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.QuieroTruco, p.Manojo(jugada.JID).Jugador.ID),
+			enco.Msg(enco.TQuieroTruco, p.Manojo(jugada.JID).Jugador.ID),
 		))
 
 		p.QuererTruco(p.Manojo(jugada.JID))
@@ -1489,7 +1489,7 @@ func (jugada ResponderNoQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "Te fuiste al mazo; no podes Hacer esta jugada"),
+			enco.Msg(enco.TError, "Te fuiste al mazo; no podes Hacer esta jugada"),
 		))
 
 		return pkts, false
@@ -1523,7 +1523,7 @@ func (jugada ResponderNoQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 		err := p.Manojo(jugada.JID).Jugador.ID + ` esta respondiendo al pedo; no hay nada respondible`
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, err),
+			enco.Msg(enco.TError, err),
 		))
 
 		return pkts, false
@@ -1536,7 +1536,7 @@ func (jugada ResponderNoQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 			pkts = append(pkts, enco.Pkt(
 				enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-				enco.Msg(enco.Error, `La jugada no es valida`),
+				enco.Msg(enco.TError, `La jugada no es valida`),
 			))
 
 			return pkts, false
@@ -1554,7 +1554,7 @@ func (jugada ResponderNoQuiero) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 			pkts = append(pkts, enco.Pkt(
 				enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-				enco.Msg(enco.Error, `La jugada no es valida`),
+				enco.Msg(enco.TError, `La jugada no es valida`),
 			))
 
 			return pkts, false
@@ -1584,7 +1584,7 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []*enco.Packet {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.NoQuiero, p.Manojo(jugada.JID).Jugador.ID),
+			enco.Msg(enco.TNoQuiero, p.Manojo(jugada.JID).Jugador.ID),
 		))
 
 		//	no se toma en cuenta el puntaje total del ultimo toque
@@ -1606,7 +1606,7 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []*enco.Packet {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.SumaPts,
+			enco.Msg(enco.TSumaPts,
 				p.Ronda.Envite.CantadoPor,
 				enco.EnviteNoQuerido,
 				totalPts),
@@ -1619,7 +1619,7 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []*enco.Packet {
 		// todo ok: tiene flor; se pasa a jugar:
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.ConFlorMeAchico, p.Manojo(jugada.JID).Jugador.ID),
+			enco.Msg(enco.TConFlorMeAchico, p.Manojo(jugada.JID).Jugador.ID),
 		))
 
 		// cuenta como un "no quiero" (codigo copiado)
@@ -1651,7 +1651,7 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []*enco.Packet {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.SumaPts,
+			enco.Msg(enco.TSumaPts,
 				p.Ronda.Envite.CantadoPor,
 				enco.FlorAchicada,
 				totalPts),
@@ -1663,7 +1663,7 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []*enco.Packet {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.NoQuiero, p.Manojo(jugada.JID).Jugador.ID),
+			enco.Msg(enco.TNoQuiero, p.Manojo(jugada.JID).Jugador.ID),
 		))
 
 		// pongo al equipo que propuso el truco como ganador de la mano actual
@@ -1698,7 +1698,7 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []*enco.Packet {
 
 					pkts = append(pkts, enco.Pkt(
 						enco.Dest(m.Jugador.ID),
-						enco.Msg(enco.NuevaRonda, p.PerspectivaCacheFlor(&m)),
+						enco.Msg(enco.TNuevaRonda, p.PerspectivaCacheFlor(&m)),
 					))
 				}
 
@@ -1736,7 +1736,7 @@ func (jugada IrseAlMazo) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible irse al mazo ahora"),
+			enco.Msg(enco.TError, "No es posible irse al mazo ahora"),
 		))
 
 		return pkts, false
@@ -1775,7 +1775,7 @@ func (jugada IrseAlMazo) Ok(p *Partida) ([]*enco.Packet, bool) {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible irse al mazo ahora"),
+			enco.Msg(enco.TError, "No es posible irse al mazo ahora"),
 		))
 
 		return pkts, false
@@ -1799,7 +1799,7 @@ func (jugada IrseAlMazo) Ok(p *Partida) ([]*enco.Packet, bool) {
 	if noSePuedeIr {
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest(p.Manojo(jugada.JID).Jugador.ID),
-			enco.Msg(enco.Error, "No es posible irse al mazo ahora"),
+			enco.Msg(enco.TError, "No es posible irse al mazo ahora"),
 		))
 		return pkts, false
 	}
@@ -1837,7 +1837,7 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []*enco.Packet {
 	// ok -> se va al mazo:
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.Mazo, p.Manojo(jugada.JID).Jugador.ID),
+		enco.Msg(enco.TMazo, p.Manojo(jugada.JID).Jugador.ID),
 	))
 
 	p.IrAlMazo(p.Manojo(jugada.JID))
@@ -1893,7 +1893,7 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []*enco.Packet {
 
 			pkts = append(pkts, enco.Pkt(
 				enco.Dest("ALL"),
-				enco.Msg(enco.SumaPts,
+				enco.Msg(enco.TSumaPts,
 					e.CantadoPor,
 					enco.EnviteNoQuerido,
 					totalPts),
@@ -1933,7 +1933,7 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []*enco.Packet {
 
 			pkts = append(pkts, enco.Pkt(
 				enco.Dest("ALL"),
-				enco.Msg(enco.SumaPts,
+				enco.Msg(enco.TSumaPts,
 					p.Ronda.Envite.CantadoPor,
 					enco.FlorAchicada,
 					totalPts),
@@ -1967,7 +1967,7 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []*enco.Packet {
 			// lo envio
 			pkts = append(pkts, enco.Pkt(
 				enco.Dest("ALL"),
-				enco.Msg(enco.SigTurnoPosMano, int(p.Ronda.Turno)),
+				enco.Msg(enco.TSigTurnoPosMano, int(p.Ronda.Turno)),
 			))
 
 		} else {
@@ -1990,7 +1990,7 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []*enco.Packet {
 
 					pkts = append(pkts, enco.Pkt(
 						enco.Dest(m.Jugador.ID),
-						enco.Msg(enco.NuevaRonda, p.PerspectivaCacheFlor(&m)),
+						enco.Msg(enco.TNuevaRonda, p.PerspectivaCacheFlor(&m)),
 					))
 				}
 
@@ -2007,7 +2007,7 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []*enco.Packet {
 
 			pkts = append(pkts, enco.Pkt(
 				enco.Dest("ALL"),
-				enco.Msg(enco.SigTurno, int(p.Ronda.Turno)),
+				enco.Msg(enco.TSigTurno, int(p.Ronda.Turno)),
 			))
 
 		}

@@ -142,7 +142,7 @@ func (p *Partida) byeBye() []*enco.Packet {
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.ByeBye, s),
+			enco.Msg(enco.TByeBye, s),
 		))
 	}
 

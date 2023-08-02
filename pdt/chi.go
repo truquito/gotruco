@@ -15,9 +15,9 @@ NUEVO SISTEMA:
 
 func IsDone(pkts []*enco.Packet) bool {
 	for _, pkt := range pkts {
-		if pkt.Message.Cod == enco.NuevaPartida ||
-			pkt.Message.Cod == enco.NuevaRonda ||
-			pkt.Message.Cod == enco.RondaGanada {
+		if pkt.Message.Cod == enco.TNuevaPartida ||
+			pkt.Message.Cod == enco.TNuevaRonda ||
+			pkt.Message.Cod == enco.TRondaGanada {
 			return true
 		}
 	}

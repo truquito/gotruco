@@ -129,7 +129,7 @@ func TestFixNoLePermiteTocarEnvido(t *testing.T) {
 
 	pkts, _ := p.Cmd("Alvaro envido")
 
-	util.Assert(enco.Contains(pkts, enco.Error), func() {
+	util.Assert(enco.Contains(pkts, enco.TError), func() {
 		t.Error("No debio de haberle dejado tocar envido")
 	})
 }
@@ -143,7 +143,7 @@ func TestFixNoLePermiteGritarTruco(t *testing.T) {
 
 	pkts, _ := p.Cmd("Alvaro truco")
 
-	util.Assert(enco.Contains(pkts, enco.GritarTruco), func() {
+	util.Assert(enco.Contains(pkts, enco.TGritarTruco), func() {
 		t.Error("Deberia dejarlo gritar truco!")
 	})
 }
@@ -198,12 +198,12 @@ func TestFixLePermiteCFAR(t *testing.T) {
 	})
 
 	pkts, _ := p.Cmd("Renzo contra-flor-al-resto")
-	util.Assert(enco.Contains(pkts, enco.Error), func() {
+	util.Assert(enco.Contains(pkts, enco.TError), func() {
 		t.Error("No deberia dejarlo cantar CFAR")
 	})
 
 	pkts, _ = p.Cmd("Renzo no-quiero")
-	util.Assert(enco.Contains(pkts, enco.Error), func() {
+	util.Assert(enco.Contains(pkts, enco.TError), func() {
 		t.Error("No deberia dejarlo responder no-quiero")
 	})
 }
@@ -217,7 +217,7 @@ func TestFixNoLeDebePermitirTocarEnvidoSiGritoTruco(t *testing.T) {
 	t.Log(Renderizar(p))
 
 	pkts, _ := p.Cmd("Alvaro truco")
-	util.Assert(enco.Contains(pkts, enco.GritarTruco), func() {
+	util.Assert(enco.Contains(pkts, enco.TGritarTruco), func() {
 		t.Error("Deberia dejarlo gritar truco!")
 	})
 
@@ -225,7 +225,7 @@ func TestFixNoLeDebePermitirTocarEnvidoSiGritoTruco(t *testing.T) {
 	ok := util.All(
 		p.Ronda.Envite.Estado == NOCANTADOAUN,
 		p.Ronda.Truco.Estado != NOCANTADO,
-		enco.Contains(pkts, enco.Error),
+		enco.Contains(pkts, enco.TError),
 	)
 	util.Assert(ok, func() {
 		t.Error("No deberia dejarlo tocar envido si fue el mismo el que toco truco!")
@@ -235,7 +235,7 @@ func TestFixNoLeDebePermitirTocarEnvidoSiGritoTruco(t *testing.T) {
 	ok = util.All(
 		p.Ronda.Envite.Estado == NOCANTADOAUN,
 		p.Ronda.Truco.Estado != NOCANTADO,
-		enco.Contains(pkts, enco.Error),
+		enco.Contains(pkts, enco.TError),
 	)
 	util.Assert(ok, func() {
 		t.Error("No deberia dejarlo tocar real-envido si fue el mismo el que toco truco!")
@@ -261,7 +261,7 @@ func TestFixNoLeDeberiaResponderDesdeUltratumba(t *testing.T) {
 
 	pkts, _ := p.Cmd("Roro quiero")
 	for _, pkt := range pkts {
-		diceSonBuenas := pkt.Message.Cod == enco.DiceSonBuenas
+		diceSonBuenas := pkt.Message.Cod == enco.TDiceSonBuenas
 		loDijoRenzo := string(pkt.Message.Cont) == "\"Renzo\""
 		if diceSonBuenas && loDijoRenzo {
 			t.Error("No deberia poder responder desde ultratumba")
@@ -270,7 +270,7 @@ func TestFixNoLeDeberiaResponderDesdeUltratumba(t *testing.T) {
 
 	// debio de haber ganado el envido
 	for _, pkt := range pkts {
-		if pkt.Message.Cod == enco.SumaPts {
+		if pkt.Message.Cod == enco.TSumaPts {
 			var t3 enco.Tipo3
 			json.Unmarshal(pkt.Message.Cont, &t3)
 
@@ -303,7 +303,7 @@ func TestFixDebioHaberTerminado(t *testing.T) {
 	ok := util.All(
 		p.Ronda.Truco.Estado == RETRUCO,
 		p.Ronda.Truco.CantadoPor == "Alvaro",
-		enco.Contains(pkts, enco.GritarReTruco),
+		enco.Contains(pkts, enco.TGritarReTruco),
 	)
 	util.Assert(ok, func() {
 		t.Error("Deberia poder dejarle gritar re-truco")
@@ -312,14 +312,14 @@ func TestFixDebioHaberTerminado(t *testing.T) {
 	pkts, _ = p.Cmd("Renzo no-Quiero")
 	// debe empezar una nueva ronda o partida finalizada
 	ok = util.All(
-		enco.Contains(pkts, enco.NuevaRonda) || enco.Contains(pkts, enco.ByeBye),
+		enco.Contains(pkts, enco.TNuevaRonda) || enco.Contains(pkts, enco.TByeBye),
 	)
 	util.Assert(ok, func() {
 		t.Error("Debio de haber empezado una nueva ronda o haber terminado la partida")
 	})
 
 	pkts, _ = p.Cmd("Renzo vale-4")
-	util.Assert(enco.Contains(pkts, enco.Error), func() {
+	util.Assert(enco.Contains(pkts, enco.TError), func() {
 		t.Error("No deberia dejarle gritar vale-4")
 	})
 
@@ -345,7 +345,7 @@ func TestFixNoCantarPuntajeFlorCuandoNoEsNecesario(t *testing.T) {
 	ptsAntes := p.Puntajes[Azul]
 	pkts, _ := p.Cmd("Alvaro flor")
 
-	ok = !enco.Contains(pkts, enco.DiceTengo)
+	ok = !enco.Contains(pkts, enco.TDiceTengo)
 	if !ok {
 		t.Error("Alvaro no deberia decir cuanto tiene de flor ya que es el unico")
 	}
@@ -364,7 +364,7 @@ func TestFixNoCantarPuntajeFlorCuandoNoEsNecesario(t *testing.T) {
 	ptsAntes = p.Puntajes[Azul]
 	pkts, _ = p.Cmd("Alvaro flor")
 
-	ok = !enco.Contains(pkts, enco.DiceTengo)
+	ok = !enco.Contains(pkts, enco.TDiceTengo)
 	if !ok {
 		t.Error("Alvaro no deberia decir cuanto tiene de flor ya que es el unico")
 	}
@@ -429,7 +429,7 @@ func TestFixDecirSonBuenasDesdeUltratumba(t *testing.T) {
 
 	pkts, _ := p.Cmd("Renzo quiero")
 	for _, pkt := range pkts {
-		if pkt.Message.Cod == enco.DiceSonBuenas {
+		if pkt.Message.Cod == enco.TDiceSonBuenas {
 			var autor string
 			json.Unmarshal(pkt.Message.Cont, &autor)
 			if autor == "Roro" {
@@ -462,12 +462,12 @@ func TestFixPorQueDejaARoroTirarCarta(t *testing.T) {
 	t.Log(Renderizar(p))
 
 	pkts, _ := p.Cmd("Roro truco")
-	util.Assert(enco.Contains(pkts, enco.GritarTruco), func() {
+	util.Assert(enco.Contains(pkts, enco.TGritarTruco), func() {
 		t.Error("Deberia dejarlo poder gritar truco")
 	})
 
 	pkts, _ = p.Cmd("Roro 1 Espada")
-	util.Assert(enco.Contains(pkts, enco.SigTurnoPosMano), func() {
+	util.Assert(enco.Contains(pkts, enco.TSigTurnoPosMano), func() {
 		t.Error("Deberia pasarle el turno y empezar una mano nueva")
 	})
 	util.Assert(p.Ronda.GetElTurno().Jugador.ID == "Roro", func() {
@@ -478,12 +478,12 @@ func TestFixPorQueDejaARoroTirarCarta(t *testing.T) {
 	})
 
 	pkts, _ = p.Cmd("Renzo 3 Copa")
-	util.Assert(enco.Contains(pkts, enco.Error), func() {
+	util.Assert(enco.Contains(pkts, enco.TError), func() {
 		t.Error("No deberia dejar a renzo tirar carta si antes debe responder Adolfo y ni siquiera es su turno!")
 	})
 
 	pkts, _ = p.Cmd("Roro 2 copa")
-	util.Assert(enco.Contains(pkts, enco.SigTurno), func() {
+	util.Assert(enco.Contains(pkts, enco.TSigTurno), func() {
 		t.Error("Deberia pasarle el turno")
 	})
 }
@@ -495,22 +495,22 @@ func TestFixRespuestaNadaQueVer(t *testing.T) {
 	t.Log(Renderizar(p))
 
 	pkts, _ := p.Cmd("Renzo mazo")
-	util.Assert(enco.Contains(pkts, enco.Mazo), func() {
+	util.Assert(enco.Contains(pkts, enco.TMazo), func() {
 		t.Error("Renzo debieria ser capaz de irse al mazo")
 	})
 
 	pkts, _ = p.Cmd("Alvaro mazo")
-	util.Assert(enco.Contains(pkts, enco.Mazo), func() {
+	util.Assert(enco.Contains(pkts, enco.TMazo), func() {
 		t.Error("Alvaro debieria ser capaz de irse al mazo")
 	})
 
 	pkts, _ = p.Cmd("Roro truco")
-	util.Assert(enco.Contains(pkts, enco.GritarTruco), func() {
+	util.Assert(enco.Contains(pkts, enco.TGritarTruco), func() {
 		t.Error("Roro debieria ser capaz de gritar truco")
 	})
 
 	pkts, _ = p.Cmd("Alvaro real-envido")
-	util.Assert(!enco.Contains(pkts, enco.ElEnvidoEstaPrimero), func() {
+	util.Assert(!enco.Contains(pkts, enco.TElEnvidoEstaPrimero), func() {
 		t.Error("Alvaro no deberia ser capaz de tocar envido porque ya se fue al mazo")
 	})
 }
@@ -591,7 +591,7 @@ func TestFixRazonErronea(t *testing.T) {
 		var cont map[string]json.RawMessage
 		json.Unmarshal(pkt.Message.Cont, &cont)
 
-		if pkt.Message.Cod == enco.RondaGanada {
+		if pkt.Message.Cod == enco.TRondaGanada {
 			countMsgRondaGanada++
 
 			var r string
@@ -603,7 +603,7 @@ func TestFixRazonErronea(t *testing.T) {
 			}
 		}
 
-		if pkt.Message.Cod == enco.SumaPts {
+		if pkt.Message.Cod == enco.TSumaPts {
 			var r string
 			json.Unmarshal(cont["razon"], &r)
 
@@ -635,7 +635,7 @@ func TestFixRazonErronea(t *testing.T) {
 		var cont map[string]json.RawMessage
 		json.Unmarshal(pkt.Message.Cont, &cont)
 
-		if pkt.Message.Cod == enco.RondaGanada {
+		if pkt.Message.Cod == enco.TRondaGanada {
 			countMsgRondaGanada++
 
 			var r string
@@ -647,7 +647,7 @@ func TestFixRazonErronea(t *testing.T) {
 			}
 		}
 
-		if pkt.Message.Cod == enco.SumaPts {
+		if pkt.Message.Cod == enco.TSumaPts {
 
 			var r string
 			json.Unmarshal(cont["razon"], &r)
@@ -690,7 +690,7 @@ func TestFixGanadorErroneo(t *testing.T) {
 		var cont map[string]json.RawMessage
 		json.Unmarshal(pkt.Message.Cont, &cont)
 
-		if pkt.Message.Cod == enco.RondaGanada {
+		if pkt.Message.Cod == enco.TRondaGanada {
 			countMsgRondaGanada++
 		}
 	}
@@ -715,7 +715,7 @@ func TestFixCodificacionCarta(t *testing.T) {
 	pkts, _ := p.Cmd("Alvaro 6 copa")
 
 	for _, pkt := range pkts {
-		if pkt.Message.Cod == enco.TirarCarta {
+		if pkt.Message.Cod == enco.TTirarCarta {
 			var t2 enco.Tipo2
 			json.Unmarshal(pkt.Message.Cont, &t2)
 
@@ -867,7 +867,7 @@ func TestRandomWalk_AA(t *testing.T) {
 				break
 			}
 
-			util.Assert(!enco.Contains(pkts, enco.Error), func() {
+			util.Assert(!enco.Contains(pkts, enco.TError), func() {
 				t.Error("NO PUEDE HABER JUGADAS INVALIDAS!")
 			})
 		}
@@ -903,7 +903,7 @@ func TestRandomWalk_Chi(t *testing.T) {
 				break
 			}
 
-			util.Assert(!enco.Contains(pkts, enco.Error), func() {
+			util.Assert(!enco.Contains(pkts, enco.TError), func() {
 				t.Error("NO PUEDE HABER JUGADAS INVALIDAS!")
 			})
 		}
@@ -977,13 +977,13 @@ func TestFixNoPasaDeTurno(t *testing.T) {
 	p.Cmd("Alvaro falta-envido")
 	pkts, _ := p.Cmd("Richard quiero")
 
-	util.Assert(enco.Contains(pkts, enco.SumaPts), func() {
+	util.Assert(enco.Contains(pkts, enco.TSumaPts), func() {
 		t.Error("No debio de haberle dejado tocar envido")
 	})
 
 	pkts, _ = p.Cmd("Alvaro mazo")
 
-	util.Assert(!enco.Contains(pkts, enco.Error), func() {
+	util.Assert(!enco.Contains(pkts, enco.TError), func() {
 		t.Error("No deberia ocurrir errores")
 	})
 
@@ -1042,7 +1042,7 @@ func TestFixEnvidoHabilitado(t *testing.T) {
 	p.Cmd("Alvaro 4 espada")
 	pkts, _ := p.Cmd("Alvaro envido")
 
-	util.Assert(enco.Contains(pkts, enco.Error), func() {
+	util.Assert(enco.Contains(pkts, enco.TError), func() {
 		t.Error("No deberia dejarlo arrancar un envido despues de tirar carta")
 	})
 
@@ -1151,7 +1151,7 @@ func TestFixFlorColgada(t *testing.T) {
 	t.Log(Renderizar(p))
 
 	pkts, err := p.Cmd("Ben flor")
-	if ok := err == nil && enco.Contains(pkts, enco.SumaPts); !ok {
+	if ok := err == nil && enco.Contains(pkts, enco.TSumaPts); !ok {
 		t.Error("Debio de haber sumado los pts de las flores")
 	}
 

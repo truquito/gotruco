@@ -12,27 +12,27 @@ func TestCast(t *testing.T) {
 
 	Write(buff, Pkt(
 		Dest("Alvaro", "Roro"),
-		Msg(TirarCarta, "Alvaro", "Basto", 6),
+		Msg(TTirarCarta, "Alvaro", "Basto", 6),
 	))
 
 	Write(buff, Pkt(
 		Dest("ALL"),
-		Msg(Error, "Se produjo un error"),
+		Msg(TError, "Se produjo un error"),
 	))
 
 	Write(buff, Pkt(
 		Dest("ALL"),
-		Msg(SumaPts, "Alvaro", EnvidoGanado, 3),
+		Msg(TSumaPts, "Alvaro", EnvidoGanado, 3),
 	))
 
 	Write(buff, Pkt(
 		Dest("ALL"),
-		Msg(TimeOut, "Roro tardo demasiado en jugar. Mano ganada por Rojo"),
+		Msg(TTimeOut, "Roro tardo demasiado en jugar. Mano ganada por Rojo"),
 	))
 
 	Write(buff, Pkt(
 		Dest("ALL"),
-		Msg(GritarTruco, "Alvaro"),
+		Msg(TGritarTruco, "Alvaro"),
 	))
 
 	for {

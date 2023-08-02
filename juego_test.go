@@ -3544,7 +3544,7 @@ func TestPardaSigTurno3(t *testing.T) {
 
 	p.Cmd("Alvaro 5 Copa")
 
-	util.Assert(enco.Contains(enco.Collect(out), enco.TirarCarta), func() {
+	util.Assert(enco.Contains(enco.Collect(out), enco.TTirarCarta), func() {
 		t.Error("debio de haber tirado carta")
 	})
 
@@ -3600,7 +3600,7 @@ func TestFixTrucoDeshabilitaEnvido(t *testing.T) {
 	// el envido esta primero!!
 	p.Cmd("Roro envido")
 
-	util.Assert(!enco.Contains(enco.Collect(out), enco.Error), func() {
+	util.Assert(!enco.Contains(enco.Collect(out), enco.TError), func() {
 		t.Error("No deberia resultar en un error tocar envido ahora")
 	})
 
@@ -3651,7 +3651,7 @@ func TestFixOrdenCantoFlor(t *testing.T) {
 	p.Cmd("renzo flor")
 	p.Cmd("andres flor")
 
-	util.Assert(enco.Contains(enco.Collect(out), enco.DiceSonBuenas), func() {
+	util.Assert(enco.Contains(enco.Collect(out), enco.TDiceSonBuenas), func() {
 		t.Error("debio de haber dicho son bueas")
 	})
 

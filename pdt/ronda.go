@@ -457,7 +457,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts []*enco.Packet) {
 
 	pkts = append(pkts, enco.Pkt(
 		enco.Dest("ALL"),
-		enco.Msg(enco.DiceTengo, r.Manojos[jIdx].Jugador.ID, envidos[jIdx]),
+		enco.Msg(enco.TDiceTengo, r.Manojos[jIdx].Jugador.ID, envidos[jIdx]),
 	))
 
 	// `todaviaNoDijeronSonMejores` se usa para
@@ -497,7 +497,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts []*enco.Packet) {
 
 					pkts = append(pkts, enco.Pkt(
 						enco.Dest("ALL"),
-						enco.Msg(enco.DiceSonMejores, r.Manojos[i].Jugador.ID, envidos[i]),
+						enco.Msg(enco.TDiceSonMejores, r.Manojos[i].Jugador.ID, envidos[i]),
 					))
 
 					jIdx = i
@@ -519,7 +519,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts []*enco.Packet) {
 
 						pkts = append(pkts, enco.Pkt(
 							enco.Dest("ALL"),
-							enco.Msg(enco.DiceSonBuenas, r.Manojos[i].Jugador.ID),
+							enco.Msg(enco.TDiceSonBuenas, r.Manojos[i].Jugador.ID),
 							// valor de su envido es `envidos[i]` pero no corresponde decirlo
 						))
 
@@ -615,7 +615,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts []*enco.Pa
 
 		pkts = append(pkts, enco.Pkt(
 			enco.Dest("ALL"),
-			enco.Msg(enco.DiceTengo, r.Manojos[aPartirDe].Jugador.ID, flores[aPartirDe]),
+			enco.Msg(enco.TDiceTengo, r.Manojos[aPartirDe].Jugador.ID, flores[aPartirDe]),
 		))
 	}
 
@@ -648,7 +648,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts []*enco.Pa
 
 					pkts = append(pkts, enco.Pkt(
 						enco.Dest("ALL"),
-						enco.Msg(enco.DiceSonMejores, r.Manojos[i].Jugador.ID, flores[i]),
+						enco.Msg(enco.TDiceSonMejores, r.Manojos[i].Jugador.ID, flores[i]),
 					))
 
 					jIdx = i
@@ -670,7 +670,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts []*enco.Pa
 
 						pkts = append(pkts, enco.Pkt(
 							enco.Dest("ALL"),
-							enco.Msg(enco.DiceSonBuenas, r.Manojos[i].Jugador.ID),
+							enco.Msg(enco.TDiceSonBuenas, r.Manojos[i].Jugador.ID),
 							// valor de su envido es `flores[i]` pero no corresponde decirlo
 						))
 
