@@ -14,6 +14,7 @@ var (
 	// worker
 	n  = flag.Int("n", 2, "a string")
 	rt = flag.Int("runtime", 10, "total runtime in secs.")
+	v  = flag.Bool("v", false, "verbose (or silent) mode")
 )
 
 func init() {
@@ -25,7 +26,7 @@ func main() {
 	wg.Add(*p)
 	start := time.Now()
 	c := make(chan int, *p)
-	cmd := fmt.Sprintf("go run cmd/bench/self-play/*.go -n=%d -runtime=%d", *n, *rt)
+	cmd := fmt.Sprintf("go run cmd/bench/self-play/*.go -n=%d -runtime=%d -v=%v", *n, *rt, *v)
 
 	for i := 1; i <= *p; i++ {
 		go func() {

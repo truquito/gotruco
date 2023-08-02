@@ -11,8 +11,12 @@ import (
 var (
 	// flags
 	n  = flag.Int("n", 2, "a string")
-	rt = flag.Int("runtime", 3, "total runtime in secs.")
+	rt = flag.Int("t", 3, "total runtime in secs.")
+	v  = flag.Bool("v", false, "verbose (or silent) mode")
 )
+
+// eg.
+// bench go run cmd/bench/self-play/*.go -n=4 -t=60 -v=true
 
 func init() {
 	flag.Parse()
@@ -45,7 +49,7 @@ func worker(
 	}()
 
 	for time.Since(start) < totalRunningTime {
-		p, _ := pdt.NuevaPartida(20, azules[:*n>>1], rojos[:*n>>1], true)
+		p, _ := pdt.NuevaPartida(20, azules[:*n>>1], rojos[:*n>>1], *v)
 		last_snapshot, _ = p.MarshalJSON()
 		actions = []string{}
 		for !p.Terminada() {
