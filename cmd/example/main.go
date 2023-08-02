@@ -38,13 +38,13 @@ func main() {
 	n := 2 // <-- num. of players
 	azules := []string{"Alice", "Ariana", "Annie"}
 	rojos := []string{"Bob", "Ben", "Bill"}
-	p, out, _ := truco.NuevoJuego(20, azules[:n>>1], rojos[:n>>1])
+	p, _ := truco.NuevoJuego(20, azules[:n>>1], rojos[:n>>1])
 
 	pJSON, _ := p.MarshalJSON()
 	logfile.Write(string(pJSON))
 
 	fmt.Println(p)
-	enco.Consume(out, func(pkt *enco.Packet) {
+	enco.Consume(p.Out, func(pkt *enco.Packet) {
 		fmt.Println(deco.Stringify(pkt, p.Partida))
 	})
 
@@ -63,13 +63,13 @@ func main() {
 				if err != nil {
 					fmt.Println("<< " + err.Error())
 				}
-				enco.Consume(out, func(pkt *enco.Packet) {
+				enco.Consume(p.Out, func(pkt *enco.Packet) {
 					fmt.Println(deco.Stringify(pkt, p.Partida))
 				})
 				fmt.Println(p)
 			}
 		case <-p.ErrCh:
-			enco.Consume(out, func(pkt *enco.Packet) {
+			enco.Consume(p.Out, func(pkt *enco.Packet) {
 				fmt.Println(deco.Stringify(pkt, p.Partida))
 			})
 			fmt.Printf(">> ")

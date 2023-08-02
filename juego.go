@@ -18,8 +18,8 @@ const VERSION = "0.1.0"
 // Juego :
 type Juego struct {
 	*pdt.Partida
-	Out   io.Writer `json:"-"`
-	ErrCh chan bool `json:"-"`
+	Out   io.ReadWriter `json:"-"`
+	ErrCh chan bool     `json:"-"`
 }
 
 // Cmd nexo capa presentacion con capa logica
@@ -71,12 +71,12 @@ func (j *Juego) Abandono(jugador string) error {
 }
 
 // NuevoJuego retorna nueva partida; error si hubo
-func NuevoJuego(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*Juego, io.Reader, error) {
+func NuevoJuego(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*Juego, error) {
 
 	p, err := pdt.NuevaPartida(puntuacion, equipoAzul, equipoRojo)
 
 	if err != nil {
-		return nil, nil, err
+		return nil, err
 	}
 
 	buff := new(bytes.Buffer)
@@ -97,5 +97,5 @@ func NuevoJuego(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*Ju
 		))
 	}
 
-	return &j, buff, nil
+	return &j, nil
 }
