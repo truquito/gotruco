@@ -45,7 +45,7 @@ func (j *Juego) String() string {
 func (j *Juego) Notify() {
 
 	// ojo primero hay que grabar el buff, luego avisar
-	enco.Write(j.out, enco.Pkt2(
+	enco.Write(j.out, enco.Pkt(
 		enco.Dest("ALL"),
 		enco.TimeOut("INTERRUMPING!! Roro tardo demasiado en jugar. Mano ganada por Rojo"),
 	))
@@ -62,7 +62,7 @@ func (j *Juego) Abandono(jugador string) error {
 	ptsFaltantes := int(j.Puntuacion) - j.Puntajes[equipoContrario]
 	j.SumarPuntos(equipoContrario, ptsFaltantes)
 
-	enco.Write(j.out, enco.Pkt2(
+	enco.Write(j.out, enco.Pkt(
 		enco.Dest("ALL"),
 		enco.Abandono(manojo.Jugador.ID),
 	))
@@ -88,7 +88,7 @@ func NuevaPartida(puntuacion pdt.Puntuacion, equipoAzul, equipoRojo []string) (*
 	j.ErrCh = make(chan bool, 1)
 
 	for _, m := range j.Ronda.Manojos {
-		enco.Write(j.out, enco.Pkt2(
+		enco.Write(j.out, enco.Pkt(
 			enco.Dest(m.Jugador.ID),
 			enco.NuevaPartida{
 				Perspectiva: j.Partida.PerspectivaCacheFlor(&m),
