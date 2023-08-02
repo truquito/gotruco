@@ -18,8 +18,8 @@ const VERSION = "0.1.0"
 type Juego struct {
 	*pdt.Partida
 	mu    *sync.Mutex
-	out   []enco.Packet `json:"-"`
-	ErrCh chan bool     `json:"-"`
+	out   []enco.Packet
+	ErrCh chan bool `json:"-"`
 }
 
 func (j *Juego) Consume() []enco.Packet {
