@@ -140,7 +140,7 @@ func (p *Partida) byeBye() []enco.Packet {
 			s = p.Ronda.Manojos[1].Jugador.ID
 		}
 
-		pkts2 = append(pkts2, enco.Pkt2(
+		pkts2 = append(pkts2, enco.Pkt(
 			enco.ALL,
 			enco.ByeBye(s),
 		))

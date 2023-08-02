@@ -455,7 +455,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts2 []enco.Packet) {
 
 	yaDijeron[jIdx] = true
 
-	pkts2 = append(pkts2, enco.Pkt2(
+	pkts2 = append(pkts2, enco.Pkt(
 		enco.ALL,
 		enco.DiceTengo{
 			Autor: r.Manojos[jIdx].Jugador.ID,
@@ -498,7 +498,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts2 []enco.Packet) {
 			if sonMejores {
 				if esDeEquipoContrario {
 
-					pkts2 = append(pkts2, enco.Pkt2(
+					pkts2 = append(pkts2, enco.Pkt(
 						enco.ALL,
 						enco.DiceSonMejores{
 							Autor: r.Manojos[i].Jugador.ID,
@@ -523,7 +523,7 @@ func (r *Ronda) ExecElEnvido() (jIdx JIX, max int, pkts2 []enco.Packet) {
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
 
-						pkts2 = append(pkts2, enco.Pkt2(
+						pkts2 = append(pkts2, enco.Pkt(
 							enco.ALL,
 							enco.DiceSonBuenas(r.Manojos[i].Jugador.ID),
 							// valor de su envido es `envidos[i]` pero no corresponde decirlo
@@ -619,7 +619,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts2 []enco.Pa
 	if flores[aPartirDe] > 0 {
 		yaDijeron[aPartirDe] = true
 
-		pkts2 = append(pkts2, enco.Pkt2(
+		pkts2 = append(pkts2, enco.Pkt(
 			enco.ALL,
 			enco.DiceTengo{
 				Autor: r.Manojos[aPartirDe].Jugador.ID,
@@ -656,7 +656,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts2 []enco.Pa
 			if sonMejores {
 				if esDeEquipoContrario {
 
-					pkts2 = append(pkts2, enco.Pkt2(
+					pkts2 = append(pkts2, enco.Pkt(
 						enco.ALL,
 						enco.DiceSonMejores{
 							Autor: r.Manojos[i].Jugador.ID,
@@ -681,7 +681,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX) (j *Manojo, max int, pkts2 []enco.Pa
 				if esDeEquipoContrario {
 					if todaviaNoDijeronSonMejores {
 
-						pkts2 = append(pkts2, enco.Pkt2(
+						pkts2 = append(pkts2, enco.Pkt(
 							enco.ALL,
 							enco.DiceSonBuenas(r.Manojos[i].Jugador.ID),
 						))

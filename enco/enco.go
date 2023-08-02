@@ -14,12 +14,6 @@ type Packet struct {
 	Message     IMessage `json:"message"`
 }
 
-// Message .
-type Message struct {
-	Cod  CodMsg          `json:"cod"`
-	Cont json.RawMessage `json:"cont"`
-}
-
 // CodMsg ..
 type CodMsg string
 
@@ -113,32 +107,7 @@ func (r Razon) String() string {
 	return s
 }
 
-// Tipo1 .
-type Tipo1 struct {
-	Autor string `json:"autor"`
-	Valor int    `json:"valor"`
-}
-
-// Tipo2 .
-type Tipo2 struct {
-	Autor string `json:"autor"`
-	Palo  string `json:"palo"`
-	Valor int    `json:"valor"`
-}
-
-// Tipo3 .
-type Tipo3 struct {
-	Autor  string `json:"autor"`
-	Razon  Razon  `json:"razon"`
-	Puntos int    `json:"puntos"`
-}
-
-type Tipo4 struct {
-	Autor string `json:"autor"`
-	Razon Razon  `json:"razon"`
-}
-
-func Pkt2(dest []string, m IMessage) Packet {
+func Pkt(dest []string, m IMessage) Packet {
 	return Packet{
 		Destination: dest,
 		Message:     m,
@@ -151,15 +120,6 @@ var ALL = []string{"ALL"}
 func Dest(ds ...string) []string {
 	return ds
 }
-
-//
-//
-//
-//
-//
-//
-
-// ?????????
 
 type TimeOut string
 
