@@ -1,7 +1,10 @@
 package truco
 
 import (
+	"errors"
+	"math"
 	"sync"
+	"time"
 
 	"github.com/filevich/truco/enco"
 	"github.com/filevich/truco/pdt"
@@ -14,12 +17,25 @@ const VERSION = "0.1.0"
 // el envido, la Primera o la mentira
 // el truco, la Segunda o el rabón
 
+type c_SIGNAL int
+
+const (
+	c_RESET c_SIGNAL = iota
+	c_EXIT
+)
+
 // Juego :
 type Juego struct {
 	*pdt.Partida
-	mu    *sync.Mutex
-	out   []enco.Packet
+	mu  *sync.Mutex
+	out []enco.Packet
+	// errores
+	Err   *enco.Packet
 	ErrCh chan bool `json:"-"`
+	// tiempo
+	DurTurno time.Duration
+	contador chan c_SIGNAL `json:"-"`
+	tic      *time.Ticker
 }
 
 func (j *Juego) Consume() []enco.Packet {
@@ -36,6 +52,10 @@ func (j *Juego) Consume() []enco.Packet {
 func (j *Juego) Cmd(cmd string) error {
 	j.mu.Lock()
 	defer j.mu.Unlock()
+
+	if j.Terminado() {
+		return errors.New("el juego termió")
+	}
 
 	pkts, err := j.Partida.Cmd(cmd)
 	if err != nil {
@@ -94,6 +114,55 @@ func (j *Juego) Abandono(jugador string) error {
 	return nil
 }
 
+func (j *Juego) Expirado() bool {
+	return j.Err != nil
+}
+
+func (j *Juego) Terminado() bool {
+	return j.Partida.Terminada() || j.Expirado()
+}
+
+func (j *Juego) contar() {
+	const delta float64 = 1.15
+	d := float64(j.DurTurno) * delta
+	total := time.Duration(math.Ceil(d))
+	j.tic = time.NewTicker(total)
+
+	defer func() {
+		// fmt.Println("exiting contar")
+		j.tic.Stop()
+	}()
+
+	for {
+		select {
+		case s := <-j.contador:
+			switch s {
+			case c_RESET:
+				j.tic.Stop()
+				j.tic.Reset(total)
+			case c_EXIT:
+				j.tic.Stop()
+				return // <- se destruye esta goroutine
+			}
+		case <-j.tic.C:
+			j.mu.Lock()
+			defer j.mu.Unlock()
+			if j.Partida.Verbose {
+				pkt := enco.Pkt(
+					enco.Dest("ALL"),
+					enco.TimeOut("INTERRUMPING!! Alguien tardo demasiado en jugar. Mano ganada por ?"),
+				)
+				j.out = append(j.out, pkt)
+			}
+			u := j.Partida.Ronda.Manojos[j.Ronda.Turno].Jugador.ID
+			pkt := enco.Pkt(enco.ALL, enco.TimeOut(u))
+			j.Err = &pkt
+			j.ErrCh <- true
+			return // <- se destruye esta goroutine
+		}
+	}
+}
+
 // NuevoJuego retorna nueva partida; error si hubo
 func NuevoJuego(
 
@@ -110,11 +179,19 @@ func NuevoJuego(
 		return nil, err
 	}
 
+	timeout := time.Second * 10
+
 	j := Juego{
 		Partida: p,
 		mu:      &sync.Mutex{},
 		out:     make([]enco.Packet, 0),
-		ErrCh:   make(chan bool, 1),
+		// errores
+		ErrCh: make(chan bool, 1),
+		Err:   nil,
+		// tiempo
+		contador: make(chan c_SIGNAL, 1),
+		DurTurno: timeout,
+		tic:      nil,
 	}
 
 	// pongo en el buffer un mensaje de Partida{} para cada jugador
@@ -129,6 +206,8 @@ func NuevoJuego(
 			j.out = append(j.out, pkt)
 		}
 	}
+
+	go j.contar()
 
 	return &j, nil
 }

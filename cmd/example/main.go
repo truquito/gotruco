@@ -9,24 +9,24 @@ import (
 
 	"github.com/filevich/truco"
 	"github.com/filevich/truco/deco"
+	"github.com/filevich/truco/enco"
 )
 
-var reader = bufio.NewReader(os.Stdin)
-
-func readLn(prefix string) string {
-	fmt.Print(prefix)
-	cmd, _ := reader.ReadString('\n')
-	return strings.TrimSuffix(cmd, "\n")
-}
+var ioCh chan string = make(chan string, 1)
 
 func handleIO() {
+	reader := bufio.NewReader(os.Stdin)
+	readLn := func(prefix string) string {
+		fmt.Print(prefix)
+		cmd, _ := reader.ReadString('\n')
+		return strings.TrimSuffix(cmd, "\n")
+	}
+
 	for {
 		cmd := readLn("")
 		ioCh <- cmd
 	}
 }
-
-var ioCh chan string = make(chan string, 1)
 
 func main() {
 
@@ -53,6 +53,7 @@ func main() {
 
 	for {
 		select {
+		// canal de entrada del usuario
 		case cmd := <-ioCh:
 			if cmd == "dump" {
 				data, _ := json.Marshal(p)
@@ -68,15 +69,24 @@ func main() {
 				}
 				fmt.Println(p)
 			}
+		// canal de error detectado por parte del simulador
 		case <-p.ErrCh:
+			// el error deberia estar aca
 			for _, pkt := range p.Consume() {
-				fmt.Println(deco.Stringify(&pkt, p.Partida))
+				fmt.Println(pkt.Message.Cod(), deco.Stringify(&pkt, p.Partida))
 			}
-			fmt.Printf(">> ")
+			// de momento, el unico error posible
+			if p.Expirado() {
+				m, _ := p.Err.Message.(enco.TimeOut)
+				fmt.Printf("el juego terminó debido a que `%s` no realizó niguna jugada en %s\n", m, p.DurTurno)
+			}
+			// fmt.Printf(">> ")
 		}
 
-		if p.Terminada() {
-			break
+		if p.Terminado() {
+			return
+			// si es modo bucle, entonces que no salga del for sino que
+			// cree un juego nuevo
 		}
 	}
 
