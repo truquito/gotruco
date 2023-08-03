@@ -13,7 +13,7 @@ NUEVO SISTEMA:
 
 */
 
-func IsDone(pkts []enco.Packet) bool {
+func IsDone(pkts []enco.Envelope) bool {
 	for _, pkt := range pkts {
 		if pkt.Message.Cod() == enco.TNuevaPartida ||
 			pkt.Message.Cod() == enco.TNuevaRonda ||

@@ -1,6 +1,6 @@
 package enco
 
-func Analyze(pkts []Packet) map[CodMsg]bool {
+func Analyze(pkts []Envelope) map[CodMsg]bool {
 	out := make(map[CodMsg]bool)
 
 	for _, pkt := range pkts {

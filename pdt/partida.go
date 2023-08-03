@@ -283,9 +283,9 @@ func (p *Partida) IrAlMazo(manojo *Manojo) {
 
 // EvaluarMano evalua todas las cartas y decide que equipo gano
 // de ese ganador se setea el siguiente turno
-func (p *Partida) EvaluarMano() (bool, []enco.Packet) {
+func (p *Partida) EvaluarMano() (bool, []enco.Envelope) {
 
-	var pkts2 []enco.Packet
+	var pkts2 []enco.Envelope
 
 	// cual es la tirada-carta que gano la mano?
 	// ojo que puede salir parda
@@ -425,7 +425,7 @@ func (p *Partida) EvaluarMano() (bool, []enco.Packet) {
 // se acabo la ronda?
 // si se empieza una ronda nueva -> retorna true
 // si no se termino la ronda 	 -> retorna false
-func (p *Partida) EvaluarRonda() (bool, []enco.Packet) {
+func (p *Partida) EvaluarRonda() (bool, []enco.Envelope) {
 
 	/*
 		TENER EN CUENTA:
@@ -437,7 +437,7 @@ func (p *Partida) EvaluarRonda() (bool, []enco.Packet) {
 		por default dice "ganoRojo"
 	*/
 
-	var pkts2 []enco.Packet
+	var pkts2 []enco.Envelope
 
 	// la ronda continua...
 

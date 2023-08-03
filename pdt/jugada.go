@@ -26,8 +26,8 @@ const (
 
 // IJugada Interface para las jugadas
 type IJugada interface {
-	Ok(p *Partida) ([]enco.Packet, bool)
-	Hacer(p *Partida) []enco.Packet
+	Ok(p *Partida) ([]enco.Envelope, bool)
+	Hacer(p *Partida) []enco.Envelope
 	String() string
 	ID() IJUGADA_ID
 }
@@ -51,9 +51,9 @@ func (jugada TirarCarta) String() string {
 }
 
 // Retorna true si la jugada es valida
-func (jugada TirarCarta) Ok(p *Partida) ([]enco.Packet, bool) {
+func (jugada TirarCarta) Ok(p *Partida) ([]enco.Envelope, bool) {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 
 	// checkeo si se fue al mazo
 	noSeFueAlMazo := !p.Manojo(jugada.JID).SeFueAlMazo
@@ -187,9 +187,9 @@ func (jugada TirarCarta) Ok(p *Partida) ([]enco.Packet, bool) {
 
 }
 
-func (jugada TirarCarta) Hacer(p *Partida) []enco.Packet {
+func (jugada TirarCarta) Hacer(p *Partida) []enco.Envelope {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 	pre2, ok := jugada.Ok(p)
 	if p.Verbose {
 		pkts2 = append(pkts2, pre2...)
@@ -309,9 +309,9 @@ func (jugada TocarEnvido) String() string {
 	return jugada.JID + " envido"
 }
 
-func (jugada TocarEnvido) Ok(p *Partida) ([]enco.Packet, bool) {
+func (jugada TocarEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 
 	// checkeo flor en juego
 	florEnJuego := p.Ronda.Envite.Estado >= FLOR
@@ -394,9 +394,9 @@ func (jugada TocarEnvido) Ok(p *Partida) ([]enco.Packet, bool) {
 	return pkts2, true
 }
 
-func (jugada TocarEnvido) Hacer(p *Partida) []enco.Packet {
+func (jugada TocarEnvido) Hacer(p *Partida) []enco.Envelope {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 	pre2, ok := jugada.Ok(p)
 	if p.Verbose {
 		pkts2 = append(pkts2, pre2...)
@@ -456,9 +456,9 @@ func (jugada TocarEnvido) Hacer(p *Partida) []enco.Packet {
 que con el envido. Deberia formar parte del eval del quiero */
 
 // donde 'j' el jugador que dijo 'quiero' al 'envido'/'real envido'
-func (jugada TocarEnvido) Eval(p *Partida) []enco.Packet {
+func (jugada TocarEnvido) Eval(p *Partida) []enco.Envelope {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 
 	p.Ronda.Envite.Estado = DESHABILITADO
 	p.Ronda.Envite.SinCantar = []string{}
@@ -499,9 +499,9 @@ func (jugada TocarRealEnvido) String() string {
 	return jugada.JID + " real-envido"
 }
 
-func (jugada TocarRealEnvido) Ok(p *Partida) ([]enco.Packet, bool) {
+func (jugada TocarRealEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 
 	// checkeo flor en juego
 	florEnJuego := p.Ronda.Envite.Estado >= FLOR
@@ -562,9 +562,9 @@ func (jugada TocarRealEnvido) Ok(p *Partida) ([]enco.Packet, bool) {
 	return pkts2, true
 }
 
-func (jugada TocarRealEnvido) Hacer(p *Partida) []enco.Packet {
+func (jugada TocarRealEnvido) Hacer(p *Partida) []enco.Envelope {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 	pre2, ok := jugada.Ok(p)
 	if p.Verbose {
 		pkts2 = append(pkts2, pre2...)
@@ -630,9 +630,9 @@ func (jugada TocarFaltaEnvido) String() string {
 	return jugada.JID + " falta-envido"
 }
 
-func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]enco.Packet, bool) {
+func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 
 	// checkeo flor en juego
 	florEnJuego := p.Ronda.Envite.Estado >= FLOR
@@ -693,9 +693,9 @@ func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]enco.Packet, bool) {
 	return pkts2, true
 }
 
-func (jugada TocarFaltaEnvido) Hacer(p *Partida) []enco.Packet {
+func (jugada TocarFaltaEnvido) Hacer(p *Partida) []enco.Envelope {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 	pre2, ok := jugada.Ok(p)
 	if p.Verbose {
 		pkts2 = append(pkts2, pre2...)
@@ -758,9 +758,9 @@ func (jugada TocarFaltaEnvido) Hacer(p *Partida) []enco.Packet {
  *		si no: se juega por el resto del maximo puntaje
 */
 
-func (jugada TocarFaltaEnvido) Eval(p *Partida) []enco.Packet {
+func (jugada TocarFaltaEnvido) Eval(p *Partida) []enco.Envelope {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 
 	p.Ronda.Envite.Estado = DESHABILITADO
 	p.Ronda.Envite.SinCantar = []string{}
@@ -823,9 +823,9 @@ func (jugada CantarFlor) String() string {
 	return jugada.JID + " flor"
 }
 
-func (jugada CantarFlor) Ok(p *Partida) ([]enco.Packet, bool) {
+func (jugada CantarFlor) Ok(p *Partida) ([]enco.Envelope, bool) {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 
 	// manojo dice que puede cantar flor;
 	// es esto verdad?
@@ -859,9 +859,9 @@ func (jugada CantarFlor) Ok(p *Partida) ([]enco.Packet, bool) {
 	return pkts2, true
 }
 
-func (jugada CantarFlor) Hacer(p *Partida) []enco.Packet {
+func (jugada CantarFlor) Hacer(p *Partida) []enco.Envelope {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 	pre2, ok := jugada.Ok(p)
 	if p.Verbose {
 		pkts2 = append(pkts2, pre2...)
@@ -934,9 +934,9 @@ func (jugada CantarFlor) Hacer(p *Partida) []enco.Packet {
 	return pkts2
 }
 
-func evalFlor(p *Partida) []enco.Packet {
+func evalFlor(p *Partida) []enco.Envelope {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 
 	florEnJuego := p.Ronda.Envite.Estado >= FLOR
 	todosLosJugadoresConFlorCantaron := len(p.Ronda.Envite.SinCantar) == 0
@@ -1015,9 +1015,9 @@ func (jugada CantarContraFlor) String() string {
 	return jugada.JID + " contra-flor"
 }
 
-func (jugada CantarContraFlor) Ok(p *Partida) ([]enco.Packet, bool) {
+func (jugada CantarContraFlor) Ok(p *Partida) ([]enco.Envelope, bool) {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 
 	// manojo dice que puede cantar flor;
 	// es esto verdad?
@@ -1043,9 +1043,9 @@ func (jugada CantarContraFlor) Ok(p *Partida) ([]enco.Packet, bool) {
 	return pkts2, true
 }
 
-func (jugada CantarContraFlor) Hacer(p *Partida) []enco.Packet {
+func (jugada CantarContraFlor) Hacer(p *Partida) []enco.Envelope {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 	pre2, ok := jugada.Ok(p)
 	if p.Verbose {
 		pkts2 = append(pkts2, pre2...)
@@ -1086,9 +1086,9 @@ func (jugada CantarContraFlorAlResto) String() string {
 	return jugada.JID + " contra-flor-al-resto"
 }
 
-func (jugada CantarContraFlorAlResto) Ok(p *Partida) ([]enco.Packet, bool) {
+func (jugada CantarContraFlorAlResto) Ok(p *Partida) ([]enco.Envelope, bool) {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 
 	// manojo dice que puede cantar flor;
 	// es esto verdad?
@@ -1114,9 +1114,9 @@ func (jugada CantarContraFlorAlResto) Ok(p *Partida) ([]enco.Packet, bool) {
 	return pkts2, true
 }
 
-func (jugada CantarContraFlorAlResto) Hacer(p *Partida) []enco.Packet {
+func (jugada CantarContraFlorAlResto) Hacer(p *Partida) []enco.Envelope {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 	pre2, ok := jugada.Ok(p)
 	if p.Verbose {
 		pkts2 = append(pkts2, pre2...)
@@ -1150,7 +1150,7 @@ type CantarConFlorMeAchico struct {
 }
 
 // no implementada (porque no es necesaria?)
-func (jugada CantarConFlorMeAchico) Hacer(p *Partida) []enco.Packet {
+func (jugada CantarConFlorMeAchico) Hacer(p *Partida) []enco.Envelope {
 	return nil
 }
 
@@ -1179,9 +1179,9 @@ func (jugada GritarTruco) String() string {
 	return jugada.JID + " truco"
 }
 
-func (jugada GritarTruco) Ok(p *Partida) ([]enco.Packet, bool) {
+func (jugada GritarTruco) Ok(p *Partida) ([]enco.Envelope, bool) {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 
 	// checkeos:
 	noSeFueAlMazo := !p.Manojo(jugada.JID).SeFueAlMazo
@@ -1210,9 +1210,9 @@ func (jugada GritarTruco) Ok(p *Partida) ([]enco.Packet, bool) {
 	return pkts2, true
 }
 
-func (jugada GritarTruco) Hacer(p *Partida) []enco.Packet {
+func (jugada GritarTruco) Hacer(p *Partida) []enco.Envelope {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 	pre2, ok := jugada.Ok(p)
 	if p.Verbose {
 		pkts2 = append(pkts2, pre2...)
@@ -1247,9 +1247,9 @@ func (jugada GritarReTruco) String() string {
 	return jugada.JID + " re-truco"
 }
 
-func (jugada GritarReTruco) Ok(p *Partida) ([]enco.Packet, bool) {
+func (jugada GritarReTruco) Ok(p *Partida) ([]enco.Envelope, bool) {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 
 	// checkeos generales:
 	noSeFueAlMazo := !p.Manojo(jugada.JID).SeFueAlMazo
@@ -1297,9 +1297,9 @@ func (jugada GritarReTruco) Ok(p *Partida) ([]enco.Packet, bool) {
 // checkeaos de este tipo:
 // que pasa cuando gritan re-truco cuando el campo truco se encuentra nil
 // ese fue el nil pointer exception
-func (jugada GritarReTruco) Hacer(p *Partida) []enco.Packet {
+func (jugada GritarReTruco) Hacer(p *Partida) []enco.Envelope {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 	pre2, ok := jugada.Ok(p)
 	if p.Verbose {
 		pkts2 = append(pkts2, pre2...)
@@ -1334,9 +1334,9 @@ func (jugada GritarVale4) String() string {
 	return jugada.JID + " vale-4"
 }
 
-func (jugada GritarVale4) Ok(p *Partida) ([]enco.Packet, bool) {
+func (jugada GritarVale4) Ok(p *Partida) ([]enco.Envelope, bool) {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 
 	// checkeos:
 	noSeFueAlMazo := !p.Manojo(jugada.JID).SeFueAlMazo
@@ -1383,9 +1383,9 @@ func (jugada GritarVale4) Ok(p *Partida) ([]enco.Packet, bool) {
 	return pkts2, true
 }
 
-func (jugada GritarVale4) Hacer(p *Partida) []enco.Packet {
+func (jugada GritarVale4) Hacer(p *Partida) []enco.Envelope {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 	pre2, ok := jugada.Ok(p)
 	if p.Verbose {
 		pkts2 = append(pkts2, pre2...)
@@ -1420,9 +1420,9 @@ func (jugada ResponderQuiero) String() string {
 	return jugada.JID + " quiero"
 }
 
-func (jugada ResponderQuiero) Ok(p *Partida) ([]enco.Packet, bool) {
+func (jugada ResponderQuiero) Ok(p *Partida) ([]enco.Envelope, bool) {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 
 	seFueAlMazo := p.Manojo(jugada.JID).SeFueAlMazo
 	if seFueAlMazo {
@@ -1540,9 +1540,9 @@ func (jugada ResponderQuiero) Ok(p *Partida) ([]enco.Packet, bool) {
 	return pkts2, true
 }
 
-func (jugada ResponderQuiero) Hacer(p *Partida) []enco.Packet {
+func (jugada ResponderQuiero) Hacer(p *Partida) []enco.Envelope {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 	pre2, ok := jugada.Ok(p)
 	if p.Verbose {
 		pkts2 = append(pkts2, pre2...)
@@ -1669,9 +1669,9 @@ func (jugada ResponderNoQuiero) String() string {
 	return jugada.JID + " no-quiero"
 }
 
-func (jugada ResponderNoQuiero) Ok(p *Partida) ([]enco.Packet, bool) {
+func (jugada ResponderNoQuiero) Ok(p *Partida) ([]enco.Envelope, bool) {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 
 	seFueAlMazo := p.Manojo(jugada.JID).SeFueAlMazo
 	if seFueAlMazo {
@@ -1764,9 +1764,9 @@ func (jugada ResponderNoQuiero) Ok(p *Partida) ([]enco.Packet, bool) {
 	return pkts2, true
 }
 
-func (jugada ResponderNoQuiero) Hacer(p *Partida) []enco.Packet {
+func (jugada ResponderNoQuiero) Hacer(p *Partida) []enco.Envelope {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 	pre2, ok := jugada.Ok(p)
 	if p.Verbose {
 		pkts2 = append(pkts2, pre2...)
@@ -1944,9 +1944,9 @@ func (jugada IrseAlMazo) String() string {
 	return jugada.JID + " mazo"
 }
 
-func (jugada IrseAlMazo) Ok(p *Partida) ([]enco.Packet, bool) {
+func (jugada IrseAlMazo) Ok(p *Partida) ([]enco.Envelope, bool) {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 
 	// checkeos:
 	yaSeFueAlMazo := p.Manojo(jugada.JID).SeFueAlMazo
@@ -2051,9 +2051,9 @@ func Eliminar(manojos []*Manojo, manojo *Manojo) []*Manojo {
 	return manojos[:len(manojos)-1]      // Truncate slice.
 }
 
-func (jugada IrseAlMazo) Hacer(p *Partida) []enco.Packet {
+func (jugada IrseAlMazo) Hacer(p *Partida) []enco.Envelope {
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 	pre2, ok := jugada.Ok(p)
 	if p.Verbose {
 		pkts2 = append(pkts2, pre2...)

@@ -419,7 +419,7 @@ func (r *Ronda) SetMuestra(muestra Carta) {
 *		`pkts[3] = Juan dice: "33 son mejores!"`
 *
  */
-func (r *Ronda) ExecElEnvido(verbose bool) (jIdx JIX, max int, pkts2 []enco.Packet) {
+func (r *Ronda) ExecElEnvido(verbose bool) (jIdx JIX, max int, pkts2 []enco.Envelope) {
 
 	cantJugadores := len(r.Manojos)
 
@@ -575,7 +575,7 @@ func (r *Ronda) ExecElEnvido(verbose bool) (jIdx JIX, max int, pkts2 []enco.Pack
 *	`pkts[3] = Juan dice: "33 son mejores!"`
 *
  */
-func (r *Ronda) ExecLaFlores(aPartirDe JIX, verbose bool) (j *Manojo, max int, pkts2 []enco.Packet) {
+func (r *Ronda) ExecLaFlores(aPartirDe JIX, verbose bool) (j *Manojo, max int, pkts2 []enco.Envelope) {
 
 	// si solo un equipo tiene flor, entonces se saltea esta parte
 	soloUnEquipoTieneFlores := true

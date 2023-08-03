@@ -127,12 +127,12 @@ func ParseJugada(p *Partida, cmd string) (IJugada, error) {
 
 }
 
-func (p *Partida) byeBye() []enco.Packet {
+func (p *Partida) byeBye() []enco.Envelope {
 	if !p.Verbose {
 		return nil
 	}
 
-	pkts2 := make([]enco.Packet, 0)
+	pkts2 := make([]enco.Envelope, 0)
 
 	if p.Terminada() {
 
@@ -154,7 +154,7 @@ func (p *Partida) byeBye() []enco.Packet {
 }
 
 // Cmd nexo capa presentacion con capa logica
-func (p *Partida) Cmd(cmd string) ([]enco.Packet, error) {
+func (p *Partida) Cmd(cmd string) ([]enco.Envelope, error) {
 
 	// checkeo semantico
 	jugada, err := ParseJugada(p, cmd)

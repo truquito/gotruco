@@ -9,7 +9,7 @@ type IMessage interface {
 	Cod() CodMsg
 }
 
-type Packet struct {
+type Envelope struct {
 	Destination []string `json:"destination"`
 	Message     IMessage `json:"message"`
 }
@@ -30,7 +30,7 @@ func Dumps(m IMessage) ([]byte, error) {
 	})
 }
 
-func (p Packet) MarshalJSON() ([]byte, error) {
+func (p Envelope) MarshalJSON() ([]byte, error) {
 	bs, err := Dumps(p.Message)
 	if err != nil {
 		return nil, err
@@ -138,8 +138,8 @@ func (r Razon) String() string {
 	return s
 }
 
-func Pkt(dest []string, m IMessage) Packet {
-	return Packet{
+func Pkt(dest []string, m IMessage) Envelope {
+	return Envelope{
 		Destination: dest,
 		Message:     m,
 	}

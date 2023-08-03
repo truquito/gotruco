@@ -28,9 +28,9 @@ const (
 type Juego struct {
 	*pdt.Partida
 	mu  *sync.Mutex
-	out []enco.Packet
+	out []enco.Envelope
 	// errores
-	Err   *enco.Packet
+	Err   *enco.Envelope
 	ErrCh chan bool `json:"-"`
 	// tiempo
 	DurTurno time.Duration
@@ -38,12 +38,12 @@ type Juego struct {
 	tic      *time.Ticker
 }
 
-func (j *Juego) Consume() []enco.Packet {
+func (j *Juego) Consume() []enco.Envelope {
 	j.mu.Lock()
 	defer j.mu.Unlock()
 
 	res := j.out
-	j.out = make([]enco.Packet, 0, len(res))
+	j.out = make([]enco.Envelope, 0, len(res))
 
 	return res
 }
@@ -189,7 +189,7 @@ func NuevoJuego(
 	j := Juego{
 		Partida: p,
 		mu:      &sync.Mutex{},
-		out:     make([]enco.Packet, 0),
+		out:     make([]enco.Envelope, 0),
 		// errores
 		ErrCh: make(chan bool, 1),
 		Err:   nil,
