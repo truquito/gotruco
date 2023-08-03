@@ -66,6 +66,12 @@ func (j *Juego) Cmd(cmd string) error {
 		j.out = append(j.out, pkts...)
 	}
 
+	if j.Partida.Terminada() {
+		// entonces paro el contador (goroutine) + tic (ticker)
+		j.tic.Stop()
+
+	}
+
 	return nil
 }
 
