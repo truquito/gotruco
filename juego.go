@@ -38,7 +38,7 @@ type Juego struct {
 	tic      *time.Ticker
 }
 
-func (j *Juego) Consume() []enco.Envelope {
+func (j *Juego) Consumir() []enco.Envelope {
 	j.mu.Lock()
 	defer j.mu.Unlock()
 
@@ -78,22 +78,6 @@ func (j *Juego) Cmd(cmd string) error {
 // String retorna una representacion en formato de string
 func (j *Juego) String() string {
 	return pdt.Renderizar(j.Partida)
-}
-
-func (j *Juego) Notify() {
-	j.mu.Lock()
-	defer j.mu.Unlock()
-
-	// deprecated: ojo primero hay que grabar el buff, luego avisar
-	if j.Partida.Verbose {
-		pkt := enco.Pkt(
-			enco.Dest("ALL"),
-			enco.TimeOut("INTERRUMPING!! Roro tardo demasiado en jugar. Mano ganada por Rojo"),
-		)
-		j.out = append(j.out, pkt)
-	}
-
-	j.ErrCh <- true
 }
 
 // Abandono da por ganada la partida al equipo contario
@@ -151,15 +135,6 @@ func (j *Juego) contar() {
 				return // <- se destruye esta goroutine
 			}
 		case <-j.tic.C:
-			j.mu.Lock()
-			defer j.mu.Unlock()
-			if j.Partida.Verbose {
-				pkt := enco.Pkt(
-					enco.Dest("ALL"),
-					enco.TimeOut("INTERRUMPING!! Alguien tardo demasiado en jugar. Mano ganada por ?"),
-				)
-				j.out = append(j.out, pkt)
-			}
 			u := j.Partida.Ronda.Manojos[j.Ronda.Turno].Jugador.ID
 			pkt := enco.Pkt(enco.ALL, enco.TimeOut(u))
 			j.Err = &pkt

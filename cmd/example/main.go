@@ -45,7 +45,7 @@ func main() {
 
 	fmt.Println(p)
 
-	for _, pkt := range p.Consume() {
+	for _, pkt := range p.Consumir() {
 		fmt.Println(deco.Stringify(&pkt, p.Partida))
 	}
 
@@ -65,7 +65,7 @@ func main() {
 				if err != nil {
 					fmt.Println("<< " + err.Error())
 				}
-				for _, pkt := range p.Consume() {
+				for _, pkt := range p.Consumir() {
 					fmt.Println(deco.Stringify(&pkt, p.Partida))
 				}
 				fmt.Println(p)
@@ -73,7 +73,7 @@ func main() {
 		// canal de error detectado por parte del simulador
 		case <-p.ErrCh:
 			// el error deberia estar aca
-			for _, pkt := range p.Consume() {
+			for _, pkt := range p.Consumir() {
 				fmt.Println(pkt.Message.Cod(), deco.Stringify(&pkt, p.Partida))
 			}
 			// de momento, el unico error posible
