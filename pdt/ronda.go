@@ -733,7 +733,7 @@ func (r *Ronda) Reset(elMano JIX) {
 	}
 }
 
-func (r *Ronda) nuevaRonda(elMano JIX) {
+func (r *Ronda) reiniciar(elMano JIX) {
 	r.Reset(elMano)
 
 	// reparto 3 cartas al azar a cada jugador
@@ -748,7 +748,7 @@ func (r *Ronda) nuevaRonda(elMano JIX) {
 
 // Reserva el espacio en memoria
 // Por default, cuando se crea una ronda el mano sera el jix = 0
-func MakeRonda(equipoAzul, equipoRojo []string) Ronda {
+func NuevaRonda(equipoAzul, equipoRojo []string) Ronda {
 
 	cantJugadores := len(equipoAzul) * 2
 	cantJugadoresPorEquipo := len(equipoAzul)

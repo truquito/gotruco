@@ -678,7 +678,7 @@ func (p *Partida) EvaluarRonda() (bool, []enco.Envelope) {
 
 // NuevaRonda .
 func (p *Partida) NuevaRonda(elMano JIX) {
-	p.Ronda.nuevaRonda(elMano)
+	p.Ronda.reiniciar(elMano)
 }
 
 // MarshalJSON retorna la partida en formato json
@@ -823,7 +823,7 @@ func NuevaPartida(
 		Azul: 0,
 	}
 
-	p.Ronda = MakeRonda(equipoAzul, equipoRojo)
+	p.Ronda = NuevaRonda(equipoAzul, equipoRojo)
 
 	return &p, nil
 }
