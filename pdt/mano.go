@@ -10,19 +10,22 @@ type Resultado int
 
 // 3 opciones (ya sea para 2, 4 o 6 jugadores)
 const (
-	GanoRojo Resultado = iota
+	Indeterminado Resultado = iota
+	GanoRojo
 	GanoAzul
 	Empardada
 )
 
 var toResultado = map[string]Resultado{
-	"ganoRojo":  GanoRojo,
-	"ganoAzul":  GanoAzul,
-	"empardada": Empardada,
+	"indeterminado": Indeterminado,
+	"ganoRojo":      GanoRojo,
+	"ganoAzul":      GanoAzul,
+	"empardada":     Empardada,
 }
 
 func (r Resultado) String() string {
 	resultados := []string{
+		"indeterminado",
 		"ganoRojo",
 		"ganoAzul",
 		"empardada",
