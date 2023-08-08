@@ -13,19 +13,19 @@ import (
 /*
  *  Barajas; orden absoluto:
  *  ----------------------------------------------------------
- * | ID	| Carta	    ID | Carta	  ID | Carta	  ID | Carta |
+ * | ID	| Carta	    ID | Carta	  ID | Carta	    ID | Carta |
  * |---------------------------------------------------------|
- * | 00 | 1,Basto   10 | 1,Copa   20 | 1,Espada   30 | 1,Oro |
- * | 01 | 2,Basto   11 | 2,Copa   21 | 2,Espada   31 | 2,Oro |
- * | 02 | 3,Basto   12 | 3,Copa   22 | 3,Espada   32 | 3,Oro |
- * | 03 | 4,Basto   13 | 4,Copa   23 | 4,Espada   33 | 4,Oro |
- * | 04 | 5,Basto   14 | 5,Copa   24 | 5,Espada   34 | 5,Oro |
- * | 05 | 6,Basto   15 | 6,Copa   25 | 6,Espada   35 | 6,Oro |
- * | 06 | 7,Basto   16 | 7,Copa   26 | 7,Espada   36 | 7,Oro |
+ * | 00 | 1,basto   10 | 1,copa   20 | 1,espada   30 | 1,oro |
+ * | 01 | 2,basto   11 | 2,copa   21 | 2,espada   31 | 2,oro |
+ * | 02 | 3,basto   12 | 3,copa   22 | 3,espada   32 | 3,oro |
+ * | 03 | 4,basto   13 | 4,copa   23 | 4,espada   33 | 4,oro |
+ * | 04 | 5,basto   14 | 5,copa   24 | 5,espada   34 | 5,oro |
+ * | 05 | 6,basto   15 | 6,copa   25 | 6,espada   35 | 6,oro |
+ * | 06 | 7,basto   16 | 7,copa   26 | 7,espada   36 | 7,oro |
  *  ----------------------------------------------------------
- * | 07 |10,Basto   17 |10,Copa   27 |10,Espada   37 |10,Oro |
- * | 08 |11,Basto   18 |11,Copa   28 |11,Espada   38 |11,Oro |
- * | 09 |12,Basto   19 |12,Copa   29 |12,Espada   39 |12,Oro |
+ * | 07 |10,basto   17 |10,copa   27 |10,espada   37 |10,oro |
+ * | 08 |11,basto   18 |11,copa   28 |11,espada   38 |11,oro |
+ * | 09 |12,basto   19 |12,copa   29 |12,espada   39 |12,oro |
  *  ----------------------------------------------------------
  */
 
@@ -50,18 +50,18 @@ const (
 )
 
 var ToPalo = map[string]Palo{
-	"Basto":  Basto,
-	"Copa":   Copa,
-	"Espada": Espada,
-	"Oro":    Oro,
+	"basto":  Basto,
+	"copa":   Copa,
+	"espada": Espada,
+	"oro":    Oro,
 }
 
 func (p Palo) String() string {
 	palos := []string{
-		"Basto",
-		"Copa",
-		"Espada",
-		"Oro",
+		"basto",
+		"copa",
+		"espada",
+		"oro",
 	}
 
 	ok := p >= 0 || int(p) < len(ToPalo)
