@@ -844,6 +844,11 @@ func MakeRonda(equipoAzul, equipoRojo []string) Ronda {
 		Manos:   make([]Mano, 3),
 	}
 
+	for i := range ronda.Manos {
+		// como maximo pueden tirar 1 cartas cada jugador
+		ronda.Manos[i].CartasTiradas = make([]CartaTirada, 0, cantJugadores)
+	}
+
 	for i := 0; i < cantJugadoresPorEquipo; i++ {
 		ix := i << 1
 		ronda.Manojos[ix].Jugador = &Jugador{equipoAzul[i], Azul}
