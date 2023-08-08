@@ -177,12 +177,13 @@ func NuevoJuego(
 	puntuacion pdt.Puntuacion,
 	equipoAzul,
 	equipoRojo []string,
+	limiteEnvido int,
 	verbose bool,
 	maxTiempoPorTurno time.Duration,
 
 ) (*Juego, error) {
 
-	p, err := pdt.NuevaPartida(puntuacion, equipoAzul, equipoRojo, verbose)
+	p, err := pdt.NuevaPartida(puntuacion, equipoAzul, equipoRojo, limiteEnvido, verbose)
 
 	if err != nil {
 		return nil, err

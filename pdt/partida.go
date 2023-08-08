@@ -66,10 +66,11 @@ func (e *Equipo) UnmarshalJSON(b []byte) error {
 
 // Partida solo los datos de una partida
 type Partida struct {
-	Puntuacion Puntuacion     `json:"puntuacion"`
-	Puntajes   map[Equipo]int `json:"puntajes"`
-	Ronda      Ronda          `json:"ronda"`
-	Verbose    bool           `json:"-"`
+	Puntuacion   Puntuacion     `json:"puntuacion"`
+	Puntajes     map[Equipo]int `json:"puntajes"`
+	Ronda        Ronda          `json:"ronda"`
+	LimiteEnvido int            `json:"limiteEnvido"`
+	Verbose      bool           `json:"-"`
 }
 
 // GetMaxPuntaje .
@@ -694,6 +695,11 @@ func (p *Partida) FromJSON(data []byte) error {
 		return err
 	}
 
+	// default lim envido
+	if p.LimiteEnvido == 0 {
+		p.LimiteEnvido = 4
+	}
+
 	// de estos se encarga el Unmarshal:
 	// Manojos: make([]Manojo, cantJugadores)
 	// Manos:   make([]Mano, 3)
@@ -792,6 +798,7 @@ func NuevaPartida(
 	puntuacion Puntuacion,
 	equipoAzul,
 	equipoRojo []string,
+	limiteEnvido int,
 	verbose bool,
 
 ) (*Partida, error) {
@@ -806,8 +813,9 @@ func NuevaPartida(
 	}
 
 	p := Partida{
-		Puntuacion: puntuacion,
-		Verbose:    verbose,
+		Puntuacion:   puntuacion,
+		Verbose:      verbose,
+		LimiteEnvido: limiteEnvido,
 	}
 
 	p.Puntajes = map[Equipo]int{

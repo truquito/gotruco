@@ -366,8 +366,15 @@ func (jugada TocarEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 
 	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Manojo(p.Ronda.Envite.CantadoPor).Jugador.Equipo != p.Manojo(jugada.JID).Jugador.Equipo
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == ENVIDO
+	// antes:
 	// apuestaSaturada := p.Ronda.Envite.Puntaje >= p.CalcPtsFalta()
-	apuestaSaturada := p.Ronda.Envite.Puntaje >= 4
+	// apuestaSaturada := p.Ronda.Envite.Puntaje >= 4
+	// ahora:
+	lim := p.LimiteEnvido
+	if lim == -1 {
+		lim = p.CalcPtsFalta()
+	}
+	apuestaSaturada := p.Ronda.Envite.Puntaje >= lim
 	trucoNoCantado := p.Ronda.Truco.Estado == NOCANTADO
 
 	estaIniciandoPorPrimeraVezElEnvido := esSuTurno && p.Ronda.Envite.Estado == NOCANTADOAUN && trucoNoCantado
