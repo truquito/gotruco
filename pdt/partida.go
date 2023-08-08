@@ -28,20 +28,20 @@ type Equipo string
 
 // rojo o azul
 const (
-	Azul Equipo = "Azul"
-	Rojo Equipo = "Rojo"
+	Azul Equipo = "azul"
+	Rojo Equipo = "rojo"
 )
 
 var toEquipo = map[string]Equipo{
-	"Azul": Azul,
-	"Rojo": Rojo,
+	"azul": Azul,
+	"rojo": Rojo,
 }
 
 func (e Equipo) String() string {
 	if e == Rojo {
-		return "Rojo"
+		return "rojo"
 	}
-	return "Azul"
+	return "azul"
 }
 
 // MarshalJSON marshals the enum as a quoted json string
