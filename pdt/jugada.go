@@ -375,7 +375,7 @@ func (jugada TocarEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 		lim = p.CalcPtsFalta()
 	}
 	apuestaSaturada := p.Ronda.Envite.Puntaje >= lim
-	trucoNoCantado := p.Ronda.Truco.Estado == NOCANTADO
+	trucoNoCantado := p.Ronda.Truco.Estado == NOGRITADOAUN
 
 	estaIniciandoPorPrimeraVezElEnvido := esSuTurno && p.Ronda.Envite.Estado == NOCANTADOAUN && trucoNoCantado
 	estaRedoblandoLaApuesta := p.Ronda.Envite.Estado == ENVIDO && esDelEquipoContrario // cuando redobla una apuesta puede o no ser su turno
@@ -419,7 +419,7 @@ func (jugada TocarEnvido) Hacer(p *Partida) []enco.Envelope {
 
 	if elEnvidoEstaPrimero {
 		// deshabilito el truco
-		p.Ronda.Truco.Estado = NOCANTADO
+		p.Ronda.Truco.Estado = NOGRITADOAUN
 		p.Ronda.Truco.CantadoPor = ""
 
 		if p.Verbose {
@@ -544,7 +544,7 @@ func (jugada TocarRealEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 
 	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Manojo(p.Ronda.Envite.CantadoPor).Jugador.Equipo != p.Manojo(jugada.JID).Jugador.Equipo
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == ENVIDO
-	trucoNoCantado := p.Ronda.Truco.Estado == NOCANTADO
+	trucoNoCantado := p.Ronda.Truco.Estado == NOGRITADOAUN
 
 	estaIniciandoPorPrimeraVezElEnvido := esSuTurno && p.Ronda.Envite.Estado == NOCANTADOAUN && trucoNoCantado
 	estaRedoblandoLaApuesta := p.Ronda.Envite.Estado == ENVIDO && esDelEquipoContrario // cuando redobla una apuesta puede o no ser su turno
@@ -587,7 +587,7 @@ func (jugada TocarRealEnvido) Hacer(p *Partida) []enco.Envelope {
 
 	if elEnvidoEstaPrimero {
 		// deshabilito el truco
-		p.Ronda.Truco.Estado = NOCANTADO
+		p.Ronda.Truco.Estado = NOGRITADOAUN
 		p.Ronda.Truco.CantadoPor = ""
 
 		if p.Verbose {
@@ -675,7 +675,7 @@ func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 
 	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Manojo(p.Ronda.Envite.CantadoPor).Jugador.Equipo != p.Manojo(jugada.JID).Jugador.Equipo
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado >= ENVIDO
-	trucoNoCantado := p.Ronda.Truco.Estado == NOCANTADO
+	trucoNoCantado := p.Ronda.Truco.Estado == NOGRITADOAUN
 
 	estaIniciandoPorPrimeraVezElEnvido := esSuTurno && p.Ronda.Envite.Estado == NOCANTADOAUN && trucoNoCantado
 	estaRedoblandoLaApuesta := p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado < FALTAENVIDO && esDelEquipoContrario // cuando redobla una apuesta puede o no ser su turno
@@ -718,7 +718,7 @@ func (jugada TocarFaltaEnvido) Hacer(p *Partida) []enco.Envelope {
 
 	if elEnvidoEstaPrimero {
 		// deshabilito el truco
-		p.Ronda.Truco.Estado = NOCANTADO
+		p.Ronda.Truco.Estado = NOGRITADOAUN
 		p.Ronda.Truco.CantadoPor = ""
 
 		if p.Verbose {
@@ -892,7 +892,7 @@ func (jugada CantarFlor) Hacer(p *Partida) []enco.Envelope {
 	// si no lo desacivo: medio como que se olvida
 	// QUEDA CONSISTENTE CON "EL ENVIDO ESTA PRIMERO"!
 	p.Ronda.Truco.CantadoPor = ""
-	p.Ronda.Truco.Estado = NOCANTADO
+	p.Ronda.Truco.Estado = NOGRITADOAUN
 
 	// y me elimino de los que no-cantaron
 	p.Ronda.Envite.cantoFlor(p.Manojo(jugada.JID).Jugador.ID)
@@ -1197,7 +1197,7 @@ func (jugada GritarTruco) Ok(p *Partida) ([]enco.Envelope, bool) {
 	yoOUnoDeMisCompasTieneFlorYAunNoCanto := p.Ronda.hayEquipoSinCantar(p.Manojo(jugada.JID).Jugador.Equipo)
 
 	laFlorEstaPrimero := yoOUnoDeMisCompasTieneFlorYAunNoCanto
-	trucoNoSeJugoAun := p.Ronda.Truco.Estado == NOCANTADO
+	trucoNoSeJugoAun := p.Ronda.Truco.Estado == NOGRITADOAUN
 	esSuTurno := p.Ronda.GetElTurno().Jugador.ID == p.Manojo(jugada.JID).Jugador.ID
 	trucoHabilitado := noSeFueAlMazo && trucoNoSeJugoAun && noSeEstaJugandoElEnvite && !laFlorEstaPrimero && esSuTurno
 

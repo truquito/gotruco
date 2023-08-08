@@ -11,6 +11,9 @@ type EstadoEnvite int
 // enums del envite
 const (
 	DESHABILITADO EstadoEnvite = iota
+	// el envido se "toca"
+	// la flor se "canta"
+	// en este caso todo lo agrupamos en "canta"
 	NOCANTADOAUN
 	ENVIDO
 	REALENVIDO

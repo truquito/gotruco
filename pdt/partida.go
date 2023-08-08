@@ -590,7 +590,7 @@ func (p *Partida) EvaluarRonda() (bool, []enco.Envelope) {
 	var totalPts int = 0
 
 	switch p.Ronda.Truco.Estado {
-	case NOCANTADO, TRUCO: // caso en que se hayan ido todos al mazo y no se haya respondido ~ equivalente a un no quiero
+	case NOGRITADOAUN, TRUCO: // caso en que se hayan ido todos al mazo y no se haya respondido ~ equivalente a un no quiero
 		totalPts = 1
 	case TRUCOQUERIDO, RETRUCO: // same
 		totalPts = 2

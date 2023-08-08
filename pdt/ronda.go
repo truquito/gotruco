@@ -13,7 +13,8 @@ type EstadoTruco int
 
 // enums del truco
 const (
-	NOCANTADO EstadoTruco = iota
+	// el truco se "grita"
+	NOGRITADOAUN EstadoTruco = iota
 	TRUCO
 	TRUCOQUERIDO
 	RETRUCO
@@ -23,7 +24,7 @@ const (
 )
 
 var toEstadoTruco = map[string]EstadoTruco{
-	"noCantado":      NOCANTADO,
+	"noGritadoAun":   NOGRITADOAUN,
 	"truco":          TRUCO,
 	"trucoQuerido":   TRUCOQUERIDO,
 	"reTruco":        RETRUCO,
@@ -38,7 +39,7 @@ func (e EstadoTruco) esTrucoRespondible() bool {
 
 func (e EstadoTruco) String() string {
 	estados := []string{
-		"noCantado",
+		"noGritadoAun",
 		"truco",
 		"trucoQuerido",
 		"reTruco",
@@ -799,7 +800,7 @@ func (r *Ronda) Reset(elMano JIX) {
 	r.ElMano = elMano
 	r.Turno = elMano
 	r.Envite = Envite{Estado: NOCANTADOAUN, Puntaje: 0}
-	r.Truco = Truco{CantadoPor: "", Estado: NOCANTADO}
+	r.Truco = Truco{CantadoPor: "", Estado: NOGRITADOAUN}
 	r.Manos = make([]Mano, 3)
 
 	for i := range r.Manojos {
@@ -838,7 +839,7 @@ func MakeRonda(equipoAzul, equipoRojo []string) Ronda {
 		ElMano:  0,
 		Turno:   0,
 		Envite:  Envite{Estado: NOCANTADOAUN, Puntaje: 0},
-		Truco:   Truco{CantadoPor: "", Estado: NOCANTADO},
+		Truco:   Truco{CantadoPor: "", Estado: NOGRITADOAUN},
 		Manojos: make([]Manojo, cantJugadores),
 		MIXS:    make(map[string]int),
 		Manos:   make([]Mano, 3),
