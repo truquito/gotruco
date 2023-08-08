@@ -80,30 +80,6 @@ func (j *Juego) String() string {
 	return pdt.Renderizar(j.Partida)
 }
 
-// Abandono da por ganada la partida al equipo contario
-func (j *Juego) Abandono(jugador string) error {
-	j.mu.Lock()
-	defer j.mu.Unlock()
-
-	// encuentra al jugador
-	manojo := j.Partida.Manojo(jugador)
-	// doy por ganador al equipo contrario
-	equipoContrario := manojo.Jugador.GetEquipoContrario()
-	ptsFaltantes := int(j.Puntuacion) - j.Puntajes[equipoContrario]
-	j.SumarPuntos(equipoContrario, ptsFaltantes)
-
-	if j.Partida.Verbose {
-		pkt := enco.Pkt(
-			enco.Dest("ALL"),
-			enco.Abandono(manojo.Jugador.ID),
-		)
-
-		j.out = append(j.out, pkt)
-	}
-
-	return nil
-}
-
 func (j *Juego) Expirado() bool {
 	return j.Err != nil
 }
@@ -112,6 +88,41 @@ func (j *Juego) Terminado() bool {
 	return j.Partida.Terminada() || j.Expirado()
 }
 
+// Abandono da por ganada la partida al equipo contario
+func (j *Juego) Abandono(jugador string) {
+
+	// NO voya generar mensajes semanticos!
+	// que de esto se encargue quien maneja el juego
+	// encuentra al jugador
+
+	// manojo := j.Partida.Manojo(jugador)
+	// // doy por ganador al equipo contrario
+	// equipoContrario := manojo.Jugador.GetEquipoContrario()
+	// ptsFaltantes := int(j.Puntuacion) - j.Puntajes[equipoContrario]
+	// j.SumarPuntos(equipoContrario, ptsFaltantes)
+
+	// async err
+	pkt := enco.Pkt(enco.ALL, enco.Abandono(jugador))
+	j.Err = &pkt
+	j.ErrCh <- true
+	j.tic.Stop()
+}
+
+// no hay motivo alguno, simplemente se aborta
+func (j *Juego) Abortar(abandonador string) {
+	pkt := enco.Pkt(enco.ALL, enco.Abandono(abandonador))
+	j.Err = &pkt
+	j.ErrCh <- true
+	j.tic.Stop()
+}
+
+// la tarea de hacer close(j.ErrCh) la tiene que hacer
+// el `defer` del `select` del `j.ErrCh`
+// func (j *Juego) Close() {
+// 	close(j.ErrCh)
+// 	j.tic.Stop()
+// }
+
 func (j *Juego) contar() {
 	const delta float64 = 1.15
 	d := float64(j.DurTurno) * delta
@@ -119,7 +130,6 @@ func (j *Juego) contar() {
 	j.tic = time.NewTicker(total)
 
 	defer func() {
-		// fmt.Println("exiting contar")
 		j.tic.Stop()
 	}()
 
@@ -139,7 +149,8 @@ func (j *Juego) contar() {
 			pkt := enco.Pkt(enco.ALL, enco.TimeOut(u))
 			j.Err = &pkt
 			j.ErrCh <- true
-			return // <- se destruye esta goroutine
+			j.tic.Stop()
+			return // <- se destruye esta goroutine y pa
 		}
 	}
 }
