@@ -50,6 +50,10 @@ type CodMsg string
 
 // Tipos de Mensajes
 const (
+	// errores de juego
+	TTimeOut  CodMsg = "TimeOut"
+	TAbandono CodMsg = "Abandono"
+	// errores de partida
 	TError                   CodMsg = "Error"
 	TByeBye                  CodMsg = "ByeBye"
 	TDiceSonBuenas           CodMsg = "DiceSonBuenas"
@@ -75,9 +79,7 @@ const (
 	TTirarCarta              CodMsg = "TirarCarta"
 	TSumaPts                 CodMsg = "SumaPts"
 	TMazo                    CodMsg = "Mazo"
-	TTimeOut                 CodMsg = "TimeOut"
 	TElEnvidoEstaPrimero     CodMsg = "ElEnvidoEstaPrimero"
-	TAbandono                CodMsg = "Abandono"
 	TLaManoResultaParda      CodMsg = "LaManoResultaParda"
 	TManoGanada              CodMsg = "ManoGanada"
 	TRondaGanada             CodMsg = "RondaGanada"
