@@ -45,7 +45,7 @@ func TestPacket(t *testing.T) {
 	t.Log("----------------------------------")
 
 	{
-		pkt := Pkt(
+		pkt := Env(
 			ALL,
 			DiceTengo{
 				"pepe",
@@ -60,7 +60,7 @@ func TestPacket(t *testing.T) {
 	t.Log("----------------------------------")
 
 	{
-		pkt := Pkt(
+		pkt := Env(
 			ALL,
 			QuieroTruco("romualdo"),
 		)

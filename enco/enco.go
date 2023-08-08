@@ -141,7 +141,7 @@ func (r Razon) String() string {
 	return s
 }
 
-func Pkt(dest []string, m IMessage) Envelope {
+func Env(dest []string, m IMessage) Envelope {
 	return Envelope{
 		Destination: dest,
 		Message:     m,

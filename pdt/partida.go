@@ -295,7 +295,7 @@ func (p *Partida) EvaluarMano() (bool, []enco.Envelope) {
 		mano.Ganador = ""
 
 		if p.Verbose {
-			pkts2 = append(pkts2, enco.Pkt(
+			pkts2 = append(pkts2, enco.Env(
 				enco.Dest("ALL"),
 				enco.LaManoResultaParda{},
 			))
@@ -339,7 +339,7 @@ func (p *Partida) EvaluarMano() (bool, []enco.Envelope) {
 		// esta al pedo
 
 		if p.Verbose {
-			pkts2 = append(pkts2, enco.Pkt(
+			pkts2 = append(pkts2, enco.Env(
 				enco.Dest("ALL"),
 				enco.ManoGanada{
 					Autor: mano.Ganador,
@@ -546,7 +546,7 @@ func (p *Partida) EvaluarRonda() (bool, []enco.Envelope) {
 
 	if !hayJugadoresEnAmbos {
 		if p.Verbose {
-			pkts2 = append(pkts2, enco.Pkt(
+			pkts2 = append(pkts2, enco.Env(
 				enco.Dest("ALL"),
 				enco.RondaGanada{
 					Autor: ganador,
@@ -571,7 +571,7 @@ func (p *Partida) EvaluarRonda() (bool, []enco.Envelope) {
 		}
 
 		if p.Verbose {
-			pkts2 = append(pkts2, enco.Pkt(
+			pkts2 = append(pkts2, enco.Env(
 				enco.Dest("ALL"),
 				enco.RondaGanada{
 					Autor: ganador,
@@ -593,7 +593,7 @@ func (p *Partida) EvaluarRonda() (bool, []enco.Envelope) {
 		}
 
 		if p.Verbose {
-			pkts2 = append(pkts2, enco.Pkt(
+			pkts2 = append(pkts2, enco.Env(
 				enco.Dest("ALL"),
 				enco.RondaGanada{
 					Autor: ganador,
@@ -607,7 +607,7 @@ func (p *Partida) EvaluarRonda() (bool, []enco.Envelope) {
 	p.SumarPuntos(p.Ronda.Manojo(ganador).Jugador.Equipo, totalPts)
 
 	if p.Verbose {
-		pkts2 = append(pkts2, enco.Pkt(
+		pkts2 = append(pkts2, enco.Env(
 			enco.Dest("ALL"),
 			enco.SumaPts{
 				Autor:  ganador,

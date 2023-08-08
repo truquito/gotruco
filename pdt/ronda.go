@@ -380,7 +380,7 @@ func (r *Ronda) ExecElEnvido(verbose bool) (jIdx JIX, max int, pkts2 []enco.Enve
 	yaDijeron[jIdx] = true
 
 	if verbose {
-		pkts2 = append(pkts2, enco.Pkt(
+		pkts2 = append(pkts2, enco.Env(
 			enco.ALL,
 			enco.DiceTengo{
 				Autor: r.Manojos[jIdx].Jugador.ID,
@@ -425,7 +425,7 @@ func (r *Ronda) ExecElEnvido(verbose bool) (jIdx JIX, max int, pkts2 []enco.Enve
 				if esDeEquipoContrario {
 
 					if verbose {
-						pkts2 = append(pkts2, enco.Pkt(
+						pkts2 = append(pkts2, enco.Env(
 							enco.ALL,
 							enco.DiceSonMejores{
 								Autor: r.Manojos[i].Jugador.ID,
@@ -452,7 +452,7 @@ func (r *Ronda) ExecElEnvido(verbose bool) (jIdx JIX, max int, pkts2 []enco.Enve
 					if todaviaNoDijeronSonMejores {
 
 						if verbose {
-							pkts2 = append(pkts2, enco.Pkt(
+							pkts2 = append(pkts2, enco.Env(
 								enco.ALL,
 								enco.DiceSonBuenas(r.Manojos[i].Jugador.ID),
 								// valor de su envido es `envidos[i]` pero no corresponde decirlo
@@ -550,7 +550,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX, verbose bool) (j *Manojo, max int, p
 		yaDijeron[aPartirDe] = true
 
 		if verbose {
-			pkts2 = append(pkts2, enco.Pkt(
+			pkts2 = append(pkts2, enco.Env(
 				enco.ALL,
 				enco.DiceTengo{
 					Autor: r.Manojos[aPartirDe].Jugador.ID,
@@ -589,7 +589,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX, verbose bool) (j *Manojo, max int, p
 				if esDeEquipoContrario {
 
 					if verbose {
-						pkts2 = append(pkts2, enco.Pkt(
+						pkts2 = append(pkts2, enco.Env(
 							enco.ALL,
 							enco.DiceSonMejores{
 								Autor: r.Manojos[i].Jugador.ID,
@@ -616,7 +616,7 @@ func (r *Ronda) ExecLaFlores(aPartirDe JIX, verbose bool) (j *Manojo, max int, p
 					if todaviaNoDijeronSonMejores {
 
 						if verbose {
-							pkts2 = append(pkts2, enco.Pkt(
+							pkts2 = append(pkts2, enco.Env(
 								enco.ALL,
 								enco.DiceSonBuenas(r.Manojos[i].Jugador.ID),
 							))

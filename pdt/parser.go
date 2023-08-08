@@ -144,7 +144,7 @@ func (p *Partida) byeBye() []enco.Envelope {
 			s = p.Ronda.Manojos[1].Jugador.ID
 		}
 
-		pkts2 = append(pkts2, enco.Pkt(
+		pkts2 = append(pkts2, enco.Env(
 			enco.ALL,
 			enco.ByeBye(s),
 		))

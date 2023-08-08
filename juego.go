@@ -107,7 +107,7 @@ func (j *Juego) Abandono(jugador string) {
 	}
 
 	if j.Partida.Verbose {
-		j.out = append(j.out, enco.Pkt(
+		j.out = append(j.out, enco.Env(
 			enco.ALL,
 			enco.SumaPts{
 				Autor:  jugGanador.ID,
@@ -118,7 +118,7 @@ func (j *Juego) Abandono(jugador string) {
 	}
 
 	// async err
-	pkt := enco.Pkt(enco.ALL, enco.Abandono(jugador))
+	pkt := enco.Env(enco.ALL, enco.Abandono(jugador))
 	j.Err = &pkt
 	j.ErrCh <- true
 	j.tic.Stop()
@@ -126,7 +126,7 @@ func (j *Juego) Abandono(jugador string) {
 
 // no hay motivo alguno, simplemente se aborta
 func (j *Juego) Abortar(abandonador string) {
-	pkt := enco.Pkt(enco.ALL, enco.Abandono(abandonador))
+	pkt := enco.Env(enco.ALL, enco.Abandono(abandonador))
 	j.Err = &pkt
 	j.ErrCh <- true
 	j.tic.Stop()
@@ -163,7 +163,7 @@ func (j *Juego) contar() {
 		case <-j.tic.C:
 			// quien debia responder?
 			u := pdt.Rho(j.Partida).Jugador.ID
-			pkt := enco.Pkt(enco.ALL, enco.TimeOut(u))
+			pkt := enco.Env(enco.ALL, enco.TimeOut(u))
 			j.Err = &pkt
 			j.ErrCh <- true
 			j.tic.Stop()
@@ -206,7 +206,7 @@ func NuevoJuego(
 	// pongo en el buffer un mensaje de Partida{} para cada jugador
 	if j.Partida.Verbose {
 		for _, m := range j.Ronda.Manojos {
-			pkt := enco.Pkt(
+			pkt := enco.Env(
 				enco.Dest(m.Jugador.ID),
 				enco.NuevaPartida{
 					Perspectiva: j.Partida.PerspectivaCacheFlor(&m),
