@@ -161,7 +161,8 @@ func (j *Juego) contar() {
 				return // <- se destruye esta goroutine
 			}
 		case <-j.tic.C:
-			u := j.Partida.Ronda.Manojos[j.Ronda.Turno].Jugador.ID
+			// quien debia responder?
+			u := pdt.Rho(j.Partida).Jugador.ID
 			pkt := enco.Pkt(enco.ALL, enco.TimeOut(u))
 			j.Err = &pkt
 			j.ErrCh <- true
