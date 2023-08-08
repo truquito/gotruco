@@ -737,6 +737,8 @@ func (p *Partida) Swap() {
 }
 
 // NuevaPartida crea una nueva Partida
+// si `limiteEnvido` es `-1` entonces la cantidad de veces que se puede tocar
+// "envido" depende unicamente dela cantidad de puntos que quedan por disputar
 func NuevaPartida(
 
 	puntuacion Puntuacion,
