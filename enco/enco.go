@@ -107,6 +107,7 @@ const (
 	TrucoQuerido   Razon = "TrucoQuerido"
 
 	SeFueronAlMazo Razon = "SeFueronAlMazo"
+	Abandonaron    Razon = "Abandonaron"
 )
 
 func (r Razon) String() string {

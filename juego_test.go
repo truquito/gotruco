@@ -3535,7 +3535,7 @@ func TestAbandono(t *testing.T) {
 	// el envido esta primero!!
 	p.Abandono("Adolfo")
 
-	util.Assert(p.Terminada(), func() {
+	util.Assert(p.Terminado(), func() {
 		t.Error(`Deberia haber acabado la partida`)
 	})
 

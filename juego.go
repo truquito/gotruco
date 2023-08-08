@@ -90,16 +90,32 @@ func (j *Juego) Terminado() bool {
 
 // Abandono da por ganada la partida al equipo contario
 func (j *Juego) Abandono(jugador string) {
+	j.mu.Lock()
+	defer j.mu.Unlock()
 
-	// NO voya generar mensajes semanticos!
-	// que de esto se encargue quien maneja el juego
-	// encuentra al jugador
+	manojo := j.Partida.Manojo(jugador)
+	// doy por ganador al equipo contrario
+	equipoContrario := manojo.Jugador.GetEquipoContrario()
+	ptsFaltantes := int(j.Puntuacion) - j.Puntajes[equipoContrario]
+	j.SumarPuntos(equipoContrario, ptsFaltantes)
+	// agarro al primer manojo
+	jugGanador := j.Partida.Ronda.Manojos[0].Jugador
+	esDelEquipoQueAbandono := jugGanador.Equipo == j.Partida.Manojo(jugador).Jugador.Equipo
+	if esDelEquipoQueAbandono {
+		// entonces tomo el siguiente
+		jugGanador = j.Partida.Ronda.Manojos[1].Jugador
+	}
 
-	// manojo := j.Partida.Manojo(jugador)
-	// // doy por ganador al equipo contrario
-	// equipoContrario := manojo.Jugador.GetEquipoContrario()
-	// ptsFaltantes := int(j.Puntuacion) - j.Puntajes[equipoContrario]
-	// j.SumarPuntos(equipoContrario, ptsFaltantes)
+	if j.Partida.Verbose {
+		j.out = append(j.out, enco.Pkt(
+			enco.ALL,
+			enco.SumaPts{
+				Autor:  jugGanador.ID,
+				Razon:  enco.Abandonaron,
+				Puntos: ptsFaltantes,
+			},
+		))
+	}
 
 	// async err
 	pkt := enco.Pkt(enco.ALL, enco.Abandono(jugador))
