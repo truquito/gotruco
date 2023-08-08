@@ -171,7 +171,10 @@ func (pr impresora) dibujarTiradas(manojos []Manojo) {
 		// necesito saber cuantas tiro
 		manojo := manojos[i]
 		cantTiradas := manojo.GetCantCartasTiradas()
-		carta := manojo.Cartas[manojo.UltimaTirada]
+		var carta *Carta = nil
+		if manojo.UltimaTirada >= 0 {
+			carta = manojo.Cartas[manojo.UltimaTirada]
+		}
 		var tiradas string
 		switch cantTiradas {
 		case 1:

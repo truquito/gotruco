@@ -727,6 +727,7 @@ func (r *Ronda) Reset(elMano JIX) {
 	r.Manos = make([]Mano, 3)
 
 	for i := range r.Manojos {
+		r.Manojos[i].UltimaTirada = -1
 		r.Manojos[i].SeFueAlMazo = false
 		// r.Manojos[i].Cartas
 		r.Manojos[i].Tiradas = [cantCartasManojo]bool{false, false, false}
@@ -775,8 +776,10 @@ func NuevaRonda(equipoAzul, equipoRojo []string) Ronda {
 
 	for i := 0; i < cantJugadoresPorEquipo; i++ {
 		ix := i << 1
+		ronda.Manojos[ix].UltimaTirada = -1
 		ronda.Manojos[ix].Jugador = &Jugador{equipoAzul[i], Azul}
 		ronda.Manojos[ix+1].Jugador = &Jugador{equipoRojo[i], Rojo}
+		ronda.Manojos[ix+1].UltimaTirada = -1
 	}
 
 	ronda.indexarManojos()
