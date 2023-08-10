@@ -1916,10 +1916,11 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []enco.Envelope {
 				// de hecho, si una ronda es terminable y se llama 2 veces consecutivas
 				// al mismo metodo booleano, en ambas oportunidades retorna diferente
 				// ridiculo
+
 				if p.Verbose {
 					for _, m := range p.Ronda.Manojos {
 						pkts2 = append(pkts2, enco.Env(
-							enco.ALL,
+							enco.Dest(m.Jugador.ID),
 							enco.NuevaRonda{
 								Perspectiva: p.PerspectivaCacheFlor(&m),
 							},
@@ -2242,7 +2243,7 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []enco.Envelope {
 				if p.Verbose {
 					for _, m := range p.Ronda.Manojos {
 						pkts2 = append(pkts2, enco.Env(
-							enco.ALL,
+							enco.Dest(m.Jugador.ID),
 							enco.NuevaRonda{
 								Perspectiva: p.PerspectivaCacheFlor(&m),
 							},
