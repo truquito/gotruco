@@ -10,8 +10,8 @@ import (
 
 // regexps
 var (
-	jugadaSimple = regexp.MustCompile(`(?i)^([a-zA-Z0-9_-]+) ([a-zA-Z0-9_-]+)$`)
-	jugadaTirada = regexp.MustCompile(`(?i)^([a-zA-Z0-9_-]+) (1|2|3|4|5|6|7|10|11|12) (oro|copa|basto|espada)$`)
+	jugadaSimple = regexp.MustCompile(`(?i)^([a-zA-Z0-9_#-]+) ([a-zA-Z0-9_-]+)$`)
+	jugadaTirada = regexp.MustCompile(`(?i)^([a-zA-Z0-9_#-]+) (1|2|3|4|5|6|7|10|11|12) (oro|copa|basto|espada)$`)
 )
 
 func checkeoSemantico(p *Partida, cmd string) (IJugada, error) {
