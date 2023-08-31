@@ -17,6 +17,10 @@ type Partida struct {
 	Verbose      bool           `json:"-"`
 }
 
+func (p *Partida) String() string {
+	return Renderizar(p)
+}
+
 // GetMaxPuntaje .
 func (p *Partida) GetMaxPuntaje() int {
 	if p.Puntajes[Rojo] > p.Puntajes[Azul] {

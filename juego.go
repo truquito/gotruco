@@ -77,7 +77,7 @@ func (j *Juego) Cmd(cmd string) error {
 
 // String retorna una representacion en formato de string
 func (j *Juego) String() string {
-	return pdt.Renderizar(j.Partida)
+	return j.Partida.String()
 }
 
 func (j *Juego) Expirado() bool {
