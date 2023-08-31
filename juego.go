@@ -35,7 +35,7 @@ type Juego struct {
 	// tiempo
 	DurTurno time.Duration
 	contador chan c_SIGNAL `json:"-"`
-	tic      *time.Ticker
+	Tic      *time.Ticker  `json:"-"`
 }
 
 func (j *Juego) Consumir() []enco.Envelope {
@@ -68,7 +68,7 @@ func (j *Juego) Cmd(cmd string) error {
 
 	if j.Partida.Terminada() {
 		// entonces paro el contador (goroutine) + tic (ticker)
-		j.tic.Stop()
+		j.Tic.Stop()
 
 	}
 
@@ -121,7 +121,7 @@ func (j *Juego) Abandono(jugador string) {
 	pkt := enco.Env(enco.ALL, enco.Abandono(jugador))
 	j.Err = &pkt
 	j.ErrCh <- true
-	j.tic.Stop()
+	j.Tic.Stop()
 }
 
 // no hay motivo alguno, simplemente se aborta
@@ -129,7 +129,7 @@ func (j *Juego) Abortar(abandonador string) {
 	pkt := enco.Env(enco.ALL, enco.Abandono(abandonador))
 	j.Err = &pkt
 	j.ErrCh <- true
-	j.tic.Stop()
+	j.Tic.Stop()
 }
 
 // la tarea de hacer close(j.ErrCh) la tiene que hacer
@@ -139,14 +139,20 @@ func (j *Juego) Abortar(abandonador string) {
 // 	j.tic.Stop()
 // }
 
-func (j *Juego) contar() {
+func (j *Juego) GetMaxTiempoPorTurno() time.Duration {
 	const delta float64 = 1.15
 	d := float64(j.DurTurno) * delta
 	total := time.Duration(math.Ceil(d))
-	j.tic = time.NewTicker(total)
+	return total
+}
+
+func (j *Juego) contar() {
+	total := j.GetMaxTiempoPorTurno()
+	j.Tic = time.NewTicker(total)
 
 	defer func() {
-		j.tic.Stop()
+		// exiting contar !!
+		j.Tic.Stop()
 	}()
 
 	for {
@@ -154,22 +160,68 @@ func (j *Juego) contar() {
 		case s := <-j.contador:
 			switch s {
 			case c_RESET:
-				j.tic.Stop()
-				j.tic.Reset(total)
+				j.Tic.Stop()
+				j.Tic.Reset(total)
 			case c_EXIT:
-				j.tic.Stop()
+				j.Tic.Stop()
 				return // <- se destruye esta goroutine
 			}
-		case <-j.tic.C:
+		case <-j.Tic.C:
 			// quien debia responder?
 			u := pdt.Rho(j.Partida).Jugador.ID
 			pkt := enco.Env(enco.ALL, enco.TimeOut(u))
 			j.Err = &pkt
 			j.ErrCh <- true
-			j.tic.Stop()
+			j.Tic.Stop()
 			return // <- se destruye esta goroutine y pa
 		}
 	}
+}
+
+// PRE: la goroutine sigue en pie
+func (j *Juego) Reset(
+
+	puntuacion pdt.Puntuacion,
+	equipoAzul,
+	equipoRojo []string,
+	limiteEnvido int,
+	verbose bool,
+	maxTiempoPorTurno time.Duration,
+
+) {
+	j.mu.Lock()
+	defer j.mu.Unlock()
+
+	// libero recursos
+	j.Tic.Stop()
+	j.contador <- c_EXIT // sale la goroutine
+	close(j.ErrCh)
+	j.Err = nil
+
+	// creo recursos
+	p, _ := pdt.NuevaPartida(puntuacion, equipoAzul, equipoRojo, limiteEnvido, verbose)
+
+	j.Partida = p
+	j.out = make([]enco.Envelope, 0) // descarto los envelopes
+	j.ErrCh = make(chan bool, 1)
+	j.Err = nil
+	j.contador = make(chan c_SIGNAL, 1)
+
+	// pongo en el buffer un mensaje de Partida{} para cada jugador
+	if j.Partida.Verbose {
+		for _, m := range j.Ronda.Manojos {
+			pkt := enco.Env(
+				enco.Dest(m.Jugador.ID),
+				enco.NuevaPartida{
+					Perspectiva: j.Partida.PerspectivaCacheFlor(&m),
+				},
+			)
+			j.out = append(j.out, pkt)
+		}
+	}
+
+	go j.contar()
+	// RESET DONE !!
 }
 
 // NuevoJuego retorna nueva partida; error si hubo
@@ -200,7 +252,7 @@ func NuevoJuego(
 		// tiempo
 		contador: make(chan c_SIGNAL, 1),
 		DurTurno: maxTiempoPorTurno,
-		tic:      nil,
+		Tic:      nil,
 	}
 
 	// pongo en el buffer un mensaje de Partida{} para cada jugador
