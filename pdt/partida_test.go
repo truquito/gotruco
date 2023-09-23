@@ -1375,3 +1375,74 @@ func TestFormatoJSONPartida(t *testing.T) {
 	}
 	t.Log(string(bs))
 }
+
+func TestBughunterErrorLoopPythonCli(t *testing.T) {
+	// Se intenta resolver estas preguntas:
+	// 1. ¿Por qué todas las acciones de JP son rechazadas por el simulador?
+	// 2. ¿Por qué el otro jugador (Auron) tiene un Chi con 0 acciones?
+
+	// a partir de la fusion de estos 2 json, se forma el json a nivel de simulador
+	// {"puntuacion":20,"puntajes":{"azul":7,"rojo":15},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":1,"rojo":1},"elMano":1,"turno":1,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":["juampi"]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"basto","valor":2},{"palo":"oro","valor":1},{"palo":"oro","valor":10}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"juampi","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[null,null,null],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"auronPlay","equipo":"rojo"}}],"mixs":{"auronPlay":1,"juampi":0},"muestra":{"palo":"basto","valor":10},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":null},{"resultado":"indeterminado","ganador":"","cartasTiradas":null},{"resultado":"indeterminado","ganador":"","cartasTiradas":null}]},"limiteEnvido":4}
+	// {"puntuacion":20,"puntajes":{"azul":7,"rojo":15},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":1,"rojo":1},"elMano":1,"turno":1,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":["juampi"]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[null,null,null],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"juampi","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"basto","valor":6},{"palo":"copa","valor":1},{"palo":"copa","valor":6}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"auronPlay","equipo":"rojo"}}],"mixs":{"auronPlay":1,"juampi":0},"muestra":{"palo":"basto","valor":10},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":null},{"resultado":"indeterminado","ganador":"","cartasTiradas":null},{"resultado":"indeterminado","ganador":"","cartasTiradas":null}]},"limiteEnvido":4}
+
+	partidaJSON := `{"puntuacion":20,"puntajes":{"azul":7,"rojo":15},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":1,"rojo":1},"elMano":1,"turno":1,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":["juampi"]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"basto","valor":2},{"palo":"oro","valor":1},{"palo":"oro","valor":10}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"juampi","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"basto","valor":6},{"palo":"copa","valor":1},{"palo":"copa","valor":6}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"auronPlay","equipo":"rojo"}}],"mixs":{"auronPlay":1,"juampi":0},"muestra":{"palo":"basto","valor":10},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":null},{"resultado":"indeterminado","ganador":"","cartasTiradas":null},{"resultado":"indeterminado","ganador":"","cartasTiradas":null}]},"limiteEnvido":4}`
+	p, err := Parse(partidaJSON, true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	t.Log("estado inicial")
+	t.Log(Renderizar(p))
+
+	// estos fueron los mensajes de SALIDA
+	// voy a recrear las ENTRADAS en base a estos
+
+	// to:@juampi {"type":"msg","payload":{"cod":"GritarTruco","cont":"auronPlay"}}
+	// to:@auronPlay {"type":"msg","payload":{"cod":"GritarTruco","cont":"auronPlay"}}
+	p.Cmd("auronPlay truco")
+
+	// to:@juampi {"type":"msg","payload":{"cod":"TirarCarta","cont":{"autor":"auronPlay","palo":"basto","valor":6}}}
+	// to:@juampi {"type":"msg","payload":{"cod":"SigTurno","cont":0}}
+	// to:@auronPlay {"type":"msg","payload":{"cod":"TirarCarta","cont":{"autor":"auronPlay","palo":"basto","valor":6}}}
+	// to:@auronPlay {"type":"msg","payload":{"cod":"SigTurno","cont":0}}
+	p.Cmd("auronPlay 6 basto")
+
+	// duda: esto que viene a continuación, lo hace juampi o lo hace el simulador?
+
+	// to:@juampi {"type":"msg","payload":{"cod":"CantarFlor","cont":"juampi"}}
+	// to:@juampi {"type":"msg","payload":{"cod":"SumaPts","cont":{"autor":"juampi","razon":"LaUnicaFlor","puntos":3}}}
+	// to:@auronPlay {"type":"msg","payload":{"cod":"CantarFlor","cont":"juampi"}}
+	// to:@auronPlay {"type":"msg","payload":{"cod":"SumaPts","cont":{"autor":"juampi","razon":"LaUnicaFlor","puntos":3}}}
+
+	// respuesta: veamos el estado del simulador
+	util.Assert(p.Ronda.Envite.Estado == NOCANTADOAUN, func() {
+		t.Error("El estado del envite debería ser `NOCANTADOAUN`")
+	})
+
+	util.Assert(p.Ronda.Truco.Estado == TRUCO, func() {
+		t.Error("El estado del truco debería ser `TRUCO`")
+	})
+
+	util.Assert(p.Ronda.Truco.CantadoPor == "auronPlay", func() {
+		t.Error("El autor del truco debería ser `auronPlay`")
+	})
+
+	// ok, lo hizo juampi
+	p.Cmd("juampi flor")
+
+	util.Assert(p.Ronda.Truco.Estado == TRUCO, func() {
+		t.Error("El estado del truco debería ser `TRUCO`")
+	})
+
+	util.Assert(p.Ronda.Truco.CantadoPor == "auronPlay", func() {
+		t.Error("El autor del truco debería ser `auronPlay`")
+	})
+
+	t.Log(Renderizar(p))
+
+	chisJuampi := MetaChi(p, p.Manojo("juampi"), false)
+	t.Logf("chi(juampi) ~ %v\n", chisJuampi)
+
+	chisAuron := MetaChi(p, p.Manojo("auronPlay"), false)
+	t.Logf("chi(auronPlay) ~ %v\n", chisAuron)
+}
