@@ -418,9 +418,12 @@ func (jugada TocarEnvido) Hacer(p *Partida) []enco.Envelope {
 	elEnvidoEstaPrimero := p.Ronda.Truco.Estado == TRUCO && !yaEstabamosEnEnvido && esPrimeraMano
 
 	if elEnvidoEstaPrimero {
+
+		// actualizacion 23/9/23: se desactiva este comportamiento debido a inconsistencias
+		// con el simulador-parcial (a.k.a., la `Perspectiva`)
 		// deshabilito el truco
-		p.Ronda.Truco.Estado = NOGRITADOAUN
-		p.Ronda.Truco.CantadoPor = ""
+		// p.Ronda.Truco.Estado = NOGRITADOAUN
+		// p.Ronda.Truco.CantadoPor = ""
 
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
@@ -586,9 +589,12 @@ func (jugada TocarRealEnvido) Hacer(p *Partida) []enco.Envelope {
 	elEnvidoEstaPrimero := p.Ronda.Truco.Estado == TRUCO && !yaEstabamosEnEnvido && esPrimeraMano
 
 	if elEnvidoEstaPrimero {
+
+		// actualizacion 23/9/23: se desactiva este comportamiento debido a inconsistencias
+		// con el simulador-parcial (a.k.a., la `Perspectiva`)
 		// deshabilito el truco
-		p.Ronda.Truco.Estado = NOGRITADOAUN
-		p.Ronda.Truco.CantadoPor = ""
+		// p.Ronda.Truco.Estado = NOGRITADOAUN
+		// p.Ronda.Truco.CantadoPor = ""
 
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
@@ -717,9 +723,12 @@ func (jugada TocarFaltaEnvido) Hacer(p *Partida) []enco.Envelope {
 	elEnvidoEstaPrimero := p.Ronda.Truco.Estado == TRUCO && !yaEstabamosEnEnvido && esPrimeraMano
 
 	if elEnvidoEstaPrimero {
+
+		// actualizacion 23/9/23: se desactiva este comportamiento debido a inconsistencias
+		// con el simulador-parcial (a.k.a., la `Perspectiva`)
 		// deshabilito el truco
-		p.Ronda.Truco.Estado = NOGRITADOAUN
-		p.Ronda.Truco.CantadoPor = ""
+		// p.Ronda.Truco.Estado = NOGRITADOAUN
+		// p.Ronda.Truco.CantadoPor = ""
 
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
@@ -888,11 +897,25 @@ func (jugada CantarFlor) Hacer(p *Partida) []enco.Envelope {
 	}
 
 	// corresponde que desactive el truco?
+
+	// actualizacion 23/9/23: se desactiva este comportamiento debido a inconsistencias
+	// con el simulador-parcial (a.k.a., la `Perspectiva`)
+
 	// si lo desactivo: es medio tedioso para el usuario tener q volver a gritar
-	// si no lo desacivo: medio como que se olvida
-	// QUEDA CONSISTENTE CON "EL ENVIDO ESTA PRIMERO"!
-	p.Ronda.Truco.CantadoPor = ""
-	p.Ronda.Truco.Estado = NOGRITADOAUN
+	// si no lo desacivo: medio como que los usuarios se "olvidan"
+
+	// p.Ronda.Truco.CantadoPor = ""
+	// p.Ronda.Truco.Estado = NOGRITADOAUN
+
+	// ademas, para que quede "consistente",
+	// ¿si hace esto debería decir algo así como: "la flor está primera"?
+
+	if p.Verbose {
+		pkts2 = append(pkts2, enco.Env(
+			enco.ALL,
+			enco.ElEnvidoEstaPrimero(jugada.JID),
+		))
+	}
 
 	// y me elimino de los que no-cantaron
 	p.Ronda.Envite.cantoFlor(p.Manojo(jugada.JID).Jugador.ID)
