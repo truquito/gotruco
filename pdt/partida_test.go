@@ -1446,3 +1446,44 @@ func TestBughunterErrorLoopPythonCli(t *testing.T) {
 	chisAuron := MetaChi(p, p.Manojo("auronPlay"), false)
 	t.Logf("chi(auronPlay) ~ %v\n", chisAuron)
 }
+
+func TestBughunterElEnvidoEstaPrimeroMsg(t *testing.T) {
+	// Se intenta resolver estas preguntas:
+	// 1. ¿Por qué el simulador genera un mensaje de `elEnvidoEstaPrimero`
+	// cuando no debería?
+
+	// a partir de la fusion de estos 4 json, se forma el json a nivel de
+	// simulador
+	// {"annon#1591":{"puntuacion":20,"puntajes":{"azul":1,"rojo":7},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":2,"rojo":2},"elMano":2,"turno":2,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":["auronPlay","annon#1147"]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[null,null,null],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"annon#1480","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"basto","valor":5},{"palo":"basto","valor":7},{"palo":"basto","valor":1}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"auronPlay","equipo":"rojo"}},{"seFueAlMazo":false,"cartas":[null,null,null],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"annon#1147","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":6},{"palo":"oro","valor":2},{"palo":"oro","valor":7}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"annon#1591","equipo":"rojo"}}],"mixs":{"annon#1147":2,"annon#1480":0,"annon#1591":3,"auronPlay":1},"muestra":{"palo":"copa","valor":10},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":null},{"resultado":"indeterminado","ganador":"","cartasTiradas":null},{"resultado":"indeterminado","ganador":"","cartasTiradas":null}]},"limiteEnvido":4},"auronPlay":{"puntuacion":20,"puntajes":{"azul":1,"rojo":7},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":2,"rojo":2},"elMano":2,"turno":2,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":["auronPlay","annon#1147"]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[null,null,null],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"annon#1480","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"basto","valor":5},{"palo":"basto","valor":7},{"palo":"basto","valor":1}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"auronPlay","equipo":"rojo"}},{"seFueAlMazo":false,"cartas":[null,null,null],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"annon#1147","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":6},{"palo":"oro","valor":2},{"palo":"oro","valor":7}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"annon#1591","equipo":"rojo"}}],"mixs":{"annon#1147":2,"annon#1480":0,"annon#1591":3,"auronPlay":1},"muestra":{"palo":"copa","valor":10},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":null},{"resultado":"indeterminado","ganador":"","cartasTiradas":null},{"resultado":"indeterminado","ganador":"","cartasTiradas":null}]},"limiteEnvido":4},"annon#1147":{"puntuacion":20,"puntajes":{"azul":1,"rojo":7},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":2,"rojo":2},"elMano":2,"turno":2,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":["auronPlay","annon#1147"]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"espada","valor":7},{"palo":"basto","valor":11},{"palo":"basto","valor":6}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"annon#1480","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[null,null,null],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"auronPlay","equipo":"rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"oro","valor":1},{"palo":"copa","valor":2},{"palo":"copa","valor":12}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"annon#1147","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[null,null,null],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"annon#1591","equipo":"rojo"}}],"mixs":{"annon#1147":2,"annon#1480":0,"annon#1591":3,"auronPlay":1},"muestra":{"palo":"copa","valor":10},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":null},{"resultado":"indeterminado","ganador":"","cartasTiradas":null},{"resultado":"indeterminado","ganador":"","cartasTiradas":null}]},"limiteEnvido":4},"annon#1480":{"puntuacion":20,"puntajes":{"azul":1,"rojo":7},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":2,"rojo":2},"elMano":2,"turno":2,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":["auronPlay","annon#1147"]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"espada","valor":7},{"palo":"basto","valor":11},{"palo":"basto","valor":6}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"annon#1480","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[null,null,null],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"auronPlay","equipo":"rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"oro","valor":1},{"palo":"copa","valor":2},{"palo":"copa","valor":12}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"annon#1147","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[null,null,null],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"annon#1591","equipo":"rojo"}}],"mixs":{"annon#1147":2,"annon#1480":0,"annon#1591":3,"auronPlay":1},"muestra":{"palo":"copa","valor":10},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":null},{"resultado":"indeterminado","ganador":"","cartasTiradas":null},{"resultado":"indeterminado","ganador":"","cartasTiradas":null}]},"limiteEnvido":4}}
+
+	// "pkgs_sent_last_ronda": [
+	//   "auronPlay flor",
+	//   "annon#1480 envido"
+	// ],
+
+	partidaJSON := `{"puntuacion":20,"puntajes":{"azul":1,"rojo":7},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":2,"rojo":2},"elMano":2,"turno":2,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":["auronPlay","annon#1147"]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"espada","valor":7},{"palo":"basto","valor":11},{"palo":"basto","valor":6}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"annon#1480","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"basto","valor":5},{"palo":"basto","valor":7},{"palo":"basto","valor":1}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"auronPlay","equipo":"rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"oro","valor":1},{"palo":"copa","valor":2},{"palo":"copa","valor":12}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"annon#1147","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":6},{"palo":"oro","valor":2},{"palo":"oro","valor":7}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"annon#1591","equipo":"rojo"}}],"mixs":{"annon#1147":2,"annon#1480":0,"annon#1591":3,"auronPlay":1},"muestra":{"palo":"copa","valor":10},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":null},{"resultado":"indeterminado","ganador":"","cartasTiradas":null},{"resultado":"indeterminado","ganador":"","cartasTiradas":null}]},"limiteEnvido":4}`
+	p, err := Parse(partidaJSON, true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	t.Log("estado inicial")
+	t.Log(Renderizar(p))
+
+	// estos fueron los mensajes de SALIDA
+	// voy a recrear las ENTRADAS en base a estos
+
+	if envs, _ := p.Cmd("auronPlay flor"); len(envs) > 1 {
+		t.Errorf("se esperaba solo 1 mensaje, no dos\n")
+	}
+
+	t.Log("estado final")
+	t.Log(Renderizar(p))
+
+	// chisJuampi := MetaChi(p, p.Manojo("juampi"), false)
+	// t.Logf("chi(juampi) ~ %v\n", chisJuampi)
+
+	// chisAuron := MetaChi(p, p.Manojo("auronPlay"), false)
+	// t.Logf("chi(auronPlay) ~ %v\n", chisAuron)
+}
+

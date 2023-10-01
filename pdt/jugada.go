@@ -414,8 +414,9 @@ func (jugada TocarEnvido) Hacer(p *Partida) []enco.Envelope {
 	}
 
 	esPrimeraMano := p.Ronda.ManoEnJuego == Primera
-	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == ENVIDO
-	elEnvidoEstaPrimero := p.Ronda.Truco.Estado == TRUCO && !yaEstabamosEnEnvido && esPrimeraMano
+	noSeTocoElEnvite := p.Ronda.Envite.Estado == NOCANTADOAUN
+	seGritoElTruco := p.Ronda.Truco.Estado == TRUCO
+	elEnvidoEstaPrimero := seGritoElTruco && noSeTocoElEnvite && esPrimeraMano
 
 	if elEnvidoEstaPrimero {
 
@@ -585,8 +586,9 @@ func (jugada TocarRealEnvido) Hacer(p *Partida) []enco.Envelope {
 	}
 
 	esPrimeraMano := p.Ronda.ManoEnJuego == Primera
-	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == ENVIDO
-	elEnvidoEstaPrimero := p.Ronda.Truco.Estado == TRUCO && !yaEstabamosEnEnvido && esPrimeraMano
+	noSeTocoElEnvite := p.Ronda.Envite.Estado == NOCANTADOAUN
+	seGritoElTruco := p.Ronda.Truco.Estado == TRUCO
+	elEnvidoEstaPrimero := seGritoElTruco && noSeTocoElEnvite && esPrimeraMano
 
 	if elEnvidoEstaPrimero {
 
@@ -595,7 +597,6 @@ func (jugada TocarRealEnvido) Hacer(p *Partida) []enco.Envelope {
 		// deshabilito el truco
 		// p.Ronda.Truco.Estado = NOGRITADOAUN
 		// p.Ronda.Truco.CantadoPor = ""
-
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.ALL,
@@ -719,8 +720,9 @@ func (jugada TocarFaltaEnvido) Hacer(p *Partida) []enco.Envelope {
 	}
 
 	esPrimeraMano := p.Ronda.ManoEnJuego == Primera
-	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == ENVIDO || p.Ronda.Envite.Estado == REALENVIDO
-	elEnvidoEstaPrimero := p.Ronda.Truco.Estado == TRUCO && !yaEstabamosEnEnvido && esPrimeraMano
+	noSeTocoElEnvite := p.Ronda.Envite.Estado == NOCANTADOAUN
+	seGritoElTruco := p.Ronda.Truco.Estado == TRUCO
+	elEnvidoEstaPrimero := seGritoElTruco && noSeTocoElEnvite && esPrimeraMano
 
 	if elEnvidoEstaPrimero {
 
@@ -910,11 +912,19 @@ func (jugada CantarFlor) Hacer(p *Partida) []enco.Envelope {
 	// ademas, para que quede "consistente",
 	// ¿si hace esto debería decir algo así como: "la flor está primera"?
 
-	if p.Verbose {
-		pkts2 = append(pkts2, enco.Env(
-			enco.ALL,
-			enco.ElEnvidoEstaPrimero(jugada.JID),
-		))
+	// no hubo toques/cantos
+	esPrimeraMano := p.Ronda.ManoEnJuego == Primera
+	noSeTocoElEnvite := p.Ronda.Envite.Estado == NOCANTADOAUN
+	seGritoElTruco := p.Ronda.Truco.Estado == TRUCO
+	elEnvidoEstaPrimero := seGritoElTruco && noSeTocoElEnvite && esPrimeraMano
+
+	if elEnvidoEstaPrimero {
+		if p.Verbose {
+			pkts2 = append(pkts2, enco.Env(
+				enco.ALL,
+				enco.ElEnvidoEstaPrimero(jugada.JID),
+			))
+		}
 	}
 
 	// y me elimino de los que no-cantaron
