@@ -333,14 +333,29 @@ func (jugada TocarEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 	envidoHabilitado := (p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Envite.Estado == ENVIDO)
 
 	if !envidoHabilitado {
-
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
 				enco.Error("No es posible tocar envido ahora"),
 			))
 		}
+		return pkts2, false
+	}
 
+	// si él {gritó Truco, aceptó Truco} -> NO puede tocar envido
+	// si su equipo {gritó Truco}        -> puede tocar envido
+	// si su equipo {aceptó Truco}       -> NO puede tocar envido
+	estabamosEnTruco := p.Ronda.Truco.Estado == TRUCO || p.Ronda.Truco.Estado == TRUCOQUERIDO
+	elMismoLoDijo := estabamosEnTruco && p.Ronda.Truco.CantadoPor == p.Manojo(jugada.JID).Jugador.ID
+	trucoQuerido := p.Ronda.Truco.Estado == TRUCOQUERIDO
+	queridoPorSuEquipo := trucoQuerido && p.Manojo(p.Ronda.Truco.CantadoPor).Jugador.Equipo == p.Manojo(jugada.JID).Jugador.Equipo
+	if elMismoLoDijo || queridoPorSuEquipo {
+		if p.Verbose {
+			pkts2 = append(pkts2, enco.Env(
+				enco.Dest(jugada.JID),
+				enco.Error("No es posible tocar envido ahora"),
+			))
+		}
 		return pkts2, false
 	}
 
@@ -546,6 +561,23 @@ func (jugada TocarRealEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 		return pkts2, false
 	}
 
+	// si él {gritó Truco, aceptó Truco} -> NO puede tocar envido
+	// si su equipo {gritó Truco}        -> puede tocar envido
+	// si su equipo {aceptó Truco}       -> NO puede tocar envido
+	estabamosEnTruco := p.Ronda.Truco.Estado == TRUCO || p.Ronda.Truco.Estado == TRUCOQUERIDO
+	elMismoLoDijo := estabamosEnTruco && p.Ronda.Truco.CantadoPor == p.Manojo(jugada.JID).Jugador.ID
+	trucoQuerido := p.Ronda.Truco.Estado == TRUCOQUERIDO
+	queridoPorSuEquipo := trucoQuerido && p.Manojo(p.Ronda.Truco.CantadoPor).Jugador.Equipo == p.Manojo(jugada.JID).Jugador.Equipo
+	if elMismoLoDijo || queridoPorSuEquipo {
+		if p.Verbose {
+			pkts2 = append(pkts2, enco.Env(
+				enco.Dest(jugada.JID),
+				enco.Error("No es posible tocar envido ahora"),
+			))
+		}
+		return pkts2, false
+	}
+
 	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Manojo(p.Ronda.Envite.CantadoPor).Jugador.Equipo != p.Manojo(jugada.JID).Jugador.Equipo
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == ENVIDO
 	trucoNoCantado := p.Ronda.Truco.Estado == NOGRITADOAUN
@@ -677,6 +709,23 @@ func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 			))
 		}
 
+		return pkts2, false
+	}
+
+	// si él {gritó Truco, aceptó Truco} -> NO puede tocar envido
+	// si su equipo {gritó Truco}        -> puede tocar envido
+	// si su equipo {aceptó Truco}       -> NO puede tocar envido
+	estabamosEnTruco := p.Ronda.Truco.Estado == TRUCO || p.Ronda.Truco.Estado == TRUCOQUERIDO
+	elMismoLoDijo := estabamosEnTruco && p.Ronda.Truco.CantadoPor == p.Manojo(jugada.JID).Jugador.ID
+	trucoQuerido := p.Ronda.Truco.Estado == TRUCOQUERIDO
+	queridoPorSuEquipo := trucoQuerido && p.Manojo(p.Ronda.Truco.CantadoPor).Jugador.Equipo == p.Manojo(jugada.JID).Jugador.Equipo
+	if elMismoLoDijo || queridoPorSuEquipo {
+		if p.Verbose {
+			pkts2 = append(pkts2, enco.Env(
+				enco.Dest(jugada.JID),
+				enco.Error("No es posible tocar envido ahora"),
+			))
+		}
 		return pkts2, false
 	}
 
