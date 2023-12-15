@@ -29,6 +29,7 @@ type IJugada interface {
 	Ok(p *Partida) ([]enco.Envelope, bool)
 	Hacer(p *Partida) []enco.Envelope
 	String() string
+	Stringify() string
 	ID() IJUGADA_ID
 }
 
@@ -43,8 +44,14 @@ func (jugada TirarCarta) ID() IJUGADA_ID {
 }
 
 func (jugada TirarCarta) String() string {
-	return fmt.Sprintf("%s %d %s",
+	return fmt.Sprintf("%s %s",
 		jugada.JID,
+		jugada.Stringify(),
+	)
+}
+
+func (jugada TirarCarta) Stringify() string {
+	return fmt.Sprintf("%d %s",
 		jugada.Carta.Valor,
 		jugada.Carta.Palo.String(),
 	)
@@ -306,7 +313,11 @@ func (jugada TocarEnvido) ID() IJUGADA_ID {
 }
 
 func (jugada TocarEnvido) String() string {
-	return jugada.JID + " envido"
+	return fmt.Sprintf("%s %s", jugada.JID, jugada.Stringify())
+}
+
+func (jugada TocarEnvido) Stringify() string {
+	return "envido"
 }
 
 func (jugada TocarEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
@@ -522,7 +533,11 @@ func (jugada TocarRealEnvido) ID() IJUGADA_ID {
 }
 
 func (jugada TocarRealEnvido) String() string {
-	return jugada.JID + " real-envido"
+	return fmt.Sprintf("%s %s", jugada.JID, jugada.Stringify())
+}
+
+func (jugada TocarRealEnvido) Stringify() string {
+	return "real-envido"
 }
 
 func (jugada TocarRealEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
@@ -673,7 +688,11 @@ func (jugada TocarFaltaEnvido) ID() IJUGADA_ID {
 }
 
 func (jugada TocarFaltaEnvido) String() string {
-	return jugada.JID + " falta-envido"
+	return fmt.Sprintf("%s %s", jugada.JID, jugada.Stringify())
+}
+
+func (jugada TocarFaltaEnvido) Stringify() string {
+	return "falta-envido"
 }
 
 func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
@@ -887,7 +906,11 @@ func (jugada CantarFlor) ID() IJUGADA_ID {
 }
 
 func (jugada CantarFlor) String() string {
-	return jugada.JID + " flor"
+	return fmt.Sprintf("%s %s", jugada.JID, jugada.Stringify())
+}
+
+func (jugada CantarFlor) Stringify() string {
+	return "flor"
 }
 
 func (jugada CantarFlor) Ok(p *Partida) ([]enco.Envelope, bool) {
@@ -1101,7 +1124,11 @@ func (jugada CantarContraFlor) ID() IJUGADA_ID {
 }
 
 func (jugada CantarContraFlor) String() string {
-	return jugada.JID + " contra-flor"
+	return fmt.Sprintf("%s %s", jugada.JID, jugada.Stringify())
+}
+
+func (jugada CantarContraFlor) Stringify() string {
+	return "contra-flor"
 }
 
 func (jugada CantarContraFlor) Ok(p *Partida) ([]enco.Envelope, bool) {
@@ -1172,7 +1199,11 @@ func (jugada CantarContraFlorAlResto) ID() IJUGADA_ID {
 }
 
 func (jugada CantarContraFlorAlResto) String() string {
-	return jugada.JID + " contra-flor-al-resto"
+	return fmt.Sprintf("%s %s", jugada.JID, jugada.Stringify())
+}
+
+func (jugada CantarContraFlorAlResto) Stringify() string {
+	return "contra-flor-al-resto"
 }
 
 func (jugada CantarContraFlorAlResto) Ok(p *Partida) ([]enco.Envelope, bool) {
@@ -1265,7 +1296,11 @@ func (jugada GritarTruco) ID() IJUGADA_ID {
 }
 
 func (jugada GritarTruco) String() string {
-	return jugada.JID + " truco"
+	return fmt.Sprintf("%s %s", jugada.JID, jugada.Stringify())
+}
+
+func (jugada GritarTruco) Stringify() string {
+	return "truco"
 }
 
 func (jugada GritarTruco) Ok(p *Partida) ([]enco.Envelope, bool) {
@@ -1333,7 +1368,11 @@ func (jugada GritarReTruco) ID() IJUGADA_ID {
 }
 
 func (jugada GritarReTruco) String() string {
-	return jugada.JID + " re-truco"
+	return fmt.Sprintf("%s %s", jugada.JID, jugada.Stringify())
+}
+
+func (jugada GritarReTruco) Stringify() string {
+	return "re-truco"
 }
 
 func (jugada GritarReTruco) Ok(p *Partida) ([]enco.Envelope, bool) {
@@ -1420,7 +1459,11 @@ func (jugada GritarVale4) ID() IJUGADA_ID {
 }
 
 func (jugada GritarVale4) String() string {
-	return jugada.JID + " vale-4"
+	return fmt.Sprintf("%s %s", jugada.JID, jugada.Stringify())
+}
+
+func (jugada GritarVale4) Stringify() string {
+	return "vale-4"
 }
 
 func (jugada GritarVale4) Ok(p *Partida) ([]enco.Envelope, bool) {
@@ -1506,7 +1549,11 @@ func (jugada ResponderQuiero) ID() IJUGADA_ID {
 }
 
 func (jugada ResponderQuiero) String() string {
-	return jugada.JID + " quiero"
+	return fmt.Sprintf("%s %s", jugada.JID, jugada.Stringify())
+}
+
+func (jugada ResponderQuiero) Stringify() string {
+	return "quiero"
 }
 
 func (jugada ResponderQuiero) Ok(p *Partida) ([]enco.Envelope, bool) {
@@ -1755,7 +1802,11 @@ func (jugada ResponderNoQuiero) ID() IJUGADA_ID {
 }
 
 func (jugada ResponderNoQuiero) String() string {
-	return jugada.JID + " no-quiero"
+	return fmt.Sprintf("%s %s", jugada.JID, jugada.Stringify())
+}
+
+func (jugada ResponderNoQuiero) Stringify() string {
+	return "no-quiero"
 }
 
 func (jugada ResponderNoQuiero) Ok(p *Partida) ([]enco.Envelope, bool) {
@@ -2031,7 +2082,11 @@ func (jugada IrseAlMazo) ID() IJUGADA_ID {
 }
 
 func (jugada IrseAlMazo) String() string {
-	return jugada.JID + " mazo"
+	return fmt.Sprintf("%s %s", jugada.JID, jugada.Stringify())
+}
+
+func (jugada IrseAlMazo) Stringify() string {
+	return "mazo"
 }
 
 func (jugada IrseAlMazo) Ok(p *Partida) ([]enco.Envelope, bool) {
