@@ -8,6 +8,7 @@
 
 # BUGS
 
+- tíldes (e.g., "abandonó")
 
 # LIMPIEZA DE CODIGO
   
