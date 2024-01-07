@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"flag"
 	"fmt"
 	"os"
 	"strings"
@@ -31,15 +32,18 @@ func handleIO() {
 
 func main() {
 
-	logfile_path := "/home/jp/Workspace/_tmp/truco_logs/"
-	os.MkdirAll(logfile_path, os.ModePerm)
-	logfile := newLogFile(logfile_path)
+	logfilePath := flag.String("log", "/tmp/truco_logs/", "Logs directory path")
+	seconds := flag.Int("timeout", 60, "Timeout per turn (in seconds)")
+	n := flag.Int("n", 2, "Number of players (2, 4 or 6)")
+	flag.Parse()
 
-	n := 2 // <-- num. of players
+	os.MkdirAll(*logfilePath, os.ModePerm)
+	logfile := newLogFile(*logfilePath)
+
 	azules := []string{"Alice", "Ariana", "Annie"}
 	rojos := []string{"Bob", "Ben", "Bill"}
-	timeout := 60 * time.Second
-	p, _ := truco.NuevoJuego(20, azules[:n>>1], rojos[:n>>1], 4, true, timeout)
+	timeout := time.Duration(*seconds) * time.Second
+	p, _ := truco.NuevoJuego(20, azules[:*n>>1], rojos[:*n>>1], 4, true, timeout)
 
 	pJSON, _ := p.MarshalJSON()
 	logfile.Write(string(pJSON))
