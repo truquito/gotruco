@@ -27,7 +27,7 @@ func Razon2str(r string) string {
 	case enco.LasFlores:
 		str = "todas las flores"
 	case enco.LaFlorMasAlta:
-		str = "tener la flor mas alta"
+		str = "tener la flor más alta"
 	case enco.ContraFlorGanada:
 		str = "la contra-flor ganada"
 	case enco.ContraFlorAlRestoGanada:
@@ -78,7 +78,7 @@ func Parse(p *pdt.Partida, msg enco.IMessage) string {
 			template = "el ganador fue %s"
 			s = string(m)
 		} else {
-			template = "gano el equipo %s"
+			template = "ganó el equipo %s"
 			s = p.Manojo(string(m)).Jugador.Equipo.String()
 		}
 
@@ -91,7 +91,7 @@ func Parse(p *pdt.Partida, msg enco.IMessage) string {
 	case enco.TAbandono:
 		m, _ := msg.(enco.Abandono)
 		autor := p.Manojo(string(m))
-		decoded = fmt.Sprintf(`%s abandono la partida. Gano el equipo %s`,
+		decoded = fmt.Sprintf(`%s abandonó la partida. Ganó el equipo %s`,
 			autor.Jugador.ID, autor.Jugador.GetEquipoContrario())
 
 	case enco.TCantarFlor:
@@ -112,15 +112,15 @@ func Parse(p *pdt.Partida, msg enco.IMessage) string {
 
 	case enco.TTocarRealEnvido:
 		m, _ := msg.(enco.TocarRealEnvido)
-		decoded = fmt.Sprintf(`%s toca real envido`, string(m))
+		decoded = fmt.Sprintf(`%s toca real-envido`, string(m))
 
 	case enco.TTocarFaltaEnvido:
 		m, _ := msg.(enco.TocarFaltaEnvido)
-		decoded = fmt.Sprintf(`%s toca falta envido`, string(m))
+		decoded = fmt.Sprintf(`%s toca falta-envido`, string(m))
 
 	case enco.TElEnvidoEstaPrimero:
 		m, _ := msg.(enco.ElEnvidoEstaPrimero)
-		decoded = fmt.Sprintf(`%s "el envido esta primero!"`, string(m))
+		decoded = fmt.Sprintf(`%s "el envido está primero!"`, string(m))
 
 	case enco.TGritarTruco:
 		m, _ := msg.(enco.GritarTruco)
@@ -164,7 +164,7 @@ func Parse(p *pdt.Partida, msg enco.IMessage) string {
 
 	case enco.TManoGanada:
 		m, _ := msg.(enco.ManoGanada)
-		decoded = fmt.Sprintf(`La %s mano la gano el equipo %s gracias a %s`,
+		decoded = fmt.Sprintf(`La %s mano la ganó el equipo %s gracias a %s`,
 			pdt.NumMano(m.Valor).String(), p.Manojo(m.Autor).Jugador.Equipo, m.Autor)
 
 	case enco.TRondaGanada:
