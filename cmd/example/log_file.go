@@ -1,9 +1,9 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"os"
-	"strconv"
 	"time"
 )
 
@@ -25,8 +25,14 @@ func (lf LogFile) Write(str string) {
 }
 
 func newLogFile(logPath string) LogFile {
-	timestamp := strconv.FormatInt(time.Now().UTC().UnixNano(), 10)
-	logFile := logPath + timestamp + ".log"
+	// Get current date and time in YYYY-MM-DD HH:MM:SS format
+	now := time.Now().UTC()
+	formattedTime := fmt.Sprintf("%d-%02d-%02d_%02d:%02d:%02d",
+		now.Year(), now.Month(), now.Day(),
+		now.Hour(), now.Minute(), now.Second())
+
+	// Create log file name with formatted date and time
+	logFile := logPath + formattedTime + ".log"
 
 	return LogFile{path: logFile}
 }
