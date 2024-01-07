@@ -358,9 +358,10 @@ func (jugada TocarEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 	// si su equipo {aceptó Truco}       -> NO puede tocar envido
 	estabamosEnTruco := p.Ronda.Truco.Estado == TRUCO || p.Ronda.Truco.Estado == TRUCOQUERIDO
 	elMismoLoDijo := estabamosEnTruco && p.Ronda.Truco.CantadoPor == p.Manojo(jugada.JID).Jugador.ID
+	elEnvidoEsRespondible := ElEnvidoEsRespondible(p)
 	trucoQuerido := p.Ronda.Truco.Estado == TRUCOQUERIDO
 	queridoPorSuEquipo := trucoQuerido && p.Manojo(p.Ronda.Truco.CantadoPor).Jugador.Equipo == p.Manojo(jugada.JID).Jugador.Equipo
-	if elMismoLoDijo || queridoPorSuEquipo {
+	if (elMismoLoDijo && !elEnvidoEsRespondible) || queridoPorSuEquipo {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
@@ -581,9 +582,10 @@ func (jugada TocarRealEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 	// si su equipo {aceptó Truco}       -> NO puede tocar envido
 	estabamosEnTruco := p.Ronda.Truco.Estado == TRUCO || p.Ronda.Truco.Estado == TRUCOQUERIDO
 	elMismoLoDijo := estabamosEnTruco && p.Ronda.Truco.CantadoPor == p.Manojo(jugada.JID).Jugador.ID
+	elEnvidoEsRespondible := ElEnvidoEsRespondible(p)
 	trucoQuerido := p.Ronda.Truco.Estado == TRUCOQUERIDO
 	queridoPorSuEquipo := trucoQuerido && p.Manojo(p.Ronda.Truco.CantadoPor).Jugador.Equipo == p.Manojo(jugada.JID).Jugador.Equipo
-	if elMismoLoDijo || queridoPorSuEquipo {
+	if (elMismoLoDijo && !elEnvidoEsRespondible) || queridoPorSuEquipo {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
@@ -736,9 +738,10 @@ func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 	// si su equipo {aceptó Truco}       -> NO puede tocar envido
 	estabamosEnTruco := p.Ronda.Truco.Estado == TRUCO || p.Ronda.Truco.Estado == TRUCOQUERIDO
 	elMismoLoDijo := estabamosEnTruco && p.Ronda.Truco.CantadoPor == p.Manojo(jugada.JID).Jugador.ID
+	elEnvidoEsRespondible := ElEnvidoEsRespondible(p)
 	trucoQuerido := p.Ronda.Truco.Estado == TRUCOQUERIDO
 	queridoPorSuEquipo := trucoQuerido && p.Manojo(p.Ronda.Truco.CantadoPor).Jugador.Equipo == p.Manojo(jugada.JID).Jugador.Equipo
-	if elMismoLoDijo || queridoPorSuEquipo {
+	if (elMismoLoDijo && !elEnvidoEsRespondible) || queridoPorSuEquipo {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
@@ -899,7 +902,6 @@ todo:
 actualmente no permite que si todos cantan flor
 se pase a calcular el resultado solo de las flores acumuladas
 se necesita timer
-
 */
 func (jugada CantarFlor) ID() IJUGADA_ID {
 	return JID_FLOR

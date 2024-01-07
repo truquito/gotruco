@@ -1599,3 +1599,34 @@ func TestBugTrucoSeguidoDeElEnvidoEstaPrimero(t *testing.T) {
 
 }
 
+func TestBugTrucoEnvidoFaltaEnvido(t *testing.T) {
+	// Si A y B estan jugando
+	// A: Truco
+	// B: Envido
+	// A no puede decir "Falta Envido"; por que?
+	{
+		partidaJSON := `{"limiteEnvido":4,"cantJugadores":2,"puntuacion":20,"puntajes":{"azul":0,"rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":1,"rojo":1},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":""},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":6},{"palo":"oro","valor":3},{"palo":"copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":3},{"palo":"oro","valor":5},{"palo":"espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"rojo"}}],"muestra":{"palo":"copa","valor":1},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]}]}}`
+		p, err := Parse(partidaJSON, true)
+		if err != nil {
+			t.Error(err)
+		}
+
+		t.Log("estado inicial")
+		t.Log(Renderizar(p))
+
+		p.Cmd("Alvaro truco")
+		// p.Cmd("Alvaro 6 copa")
+		p.Cmd("Roro envido")
+
+		{
+			envs, _ := p.Cmd("Alvaro falta-envido")
+			if ok := envs[0].Message.Cod() != enco.TError; !ok {
+				t.Error("debería permitirle tocar Falta Envido")
+			}
+		}
+
+		if ok := p.Ronda.Envite.Estado == FALTAENVIDO; !ok {
+			t.Errorf("el estado del envite deberzía ser `FALTAENVIDO`\n")
+		}
+	}
+}
