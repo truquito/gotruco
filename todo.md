@@ -8,8 +8,6 @@
 
 # BUGS
 
-- tíldes (e.g., "abandonó")
-
 # LIMPIEZA DE CODIGO
   
 - el eval de la flor esta dividido: el eval solo se llama cuando se juega flor comun
