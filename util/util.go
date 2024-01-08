@@ -1,5 +1,7 @@
 package util
 
+import "strings"
+
 func All(bs ...bool) bool {
 	for _, b := range bs {
 		if !b {
@@ -35,10 +37,11 @@ func CheckElementsLen(slice []string) bool {
 func CheckSliceDuplicates(slice []string) bool {
 	seen := make(map[string]bool)
 	for _, s := range slice {
-		if seen[s] {
+		l := strings.ToLower(s)
+		if seen[l] {
 			return true
 		}
-		seen[s] = true
+		seen[l] = true
 	}
 	return false
 }
