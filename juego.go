@@ -10,8 +10,8 @@ import (
 	"github.com/filevich/truco/pdt"
 )
 
-// VERSION actual del binario
-const VERSION = "0.1.0"
+// VERSION actual de la librería/binario
+const VERSION = "0.2.1"
 
 // el envido, la Primera o la mentira
 // el envido, la Primera o la mentira
