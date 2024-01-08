@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/filevich/truco/enco"
+	"github.com/filevich/truco/util"
 )
 
 // Partida solo los datos de una partida
@@ -760,6 +761,14 @@ func NuevaPartida(
 
 	if !ok {
 		return nil, fmt.Errorf(`la cantidad de jugadores no es correcta`)
+	}
+
+	if ok := util.CheckElementsLen(equipoRojo) && util.CheckElementsLen(equipoAzul); !ok {
+		return nil, fmt.Errorf(`no se permiten jugadores sin nick`)
+	}
+
+	if ok := !util.CheckSliceDuplicates(append(equipoRojo, equipoAzul...)); !ok {
+		return nil, fmt.Errorf(`no se permiten jugadores con nicks repetidos`)
 	}
 
 	p := Partida{

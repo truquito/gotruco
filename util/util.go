@@ -22,3 +22,23 @@ func Mod(a, b int) int {
 	}
 	return c
 }
+
+func CheckElementsLen(slice []string) bool {
+	for _, s := range slice {
+		if len(s) == 0 {
+			return false
+		}
+	}
+	return true
+}
+
+func CheckSliceDuplicates(slice []string) bool {
+	seen := make(map[string]bool)
+	for _, s := range slice {
+		if seen[s] {
+			return true
+		}
+		seen[s] = true
+	}
+	return false
+}
