@@ -6,8 +6,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/filevich/truco/enco"
-	"github.com/filevich/truco/util"
+	"github.com/truquito/truco/enco"
+	"github.com/truquito/truco/util"
 )
 
 func TestNoStruct(t *testing.T) {

@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/filevich/truco/enco"
-	"github.com/filevich/truco/pdt"
+	"github.com/truquito/truco/enco"
+	"github.com/truquito/truco/pdt"
 )
 
 // VERSION actual de la librería/binario

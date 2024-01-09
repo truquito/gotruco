@@ -3,7 +3,7 @@ package pdt
 import (
 	"testing"
 
-	"github.com/filevich/truco/util"
+	"github.com/truquito/truco/util"
 )
 
 func TestEliminarDePendientesPorCantarFlor(t *testing.T) {

@@ -1,4 +1,4 @@
-module github.com/filevich/truco
+module github.com/truquito/truco
 
 go 1.16
 

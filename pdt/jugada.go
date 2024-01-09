@@ -3,7 +3,7 @@ package pdt
 import (
 	"fmt"
 
-	"github.com/filevich/truco/enco"
+	"github.com/truquito/truco/enco"
 )
 
 type IJUGADA_ID int

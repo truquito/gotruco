@@ -1,8 +1,8 @@
 package pdt
 
 import (
-	"github.com/filevich/truco/enco"
-	"github.com/filevich/truco/util"
+	"github.com/truquito/truco/enco"
+	"github.com/truquito/truco/util"
 )
 
 // Ronda :

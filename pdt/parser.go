@@ -5,7 +5,7 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/filevich/truco/enco"
+	"github.com/truquito/truco/enco"
 )
 
 // regexps

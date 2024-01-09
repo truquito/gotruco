@@ -1,6 +1,6 @@
 package pdt
 
-import "github.com/filevich/truco/util"
+import "github.com/truquito/truco/util"
 
 func ElEnvidoEsRespondible(p *Partida) bool {
 	return p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO

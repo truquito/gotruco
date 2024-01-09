@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/filevich/truco/deco"
-	"github.com/filevich/truco/enco"
-	"github.com/filevich/truco/pdt"
-	"github.com/filevich/truco/util"
+	"github.com/truquito/truco/deco"
+	"github.com/truquito/truco/enco"
+	"github.com/truquito/truco/pdt"
+	"github.com/truquito/truco/util"
 )
 
 // Tests:

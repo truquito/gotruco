@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/filevich/truco/enco"
-	"github.com/filevich/truco/util"
+	"github.com/truquito/truco/enco"
+	"github.com/truquito/truco/util"
 )
 
 // Partida solo los datos de una partida

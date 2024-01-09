@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/filevich/truco/pdt"
+	"github.com/truquito/truco/pdt"
 )
 
 var (

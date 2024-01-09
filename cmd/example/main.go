@@ -9,9 +9,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/filevich/truco"
-	"github.com/filevich/truco/deco"
-	"github.com/filevich/truco/enco"
+	"github.com/truquito/truco"
+	"github.com/truquito/truco/deco"
+	"github.com/truquito/truco/enco"
 )
 
 var ioCh chan string = make(chan string, 1)
