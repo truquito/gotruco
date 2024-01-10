@@ -11,10 +11,9 @@ import (
 
 var (
 	p = flag.Int("p", 2, "total subprocesses")
-	// worker
-	n  = flag.Int("n", 2, "a string")
-	rt = flag.Int("runtime", 10, "total runtime in secs.")
-	v  = flag.Bool("v", false, "verbose (or silent) mode")
+	n = flag.Int("n", 2, "player per match (2, 4 or 6)")
+	t = flag.Int("t", 100, "total runtime in secs.")
+	// v = flag.Bool("v", false, "verbose (or silent) mode")
 )
 
 func init() {
@@ -26,7 +25,7 @@ func main() {
 	wg.Add(*p)
 	start := time.Now()
 	c := make(chan int, *p)
-	cmd := fmt.Sprintf("go run cmd/bench/self-play/*.go -n=%d -runtime=%d -v=%v", *n, *rt, *v)
+	cmd := fmt.Sprintf("go run cmd/bench/self-play/*.go -n %d -t %d", *n, *t)
 
 	for i := 1; i <= *p; i++ {
 		go func() {
@@ -48,5 +47,10 @@ func main() {
 		sum += x
 	}
 
-	fmt.Println("total", sum, time.Since(start).Round(time.Second), "procs", *rt)
+	fmt.Printf("total: %d time: %s, procs: %d players: %d runtime: %d\n",
+		sum,
+		time.Since(start).Round(time.Second),
+		*p,
+		*n,
+		*t)
 }

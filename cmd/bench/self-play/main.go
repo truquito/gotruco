@@ -10,9 +10,9 @@ import (
 
 var (
 	// flags
-	n  = flag.Int("n", 2, "a string")
-	rt = flag.Int("t", 3, "total runtime in secs.")
-	v  = flag.Bool("v", false, "verbose (or silent) mode")
+	n  = flag.Int("n", 2, "number of players")
+	rt = flag.Int("t", 10, "total runtime in secs.")
+	v  = flag.Bool("v", false, "verbose (i.e., not silent) mode")
 )
 
 // eg.
