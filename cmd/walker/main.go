@@ -43,6 +43,10 @@ func main() {
 version: v0.2.x
 cpu: i5-12600k
 termino 1,807,482
-TIME:71.19 RAM:52352
+TIME:71.19
+
+cpu: m2 (fanless)
+termino 1,807,482
+TIME:88.95s
 
 */
