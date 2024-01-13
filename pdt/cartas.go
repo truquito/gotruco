@@ -324,7 +324,7 @@ func (i CartaID) getValor() int {
 }
 
 // Devuelve la `Carta` correspondiente al ID i
-func nuevaCarta(i CartaID) Carta {
+func NuevaCarta(i CartaID) Carta {
 	return Carta{
 		Palo:  i.getPalo(),
 		Valor: i.getValor(),

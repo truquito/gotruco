@@ -693,7 +693,7 @@ func (r *Ronda) repartirCartas() {
 	for idxJugador := 0; idxJugador < cantJugadores; idxJugador++ {
 		for idxCarta := 0; idxCarta < 3; idxCarta++ {
 			cartaID := CartaID(randomCards[3*idxJugador+idxCarta])
-			carta := nuevaCarta(cartaID)
+			carta := NuevaCarta(cartaID)
 			r.Manojos[idxJugador].Cartas[idxCarta] = &carta
 			r.Manojos[idxJugador].Tiradas[idxCarta] = false
 		}
@@ -701,7 +701,7 @@ func (r *Ronda) repartirCartas() {
 
 	// la ultima es la muestra
 	n := cap(randomCards)
-	r.Muestra = nuevaCarta(CartaID(randomCards[n-1]))
+	r.Muestra = NuevaCarta(CartaID(randomCards[n-1]))
 }
 
 func (r *Ronda) indexarManojos() {
