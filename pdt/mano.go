@@ -109,6 +109,6 @@ type Mano struct {
 	CartasTiradas []CartaTirada `json:"cartasTiradas"`
 }
 
-func (m *Mano) agregarTirada(cartaTirada CartaTirada) {
+func (m *Mano) AgregarTirada(cartaTirada CartaTirada) {
 	m.CartasTiradas = append(m.CartasTiradas, cartaTirada)
 }

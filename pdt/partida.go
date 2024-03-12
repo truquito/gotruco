@@ -725,7 +725,7 @@ func (p *Partida) TirarCarta(manojo *Manojo, idx int) {
 	manojo.UltimaTirada = idx
 	carta := manojo.Cartas[idx]
 	tirada := CartaTirada{manojo.Jugador.ID, *carta}
-	p.Ronda.GetManoActual().agregarTirada(tirada)
+	p.Ronda.GetManoActual().AgregarTirada(tirada)
 }
 
 // dada una partida, intercambia los puestos 2 a 2
