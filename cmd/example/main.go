@@ -5,6 +5,8 @@ import (
 	"encoding/json"
 	"flag"
 	"fmt"
+	"io/fs"
+	"log"
 	"os"
 	"strings"
 	"time"
@@ -14,7 +16,44 @@ import (
 	"github.com/truquito/truco/enco"
 )
 
-var ioCh chan string = make(chan string, 1)
+// flags
+var (
+	timeoutFlag    = flag.Int("timeout", 60, "Timeout per turn (in seconds)")
+	numPlayersFlag = flag.Int("n", 2, "Number of players (2, 4 or 6)")
+	logFileFlag    = flag.String("log_file", "", "Path to the log file")
+)
+
+// vars
+var (
+	logFile *os.File    = nil
+	logger  *log.Logger = nil
+	ioCh    chan string = make(chan string, 1)
+)
+
+func currentDatetime() string {
+	now := time.Now().UTC()
+	return fmt.Sprintf("%d-%02d-%02d_%02d:%02d:%02d",
+		now.Year(), now.Month(), now.Day(),
+		now.Hour(), now.Minute(), now.Second())
+}
+
+func initLogs(logFilePath string) {
+	if len(logFilePath) == 0 {
+		logFilePath = fmt.Sprintf("/tmp/truco-%s.log", currentDatetime())
+	}
+	var (
+		flags int         = os.O_CREATE | os.O_WRONLY | os.O_APPEND
+		perms fs.FileMode = 0666
+		err   error       = nil
+	)
+
+	logFile, err = os.OpenFile(logFilePath, flags, perms)
+	if err != nil {
+		log.Fatalf("Failed to open log file: %v", err)
+	}
+
+	logger = log.New(logFile, "", log.LstdFlags)
+}
 
 func handleIO() {
 	reader := bufio.NewReader(os.Stdin)
@@ -30,28 +69,36 @@ func handleIO() {
 	}
 }
 
-func main() {
-
-	logfilePath := flag.String("log", "/tmp/truco_logs/", "Logs directory path")
-	seconds := flag.Int("timeout", 60, "Timeout per turn (in seconds)")
-	n := flag.Int("n", 2, "Number of players (2, 4 or 6)")
+func init() {
 	flag.Parse()
+	initLogs(*logFileFlag)
+}
 
-	os.MkdirAll(*logfilePath, os.ModePerm)
-	logfile := newLogFile(*logfilePath)
+func main() {
+	defer func() {
+		if logFile != nil {
+			logFile.Close()
+		}
+	}()
 
 	azules := []string{"Alice", "Ariana", "Annie"}
 	rojos := []string{"Bob", "Ben", "Bill"}
-	timeout := time.Duration(*seconds) * time.Second
-	p, _ := truco.NuevoJuego(20, azules[:*n>>1], rojos[:*n>>1], 4, true, timeout)
+	timeout := time.Duration(*timeoutFlag) * time.Second
+	p, _ := truco.NuevoJuego(
+		20,
+		azules[:*numPlayersFlag>>1],
+		rojos[:*numPlayersFlag>>1],
+		4,
+		true,
+		timeout)
 
 	pJSON, _ := p.MarshalJSON()
-	logfile.Write(string(pJSON))
+	logger.Println(string(pJSON))
+
 	for _, m := range p.Ronda.Manojos {
 		pers, _ := p.Perspectiva(m.Jugador.ID)
-		logfile.Write(m.Jugador.ID)
 		pJSON, _ := pers.MarshalJSON()
-		logfile.Write(string(pJSON))
+		logger.Println(m.Jugador.ID, string(pJSON))
 	}
 
 	fmt.Println(p)
@@ -71,7 +118,7 @@ func main() {
 				data, _ := json.Marshal(p)
 				fmt.Println(string(data))
 			} else {
-				logfile.Write(cmd)
+				logger.Println(cmd)
 				err := p.Cmd(cmd)
 				if err != nil {
 					fmt.Println("<< " + err.Error())
@@ -90,9 +137,12 @@ func main() {
 			// de momento, el unico error posible
 			if p.Expirado() {
 				m, _ := p.Err.Message.(enco.TimeOut)
-				fmt.Printf("el juego terminó debido a que `%s` no realizó niguna jugada en %s.\n", m, p.DurTurno)
+				fmt.Printf(
+					"el juego terminó debido a que `%s` no realizó niguna jugada en %s.\n",
+					m,
+					p.DurTurno)
 			}
-			// fmt.Printf(">> ")
+			// fmt.Printf(">> ") // prompt
 		}
 
 		if p.Terminado() {
