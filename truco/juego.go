@@ -10,9 +10,6 @@ import (
 	"github.com/truquito/gotruco/pdt"
 )
 
-// VERSION actual de la librería/binario
-const VERSION = "0.3.0"
-
 // el envido, la Primera o la mentira
 // el envido, la Primera o la mentira
 // el truco, la Segunda o el rabón
