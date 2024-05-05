@@ -47,6 +47,12 @@ func main() {
 
 	pJSON, _ := p.MarshalJSON()
 	logfile.Write(string(pJSON))
+	for _, m := range p.Ronda.Manojos {
+		pers, _ := p.Perspectiva(m.Jugador.ID)
+		logfile.Write(m.Jugador.ID)
+		pJSON, _ := pers.MarshalJSON()
+		logfile.Write(string(pJSON))
+	}
 
 	fmt.Println(p)
 
