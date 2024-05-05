@@ -1,4 +1,4 @@
-module github.com/truquito/truco
+module github.com/truquito/gotruco
 
 go 1.16
 

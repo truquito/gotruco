@@ -4,7 +4,7 @@ import (
 	"math/rand"
 	"strconv"
 
-	"github.com/truquito/truco/enco"
+	"github.com/truquito/gotruco/enco"
 )
 
 /*

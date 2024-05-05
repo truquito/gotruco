@@ -1,6 +1,6 @@
 package pdt
 
-import "github.com/truquito/truco/util"
+import "github.com/truquito/gotruco/util"
 
 func ElEnvidoEsRespondible(p *Partida) bool {
 	return p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO
@@ -25,7 +25,8 @@ func ElTrucoRespondible(p *Partida) bool {
 }
 
 // dado un manojo A, retorna el manojo del equipo contrario a A que:
-//  mas alejado se encuentre del mano y no se haya ido al mazo aun
+//
+//	mas alejado se encuentre del mano y no se haya ido al mazo aun
 func Encontrar_respondedor_mas_lejano(p *Partida, proponente *Manojo) (respondedor *Manojo) {
 	// itero hasta un maximo de la cantidad de jugadores
 	// cual es el absolute_index del mano?

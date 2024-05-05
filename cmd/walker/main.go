@@ -3,7 +3,7 @@ package main
 import (
 	"fmt"
 
-	"github.com/truquito/truco/pdt"
+	"github.com/truquito/gotruco/pdt"
 )
 
 var terminals uint = 0

@@ -5,10 +5,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/truquito/truco/deco"
-	"github.com/truquito/truco/enco"
-	"github.com/truquito/truco/pdt"
-	"github.com/truquito/truco/util"
+	"github.com/truquito/gotruco/deco"
+	"github.com/truquito/gotruco/enco"
+	"github.com/truquito/gotruco/pdt"
+	"github.com/truquito/gotruco/util"
 )
 
 // Tests:

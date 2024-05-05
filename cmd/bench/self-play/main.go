@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/truquito/truco/pdt"
+	"github.com/truquito/gotruco/pdt"
 )
 
 var (

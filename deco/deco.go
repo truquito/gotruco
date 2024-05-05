@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/truquito/truco/enco"
-	"github.com/truquito/truco/pdt"
+	"github.com/truquito/gotruco/enco"
+	"github.com/truquito/gotruco/pdt"
 )
 
 // Razon2str retorna el string correspondiente a `r`

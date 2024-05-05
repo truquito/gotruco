@@ -11,9 +11,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/truquito/truco"
-	"github.com/truquito/truco/deco"
-	"github.com/truquito/truco/enco"
+	truco "github.com/truquito/gotruco"
+	"github.com/truquito/gotruco/deco"
+	"github.com/truquito/gotruco/enco"
 )
 
 // flags

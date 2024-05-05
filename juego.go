@@ -6,12 +6,12 @@ import (
 	"sync"
 	"time"
 
-	"github.com/truquito/truco/enco"
-	"github.com/truquito/truco/pdt"
+	"github.com/truquito/gotruco/enco"
+	"github.com/truquito/gotruco/pdt"
 )
 
 // VERSION actual de la librería/binario
-const VERSION = "0.2.1"
+const VERSION = "0.3.0"
 
 // el envido, la Primera o la mentira
 // el envido, la Primera o la mentira
