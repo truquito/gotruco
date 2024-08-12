@@ -13,11 +13,17 @@ NUEVO SISTEMA:
 
 */
 
-func IsDone(pkts []enco.Envelope) bool {
+// si `aNivelDeRonda` es `true`, entonces se fija, no solo si la partida terminó
+// sino que también si la ronda terminó (OR inclusivo)
+// si `aNivelDeRonda` es `false`, entonces solo se fija si la partida terminó
+func IsDone(pkts []enco.Envelope, aNivelDeRonda bool) bool {
 	for _, pkt := range pkts {
-		if pkt.Message.Cod() == enco.TNuevaPartida ||
-			pkt.Message.Cod() == enco.TNuevaRonda ||
-			pkt.Message.Cod() == enco.TRondaGanada {
+		var (
+			cod              = pkt.Message.Cod()
+			partidaTerminada = cod == enco.TNuevaPartida
+			rondaTerminada   = cod == enco.TNuevaRonda || cod == enco.TRondaGanada
+		)
+		if partidaTerminada || (aNivelDeRonda && rondaTerminada) {
 			return true
 		}
 	}

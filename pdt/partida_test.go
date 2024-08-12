@@ -882,7 +882,7 @@ func TestRandomWalk_AA(t *testing.T) {
 			// cmd := fmt.Sprintf("%s %s", p.Ronda.Manojos[r.jix].Jugador.ID, s)
 			// pkts, _ := p.Cmd(cmd)
 
-			if IsDone(pkts2) {
+			if IsDone(pkts2, true) {
 				break
 			}
 
@@ -919,7 +919,7 @@ func TestRandomWalk_Chi(t *testing.T) {
 			// cmd := fmt.Sprintf("%s %s", p.Ronda.Manojos[r.jix].Jugador.ID, s)
 			// pkts, _ := p.Cmd(cmd)
 
-			if IsDone(pkts2) {
+			if IsDone(pkts2, true) {
 				break
 			}
 

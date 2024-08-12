@@ -61,7 +61,7 @@ func worker(
 			actions = append(actions, a.String())
 			// la ejecuto
 			pkts2 := a.Hacer(p)
-			if pdt.IsDone(pkts2) {
+			if pdt.IsDone(pkts2, true) {
 				last_snapshot, _ = p.MarshalJSON()
 				actions = []string{}
 			}
