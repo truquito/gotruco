@@ -340,7 +340,7 @@ func (r *Ronda) SetMuestra(muestra Carta) {
 * 	`pkts[0] = Jacinto dice: "tengo 9"`
 *   `pkts[1] = Patricio dice: "son buenas" (tenia 3)`
 *   `pkts[2] = Pedro dice: "30 son mejores!"`
-*		`pkts[3] = Juan dice: "33 son mejores!"`
+*	`pkts[3] = Juan dice: "33 son mejores!"`
 *
  */
 func (r *Ronda) ExecElEnvido(verbose bool) (jIdx JIX, max int, pkts2 []enco.Envelope) {

@@ -102,7 +102,7 @@ func (jugada TirarCarta) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error("No es posible tirar una carta ahora porque el envite esta en juego"),
+				enco.Error("No es posible tirar una carta ahora porque el envite está en juego"),
 			))
 		}
 
@@ -331,7 +331,7 @@ func (jugada TocarEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error("No es posible tocar el envido ahora porque la flor esta en juego"),
+				enco.Error("No es posible tocar el envido ahora porque la flor está en juego"),
 			))
 		}
 
@@ -417,7 +417,7 @@ func (jugada TocarEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error(`No es posible cantar 'Envido'`),
+				enco.Error(`No es posible tocar envido ahora`),
 			))
 		}
 
@@ -552,7 +552,7 @@ func (jugada TocarRealEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error("No es posible tocar real envido ahora porque la flor esta en juego"),
+				enco.Error("No es posible tocar real-envido ahora porque la flor está en juego"),
 			))
 		}
 
@@ -611,7 +611,7 @@ func (jugada TocarRealEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error(`No es posible cantar 'Real Envido'`),
+				enco.Error(`No es posible tocar real-envido ahora`),
 			))
 		}
 
@@ -708,7 +708,7 @@ func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error("No es posible tocar falta envido ahora porque la flor esta en juego"),
+				enco.Error("No es posible tocar falta-envido ahora porque la flor está en juego"),
 			))
 		}
 
@@ -726,7 +726,7 @@ func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error("No es posible tocar real-envido ahora"),
+				enco.Error("No es posible tocar falta-envido ahora"),
 			))
 		}
 
@@ -745,7 +745,7 @@ func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error("No es posible tocar envido ahora"),
+				enco.Error("No es posible tocar falta-envido ahora"),
 			))
 		}
 		return pkts2, false
@@ -767,7 +767,7 @@ func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error(`No es posible cantar 'Falta Envido'`),
+				enco.Error(`No es posible tocar falta-envido ahora`),
 			))
 		}
 
@@ -1150,7 +1150,7 @@ func (jugada CantarContraFlor) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error(`No es posible cantar contra flor`),
+				enco.Error(`No es posible cantar contra-flor`),
 			))
 		}
 
@@ -1225,7 +1225,7 @@ func (jugada CantarContraFlorAlResto) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error(`No es posible cantar contra flor al resto`),
+				enco.Error(`No es posible cantar contra-flor-al-resto`),
 			))
 		}
 
@@ -1325,7 +1325,7 @@ func (jugada GritarTruco) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error("No es posible cantar truco ahora"),
+				enco.Error("No es posible gritar truco ahora"),
 			))
 		}
 
@@ -1413,7 +1413,7 @@ func (jugada GritarReTruco) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error("No es posible cantar re-truco ahora"),
+				enco.Error("No es posible gritar re-truco ahora"),
 			))
 		}
 
@@ -1506,7 +1506,7 @@ func (jugada GritarVale4) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error("No es posible cantar vale-4 ahora"),
+				enco.Error("No es posible gritar vale-4 ahora"),
 			))
 		}
 
@@ -1568,7 +1568,7 @@ func (jugada ResponderQuiero) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error("Te fuiste al mazo; no podes Hacer esta jugada"),
+				enco.Error("Te fuiste al mazo; no podés hacer esta jugada"),
 			))
 		}
 
@@ -1593,7 +1593,7 @@ func (jugada ResponderQuiero) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error("No es posible responder quiero ahora"),
+				enco.Error("No es posible responder 'quiero' ahora"),
 			))
 		}
 
@@ -1607,7 +1607,7 @@ func (jugada ResponderQuiero) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error("No es posible responder 'quiero' porque alguien con flor no ha cantado aun"),
+				enco.Error("No es posible responder 'quiero' porque alguien con flor no ha cantado aún"),
 			))
 		}
 
@@ -1646,7 +1646,7 @@ func (jugada ResponderQuiero) Ok(p *Partida) ([]enco.Envelope, bool) {
 			if p.Verbose {
 				pkts2 = append(pkts2, enco.Env(
 					enco.Dest(jugada.JID),
-					enco.Error(`La jugada no es valida`),
+					enco.Error(`La jugada no es válida`),
 				))
 			}
 
@@ -1665,7 +1665,7 @@ func (jugada ResponderQuiero) Ok(p *Partida) ([]enco.Envelope, bool) {
 			if p.Verbose {
 				pkts2 = append(pkts2, enco.Env(
 					enco.Dest(jugada.JID),
-					enco.Error(`La jugada no es valida`),
+					enco.Error(`La jugada no es válida`),
 				))
 			}
 
@@ -1821,7 +1821,7 @@ func (jugada ResponderNoQuiero) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error("Te fuiste al mazo; no podes Hacer esta jugada"),
+				enco.Error("Te fuiste al mazo; no podés hacer esta jugada"),
 			))
 		}
 
@@ -1852,10 +1852,9 @@ func (jugada ResponderNoQuiero) Ok(p *Partida) ([]enco.Envelope, bool) {
 	ok := elEnvidoEsRespondible || laFlorEsRespondible || elTrucoEsRespondible
 
 	if !ok {
-		// si no, esta respondiendo al pedo
-		err := p.Manojo(jugada.JID).Jugador.ID + ` esta respondiendo al pedo; no hay nada respondible`
-
 		if p.Verbose {
+			// si no, esta respondiendo al pedo
+			err := p.Manojo(jugada.JID).Jugador.ID + ` esta respondiendo al pedo; no hay nada respondible`
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
 				enco.Error(err),
@@ -1873,7 +1872,7 @@ func (jugada ResponderNoQuiero) Ok(p *Partida) ([]enco.Envelope, bool) {
 			if p.Verbose {
 				pkts2 = append(pkts2, enco.Env(
 					enco.Dest(jugada.JID),
-					enco.Error(`La jugada no es valida`),
+					enco.Error(`La jugada no es válida`),
 				))
 			}
 
@@ -1893,7 +1892,7 @@ func (jugada ResponderNoQuiero) Ok(p *Partida) ([]enco.Envelope, bool) {
 			if p.Verbose {
 				pkts2 = append(pkts2, enco.Env(
 					enco.Dest(jugada.JID),
-					enco.Error(`La jugada no es valida`),
+					enco.Error(`La jugada no es válida`),
 				))
 			}
 
@@ -2103,7 +2102,7 @@ func (jugada IrseAlMazo) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error("No es posible irse al mazo ahora"),
+				enco.Error("No es posible irse-al-mazo ahora"),
 			))
 		}
 
@@ -2144,7 +2143,7 @@ func (jugada IrseAlMazo) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error("No es posible irse al mazo ahora"),
+				enco.Error("No es posible irse-al-mazo ahora"),
 			))
 		}
 
@@ -2171,7 +2170,7 @@ func (jugada IrseAlMazo) Ok(p *Partida) ([]enco.Envelope, bool) {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error("No es posible irse al mazo ahora"),
+				enco.Error("No es posible irse-al-mazo ahora"),
 			))
 		}
 
