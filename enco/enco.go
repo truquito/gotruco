@@ -155,16 +155,16 @@ func Dest(ds ...string) []string {
 	return ds
 }
 
-type TimeOut string
-
-func (m TimeOut) Cod() CodMsg {
-	return TTimeOut
-}
-
 type LaManoResultaParda struct{}
 
 func (m LaManoResultaParda) Cod() CodMsg {
 	return TLaManoResultaParda
+}
+
+type TimeOut string
+
+func (m TimeOut) Cod() CodMsg {
+	return TTimeOut
 }
 
 type Error string
