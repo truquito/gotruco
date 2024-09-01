@@ -1506,7 +1506,6 @@ func TestBugTrucoSeguidoDeElEnvidoEstaPrimero(t *testing.T) {
 
 		p.Cmd("Alvaro truco")
 		p.Cmd("Alvaro 6 copa")
-		p.Cmd("Alvaro envido")
 		{
 			envs, _ := p.Cmd("Alvaro envido")
 			if ok := len(envs) == 1 && envs[0].Message.Cod() == enco.TError; !ok {
@@ -1532,9 +1531,8 @@ func TestBugTrucoSeguidoDeElEnvidoEstaPrimero(t *testing.T) {
 
 		p.Cmd("Alvaro truco")
 		p.Cmd("Alvaro 6 copa")
-		p.Cmd("Alvaro real-envido")
 		{
-			envs, _ := p.Cmd("Alvaro envido")
+			envs, _ := p.Cmd("Alvaro real-envido")
 			if ok := len(envs) == 1 && envs[0].Message.Cod() == enco.TError; !ok {
 				t.Error("debió de haber dado error")
 			}
@@ -1558,35 +1556,8 @@ func TestBugTrucoSeguidoDeElEnvidoEstaPrimero(t *testing.T) {
 
 		p.Cmd("Alvaro truco")
 		p.Cmd("Alvaro 6 copa")
-		p.Cmd("Alvaro falta-envido")
 		{
-			envs, _ := p.Cmd("Alvaro envido")
-			if ok := len(envs) == 1 && envs[0].Message.Cod() == enco.TError; !ok {
-				t.Error("debió de haber dado error")
-			}
-		}
-
-		if ok := p.Ronda.Envite.Estado == NOCANTADOAUN; !ok {
-			t.Errorf("el estado del envite deberzía ser `NOCANTADOAUN`\n")
-		}
-	}
-
-	// lo mismo pero con falta-envido
-	{
-		partidaJSON := `{"limiteEnvido":4,"cantJugadores":2,"puntuacion":20,"puntajes":{"azul":0,"rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":1,"rojo":1},"elMano":0,"turno":0,"pies":[0,0],"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":""},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":6},{"palo":"oro","valor":3},{"palo":"copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":3},{"palo":"oro","valor":5},{"palo":"espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"rojo"}}],"muestra":{"palo":"copa","valor":1},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]}]}}`
-		p, err := Parse(partidaJSON, true)
-		if err != nil {
-			t.Error(err)
-		}
-
-		t.Log("estado inicial")
-		t.Log(Renderizar(p))
-
-		p.Cmd("Alvaro truco")
-		p.Cmd("Alvaro 6 copa")
-		p.Cmd("Alvaro falta-envido")
-		{
-			envs, _ := p.Cmd("Alvaro envido")
+			envs, _ := p.Cmd("Alvaro falta-envido")
 			if ok := len(envs) == 1 && envs[0].Message.Cod() == enco.TError; !ok {
 				t.Error("debió de haber dado error")
 			}
