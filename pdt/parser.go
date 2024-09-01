@@ -67,8 +67,6 @@ func checkeoSemantico(p *Partida, cmd string) (IJugada, error) {
 			jugada = ResponderQuiero{JID: m.Jugador.ID}
 		case "no-quiero":
 			jugada = ResponderNoQuiero{JID: m.Jugador.ID}
-		// case "tiene":
-		// 	jugada = responderNoQuiero{JID: m.Jugador.ID}
 
 		// acciones
 		case "mazo":
@@ -112,7 +110,7 @@ func checkeoSemantico(p *Partida, cmd string) (IJugada, error) {
 
 func ParseJugada(p *Partida, cmd string) (IJugada, error) {
 	if p.Terminada() {
-		return nil, fmt.Errorf("la partida ya termino")
+		return nil, fmt.Errorf("la partida ya terminó")
 	}
 
 	// checkeo sintactico
