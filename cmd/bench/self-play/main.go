@@ -32,39 +32,24 @@ func worker(
 		rojos  = []string{"Bob", "Ben", "Bill"}
 	)
 
-	var (
-		last_snapshot []byte   = nil
-		actions       []string = nil
-	)
-
 	start := time.Now()
 	t := 0
 
 	defer func() {
 		if r := recover(); r != nil {
-			fmt.Println(string(last_snapshot))
-			fmt.Println(actions)
 			fmt.Println("Recovered in f", r)
 		}
 	}()
 
 	for time.Since(start) < totalRunningTime {
 		p, _ := pdt.NuevaPartida(20, azules[:*n>>1], rojos[:*n>>1], 4, *v)
-		last_snapshot, _ = p.MarshalJSON()
-		actions = []string{}
 		for !p.Terminada() {
 			// elijo una al azar
 			chis := pdt.MetaChis(p, false)
 			rmix, raix := pdt.Random_action_chis(chis)
 			a := chis[rmix][raix]
-			// la guardo
-			actions = append(actions, a.String())
 			// la ejecuto
-			pkts2 := a.Hacer(p)
-			if pdt.IsDone(pkts2, true) {
-				last_snapshot, _ = p.MarshalJSON()
-				actions = []string{}
-			}
+			a.Hacer(p)
 		}
 		t++
 	}
