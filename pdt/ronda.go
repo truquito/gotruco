@@ -269,7 +269,8 @@ func (r *Ronda) SetNextTurnoPosMano() {
 		// solo si la mano anterior no fue parda
 		// si fue parda busco la que empardo mas cercano al mano
 		if r.GetManoAnterior().Resultado != Empardada {
-			r.Turno = JIX(r.JIX(r.Manojo(r.GetManoAnterior().Ganador).Jugador.ID))
+			manoAnterior := r.GetManoAnterior()
+			r.Turno = JIX(r.JIX(r.Manojo(manoAnterior.Ganador).Jugador.ID))
 			safety_check()
 		} else {
 			// 1. obtengo la carta de maximo valor de la mano anterior
