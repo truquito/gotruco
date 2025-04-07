@@ -19,7 +19,7 @@ type Envelope struct {
 func Dumps(m IMessage) ([]byte, error) {
 	type msg struct {
 		Cod  CodMsg          `json:"cod"`
-		Cont json.RawMessage `json:"cont"`
+		Cont json.RawMessage `json:"cont,omitempty"`
 	}
 
 	bs, _ := json.Marshal(m)
@@ -384,7 +384,7 @@ func Msg(t CodMsg, data ...interface{}) IMessage {
 
 	switch t {
 	case TLaManoResultaParda:
-		m = LaManoResultaParda{}
+		m = nil // LaManoResultaParda{} // fix: <- let's use nil instead
 	case TError:
 		v, _ := data[0].(string)
 		m = Error(v)
