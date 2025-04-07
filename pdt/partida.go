@@ -595,6 +595,8 @@ func (p *Partida) EvaluarRonda() (bool, []enco.Envelope) {
 			razon = enco.TrucoQuerido
 		case VALE4:
 			razon = enco.TrucoQuerido
+		default:
+			razon = enco.TrucoQuerido
 		}
 
 		if p.Verbose {
