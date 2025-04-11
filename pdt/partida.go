@@ -223,7 +223,9 @@ func (p *Partida) IrAlMazo(manojo *Manojo) {
 	xs := p.Ronda.Envite.SinCantar
 	for i, jid := range p.Ronda.Envite.SinCantar {
 		if manojo.Jugador.ID == jid {
-			xs[i] = xs[len(xs)-1]
+			// Shift subsequent elements left to maintain order
+			copy(xs[i:], xs[i+1:])
+			// Truncate the slice
 			xs = xs[:len(xs)-1]
 			p.Ronda.Envite.SinCantar = xs
 			break

@@ -90,13 +90,14 @@ func (e *Envite) cantoFlor(j string) {
 
 	for i, x := range e.SinCantar {
 		if x == j {
-			xs[i] = xs[len(xs)-1]
+			// Shift subsequent elements left to maintain order
+			copy(xs[i:], xs[i+1:])
+			// Truncate the slice
 			xs = xs[:len(xs)-1]
 			e.SinCantar = xs
 			return
 		}
 	}
-
 }
 
 // Envite :

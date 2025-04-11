@@ -2182,19 +2182,17 @@ func (jugada IrseAlMazo) Ok(p *Partida) ([]enco.Envelope, bool) {
 
 // Eliminar .
 func Eliminar(manojos []*Manojo, manojo *Manojo) []*Manojo {
-	var i int
-	// primero encuentro el elemento
-	for i = 0; i <= len(manojos); i++ {
-		noLoContiene := i == len(manojos)
-		if noLoContiene {
-			return manojos
-		}
+	// Find the element
+	for i := 0; i < len(manojos); i++ {
 		if manojos[i].Jugador.ID == manojo.Jugador.ID {
-			break
+			// Shift all subsequent elements to the left
+			copy(manojos[i:], manojos[i+1:])
+			// Truncate the slice
+			return manojos[:len(manojos)-1]
 		}
 	}
-	manojos[i] = manojos[len(manojos)-1] // Copy last element to index i.
-	return manojos[:len(manojos)-1]      // Truncate slice.
+	// If not found, return original slice
+	return manojos
 }
 
 func (jugada IrseAlMazo) Hacer(p *Partida) []enco.Envelope {
