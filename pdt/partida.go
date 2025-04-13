@@ -551,7 +551,7 @@ func (p *Partida) EvaluarRonda() (bool, []enco.Envelope) {
 		totalPts = 4
 	}
 
-	if !hayJugadoresEnAmbos {
+	if !hayJugadoresEnAmbos && !p.Terminada() {
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest("ALL"),
@@ -577,14 +577,16 @@ func (p *Partida) EvaluarRonda() (bool, []enco.Envelope) {
 			razon = enco.TrucoNoQuerido
 		}
 
-		if p.Verbose {
-			pkts2 = append(pkts2, enco.Env(
-				enco.Dest("ALL"),
-				enco.RondaGanada{
-					Autor: ganador,
-					Razon: razon,
-				},
-			))
+		if !p.Terminada() {
+			if p.Verbose {
+				pkts2 = append(pkts2, enco.Env(
+					enco.Dest("ALL"),
+					enco.RondaGanada{
+						Autor: ganador,
+						Razon: razon,
+					},
+				))
+			}
 		}
 
 	} else {
@@ -601,14 +603,16 @@ func (p *Partida) EvaluarRonda() (bool, []enco.Envelope) {
 			razon = enco.TrucoQuerido
 		}
 
-		if p.Verbose {
-			pkts2 = append(pkts2, enco.Env(
-				enco.Dest("ALL"),
-				enco.RondaGanada{
-					Autor: ganador,
-					Razon: razon,
-				},
-			))
+		if !p.Terminada() {
+			if p.Verbose {
+				pkts2 = append(pkts2, enco.Env(
+					enco.Dest("ALL"),
+					enco.RondaGanada{
+						Autor: ganador,
+						Razon: razon,
+					},
+				))
+			}
 		}
 
 	}
@@ -626,7 +630,8 @@ func (p *Partida) EvaluarRonda() (bool, []enco.Envelope) {
 		))
 	}
 
-	return true, pkts2 // porque se empezo una nueva ronda
+	empiezaNuevaRonda := !p.Terminada()
+	return empiezaNuevaRonda, pkts2 // porque se empezo una nueva ronda
 }
 
 // NuevaRonda .

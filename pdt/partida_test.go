@@ -2,6 +2,7 @@ package pdt
 
 import (
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"testing"
 	"time"
@@ -1598,6 +1599,231 @@ func TestBugTrucoEnvidoFaltaEnvido(t *testing.T) {
 
 		if ok := p.Ronda.Envite.Estado == FALTAENVIDO; !ok {
 			t.Errorf("el estado del envite deberzía ser `FALTAENVIDO`\n")
+		}
+	}
+}
+
+func TestBugEnviteRondaTerminadaMessage(t *testing.T) {
+	partidaJSON := `{"limiteEnvido":4,"cantJugadores":2,"puntuacion":20,"puntajes":{"azul":19,"rojo":19},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":1,"rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":6},{"palo":"oro","valor":3},{"palo":"copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":3},{"palo":"oro","valor":5},{"palo":"espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"rojo"}}],"muestra":{"palo":"copa","valor":1},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]}]}}`
+	{
+		p, err := Parse(partidaJSON, true)
+		if err != nil {
+			t.Error(err)
+		}
+
+		t.Log("estado inicial")
+		t.Log(Renderizar(p))
+		p.Cmd("Alvaro falta-envido")
+		pkts, _ := p.Cmd("Roro quiero")
+
+		t.Log(Renderizar(p))
+
+		if !p.Terminada() {
+			t.Error("La partida debería estar terminada")
+		}
+
+		if !enco.Contains(pkts, enco.TRondaGanada) {
+			t.Error("Debería ganar la ronda")
+		}
+	}
+	{
+		p, err := Parse(partidaJSON, true)
+		if err != nil {
+			t.Error(err)
+		}
+
+		t.Log("estado inicial")
+		t.Log(Renderizar(p))
+		p.Cmd("Alvaro falta-envido")
+		pkts, _ := p.Cmd("Roro no-quiero")
+
+		t.Log(Renderizar(p))
+
+		if !p.Terminada() {
+			t.Error("La partida debería estar terminada")
+		}
+
+		if !enco.Contains(pkts, enco.TRondaGanada) {
+			t.Error("Debería ganar la ronda")
+		}
+	}
+	{
+		p, err := Parse(partidaJSON, true)
+		if err != nil {
+			t.Error(err)
+		}
+
+		t.Log("estado inicial")
+		t.Log(Renderizar(p))
+		p.Cmd("Alvaro truco")
+		p.Cmd("Roro quiero")
+		p.Cmd("Alvaro 3 oro")
+		p.Cmd("Roro 5 oro")
+		p.Cmd("Alvaro 2 copa")
+		t.Log(p)
+		fmt.Println(p)
+		pkts, _ := p.Cmd("Roro 2 espada")
+
+		t.Log(Renderizar(p))
+
+		if !p.Terminada() {
+			t.Error("La partida debería estar terminada")
+		}
+
+		if !enco.Contains(pkts, enco.TRondaGanada) {
+			t.Error("Debería ganar la ronda")
+		}
+	}
+	{
+		p, err := Parse(partidaJSON, true)
+		if err != nil {
+			t.Error(err)
+		}
+
+		t.Log("estado inicial")
+		t.Log(Renderizar(p))
+		p.Cmd("Alvaro truco")
+		pkts, _ := p.Cmd("Roro no-quiero")
+
+		t.Log(Renderizar(p))
+
+		if !p.Terminada() {
+			t.Error("La partida debería estar terminada")
+		}
+
+		if !enco.Contains(pkts, enco.TRondaGanada) {
+			t.Error("Debería ganar la ronda")
+		}
+	}
+	{
+		p, err := Parse(partidaJSON, true)
+		if err != nil {
+			t.Error(err)
+		}
+
+		t.Log("estado inicial")
+		t.Log(Renderizar(p))
+		p.Cmd("Alvaro truco")
+		pkts, _ := p.Cmd("Roro mazo")
+
+		t.Log(Renderizar(p))
+
+		if !p.Terminada() {
+			t.Error("La partida debería estar terminada")
+		}
+
+		if !enco.Contains(pkts, enco.TRondaGanada) {
+			t.Error("Debería ganar la ronda")
+		}
+	}
+}
+
+func TestBugFlorRondaTerminadaMessage(t *testing.T) {
+	partidaJSON := `{"limiteEnvido":4,"cantJugadores":2,"puntuacion":20,"puntajes":{"azul":19,"rojo":19},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":1,"rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":["Alvaro","Roro"]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"oro","valor":6},{"palo":"oro","valor":3},{"palo":"oro","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":3},{"palo":"copa","valor":2},{"palo":"copa","valor":5}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"rojo"}}],"muestra":{"palo":"copa","valor":1},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]}]}}`
+	{
+		p, err := Parse(partidaJSON, true)
+		if err != nil {
+			t.Error(err)
+		}
+
+		t.Log("estado inicial")
+		t.Log(Renderizar(p))
+		p.Cmd("Alvaro flor")
+		pkts, _ := p.Cmd("Roro flor")
+
+		t.Log(Renderizar(p))
+
+		if !p.Terminada() {
+			t.Error("La partida debería estar terminada")
+		}
+
+		if !enco.Contains(pkts, enco.TRondaGanada) {
+			t.Error("Debería ganar la ronda")
+		}
+	}
+	{
+		p, err := Parse(partidaJSON, true)
+		if err != nil {
+			t.Error(err)
+		}
+
+		t.Log("estado inicial")
+		t.Log(Renderizar(p))
+		p.Cmd("Alvaro flor")
+		pkts, _ := p.Cmd("Roro no-quiero")
+
+		t.Log(Renderizar(p))
+
+		if !p.Terminada() {
+			t.Error("La partida debería estar terminada")
+		}
+
+		if !enco.Contains(pkts, enco.TRondaGanada) {
+			t.Error("Debería ganar la ronda")
+		}
+	}
+	{
+		p, err := Parse(partidaJSON, true)
+		if err != nil {
+			t.Error(err)
+		}
+
+		t.Log("estado inicial")
+		t.Log(Renderizar(p))
+		p.Cmd("Alvaro flor")
+		pkts, _ := p.Cmd("Roro mazo")
+
+		t.Log(Renderizar(p))
+
+		if !p.Terminada() {
+			t.Error("La partida debería estar terminada")
+		}
+
+		if !enco.Contains(pkts, enco.TRondaGanada) {
+			t.Error("Debería ganar la ronda")
+		}
+	}
+}
+
+func countCodMsgs(pkts []enco.Envelope, cod enco.CodMsg) int {
+	total := 0
+	for _, pkt := range pkts {
+		if pkt.Message.Cod() == cod {
+			total++
+		}
+	}
+	return total
+}
+
+func TestBugDoubleRondaGanada(t *testing.T) {
+	partidaJSON := `{"puntuacion":20,"puntajes":{"azul":19,"rojo":19},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":1,"rojo":1},"elMano":0,"turno":1,"envite":{"estado":"faltaEnvido","puntaje":7,"cantadoPor":"Alvaro","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":6},{"palo":"oro","valor":3},{"palo":"copa","valor":2}],"tiradas":[true,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":3},{"palo":"oro","valor":5},{"palo":"espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","equipo":"rojo"}}],"mixs":{"Alvaro":0,"Roro":1},"muestra":{"palo":"copa","valor":1},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":[{"jugador":"Alvaro","carta":{"palo":"copa","valor":6}}]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]}]},"limiteEnvido":4}`
+	{
+		p, err := Parse(partidaJSON, true)
+		if err != nil {
+			t.Error(err)
+		}
+
+		t.Log("estado inicial")
+		t.Log(Renderizar(p))
+		p.Cmd("Alvaro flor")
+		pkts, _ := p.Cmd("Roro mazo")
+
+		t.Log(Renderizar(p))
+
+		if countCodMsgs(pkts, enco.TRondaGanada) > 1 {
+			t.Error("La cantidad de paquetes de tipo RondaGanda no debería ser >1")
+		}
+
+		if countCodMsgs(pkts, enco.TSigTurnoPosMano) > 0 {
+			t.Error("La cantidad de paquetes de tipo SigTurno debería ser 0")
+		}
+
+		if !p.Terminada() {
+			t.Error("La partida debería estar terminada")
+		}
+
+		if !enco.Contains(pkts, enco.TRondaGanada) {
+			t.Error("Debería ganar la ronda")
 		}
 	}
 }

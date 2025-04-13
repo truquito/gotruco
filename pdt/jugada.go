@@ -245,7 +245,7 @@ func (jugada TirarCarta) Hacer(p *Partida) []enco.Envelope {
 			p.Ronda.SetNextTurnoPosMano()
 			// lo envio
 
-			if p.Verbose {
+			if p.Verbose && !p.Terminada() {
 				pkts2 = append(pkts2, enco.Env(
 					enco.ALL,
 					enco.SigTurnoPosMano(p.Ronda.Turno),
@@ -289,7 +289,7 @@ func (jugada TirarCarta) Hacer(p *Partida) []enco.Envelope {
 	} else {
 		p.Ronda.SetNextTurno()
 
-		if p.Verbose {
+		if p.Verbose && !p.Terminada() {
 			pkts2 = append(pkts2, enco.Env(
 				enco.ALL,
 				enco.SigTurno(p.Ronda.Turno),
@@ -498,6 +498,11 @@ func (jugada TocarEnvido) Eval(p *Partida) []enco.Envelope {
 
 	pkts2 := make([]enco.Envelope, 0)
 
+	razon := enco.EnvidoGanado
+	if p.Ronda.Envite.Estado == REALENVIDO {
+		razon = enco.RealEnvidoGanado
+	}
+
 	p.Ronda.Envite.Estado = DESHABILITADO
 	p.Ronda.Envite.SinCantar = []string{}
 	jIdx, _, res2 := p.Ronda.ExecElEnvido(p.Verbose)
@@ -520,6 +525,20 @@ func (jugada TocarEnvido) Eval(p *Partida) []enco.Envelope {
 	}
 
 	p.SumarPuntos(jug.Equipo, p.Ronda.Envite.Puntaje)
+
+	// ahora hay que checkear si la partida terminó.
+	// en ese caso se debe decir quién gano
+	if p.Terminada() {
+		if p.Verbose {
+			pkts2 = append(pkts2, enco.Env(
+				enco.ALL,
+				enco.RondaGanada{
+					Autor: jug.ID,
+					Razon: razon,
+				},
+			))
+		}
+	}
 
 	return pkts2
 }
@@ -881,6 +900,20 @@ func (jugada TocarFaltaEnvido) Eval(p *Partida) []enco.Envelope {
 
 	p.SumarPuntos(jug.Equipo, p.Ronda.Envite.Puntaje)
 
+	// ahora hay que checkear si la partida terminó.
+	// en ese caso se debe decir quién gano
+	if p.Terminada() {
+		if p.Verbose {
+			pkts2 = append(pkts2, enco.Env(
+				enco.ALL,
+				enco.RondaGanada{
+					Autor: jug.ID,
+					Razon: enco.FaltaEnvidoGanado,
+				},
+			))
+		}
+	}
+
 	return pkts2
 }
 
@@ -1009,27 +1042,24 @@ func (jugada CantarFlor) Hacer(p *Partida) []enco.Envelope {
 	// es el ultimo en cantar flor que faltaba?
 	// o simplemente es el unico que tiene flor (caso particular)
 
+	// cachear esto
+	// solos los de su equipo tienen flor?
+	// si solos los de su equipo tienen flor (y los otros no) -> las canto todas
+	soloLosDeSuEquipoTienenFlor := true
+	for _, manojo := range p.Ronda.Envite.JugadoresConFlor {
+		if manojo.Jugador.Equipo != p.Manojo(jugada.JID).Jugador.Equipo {
+			soloLosDeSuEquipoTienenFlor = false
+			break
+		}
+	}
+
 	todosLosJugadoresConFlorCantaron := len(p.Ronda.Envite.SinCantar) == 0
 	if todosLosJugadoresConFlorCantaron {
-
 		florPkts2 := evalFlor(p)
 		if p.Verbose {
 			pkts2 = append(pkts2, florPkts2...)
 		}
-
 	} else {
-
-		// cachear esto
-		// solos los de su equipo tienen flor?
-		// si solos los de su equipo tienen flor (y los otros no) -> las canto todas
-		soloLosDeSuEquipoTienenFlor := true
-		for _, manojo := range p.Ronda.Envite.JugadoresConFlor {
-			if manojo.Jugador.Equipo != p.Manojo(jugada.JID).Jugador.Equipo {
-				soloLosDeSuEquipoTienenFlor = false
-				break
-			}
-		}
-
 		if soloLosDeSuEquipoTienenFlor {
 			// los quiero llamar a todos, pero no quiero Hacer llamadas al pedo
 			// entonces: llamo al primero sin cantar, y que este llame al proximo
@@ -1042,7 +1072,6 @@ func (jugada CantarFlor) Hacer(p *Partida) []enco.Envelope {
 				pkts2 = append(pkts2, res2...)
 			}
 		}
-
 	}
 
 	return pkts2
@@ -1079,36 +1108,36 @@ func evalFlor(p *Partida) []enco.Envelope {
 	puntosASumar := p.Ronda.Envite.Puntaje
 	p.SumarPuntos(equipoGanador, puntosASumar)
 	habiaSolo1JugadorConFlor := len(p.Ronda.Envite.JugadoresConFlor) == 1
+
+	razon := enco.LaFlorMasAlta
 	if habiaSolo1JugadorConFlor {
-
-		if p.Verbose {
-			pkts2 = append(pkts2, enco.Env(
-				enco.ALL,
-				enco.SumaPts{
-					Autor:  manojoConLaFlorMasAlta.Jugador.ID,
-					Razon:  enco.LaUnicaFlor,
-					Puntos: puntosASumar,
-				},
-			))
-		}
-
-	} else {
-
-		if p.Verbose {
-			pkts2 = append(pkts2, enco.Env(
-				enco.ALL,
-				enco.SumaPts{
-					Autor:  manojoConLaFlorMasAlta.Jugador.ID,
-					Razon:  enco.LaFlorMasAlta,
-					Puntos: puntosASumar,
-				},
-			))
-		}
-
+		razon = enco.LaUnicaFlor
 	}
-	// case CONTRAFLOR:
-	// case CONTRAFLORALRESTO:
-	// }
+
+	if p.Verbose {
+		pkts2 = append(pkts2, enco.Env(
+			enco.ALL,
+			enco.SumaPts{
+				Autor:  manojoConLaFlorMasAlta.Jugador.ID,
+				Razon:  razon,
+				Puntos: puntosASumar,
+			},
+		))
+	}
+
+	// ahora hay que checkear si la partida terminó.
+	// en ese caso se debe decir quién gano
+	if p.Terminada() {
+		if p.Verbose {
+			pkts2 = append(pkts2, enco.Env(
+				enco.ALL,
+				enco.RondaGanada{
+					Autor: manojoConLaFlorMasAlta.Jugador.ID,
+					Razon: razon,
+				},
+			))
+		}
+	}
 
 	p.Ronda.Envite.Estado = DESHABILITADO
 	p.Ronda.Envite.SinCantar = []string{}
@@ -1709,14 +1738,16 @@ func (jugada ResponderQuiero) Hacer(p *Partida) []enco.Envelope {
 			))
 		}
 
-		if p.Ronda.Envite.Estado == FALTAENVIDO {
-			res2 := TocarFaltaEnvido(jugada).Eval(p)
-			return append(pkts2, res2...)
-		}
-		// si no, era envido/real-envido o cualquier
-		// combinacion valida de ellos
+		var res2 []enco.Envelope = nil
 
-		res2 := TocarEnvido(jugada).Eval(p)
+		if p.Ronda.Envite.Estado == FALTAENVIDO {
+			res2 = TocarFaltaEnvido(jugada).Eval(p)
+		} else {
+			// si no, era envido/real-envido o cualquier
+			// combinacion valida de ellos
+			res2 = TocarEnvido(jugada).Eval(p)
+		}
+
 		return append(pkts2, res2...)
 
 	} else if laContraFlorEsRespondible {
@@ -1738,41 +1769,46 @@ func (jugada ResponderQuiero) Hacer(p *Partida) []enco.Envelope {
 
 		// manojoConLaFlorMasAlta, _ := p.Ronda.GetLaFlorMasAlta()
 		equipoGanador := manojoConLaFlorMasAlta.Jugador.Equipo
+		var razon enco.Razon
+		var puntosASumar int
 
 		if p.Ronda.Envite.Estado == CONTRAFLOR {
-			puntosASumar := p.Ronda.Envite.Puntaje
+			puntosASumar = p.Ronda.Envite.Puntaje
 			p.SumarPuntos(equipoGanador, puntosASumar)
-
-			if p.Verbose {
-				pkts2 = append(pkts2, enco.Env(
-					enco.ALL,
-					enco.SumaPts{
-						Autor:  manojoConLaFlorMasAlta.Jugador.ID,
-						Razon:  enco.ContraFlorGanada,
-						Puntos: puntosASumar,
-					},
-				))
-			}
-
+			razon = enco.ContraFlorGanada
 		} else {
 			// el equipo del ganador de la contraflor al resto
 			// gano la partida
 			// duda se cuentan las flores?
-			// puntosASumar := p.Ronda.Envite.Puntaje + p.CalcPtsContraFlorAlResto(equipoGanador)
-			puntosASumar := p.CalcPtsContraFlorAlResto(equipoGanador)
+			// puntosASumar = p.Ronda.Envite.Puntaje + p.CalcPtsContraFlorAlResto(equipoGanador)
+			puntosASumar = p.CalcPtsContraFlorAlResto(equipoGanador)
 			p.SumarPuntos(equipoGanador, puntosASumar)
+			razon = enco.ContraFlorAlRestoGanada
+		}
 
+		if p.Verbose {
+			pkts2 = append(pkts2, enco.Env(
+				enco.ALL,
+				enco.SumaPts{
+					Autor:  manojoConLaFlorMasAlta.Jugador.ID,
+					Razon:  razon,
+					Puntos: puntosASumar,
+				},
+			))
+		}
+
+		// ahora hay que checkear si la partida terminó.
+		// en ese caso se debe decir quién gano
+		if p.Terminada() {
 			if p.Verbose {
 				pkts2 = append(pkts2, enco.Env(
 					enco.ALL,
-					enco.SumaPts{
-						Autor:  manojoConLaFlorMasAlta.Jugador.ID,
-						Razon:  enco.ContraFlorAlRestoGanada,
-						Puntos: puntosASumar,
+					enco.RondaGanada{
+						Autor: manojoConLaFlorMasAlta.Jugador.ID,
+						Razon: razon,
 					},
 				))
 			}
-
 		}
 
 		p.Ronda.Envite.Estado = DESHABILITADO
@@ -1960,6 +1996,20 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []enco.Envelope {
 
 		p.SumarPuntos(p.Ronda.Manojo(p.Ronda.Envite.CantadoPor).Jugador.Equipo, totalPts)
 
+		// ahora hay que checkear si la partida terminó.
+		// en ese caso se debe decir quién gano
+		if p.Terminada() {
+			if p.Verbose {
+				pkts2 = append(pkts2, enco.Env(
+					enco.ALL,
+					enco.RondaGanada{
+						Autor: p.Ronda.Envite.CantadoPor,
+						Razon: enco.EnviteNoQuerido,
+					},
+				))
+			}
+		}
+
 	} else if laFlorEsRespondible {
 
 		// todo ok: tiene flor; se pasa a jugar:
@@ -2010,6 +2060,20 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []enco.Envelope {
 		}
 
 		p.SumarPuntos(p.Ronda.Manojo(p.Ronda.Envite.CantadoPor).Jugador.Equipo, totalPts)
+
+		// ahora hay que checkear si la partida terminó.
+		// en ese caso se debe decir quién gano
+		if p.Terminada() {
+			if p.Verbose {
+				pkts2 = append(pkts2, enco.Env(
+					enco.ALL,
+					enco.RondaGanada{
+						Autor: p.Ronda.Envite.CantadoPor,
+						Razon: enco.EnviteNoQuerido,
+					},
+				))
+			}
+		}
 
 	} else if elTrucoEsRespondible {
 
@@ -2283,6 +2347,20 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []enco.Envelope {
 
 			p.SumarPuntos(p.Ronda.Manojo(p.Ronda.Envite.CantadoPor).Jugador.Equipo, totalPts)
 
+			// ahora hay que checkear si la partida terminó.
+			// en ese caso se debe decir quién gano
+			if p.Terminada() {
+				if p.Verbose {
+					pkts2 = append(pkts2, enco.Env(
+						enco.ALL,
+						enco.RondaGanada{
+							Autor: e.CantadoPor,
+							Razon: enco.EnviteNoQuerido,
+						},
+					))
+				}
+			}
+
 		}
 
 		if seEstabaJugandoLaFlor {
@@ -2326,6 +2404,20 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []enco.Envelope {
 
 			p.SumarPuntos(p.Ronda.Manojo(p.Ronda.Envite.CantadoPor).Jugador.Equipo, totalPts)
 
+			// ahora hay que checkear si la partida terminó.
+			// en ese caso se debe decir quién gano
+			if p.Terminada() {
+				if p.Verbose {
+					pkts2 = append(pkts2, enco.Env(
+						enco.ALL,
+						enco.RondaGanada{
+							Autor: p.Ronda.Envite.CantadoPor,
+							Razon: enco.FlorAchicada,
+						},
+					))
+				}
+			}
+
 		}
 	}
 
@@ -2353,7 +2445,7 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []enco.Envelope {
 			p.Ronda.SetNextTurnoPosMano()
 			// lo envio
 
-			if p.Verbose {
+			if p.Verbose && !p.Terminada() {
 				pkts2 = append(pkts2, enco.Env(
 					enco.ALL,
 					enco.SigTurnoPosMano(p.Ronda.Turno),
@@ -2398,7 +2490,7 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []enco.Envelope {
 		if eraSuTurno {
 			p.Ronda.SetNextTurno()
 
-			if p.Verbose {
+			if p.Verbose && !p.Terminada() {
 				pkts2 = append(pkts2, enco.Env(
 					enco.ALL,
 					enco.SigTurno(p.Ronda.Turno),
