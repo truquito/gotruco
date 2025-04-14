@@ -518,7 +518,7 @@ func (jugada TocarEnvido) Eval(p *Partida) []enco.Envelope {
 			enco.ALL,
 			enco.SumaPts{
 				Autor:  jug.ID,
-				Razon:  enco.EnvidoGanado,
+				Razon:  razon,
 				Puntos: p.Ronda.Envite.Puntaje,
 			},
 		))
