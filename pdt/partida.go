@@ -551,18 +551,19 @@ func (p *Partida) EvaluarRonda() (bool, []enco.Envelope) {
 		totalPts = 4
 	}
 
-	if !hayJugadoresEnAmbos && !p.Terminada() {
-		if p.Verbose {
-			pkts2 = append(pkts2, enco.Env(
-				enco.Dest("ALL"),
-				enco.RondaGanada{
-					Autor: ganador,
-					Razon: enco.SeFueronAlMazo,
-				},
-				// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado`
-			))
+	if !hayJugadoresEnAmbos {
+		if !p.Terminada() {
+			if p.Verbose {
+				pkts2 = append(pkts2, enco.Env(
+					enco.Dest("ALL"),
+					enco.RondaGanada{
+						Autor: ganador,
+						Razon: enco.SeFueronAlMazo,
+					},
+					// `La ronda ha sido ganada por el equipo %s. +%v puntos para el equipo %s por el %s ganado`
+				))
+			}
 		}
-
 	} else if elTrucoNoTuvoRespuesta {
 
 		ganador = p.Ronda.Truco.CantadoPor
