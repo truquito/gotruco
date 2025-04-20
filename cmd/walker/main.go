@@ -99,8 +99,8 @@ func processGameTree() bool {
 	// If we're starting from scratch, initialize with a new game
 	if len(checkpoint.Queue) == 0 {
 		// Initialize new execution
-		partidaJSON := `{"limiteEnvido":1,"cantJugadores":2,"puntuacion":20,"puntajes":{"azul":0,"rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":1,"rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":6},{"palo":"oro","valor":3},{"palo":"copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":3},{"palo":"oro","valor":5},{"palo":"espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"rojo"}}],"muestra":{"palo":"copa","valor":1},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]}]}}` // 2p
-		// partidaJSON := `{"puntuacion":20,"puntajes":{"azul":0,"rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":2,"rojo":2},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"oro","valor":3},{"palo":"basto","valor":1},{"palo":"copa","valor":6}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Alice","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"basto","valor":6},{"palo":"espada","valor":7},{"palo":"oro","valor":7}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Bob","equipo":"rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"espada","valor":12},{"palo":"basto","valor":4},{"palo":"copa","valor":4}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Ariana","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"basto","valor":10},{"palo":"espada","valor":1},{"palo":"oro","valor":5}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Ben","equipo":"rojo"}}],"mixs":{"Alice":0,"Ariana":2,"Ben":3,"Bob":1},"muestra":{"palo":"oro","valor":2},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]}]},"limiteEnvido":4}` // 4p
+		// partidaJSON := `{"limiteEnvido":1,"cantJugadores":2,"puntuacion":20,"puntajes":{"azul":0,"rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":1,"rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":6},{"palo":"oro","valor":3},{"palo":"copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":3},{"palo":"oro","valor":5},{"palo":"espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"rojo"}}],"muestra":{"palo":"copa","valor":1},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]}]}}` // 2p
+		partidaJSON := `{"puntuacion":20,"puntajes":{"azul":0,"rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":2,"rojo":2},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"oro","valor":3},{"palo":"basto","valor":1},{"palo":"copa","valor":6}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Alice","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"basto","valor":6},{"palo":"espada","valor":7},{"palo":"oro","valor":7}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Bob","equipo":"rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"espada","valor":12},{"palo":"basto","valor":4},{"palo":"copa","valor":4}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Ariana","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"basto","valor":10},{"palo":"espada","valor":1},{"palo":"oro","valor":5}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Ben","equipo":"rojo"}}],"mixs":{"Alice":0,"Ariana":2,"Ben":3,"Bob":1},"muestra":{"palo":"oro","valor":2},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]}]},"limiteEnvido":1}` // 4p
 		p, err := pdt.Parse(partidaJSON, true)
 		// p, err := pdt.NuevaPartida(pdt.A20, []string{"Alice"}, []string{"Bob"}, 1, true)
 
@@ -161,7 +161,7 @@ func processGameTree() bool {
 					terminals++
 
 					// Periodically print progress
-					if terminals%10000 == 0 {
+					if terminals%100_000 == 0 {
 						fmt.Printf("Terminals processed: %d\n", terminals)
 					}
 				} else {
@@ -204,7 +204,7 @@ func main() {
 		fmt.Printf("Resuming from checkpoint. Terminals counted so far: %d\n", terminals)
 		fmt.Printf("Time limit for this run: %v\n", timeLimit)
 	} else {
-		fmt.Println("Starting new run")
+		fmt.Println("Starting new run!")
 	}
 
 	// Process the game tree
@@ -218,5 +218,8 @@ func main() {
 	// If we get here, it means we've completed the entire tree traversal
 	if fullyTraversed {
 		fmt.Println("Processing complete!")
+		os.Exit(0)
 	}
+
+	os.Exit(1)
 }
