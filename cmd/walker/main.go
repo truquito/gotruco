@@ -93,7 +93,7 @@ func loadCheckpoint() (bool, error) {
 }
 
 // Non-recursive version of the game tree traversal
-func processGameTree() {
+func processGameTree() bool {
 	gameQueue := make([]string, 0)
 
 	// If we're starting from scratch, initialize with a new game
@@ -123,7 +123,7 @@ func processGameTree() {
 			if err != nil {
 				fmt.Printf("Error saving checkpoint: %v\n", err)
 			}
-			return // Exit the function to stop processing
+			return false // Exit the function to stop processing
 		}
 
 		// Get the next game state from the queue
@@ -172,13 +172,16 @@ func processGameTree() {
 			}
 		}
 	}
+
+	// Update the global checkpoint queue to reflect completion
+	checkpoint.Queue = gameQueue
+	return true
 }
 
 func main() {
 	// Parse command line flags
 	flag.StringVar(&checkpointFile, "checkpoint", "game_checkpoint.json", "Checkpoint file path")
 	timeLimitSeconds := flag.Int("timelimit", 259200, "Time limit in seconds (default: 3 days)")
-	showStats := flag.Bool("stats", false, "Print statistics about a checkpoint file without running")
 	flag.Parse()
 
 	// Convert time limit to duration
@@ -205,28 +208,15 @@ func main() {
 	}
 
 	// Process the game tree
-	processGameTree()
+	fullyTraversed := processGameTree()
 
-	// If showStats flag is provided, just print checkpoint info and exit
-	if *showStats {
-		if loaded {
-			fmt.Printf("Checkpoint statistics:\n")
-			fmt.Printf("  Terminals processed: %d\n", terminals)
-			fmt.Printf("  Remaining states in queue: %d\n", len(checkpoint.Queue))
-			fmt.Printf("  Time elapsed in this run: %v\n", time.Since(checkpoint.StartTime))
-			return
-		} else {
-			fmt.Printf("No checkpoint found at %s\n", checkpointFile)
-			return
-		}
-	}
+	fmt.Printf("Checkpoint statistics:\n")
+	fmt.Printf("  Terminals processed: %d\n", terminals)
+	fmt.Printf("  Remaining states in queue: %d\n", len(checkpoint.Queue))
+	fmt.Printf("  Time elapsed in this run: %v\n", time.Since(checkpoint.StartTime))
 
 	// If we get here, it means we've completed the entire tree traversal
-	if len(checkpoint.Queue) == 0 {
+	if fullyTraversed {
 		fmt.Println("Processing complete!")
-		// Delete the checkpoint file since we're done
-		os.Remove(checkpointFile)
 	}
-
-	fmt.Println("Total terminals:", terminals)
 }
