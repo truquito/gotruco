@@ -1,74 +1,220 @@
 package main
 
 import (
+	"encoding/json"
+	"flag"
 	"fmt"
+	"os"
+	"time"
 
 	"github.com/truquito/gotruco/enco"
 	"github.com/truquito/gotruco/pdt"
 )
 
-var terminals uint = 0
-
-func countCodMsgs(pkts []enco.Envelope, cod enco.CodMsg) int {
-	total := 0
-	for _, pkt := range pkts {
-		if pkt.Message.Cod() == cod {
-			total++
-		}
-	}
-	return total
+// Checkpoint structure to save progress
+type Checkpoint struct {
+	Terminals uint          `json:"terminals"`
+	Queue     []string      `json:"queue"`      // Serialized game states to process
+	StartTime time.Time     `json:"start_time"` // When this run started
+	RunTime   time.Duration `json:"run_time"`   // Total accumulated runtime
 }
 
-func rec_play(p *pdt.Partida) {
-	bs, _ := p.MarshalJSON()
+// Global variables
+var (
+	terminals      uint = 0
+	checkpointFile string
+	timeLimit      time.Duration
+	lastCheckTime  time.Time
+	checkpoint     Checkpoint
+	checkInterval  = 5 * time.Second // How often to check if we need to save a checkpoint
+)
 
-	// para la partida dada, todas las jugadas posibles
-	chis := pdt.Chis(p)
+func countMsgs(pkts []enco.Envelope) (int, int) {
+	rondaGanadaCount, nuevaRondaCount := 0, 0
+	for _, pkt := range pkts {
+		if pkt.Message.Cod() == enco.TRondaGanada {
+			rondaGanadaCount++
+		} else if pkt.Message.Cod() == enco.TNuevaRonda {
+			nuevaRondaCount++
+		}
+	}
+	return rondaGanadaCount, nuevaRondaCount
+}
 
-	// las juego
-	for mix := range chis {
-		for aix := range chis[mix] {
-			p, _ = pdt.Parse(string(bs), true)
-			a := chis[mix][aix]
-			pkts := a.Hacer(p)
-			isDone := enco.Contains(pkts, enco.TRondaGanada)
-			// isDone := p.Terminada()
-			if false {
-				if countCodMsgs(pkts, enco.TRondaGanada) > 1 || (p.Terminada() && !isDone) {
-					fmt.Println(string(bs))
+// Check if we need to create a checkpoint
+func shouldCheckpoint() bool {
+	// Check time elapsed at regular intervals to reduce overhead
+	if time.Since(lastCheckTime) < checkInterval {
+		return false
+	}
+
+	lastCheckTime = time.Now()
+	return time.Since(checkpoint.StartTime)+checkpoint.RunTime >= timeLimit
+}
+
+// Save the current state as a checkpoint
+func saveCheckpoint(gameQueue []string) error {
+	checkpoint.Terminals = terminals
+	checkpoint.Queue = gameQueue
+	checkpoint.RunTime += time.Since(checkpoint.StartTime)
+
+	// Create checkpoint file
+	file, err := os.Create(checkpointFile)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	encoder := json.NewEncoder(file)
+	encoder.SetIndent("", "  ")
+	return encoder.Encode(checkpoint)
+}
+
+// Load checkpoint from file
+func loadCheckpoint() (bool, error) {
+	file, err := os.Open(checkpointFile)
+	if err != nil {
+		if os.IsNotExist(err) {
+			// No checkpoint file exists, that's ok
+			return false, nil
+		}
+		return false, err
+	}
+	defer file.Close()
+
+	decoder := json.NewDecoder(file)
+	err = decoder.Decode(&checkpoint)
+	if err != nil {
+		return false, err
+	}
+
+	// Restore global terminal count
+	terminals = checkpoint.Terminals
+
+	return true, nil
+}
+
+// Non-recursive version of the game tree traversal
+func processGameTree() {
+	gameQueue := make([]string, 0)
+
+	// If we're starting from scratch, initialize with a new game
+	if len(checkpoint.Queue) == 0 {
+		// Initialize new execution
+		partidaJSON := `{"limiteEnvido":1,"cantJugadores":2,"puntuacion":20,"puntajes":{"azul":0,"rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":1,"rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":6},{"palo":"oro","valor":3},{"palo":"copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":3},{"palo":"oro","valor":5},{"palo":"espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"rojo"}}],"muestra":{"palo":"copa","valor":1},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]}]}}` // 2p
+		// partidaJSON := `{"puntuacion":20,"puntajes":{"azul":0,"rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":2,"rojo":2},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"oro","valor":3},{"palo":"basto","valor":1},{"palo":"copa","valor":6}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Alice","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"basto","valor":6},{"palo":"espada","valor":7},{"palo":"oro","valor":7}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Bob","equipo":"rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"espada","valor":12},{"palo":"basto","valor":4},{"palo":"copa","valor":4}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Ariana","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"basto","valor":10},{"palo":"espada","valor":1},{"palo":"oro","valor":5}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Ben","equipo":"rojo"}}],"mixs":{"Alice":0,"Ariana":2,"Ben":3,"Bob":1},"muestra":{"palo":"oro","valor":2},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]}]},"limiteEnvido":4}` // 4p
+		p, err := pdt.Parse(partidaJSON, true)
+		// p, err := pdt.NuevaPartida(pdt.A20, []string{"Alice"}, []string{"Bob"}, 1, true)
+		if err != nil {
+			panic(err)
+		}
+		bs, _ := p.MarshalJSON()
+		gameQueue = append(gameQueue, string(bs))
+	} else {
+		// Use the checkpointed queue
+		gameQueue = append(gameQueue, checkpoint.Queue...)
+	}
+
+	// Process the queue in a loop instead of recursively
+	for len(gameQueue) > 0 {
+		// Periodically check if we need to save a checkpoint
+		if shouldCheckpoint() {
+			fmt.Printf("Time limit reached after processing %d terminals. Saving checkpoint...\n", terminals)
+			err := saveCheckpoint(gameQueue)
+			if err != nil {
+				fmt.Printf("Error saving checkpoint: %v\n", err)
+			}
+			return // Exit the function to stop processing
+		}
+
+		// Get the next game state from the queue
+		gameState := gameQueue[0]
+		gameQueue = gameQueue[1:] // Remove the processed state
+
+		// Parse the game state
+		p, err := pdt.Parse(gameState, true)
+		if err != nil {
+			panic(err)
+		}
+
+		// Get all possible plays for the current game state
+		chis := pdt.Chis(p)
+
+		// Try each possible play
+		for mix := range chis {
+			for aix := range chis[mix] {
+				// Restore the game state for each play
+				p, _ = pdt.Parse(gameState, true)
+				a := chis[mix][aix]
+				pkts, err := p.Cmd(a.String())
+
+				rg, nr := countMsgs(pkts)
+				if (!p.Terminada() && nr > 0 && rg == 0) || (err != nil) {
+					fmt.Println(gameState)
 					fmt.Println(a.String())
 					panic(123)
 				}
-			}
-			if isDone {
-				terminals++
-			} else {
-				rec_play(p)
+
+				isDone := rg > 0
+				// isDone := p.Terminada() // use this only if puntaje = puntuacion - 1
+
+				if isDone {
+					terminals++
+
+					// Periodically print progress
+					if terminals%20000 == 0 {
+						fmt.Printf("Terminals processed: %d\n", terminals)
+					}
+				} else {
+					// Add the new game state to the queue for processing
+					newState, _ := p.MarshalJSON()
+					gameQueue = append(gameQueue, string(newState))
+				}
 			}
 		}
 	}
 }
 
 func main() {
-	partidaJSON := `{"limiteEnvido":1,"cantJugadores":2,"puntuacion":20,"puntajes":{"azul":19,"rojo":19},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":1,"rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":6},{"palo":"oro","valor":3},{"palo":"copa","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Alvaro","nombre":"Alvaro","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":3},{"palo":"oro","valor":5},{"palo":"espada","valor":2}],"tiradas":[false,false,false],"ultimaTirada":0,"jugador":{"id":"Roro","nombre":"Roro","equipo":"rojo"}}],"muestra":{"palo":"copa","valor":1},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]}]}}`
-	p, err := pdt.Parse(partidaJSON, true)
-	// p, err := pdt.NuevaPartida(pdt.A20, []string{"Alice"}, []string{"Bob"}, 1, true)
+	// Parse command line flags
+	flag.StringVar(&checkpointFile, "checkpoint", "game_checkpoint.json", "Checkpoint file path")
+	timeLimitSeconds := flag.Int("timelimit", 259200, "Time limit in seconds (default: 3 days)")
+	flag.Parse()
+
+	// Convert time limit to duration
+	timeLimit = time.Duration(*timeLimitSeconds) * time.Second
+
+	// Initialize checkpoint time tracking
+	lastCheckTime = time.Now()
+
+	// Try to load checkpoint
+	loaded, err := loadCheckpoint()
 	if err != nil {
-		panic(err)
+		fmt.Printf("Error loading checkpoint: %v\n", err)
+		os.Exit(1)
 	}
-	rec_play(p)
-	fmt.Println("terminals", terminals)
+
+	// Set the start time for this run
+	checkpoint.StartTime = time.Now()
+
+	if loaded {
+		fmt.Printf("Resuming from checkpoint. Terminals counted so far: %d\n", terminals)
+		fmt.Printf("Previous runtime: %v\n", checkpoint.RunTime)
+		fmt.Printf("Remaining time limit: %v\n", timeLimit-checkpoint.RunTime)
+	} else {
+		fmt.Println("Starting new run")
+		checkpoint.RunTime = 0
+	}
+
+	// Process the game tree
+	processGameTree()
+
+	// If we get here, it means we've completed the entire tree traversal
+	if len(checkpoint.Queue) == 0 {
+		fmt.Println("Processing complete!")
+		// Delete the checkpoint file since we're done
+		os.Remove(checkpointFile)
+	}
+
+	fmt.Println("Total terminals:", terminals)
 }
-
-/*
-
-version: v0.2.x
-cpu: i5-12600k
-termino 1,807,482
-TIME:71.19
-
-cpu: m2 (fanless)
-termino 1,807,482
-TIME:88.95s
-
-*/
