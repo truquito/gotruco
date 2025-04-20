@@ -13,10 +13,9 @@ import (
 
 // Checkpoint structure to save progress
 type Checkpoint struct {
-	Terminals uint          `json:"terminals"`
-	Queue     []string      `json:"queue"`      // Serialized game states to process
-	StartTime time.Time     `json:"start_time"` // When this run started
-	RunTime   time.Duration `json:"run_time"`   // Total accumulated runtime
+	Terminals uint      `json:"terminals"`
+	Queue     []string  `json:"queue"`      // Serialized game states to process
+	StartTime time.Time `json:"start_time"` // When this run started
 }
 
 // Global variables
@@ -49,14 +48,13 @@ func shouldCheckpoint() bool {
 	}
 
 	lastCheckTime = time.Now()
-	return time.Since(checkpoint.StartTime)+checkpoint.RunTime >= timeLimit
+	return time.Since(checkpoint.StartTime) >= timeLimit
 }
 
 // Save the current state as a checkpoint
 func saveCheckpoint(gameQueue []string) error {
 	checkpoint.Terminals = terminals
 	checkpoint.Queue = gameQueue
-	checkpoint.RunTime += time.Since(checkpoint.StartTime)
 
 	// Create checkpoint file
 	file, err := os.Create(checkpointFile)
@@ -105,6 +103,7 @@ func processGameTree() {
 		// partidaJSON := `{"puntuacion":20,"puntajes":{"azul":0,"rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":2,"rojo":2},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"oro","valor":3},{"palo":"basto","valor":1},{"palo":"copa","valor":6}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Alice","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"basto","valor":6},{"palo":"espada","valor":7},{"palo":"oro","valor":7}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Bob","equipo":"rojo"}},{"seFueAlMazo":false,"cartas":[{"palo":"espada","valor":12},{"palo":"basto","valor":4},{"palo":"copa","valor":4}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Ariana","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"basto","valor":10},{"palo":"espada","valor":1},{"palo":"oro","valor":5}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Ben","equipo":"rojo"}}],"mixs":{"Alice":0,"Ariana":2,"Ben":3,"Bob":1},"muestra":{"palo":"oro","valor":2},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]}]},"limiteEnvido":4}` // 4p
 		p, err := pdt.Parse(partidaJSON, true)
 		// p, err := pdt.NuevaPartida(pdt.A20, []string{"Alice"}, []string{"Bob"}, 1, true)
+
 		if err != nil {
 			panic(err)
 		}
@@ -162,7 +161,7 @@ func processGameTree() {
 					terminals++
 
 					// Periodically print progress
-					if terminals%20000 == 0 {
+					if terminals%10000 == 0 {
 						fmt.Printf("Terminals processed: %d\n", terminals)
 					}
 				} else {
@@ -179,6 +178,7 @@ func main() {
 	// Parse command line flags
 	flag.StringVar(&checkpointFile, "checkpoint", "game_checkpoint.json", "Checkpoint file path")
 	timeLimitSeconds := flag.Int("timelimit", 259200, "Time limit in seconds (default: 3 days)")
+	showStats := flag.Bool("stats", false, "Print statistics about a checkpoint file without running")
 	flag.Parse()
 
 	// Convert time limit to duration
@@ -199,15 +199,27 @@ func main() {
 
 	if loaded {
 		fmt.Printf("Resuming from checkpoint. Terminals counted so far: %d\n", terminals)
-		fmt.Printf("Previous runtime: %v\n", checkpoint.RunTime)
-		fmt.Printf("Remaining time limit: %v\n", timeLimit-checkpoint.RunTime)
+		fmt.Printf("Time limit for this run: %v\n", timeLimit)
 	} else {
 		fmt.Println("Starting new run")
-		checkpoint.RunTime = 0
 	}
 
 	// Process the game tree
 	processGameTree()
+
+	// If showStats flag is provided, just print checkpoint info and exit
+	if *showStats {
+		if loaded {
+			fmt.Printf("Checkpoint statistics:\n")
+			fmt.Printf("  Terminals processed: %d\n", terminals)
+			fmt.Printf("  Remaining states in queue: %d\n", len(checkpoint.Queue))
+			fmt.Printf("  Time elapsed in this run: %v\n", time.Since(checkpoint.StartTime))
+			return
+		} else {
+			fmt.Printf("No checkpoint found at %s\n", checkpointFile)
+			return
+		}
+	}
 
 	// If we get here, it means we've completed the entire tree traversal
 	if len(checkpoint.Queue) == 0 {
