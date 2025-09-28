@@ -4,7 +4,7 @@
 #SBATCH --nodes=1
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=2
-#SBATCH --mem=16G
+#SBATCH --mem=1G
 #SBATCH --time=5-00:00:00
 #SBATCH --partition=normal
 #SBATCH --qos=normal
@@ -52,7 +52,7 @@ go build -ldflags="-w -s" -o $BINARY_NAME $SOURCE_FILE
 start_time=$(date +%s)
 
 # Run the walker with checkpoint support and capture output
-srun --export=ALL,GOMEMLIMIT=15GiB \
+srun --export=ALL,GOMEMLIMIT=1GiB \
     ./$BINARY_NAME --checkpoint="$CHECKPOINT_FILE" --timelimit=$TIME_LIMIT
 rc=$? # capture the walker’s exit status here
 
