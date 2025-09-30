@@ -1,3 +1,3 @@
 package gotruco
 
-const VERSION = "0.4.2"
+const VERSION = "0.4.3"
