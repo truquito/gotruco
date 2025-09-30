@@ -87,6 +87,17 @@ func (manojo Manojo) GetCartaIdx(carta Carta) (int, error) {
 // CASO II  ~	tres cartas del mismo palo,
 // CASO III ~ una pieza y dos cartas del mismo palo.
 func (manojo Manojo) TieneFlor(muestra Carta) (res bool, CASO int) {
+	// checkeo: hay al menos una carta no conocida
+	alMenosUnaCartaOculta :=
+		manojo.Cartas[0] == nil ||
+			manojo.Cartas[1] == nil ||
+			manojo.Cartas[2] == nil ||
+			manojo.Cartas[0].Valor*manojo.Cartas[1].Valor*manojo.Cartas[2].Valor == 0
+
+	if alMenosUnaCartaOculta {
+		return false, -1
+	}
+
 	// CASO I: (al menos) dos piezas
 	numPiezas := 0
 	// en caso de que tenga al menos una pieza,

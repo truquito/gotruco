@@ -477,7 +477,7 @@ func (jugada TocarEnvido) Hacer(p *Partida) []enco.Envelope {
 		// lo mismo para el real-envido; falta-envido
 		jid := p.Ronda.Envite.SinCantar[0]
 		// j := p.Ronda.Manojo(jid)
-		siguienteJugada := CantarFlor{jid}
+		siguienteJugada := CantarFlor{JID: jid, Recursive: true}
 		res2 := siguienteJugada.Hacer(p)
 		if p.Verbose {
 			pkts2 = append(pkts2, res2...)
@@ -689,7 +689,7 @@ func (jugada TocarRealEnvido) Hacer(p *Partida) []enco.Envelope {
 	if hayFlor {
 		jid := p.Ronda.Envite.SinCantar[0]
 		// j := p.Ronda.Manojo(jid)
-		siguienteJugada := CantarFlor{jid}
+		siguienteJugada := CantarFlor{JID: jid, Recursive: true}
 		res2 := siguienteJugada.Hacer(p)
 		if p.Verbose {
 			pkts2 = append(pkts2, res2...)
@@ -845,7 +845,7 @@ func (jugada TocarFaltaEnvido) Hacer(p *Partida) []enco.Envelope {
 	if hayFlor {
 		jid := p.Ronda.Envite.SinCantar[0]
 		// j := p.Ronda.Manojo(jid)
-		siguienteJugada := CantarFlor{jid}
+		siguienteJugada := CantarFlor{JID: jid, Recursive: true}
 		res2 := siguienteJugada.Hacer(p)
 		if p.Verbose {
 			pkts2 = append(pkts2, res2...)
@@ -919,7 +919,8 @@ func (jugada TocarFaltaEnvido) Eval(p *Partida) []enco.Envelope {
 
 type CantarFlor struct {
 	// Manojo *Manojo
-	JID string
+	JID       string
+	Recursive bool
 }
 
 // fix
@@ -1042,17 +1043,6 @@ func (jugada CantarFlor) Hacer(p *Partida) []enco.Envelope {
 	// es el ultimo en cantar flor que faltaba?
 	// o simplemente es el unico que tiene flor (caso particular)
 
-	// cachear esto
-	// solos los de su equipo tienen flor?
-	// si solos los de su equipo tienen flor (y los otros no) -> las canto todas
-	soloLosDeSuEquipoTienenFlor := true
-	for _, manojo := range p.Ronda.Envite.JugadoresConFlor {
-		if manojo.Jugador.Equipo != p.Manojo(jugada.JID).Jugador.Equipo {
-			soloLosDeSuEquipoTienenFlor = false
-			break
-		}
-	}
-
 	todosLosJugadoresConFlorCantaron := len(p.Ronda.Envite.SinCantar) == 0
 	if todosLosJugadoresConFlorCantaron {
 		florPkts2 := evalFlor(p)
@@ -1060,16 +1050,27 @@ func (jugada CantarFlor) Hacer(p *Partida) []enco.Envelope {
 			pkts2 = append(pkts2, florPkts2...)
 		}
 	} else {
-		if soloLosDeSuEquipoTienenFlor {
-			// los quiero llamar a todos, pero no quiero Hacer llamadas al pedo
-			// entonces: llamo al primero sin cantar, y que este llame al proximo
-			// y que el proximo llame al siguiente, y asi...
-			jid := p.Ronda.Envite.SinCantar[0]
-			// j := p.Ronda.Manojo(jid)
-			siguienteJugada := CantarFlor{jid}
-			res2 := siguienteJugada.Hacer(p)
-			if p.Verbose {
-				pkts2 = append(pkts2, res2...)
+		// además, AUTOMATICAMENTE van a cantar flor todos compañeros que tengan
+		// flor y aún no hayan cantado
+		if jugada.Recursive {
+			next_teammate_con_flor_sin_cantar := ""
+			for _, jid2 := range p.Ronda.Envite.SinCantar {
+				esDeMiEquipo := p.Ronda.Manojo(jid2).Jugador.Equipo == p.Ronda.Manojo(jugada.JID).Jugador.Equipo
+				noSoyYo := jid2 != jugada.JID
+				if esDeMiEquipo && noSoyYo {
+					next_teammate_con_flor_sin_cantar = jid2
+					break
+				}
+			}
+
+			if len(next_teammate_con_flor_sin_cantar) > 0 {
+				// los quiero llamar a todos, pero no quiero Hacer llamadas al pedo
+				// entonces: llamo al primero sin cantar, y que este llame al proximo
+				// y que el proximo llame al siguiente, y asi...
+				res2 := CantarFlor{JID: next_teammate_con_flor_sin_cantar, Recursive: true}.Hacer(p)
+				if p.Verbose {
+					pkts2 = append(pkts2, res2...)
+				}
 			}
 		}
 	}
@@ -1202,6 +1203,21 @@ func (jugada CantarContraFlor) Hacer(p *Partida) []enco.Envelope {
 		return pkts2
 	}
 
+	// si estoy aumentando la apuesta, entonces voy a obligar a cantar 'flor' a
+	// todos mis teammates que siguen sin cantar (automáticamente).
+	// LA CLAVE ES QUE LLAMO CON RECURSIVE=FALSE
+	for _, jid2 := range p.Ronda.Envite.SinCantar {
+		esDeMiEquipo := p.Ronda.Manojo(jid2).Jugador.Equipo == p.Ronda.Manojo(jugada.JID).Jugador.Equipo
+		noSoyYo := jid2 != jugada.JID
+		if esDeMiEquipo && noSoyYo {
+			// [!] con `Recursive` en `false`
+			res2 := CantarFlor{JID: jid2, Recursive: false}.Hacer(p)
+			if p.Verbose {
+				pkts2 = append(pkts2, res2...)
+			}
+		}
+	}
+
 	// la canta
 
 	if p.Verbose {
@@ -1275,6 +1291,21 @@ func (jugada CantarContraFlorAlResto) Hacer(p *Partida) []enco.Envelope {
 
 	if !ok {
 		return pkts2
+	}
+
+	// si estoy aumentando la apuesta, entonces voy a obligar a cantar 'flor' a
+	// todos mis teammates que siguen sin cantar (automáticamente).
+	// LA CLAVE ES QUE LLAMO CON RECURSIVE=FALSE
+	for _, jid2 := range p.Ronda.Envite.SinCantar {
+		esDeMiEquipo := p.Ronda.Manojo(jid2).Jugador.Equipo == p.Ronda.Manojo(jugada.JID).Jugador.Equipo
+		noSoyYo := jid2 != jugada.JID
+		if esDeMiEquipo && noSoyYo {
+			// [!] con `Recursive` en `false`
+			res2 := CantarFlor{JID: jid2, Recursive: false}.Hacer(p)
+			if p.Verbose {
+				pkts2 = append(pkts2, res2...)
+			}
+		}
 	}
 
 	// la canta
@@ -1813,6 +1844,7 @@ func (jugada ResponderQuiero) Hacer(p *Partida) []enco.Envelope {
 
 		p.Ronda.Envite.Estado = DESHABILITADO
 		p.Ronda.Envite.SinCantar = []string{}
+		p.Ronda.Envite.Puntaje = puntosASumar
 
 	} else if elTrucoEsRespondible {
 
@@ -1862,6 +1894,32 @@ func (jugada ResponderNoQuiero) Ok(p *Partida) ([]enco.Envelope, bool) {
 		}
 
 		return pkts2, false
+	}
+
+	{
+		// fix: si alguien de su equipo aún no cantó la flor; entonces no puede
+		// decir quiero/no-quiero (ni irse al mazo?).
+		alguienDeMiEquipoAunNoCantoSuFlor := false
+		miEquipo := p.Ronda.Manojo(jugada.JID).Jugador.Equipo
+		for _, jid_alt := range p.Ronda.Envite.SinCantar {
+			esDeMiEquipo := p.Ronda.Manojo(jid_alt).Jugador.Equipo == miEquipo
+			noSoyYo := jid_alt != jugada.JID
+			if esDeMiEquipo && noSoyYo {
+				alguienDeMiEquipoAunNoCantoSuFlor = true
+				break
+			}
+		}
+
+		ok := !alguienDeMiEquipoAunNoCantoSuFlor
+		if !ok {
+			if p.Verbose {
+				pkts2 = append(pkts2, enco.Env(
+					enco.Dest(jugada.JID),
+					enco.Error(`No es posible decir no-quiero en este momento`),
+				))
+			}
+			return pkts2, false
+		}
 	}
 
 	// checkeo flor en juego
@@ -2047,6 +2105,7 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []enco.Envelope {
 
 		p.Ronda.Envite.Estado = DESHABILITADO
 		p.Ronda.Envite.SinCantar = []string{}
+		p.Ronda.Envite.Puntaje = totalPts
 
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
@@ -2390,6 +2449,7 @@ func (jugada IrseAlMazo) Hacer(p *Partida) []enco.Envelope {
 
 			p.Ronda.Envite.Estado = DESHABILITADO
 			p.Ronda.Envite.SinCantar = []string{}
+			p.Ronda.Envite.Puntaje = totalPts
 
 			if p.Verbose {
 				pkts2 = append(pkts2, enco.Env(

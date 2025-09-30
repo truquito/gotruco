@@ -1166,14 +1166,22 @@ func TestFixFlorColgada(t *testing.T) {
 	t.Log(Renderizar(p))
 
 	_, _ = p.Cmd("Alice flor")
-	_, _ = p.Cmd("Bob contra-flor-al-resto")
-	_, _ = p.Cmd("Alice mazo")
 
-	t.Log(Renderizar(p))
+	{
+		pkts, _ := p.Cmd("Bob contra-flor-al-resto")
+		for _, pkg := range pkts {
+			t.Log(pkg, pkg.Message.Cod())
+		}
+	}
 
-	pkts, err := p.Cmd("Ben flor")
-	if ok := err == nil && enco.Contains(pkts, enco.TSumaPts); !ok {
-		t.Error("Debio de haber sumado los pts de las flores")
+	{
+		pkts, _ := p.Cmd("Alice mazo")
+		for _, pkg := range pkts {
+			t.Log(pkg, pkg.Message.Cod())
+		}
+		if ok := err == nil && enco.Contains(pkts, enco.TSumaPts); !ok {
+			t.Error("Debio de haber sumado los pts de las flores")
+		}
 	}
 
 	t.Log(Renderizar(p))

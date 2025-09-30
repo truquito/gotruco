@@ -48,7 +48,7 @@ func checkeoSemantico(p *Partida, cmd string) (IJugada, error) {
 
 		// cantos
 		case "flor":
-			jugada = CantarFlor{JID: m.Jugador.ID}
+			jugada = CantarFlor{JID: m.Jugador.ID, Recursive: true}
 		case "contra-flor":
 			jugada = CantarContraFlor{JID: m.Jugador.ID}
 		case "contra-flor-al-resto":

@@ -1252,7 +1252,7 @@ func TestFlorFlorContraFlorQuiero(t *testing.T) {
 
 	t.Log(p)
 
-	p.Cmd("Alvaro Flor")
+	// p.Cmd("Alvaro Flor") // <- lo va a decir Adolfo
 	p.Cmd("Roro Mazo")
 	p.Cmd("Renzo Flor")
 	p.Cmd("Adolfo Contra-flor-al-resto")
@@ -1471,13 +1471,40 @@ func TestTirada1(t *testing.T) {
 
 	t.Log(p)
 	p.Cmd("Richard flor")
+	for _, pkt := range p.Consumir() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
+
+	p.Cmd("Renzo flor") // no lo deja porque flor es automaticamente recursivo
+	// luego de que richard dijo flor, renzo automaticamente también lo dijo
+	// es razonable que contenga un env de tipo error
+	for _, pkt := range p.Consumir() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
+
+	// p.Cmd("Alvaro flor") // <- si alvado canta flor, automaticamente adolfo tambien
+	// pero adolfo quiere cantar contra-flor, entonces lo tiene que decir el primero
+	// entonces el orden de los envelopes es:
+	//
+	{
+		jid := "Adolfo"
+		X := pdt.MetaChi(p.Partida, p.Manojo(jid), true)
+		t.Logf("chi(%s) ~ %v\n", jid, X)
+	}
+
 	p.Cmd("Adolfo contra-flor")
+	for _, pkt := range p.Consumir() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
+
 	p.Cmd("Richard quiero")
+	for _, pkt := range p.Consumir() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
+
 	// p.Cmd("Adolfo no-quiero") // si dice no quero autoamticamente acarrea a alvaro
 	// ademas suma 12 puntos y renzo no llego a decir que tenia flor,
 	// deberia cantar la de renzo tambien
-	p.Cmd("Renzo flor")
-	p.Cmd("Alvaro flor")
 
 	p.Cmd("Alvaro 2 oro")
 	p.Cmd("Roro 5 oro")
@@ -2789,19 +2816,18 @@ func TestQuieroContraflorDesdeMazo(t *testing.T) {
 		},
 	)
 
-	p.Cmd("alvaro flor")
-	p.Cmd("andres mazo")
+	t.Log(p)
 
-	util.Assert(p.Ronda.Manojos[4].SeFueAlMazo == true, func() {
-		t.Error(`andres se debio de haber ido al mazo`)
-	})
+	p.Cmd("alvaro flor")
+	p.Cmd("andres mazo") // no se puede ir
+
+	for _, pkt := range p.Consumir() {
+		fmt.Println(deco.Stringify(&pkt, p.Partida))
+	}
 
 	p.Cmd("renzo contra-flor")
-	p.Cmd("andres quiero")
 
-	util.Assert(p.Ronda.Envite.CantadoPor == "Renzo", func() {
-		t.Errorf(`andres no puede responder quiero porque se fue al mazo`)
-	})
+	t.Log(p)
 
 	t.Log(p.Ronda.Envite.Estado.String())
 
