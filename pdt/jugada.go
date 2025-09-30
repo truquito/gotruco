@@ -1206,7 +1206,9 @@ func (jugada CantarContraFlor) Hacer(p *Partida) []enco.Envelope {
 	// si estoy aumentando la apuesta, entonces voy a obligar a cantar 'flor' a
 	// todos mis teammates que siguen sin cantar (automáticamente).
 	// LA CLAVE ES QUE LLAMO CON RECURSIVE=FALSE
-	for _, jid2 := range p.Ronda.Envite.SinCantar {
+	sinCantar := make([]string, len(p.Ronda.Envite.SinCantar))
+	copy(sinCantar, p.Ronda.Envite.SinCantar)
+	for _, jid2 := range sinCantar {
 		esDeMiEquipo := p.Ronda.Manojo(jid2).Jugador.Equipo == p.Ronda.Manojo(jugada.JID).Jugador.Equipo
 		noSoyYo := jid2 != jugada.JID
 		if esDeMiEquipo && noSoyYo {
@@ -1296,7 +1298,9 @@ func (jugada CantarContraFlorAlResto) Hacer(p *Partida) []enco.Envelope {
 	// si estoy aumentando la apuesta, entonces voy a obligar a cantar 'flor' a
 	// todos mis teammates que siguen sin cantar (automáticamente).
 	// LA CLAVE ES QUE LLAMO CON RECURSIVE=FALSE
-	for _, jid2 := range p.Ronda.Envite.SinCantar {
+	sinCantar := make([]string, len(p.Ronda.Envite.SinCantar))
+	copy(sinCantar, p.Ronda.Envite.SinCantar)
+	for _, jid2 := range sinCantar {
 		esDeMiEquipo := p.Ronda.Manojo(jid2).Jugador.Equipo == p.Ronda.Manojo(jugada.JID).Jugador.Equipo
 		noSoyYo := jid2 != jugada.JID
 		if esDeMiEquipo && noSoyYo {
