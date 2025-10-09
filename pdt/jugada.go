@@ -999,13 +999,6 @@ func (jugada CantarFlor) Hacer(p *Partida) []enco.Envelope {
 
 	// yo canto
 
-	if p.Verbose {
-		pkts2 = append(pkts2, enco.Env(
-			enco.ALL,
-			enco.CantarFlor(jugada.JID),
-		))
-	}
-
 	// corresponde que desactive el truco?
 
 	// actualizacion 23/9/23: se desactiva este comportamiento debido a inconsistencias
@@ -1033,6 +1026,13 @@ func (jugada CantarFlor) Hacer(p *Partida) []enco.Envelope {
 				enco.ElEnvidoEstaPrimero(jugada.JID),
 			))
 		}
+	}
+
+	if p.Verbose {
+		pkts2 = append(pkts2, enco.Env(
+			enco.ALL,
+			enco.CantarFlor(jugada.JID),
+		))
 	}
 
 	// y me elimino de los que no-cantaron
@@ -1943,19 +1943,20 @@ func (jugada ResponderNoQuiero) Ok(p *Partida) ([]enco.Envelope, bool) {
 	// - CASO II: se grito el truco (o similar)
 	// en caso contrario, es incorrecto -> error
 
-	elEnvidoEsRespondible := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO) && p.Ronda.Envite.CantadoPor != p.Manojo(jugada.JID).Jugador.ID
-	laFlorEsRespondible := p.Ronda.Envite.Estado >= FLOR && p.Ronda.Envite.CantadoPor != p.Manojo(jugada.JID).Jugador.ID
-	elTrucoEsRespondible := p.Ronda.Truco.Estado.esTrucoRespondible() && p.Ronda.Manojo(p.Ronda.Truco.CantadoPor).Jugador.Equipo != p.Manojo(jugada.JID).Jugador.Equipo
+	elEnvidoEsRespondible := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO) && p.Ronda.Manojo(p.Ronda.Envite.CantadoPor).Jugador.Equipo != p.Manojo(jugada.JID).Jugador.Equipo
+	laFlorEsRespondible := p.Ronda.Envite.Estado >= FLOR && p.Ronda.Manojo(p.Ronda.Envite.CantadoPor).Jugador.Equipo != p.Manojo(jugada.JID).Jugador.Equipo
+	elTrucoEsRespondible := p.Ronda.Truco.Estado.esTrucoRespondible() &&
+		p.Ronda.Manojo(p.Ronda.Truco.CantadoPor).Jugador.Equipo != p.Manojo(jugada.JID).Jugador.Equipo &&
+		p.Ronda.Envite.Estado <= NOCANTADOAUN
 
 	ok := elEnvidoEsRespondible || laFlorEsRespondible || elTrucoEsRespondible
 
 	if !ok {
 		if p.Verbose {
 			// si no, esta respondiendo al pedo
-			err := p.Manojo(jugada.JID).Jugador.ID + ` esta respondiendo al pedo; no hay nada respondible`
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
-				enco.Error(err),
+				enco.Error("No hay nada respondible"),
 			))
 		}
 
@@ -2015,8 +2016,8 @@ func (jugada ResponderNoQuiero) Hacer(p *Partida) []enco.Envelope {
 		return pkts2
 	}
 
-	elEnvidoEsRespondible := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO) && p.Ronda.Envite.CantadoPor != p.Manojo(jugada.JID).Jugador.ID
-	laFlorEsRespondible := p.Ronda.Envite.Estado >= FLOR && p.Ronda.Envite.CantadoPor != p.Manojo(jugada.JID).Jugador.ID
+	elEnvidoEsRespondible := (p.Ronda.Envite.Estado >= ENVIDO && p.Ronda.Envite.Estado <= FALTAENVIDO) && p.Ronda.Manojo(p.Ronda.Envite.CantadoPor).Jugador.Equipo != p.Manojo(jugada.JID).Jugador.Equipo
+	laFlorEsRespondible := p.Ronda.Envite.Estado >= FLOR && p.Ronda.Manojo(p.Ronda.Envite.CantadoPor).Jugador.Equipo != p.Manojo(jugada.JID).Jugador.Equipo
 	elTrucoEsRespondible := p.Ronda.Truco.Estado.esTrucoRespondible() && p.Ronda.Manojo(p.Ronda.Truco.CantadoPor).Jugador.Equipo != p.Manojo(jugada.JID).Jugador.Equipo
 
 	if elEnvidoEsRespondible {
@@ -2280,29 +2281,30 @@ func (jugada IrseAlMazo) Ok(p *Partida) ([]enco.Envelope, bool) {
 
 	// por como esta hecho el algoritmo EvaluarMano:
 
-	esPrimeraMano := p.Ronda.ManoEnJuego == Primera
-	tiradas := p.Ronda.GetManoActual().CartasTiradas
-	n := len(tiradas)
+	// deprecated:
+	// esPrimeraMano := p.Ronda.ManoEnJuego == Primera
+	// tiradas := p.Ronda.GetManoActual().CartasTiradas
+	// n := len(tiradas)
 
-	soloMiEquipoTiro := n == 1 && p.Ronda.Manojo(tiradas[n-1].Jugador).Jugador.Equipo == p.Manojo(jugada.JID).Jugador.Equipo
+	// soloMiEquipoTiro := n == 1 && p.Ronda.Manojo(tiradas[n-1].Jugador).Jugador.Equipo == p.Manojo(jugada.JID).Jugador.Equipo
 
-	equipoDelJugador := p.Manojo(jugada.JID).Jugador.Equipo
-	soyElUnicoDeMiEquipo := p.Ronda.CantJugadoresEnJuego[equipoDelJugador] == 1
-	noSePuedeIr := esPrimeraMano && soloMiEquipoTiro && soyElUnicoDeMiEquipo
+	// equipoDelJugador := p.Manojo(jugada.JID).Jugador.Equipo
+	// soyElUnicoDeMiEquipo := p.Ronda.CantJugadoresEnJuego[equipoDelJugador] == 1
+	// noSePuedeIr := esPrimeraMano && soloMiEquipoTiro && soyElUnicoDeMiEquipo
 
-	// que pasa si alguien dice truco y se va al mazo?
+	// // que pasa si alguien dice truco y se va al mazo?
 
-	if noSePuedeIr {
+	// if noSePuedeIr {
 
-		if p.Verbose {
-			pkts2 = append(pkts2, enco.Env(
-				enco.Dest(jugada.JID),
-				enco.Error("No es posible irse-al-mazo ahora"),
-			))
-		}
-
-		return pkts2, false
-	}
+	// 	if p.Verbose {
+	// 		pkts2 = append(pkts2, enco.Env(
+	// 			enco.Dest(jugada.JID),
+	// 			enco.Error("No es posible irse-al-mazo ahora"),
+	// 		))
+	// 	}
+	//
+	// 	return pkts2, false
+	// }
 
 	return pkts2, true
 }

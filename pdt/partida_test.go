@@ -692,32 +692,26 @@ func TestFixGanadorErroneo(t *testing.T) {
 		t.Error(err)
 	}
 
+	t.Log(Renderizar(p))
+
 	p.Cmd("Alvaro 6 copa")
 	pkts, _ := p.Cmd("Alvaro mazo")
 
-	ok := p.Ronda.CantJugadoresEnJuego[Azul] > 0
-	if !ok {
-		t.Error(`la razon por que ganan la ronda deberia ser "porque se fueron al mazo"`)
-	}
+	// for _, pkt := range pkts {
+	// 	t.Log(pkt.Destination, pkt.Message.Cod())
+	// }
 
-	countMsgRondaGanada := 0
+	util.Assert(!enco.Contains(pkts, enco.TError), func() {
+		t.Error("No debería haber errores")
+	})
 
-	for _, pkt := range pkts {
+	util.Assert(enco.Contains(pkts, enco.TSumaPts), func() {
+		t.Error("Debería sumar puntos")
+	})
 
-		// obtengo el contenido del mensaje
-		// var cont map[string]json.RawMessage
-		// json.Unmarshal(pkt.Message.Cont, &cont)
-
-		if pkt.Message.Cod() == enco.TRondaGanada {
-			countMsgRondaGanada++
-		}
-	}
-
-	ok = countMsgRondaGanada == 0
-	if !ok {
-		t.Error(`No deberia retornar "RondaGanada"`)
-	}
-
+	util.Assert(enco.Contains(pkts, enco.TRondaGanada), func() {
+		t.Error("La ronda debió haber terminado")
+	})
 }
 
 func TestFixCodificacionCarta(t *testing.T) {
@@ -1834,4 +1828,72 @@ func TestBugDoubleRondaGanada(t *testing.T) {
 			t.Error("Debería ganar la ronda")
 		}
 	}
+}
+
+func TestBugEnvidoPrimeroFlorMsgsOrder(t *testing.T) {
+	// Cuando dice flor, una de dos:
+	// - o bien primero dice "el envido está primero" y luego "flor"
+	// - o unicamente dice flor y tá
+	// Pero lo que NO puede pasar es que diga: "flor" Y LUEGO "el envido está primero"
+	partidaJSON := `{"puntuacion":20,"puntajes":{"azul":0,"rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":1,"rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":["Bob"]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":6},{"palo":"basto","valor":7},{"palo":"oro","valor":11}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Alice","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"espada","valor":1},{"palo":"espada","valor":3},{"palo":"copa","valor":10}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Bob","equipo":"rojo"}}],"muestra":{"palo":"copa","valor":11},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]}]},"limiteEnvido":1}`
+	p, err := Parse(partidaJSON, true)
+	if err != nil {
+		t.Error(err)
+	}
+	t.Log(Renderizar(p))
+
+	_, _ = p.Cmd("Alice truco")
+	{
+		pkts, _ := p.Cmd("Bob flor")
+		elEnvidoEstaPrimero_Idx := 999999
+		for i, pkt := range pkts {
+			if pkt.Message.Cod() == enco.TElEnvidoEstaPrimero {
+				elEnvidoEstaPrimero_Idx = i
+			} else if pkt.Message.Cod() == enco.TCantarFlor {
+				if i < elEnvidoEstaPrimero_Idx {
+					t.Error("ElEnvidoEstaPrimero debería de venir ANTES que el canto de flor")
+				}
+			}
+		}
+	}
+}
+
+func TestBugNoDebePermitirNoQuiero(t *testing.T) {
+	// Sinopsis
+	// Alice dice Truco
+	// Bob, que no tiene flor, dice "el envido está primero" + "envido"
+	// Luego, Bob NO deberí poder decir "no quiero" (al truco propuesto por alice)
+	partidaJSON := `{"puntuacion":20,"puntajes":{"azul":0,"rojo":0},"ronda":{"manoEnJuego":0,"cantJugadoresEnJuego":{"azul":1,"rojo":1},"elMano":0,"turno":0,"envite":{"estado":"noCantadoAun","puntaje":0,"cantadoPor":"","sinCantar":[]},"truco":{"cantadoPor":"","estado":"noGritadoAun"},"manojos":[{"seFueAlMazo":false,"cartas":[{"palo":"copa","valor":6},{"palo":"basto","valor":7},{"palo":"oro","valor":11}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Alice","equipo":"azul"}},{"seFueAlMazo":false,"cartas":[{"palo":"espada","valor":1},{"palo":"basto","valor":3},{"palo":"copa","valor":10}],"tiradas":[false,false,false],"ultimaTirada":-1,"jugador":{"id":"Bob","equipo":"rojo"}}],"muestra":{"palo":"copa","valor":11},"manos":[{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]},{"resultado":"indeterminado","ganador":"","cartasTiradas":[]}]},"limiteEnvido":1}`
+	p, err := Parse(partidaJSON, true)
+	if err != nil {
+		t.Error(err)
+	}
+
+	t.Log(Renderizar(p))
+
+	{
+		pkts, _ := p.Cmd("Alice truco")
+		for _, pkt := range pkts {
+			t.Log(pkt.Message, pkt.Message.Cod())
+		}
+	}
+
+	{
+		pkts, _ := p.Cmd("Bob envido")
+		for _, pkt := range pkts {
+			t.Log(pkt.Message, pkt.Message.Cod())
+		}
+	}
+
+	t.Log(Renderizar(p))
+
+	chiBob := MetaChi(p, p.Manojo("bob"), false)
+	// no debe contener "no quiero"
+	for _, a := range chiBob {
+		if a.ID() == JID_NO_QUIERO {
+			t.Error("No deber permitir decir 'no quiero'")
+		}
+	}
+
+	t.Logf("chi(bob) ~ %v\n", chiBob)
 }
