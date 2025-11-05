@@ -371,25 +371,20 @@ func (jugada TocarEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 		return pkts2, false
 	}
 
-	// supuestamente esto que sigue no es posible.
-	// pero en el randomWalker me parecio haberlo visto.
-	// lo dejo comentado por las dudas.
-	// Tal vez fue error de codificacion del randomWalker.
-
 	// puede cantar envite (desde 0; es decir, empezar un envido) solo si no tirno
 	// niguna carta aun;
 	// pero si puede responder a un envido incluso si ya tiro
 
-	// yaTiroAlgunaCarta := p.Manojo(jugada.JID).yaTiroCarta(Primera)
-	// estaIniciandoElEnvite := p.Ronda.Envite.Estado == NOCANTADOAUN
-	// envidoHabilitado = !(yaTiroAlgunaCarta && estaIniciandoElEnvite)
-	// if !envidoHabilitado {
-	// 	pkts = append(pkts, enco.Pkt1(
-	// 		enco.Dest(jugada.JID),
-	// 		enco.Msg(enco.Error, "No es posible tocar envido ahora"),
-	// 	))
-	// 	return pkts2, false
-	// }
+	yaTiroAlgunaCarta := p.Manojo(jugada.JID).yaTiroCarta(Primera)
+	estaIniciandoElEnvite := p.Ronda.Envite.Estado == NOCANTADOAUN
+	envidoHabilitado = !(yaTiroAlgunaCarta && estaIniciandoElEnvite)
+	if !envidoHabilitado {
+		pkts2 = append(pkts2, enco.Env(
+			enco.Dest(jugada.JID),
+			enco.Error("No es posible tocar envido ahora"),
+		))
+		return pkts2, false
+	}
 
 	esDelEquipoContrario := p.Ronda.Envite.Estado == NOCANTADOAUN || p.Ronda.Manojo(p.Ronda.Envite.CantadoPor).Jugador.Equipo != p.Manojo(jugada.JID).Jugador.Equipo
 	yaEstabamosEnEnvido := p.Ronda.Envite.Estado == ENVIDO
@@ -626,7 +621,6 @@ func (jugada TocarRealEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 	ok := !seFueAlMazo && (realEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario) && puedeTocarRealEnvido
 
 	if !ok {
-
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
@@ -635,7 +629,17 @@ func (jugada TocarRealEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 		}
 
 		return pkts2, false
+	}
 
+	yaTiroAlgunaCarta := p.Manojo(jugada.JID).yaTiroCarta(Primera)
+	estaIniciandoElEnvite := p.Ronda.Envite.Estado == NOCANTADOAUN
+	envidoHabilitado := !(yaTiroAlgunaCarta && estaIniciandoElEnvite)
+	if !envidoHabilitado {
+		pkts2 = append(pkts2, enco.Env(
+			enco.Dest(jugada.JID),
+			enco.Error("No es posible tocar envido ahora"),
+		))
+		return pkts2, false
 	}
 
 	return pkts2, true
@@ -782,7 +786,6 @@ func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 	ok := !seFueAlMazo && (faltaEnvidoHabilitado && esPrimeraMano && !tieneFlor && esDelEquipoContrario) && puedeTocarFaltaEnvido
 
 	if !ok {
-
 		if p.Verbose {
 			pkts2 = append(pkts2, enco.Env(
 				enco.Dest(jugada.JID),
@@ -791,7 +794,17 @@ func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 		}
 
 		return pkts2, false
+	}
 
+	yaTiroAlgunaCarta := p.Manojo(jugada.JID).yaTiroCarta(Primera)
+	estaIniciandoElEnvite := p.Ronda.Envite.Estado == NOCANTADOAUN
+	envidoHabilitado := !(yaTiroAlgunaCarta && estaIniciandoElEnvite)
+	if !envidoHabilitado {
+		pkts2 = append(pkts2, enco.Env(
+			enco.Dest(jugada.JID),
+			enco.Error("No es posible tocar envido ahora"),
+		))
+		return pkts2, false
 	}
 
 	return pkts2, true
