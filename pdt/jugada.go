@@ -379,10 +379,12 @@ func (jugada TocarEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 	estaIniciandoElEnvite := p.Ronda.Envite.Estado == NOCANTADOAUN
 	envidoHabilitado = !(yaTiroAlgunaCarta && estaIniciandoElEnvite)
 	if !envidoHabilitado {
-		pkts2 = append(pkts2, enco.Env(
-			enco.Dest(jugada.JID),
-			enco.Error("No es posible tocar envido ahora"),
-		))
+		if p.Verbose {
+			pkts2 = append(pkts2, enco.Env(
+				enco.Dest(jugada.JID),
+				enco.Error("No es posible tocar envido ahora"),
+			))
+		}
 		return pkts2, false
 	}
 
@@ -635,10 +637,12 @@ func (jugada TocarRealEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 	estaIniciandoElEnvite := p.Ronda.Envite.Estado == NOCANTADOAUN
 	envidoHabilitado := !(yaTiroAlgunaCarta && estaIniciandoElEnvite)
 	if !envidoHabilitado {
-		pkts2 = append(pkts2, enco.Env(
-			enco.Dest(jugada.JID),
-			enco.Error("No es posible tocar envido ahora"),
-		))
+		if p.Verbose {
+			pkts2 = append(pkts2, enco.Env(
+				enco.Dest(jugada.JID),
+				enco.Error("No es posible tocar envido ahora"),
+			))
+		}
 		return pkts2, false
 	}
 
@@ -800,10 +804,12 @@ func (jugada TocarFaltaEnvido) Ok(p *Partida) ([]enco.Envelope, bool) {
 	estaIniciandoElEnvite := p.Ronda.Envite.Estado == NOCANTADOAUN
 	envidoHabilitado := !(yaTiroAlgunaCarta && estaIniciandoElEnvite)
 	if !envidoHabilitado {
-		pkts2 = append(pkts2, enco.Env(
-			enco.Dest(jugada.JID),
-			enco.Error("No es posible tocar envido ahora"),
-		))
+		if p.Verbose {
+			pkts2 = append(pkts2, enco.Env(
+				enco.Dest(jugada.JID),
+				enco.Error("No es posible tocar envido ahora"),
+			))
+		}
 		return pkts2, false
 	}
 
