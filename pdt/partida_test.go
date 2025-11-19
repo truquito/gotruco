@@ -1897,3 +1897,18 @@ func TestBugNoDebePermitirNoQuiero(t *testing.T) {
 
 	t.Logf("chi(bob) ~ %v\n", chiBob)
 }
+
+func TestValorEnvido(t *testing.T) {
+	m := Manojo{
+		Cartas: [3]*Carta{ // cartas de Alvaro
+			{Palo: Oro, Valor: 5},
+			{Palo: Oro, Valor: 3},
+			{Palo: Basto, Valor: 4},
+		},
+	}
+	muestra := Carta{Palo: Oro, Valor: 2}
+	envido := m.CalcularEnvido(muestra)
+	util.Assert(envido == 32, func() {
+		t.Error("Se esperaba un evido de 32")
+	})
+}

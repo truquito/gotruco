@@ -208,6 +208,17 @@ func max(x, y int) float64 {
 // CalcularEnvido devuelve el puntaje correspondiente al envido del manojo
 // PRE: no tiene flor
 func (manojo Manojo) CalcularEnvido(muestra Carta) (puntajeEnvido int) {
+
+	sumLasDosDeMasValor := func() int {
+		copia := make([]*Carta, cantCartasManojo)
+		copy(copia, manojo.Cartas[:])
+		// ordeno el array en forma desc de su puntaje
+		sort.Slice(copia, func(i, j int) bool {
+			return copia[i].calcPuntaje(muestra) > copia[j].calcPuntaje(muestra)
+		})
+		return copia[0].calcPuntaje(muestra) + copia[1].calcPuntaje(muestra)
+	}
+
 	tiene2DelMismoPalo, idxs := manojo.tiene2DelMismoPalo()
 	if tiene2DelMismoPalo {
 		x := manojo.Cartas[idxs[0]].calcPuntaje(muestra)
@@ -216,17 +227,11 @@ func (manojo Manojo) CalcularEnvido(muestra Carta) (puntajeEnvido int) {
 		if noTieneNingunaPieza {
 			puntajeEnvido = x + y + 20
 		} else {
-			puntajeEnvido = x + y
+			puntajeEnvido = int(max(x+y, sumLasDosDeMasValor()))
 		}
 	} else {
 		// si no: simplemente sumo las 2 de mayor valor
-		copia := make([]*Carta, cantCartasManojo)
-		copy(copia, manojo.Cartas[:])
-		// ordeno el array en forma desc de su puntaje
-		sort.Slice(copia, func(i, j int) bool {
-			return copia[i].calcPuntaje(muestra) > copia[j].calcPuntaje(muestra)
-		})
-		puntajeEnvido = copia[0].calcPuntaje(muestra) + copia[1].calcPuntaje(muestra)
+		puntajeEnvido = sumLasDosDeMasValor()
 	}
 	return puntajeEnvido
 }

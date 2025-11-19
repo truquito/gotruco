@@ -1063,7 +1063,7 @@ func TestCalcEnvido2(t *testing.T) {
 				},
 			},
 			{
-				Cartas: [3]*pdt.Carta{ // envido: 31
+				Cartas: [3]*pdt.Carta{ // envido: 32
 					{Palo: pdt.Espada, Valor: 5},
 					{Palo: pdt.Copa, Valor: 4},
 					{Palo: pdt.Espada, Valor: 3},
@@ -1072,7 +1072,7 @@ func TestCalcEnvido2(t *testing.T) {
 		},
 	)
 
-	expected := []int{21, 23, 23, 30, 30, 31}
+	expected := []int{21, 23, 23, 30, 30, 32}
 	for i, manojo := range p.Ronda.Manojos {
 		got := manojo.CalcularEnvido(p.Ronda.Muestra)
 
