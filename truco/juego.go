@@ -185,32 +185,42 @@ func (j *Juego) Reset(
 	verbose bool,
 	maxTiempoPorTurno time.Duration,
 
-) {
+) error {
 	j.mu.Lock()
 	defer j.mu.Unlock()
 
+	p, err := pdt.NuevaPartida(puntuacion, equipoAzul, equipoRojo, limiteEnvido, verbose)
+	if err != nil {
+		return err
+	}
+
 	// libero recursos
-	j.Tic.Stop()
-	j.contador <- c_EXIT // sale la goroutine
-	close(j.ErrCh)
+	if j.Tic != nil {
+		j.Tic.Stop()
+	}
+	if j.contador != nil {
+		j.contador <- c_EXIT // sale la goroutine
+	}
+	if j.ErrCh != nil {
+		close(j.ErrCh)
+	}
 	j.Err = nil
 
 	// creo recursos
-	p, _ := pdt.NuevaPartida(puntuacion, equipoAzul, equipoRojo, limiteEnvido, verbose)
-
 	j.Partida = p
 	j.out = make([]enco.Envelope, 0) // descarto los envelopes
 	j.ErrCh = make(chan bool, 1)
 	j.Err = nil
 	j.contador = make(chan c_SIGNAL, 1)
+	j.DurTurno = maxTiempoPorTurno
 
 	// pongo en el buffer un mensaje de Partida{} para cada jugador
-	if j.Partida.Verbose {
-		for _, m := range j.Ronda.Manojos {
+	if p.Verbose {
+		for _, m := range p.Ronda.Manojos {
 			pkt := enco.Env(
 				enco.Dest(m.Jugador.ID),
 				enco.NuevaPartida{
-					Perspectiva: j.Partida.PerspectivaCacheFlor(&m),
+					Perspectiva: p.PerspectivaCacheFlor(&m),
 				},
 			)
 			j.out = append(j.out, pkt)
@@ -219,6 +229,7 @@ func (j *Juego) Reset(
 
 	go j.contar()
 	// RESET DONE !!
+	return nil
 }
 
 // NuevoJuego retorna nueva partida; error si hubo
